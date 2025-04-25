@@ -1,4 +1,5 @@
 /* eslint-disable */
+/* @ts-nocheck */
 /** @jsx h */
 import { h, JSX } from "preact";
 import { store, computed } from "jods";
