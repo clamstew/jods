@@ -3,6 +3,14 @@ import { json } from "../json";
 import { store } from "../store";
 import { computed } from "../computed";
 
+// Define interface with index signature
+interface UserWithDynamicProps {
+  firstName: string;
+  lastName: string;
+  // any is essential for the computed properties pattern
+  [key: string]: any;
+}
+
 describe("json", () => {
   it("should return a copy of the store state", () => {
     const testStore = store({ count: 0, name: "test" });
@@ -71,7 +79,7 @@ describe("json", () => {
   });
 
   it("should handle computed values in nested objects", () => {
-    const testStore = store({
+    const testStore = store<{ user: UserWithDynamicProps }>({
       user: {
         firstName: "John",
         lastName: "Doe",

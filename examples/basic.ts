@@ -1,7 +1,20 @@
 import { store, json, onUpdate, computed, diff } from "../dist/index.js";
 
+// Define the User interface
+interface User {
+  firstName: string;
+  lastName: string;
+  email: string;
+  notifications: {
+    email: boolean;
+    push: boolean;
+  };
+  favorites: string[];
+  // Don't specify the type for fullName, let TypeScript infer it
+}
+
 // Create a user store
-const user = store({
+const user = store<User>({
   firstName: "Burt",
   lastName: "Macklin",
   email: "Burt.Macklin@FBI.confidential",
