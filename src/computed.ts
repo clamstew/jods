@@ -41,7 +41,6 @@ export function computed<T>(fn: ComputeFunction<T>): ComputedValue<T> {
  * @returns True if the value is a computed property
  */
 export function isComputed(value: any): value is ComputedValue {
-  return (
-    value && typeof value === "function" && value[COMPUTED_SYMBOL] === true
-  );
+  if (!value) return false;
+  return typeof value === "function" && value[COMPUTED_SYMBOL] === true;
 }
