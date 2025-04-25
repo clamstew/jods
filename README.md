@@ -2,6 +2,8 @@
 
 ![CI](https://github.com/clamstew/jods/workflows/CI/badge.svg)
 
+![jods](https://raw.githubusercontent.com/clamstew/jods/main/assets/jods.png)
+
 A minimal, reactive JSON state layer for Node.js and the browser. Create lightweight observable stores that emit JSON snapshots on demand.
 Perfect for syncing app state, powering APIs, or building reactive UIs without heavy frameworks.
 
