@@ -20,6 +20,8 @@ npm install jods
 
 ## Usage
 
+### Basic Usage
+
 ```js
 import { store, json, onUpdate, computed } from "jods";
 
@@ -43,6 +45,28 @@ user.mood = "playful";
 user.fullName = computed(() => `${user.firstName} ${user.lastName}`);
 
 console.log(json(user)); // { firstName: "Doctor", lastName: "Stewart", mood: "playful", fullName: "Doctor Stewart" }
+```
+
+### Change Tracking
+
+```js
+// Track changes using diff
+import { store, onUpdate, diff } from "jods";
+
+const user = store({
+  firstName: "Clay",
+  lastName: "Stewart",
+  mood: "curious",
+});
+
+// Subscribe with diff tracking
+onUpdate(user, (newUserState, oldUserState) => {
+  console.log("Change detected:", diff(oldUserState, newUserState));
+  // Example output: { firstName: ["Clay", "Doctor"], mood: ["curious", "playful"] }
+});
+
+user.firstName = "Doctor";
+user.mood = "playful";
 ```
 
 ## API
