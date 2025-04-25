@@ -11,6 +11,7 @@ Perfect for syncing app state, powering APIs, or building reactive UIs without h
 - Smart diff/patching (`jods.diff()`)
 - Middleware-like hooks (`onUpdate`)
 - Zero-dependency, ES module + CJS support
+- Fully type-safe with complete TypeScript definitions
 
 ## Installation
 
@@ -43,6 +44,35 @@ user.mood = "sneaky";
 user.fullName = computed(() => `${user.firstName} ${user.lastName}`);
 
 console.log(json(user)); // { firstName: "Burt Macklin", lastName: "Macklin", mood: "sneaky", fullName: "Burt Macklin Macklin" }
+```
+
+### TypeScript Support
+
+jods is built with TypeScript and provides full type definitions for all its APIs:
+
+```ts
+import { store, computed } from "jods";
+
+// Define state interface (optional but recommended)
+interface UserState {
+  firstName: string;
+  lastName: string;
+  age: number;
+  fullName?: string; // Will be added later
+}
+
+// Create typed store
+const user = store<UserState>({
+  firstName: "Burt",
+  lastName: "Macklin",
+  age: 30,
+});
+
+// TypeScript will enforce the correct shape
+user.fullName = computed(() => `${user.firstName} ${user.lastName}`);
+
+// Type error! Property 'invalid' does not exist
+// user.invalid = "value";
 ```
 
 ### Change Tracking
