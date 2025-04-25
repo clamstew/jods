@@ -10,15 +10,18 @@ const __dirname = dirname(__filename);
 export default defineConfig({
   build: {
     lib: {
-      entry: resolve(__dirname, "src/index.ts"),
-      name: "jods",
-      fileName: (format) => `index.${format === "es" ? "js" : "cjs"}`,
+      entry: {
+        index: resolve(__dirname, "src/index.ts"),
+        react: resolve(__dirname, "src/react.ts"),
+        preact: resolve(__dirname, "src/preact.ts"),
+      },
       formats: ["es", "cjs"],
     },
     rollupOptions: {
       output: {
         exports: "named",
       },
+      external: ["react", "preact", "preact/hooks"],
     },
     sourcemap: true,
     minify: "terser",
@@ -32,7 +35,8 @@ export default defineConfig({
   ],
   test: {
     globals: true,
-    environment: "node",
+    environment: "jsdom",
+    setupFiles: ["./src/__tests__/setup.ts"],
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],

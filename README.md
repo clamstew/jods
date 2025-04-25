@@ -12,6 +12,16 @@
 A minimal, reactive JSON state layer for Node.js and the browser. Create lightweight observable stores that emit JSON snapshots on demand.
 Perfect for syncing app state, powering APIs, or building reactive UIs without heavy frameworks.
 
+## Why JODS?
+
+- ☁️ Zero dependencies
+- 🧠 Computed values are built-in
+- ⚡ Works with React/Preact via useSyncExternalStore
+- 🪞 Built-in deep cloning with json()
+- 🧬 Minimal API, no boilerplate actions or reducers
+- 🧪 Diff detection baked in
+- 🧩 Framework agnostic, but integrates well with React/Preact
+
 ## Features
 
 - Tiny reactive store (`jods.store`) with subscription
@@ -55,19 +65,66 @@ user.fullName = computed(() => `${user.firstName} ${user.lastName}`);
 console.log(json(user)); // { firstName: "Burt Macklin", lastName: "Macklin", mood: "sneaky", fullName: "Burt Macklin Macklin" }
 ```
 
+### React/Preact Integration
+
+JODS now includes built-in React/Preact support via dedicated entry points:
+
+```jsx
+// For React
+import { useJods } from "jods/react";
+
+// For Preact
+import { useJods } from "jods/preact";
+
+// Create a store
+const user = store({
+  firstName: "Burt",
+  lastName: "Macklin",
+  mood: "curious",
+});
+
+// Add a computed property
+user.fullName = computed(() => `${user.firstName} ${user.lastName}`);
+
+// Component usage (works with both React and Preact)
+function Profile() {
+  // Use the hook with your store
+  const state = useJods(user);
+
+  return (
+    <div>
+      <p>
+        Name: {state.firstName} {state.lastName}
+      </p>
+      <p>Mood: {state.mood}</p>
+      {state.fullName && <p>Full name: {state.fullName}</p>}
+
+      <button onClick={() => (state.firstName = "Burt Macklin")}>
+        Go Undercover
+      </button>
+
+      <button onClick={() => (state.mood = "sneaky")}>Change Mood</button>
+    </div>
+  );
+}
+```
+
+The React hook works with React 16.8+ and uses `useSyncExternalStore` for React 18+ with a compatibility layer for older versions. The Preact hook uses Preact's native hooks API for optimal performance.
+
 ### TypeScript Support
 
 jods is built with TypeScript and provides full type definitions for all its APIs:
 
 ```ts
 import { store, computed } from "jods";
+import type { ComputedValue } from "jods";
 
 // Define state interface (optional but recommended)
 interface UserState {
   firstName: string;
   lastName: string;
   age: number;
-  fullName?: string; // Will be added later
+  fullName?: ComputedValue<string>; // Will be added later
 }
 
 // Create typed store
@@ -137,6 +194,35 @@ app.get("/api/user", (req, res) => {
   res.json(json(user));
 });
 ```
+
+## Comparison with other libraries
+
+### JODS vs Zustand vs Preact Signals
+
+| Feature               | jods                              | Zustand                    | Preact Signals                   |
+| --------------------- | --------------------------------- | -------------------------- | -------------------------------- |
+| Framework Dependency  | None                              | React-only                 | Preact-only                      |
+| State Access          | Proxied object (`store.foo`)      | Hook (`useStore`)          | Signal `.value` or JSX unwrap    |
+| Updates               | Direct mutation (`store.foo = x`) | Direct mutation            | `signal.value = x`               |
+| Computed Values       | ✅ via `computed()`               | 😬 with selector functions | ✅ via `computed()`              |
+| Built-in JSON         | ✅ deep clone & computed eval     | ❌ (manual)                | ❌ (manual or serialize signals) |
+| Built-in diff         | ✅                                | ❌                         | ❌                               |
+| Dev Tools             | Not yet                           | ✅ Zustand DevTools        | ❌                               |
+| Middleware            | 🔮 Planned                        | ✅                         | ❌                               |
+| Conceptual Simplicity | ✅ very small mental model        | ✅ (no actions/selectors)  | ❌ (signals take time to grok)   |
+
+### On Zustand vs Redux
+
+**Zustand** is popular because it ditched Redux's ceremony — no need for:
+
+- action creators
+- switch statements
+- reducers
+
+**Jods** takes that even further by saying:
+
+- just use the object, and subscribe if you care.
+- It's like `useState`, but global and smarter.
 
 ## Roadmap
 
