@@ -20,31 +20,29 @@ npm install jods
 
 ## Usage
 
-### Basic Usage
-
 ```js
 import { store, json, onUpdate, computed } from "jods";
 
 const user = store({
-  firstName: "Clay",
-  lastName: "Stewart",
+  firstName: "Burt",
+  lastName: "Macklin",
   mood: "curious",
 });
 
 // Subscribe to changes
 onUpdate(user, (newUserState) => {
   console.log("User state updated:", json(newUserState));
-  // Example output: { firstName: "Doctor", lastName: "Stewart", mood: "playful", fullName: "Doctor Stewart" }
+  // Example output: { firstName: "Burt Macklin", lastName: "Macklin", mood: "sneaky", fullName: "Burt Macklin Macklin" }
 });
 
 // Mutate exsting fields
-user.firstName = "Doctor";
-user.mood = "playful";
+user.firstName = "Burt Macklin";
+user.mood = "sneaky";
 
 // Add new computed field on the fly
 user.fullName = computed(() => `${user.firstName} ${user.lastName}`);
 
-console.log(json(user)); // { firstName: "Doctor", lastName: "Stewart", mood: "playful", fullName: "Doctor Stewart" }
+console.log(json(user)); // { firstName: "Burt Macklin", lastName: "Macklin", mood: "sneaky", fullName: "Burt Macklin Macklin" }
 ```
 
 ### Change Tracking
@@ -56,19 +54,19 @@ Track changes between store states - great for logging or syncing:
 import { store, onUpdate, diff } from "jods";
 
 const user = store({
-  firstName: "Clay",
-  lastName: "Stewart",
+  firstName: "Burt",
+  lastName: "Macklin",
   mood: "curious",
 });
 
 // Subscribe with diff tracking
 onUpdate(user, (newUserState, oldUserState) => {
   console.log("Change detected:", diff(oldUserState, newUserState));
-  // Example output: { firstName: ["Clay", "Doctor"], mood: ["curious", "playful"] }
+  // Example output: { firstName: ["Burt", "Burt Macklin"], mood: ["curious", "sneaky"] }
 });
 
-user.firstName = "Doctor";
-user.mood = "playful";
+user.firstName = "Burt Macklin";
+user.mood = "sneaky";
 ```
 
 ## API
