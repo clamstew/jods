@@ -37,17 +37,19 @@ onUpdate(user, (newUserState) => {
   // Example output: { firstName: "Doctor", lastName: "Stewart", mood: "playful", fullName: "Doctor Stewart" }
 });
 
-// Mutate
+// Mutate exsting fields
 user.firstName = "Doctor";
 user.mood = "playful";
 
-// Computed field
+// Add new computed field on the fly
 user.fullName = computed(() => `${user.firstName} ${user.lastName}`);
 
 console.log(json(user)); // { firstName: "Doctor", lastName: "Stewart", mood: "playful", fullName: "Doctor Stewart" }
 ```
 
 ### Change Tracking
+
+Track changes between store states - great for logging or syncing:
 
 ```js
 // Track changes using diff
