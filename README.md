@@ -197,27 +197,29 @@ app.get("/api/user", (req, res) => {
 
 ## Comparison with other libraries
 
-### JODS vs Zustand vs Preact Signals
+### JODS vs [Zustand](https://github.com/pmndrs/zustand) vs [Preact Signals](https://preactjs.com/guide/v10/signals/)
 
-| Feature               | jods                              | Zustand                    | Preact Signals                   |
-| --------------------- | --------------------------------- | -------------------------- | -------------------------------- |
-| Framework Dependency  | None                              | React-only                 | Preact-only                      |
-| State Access          | Proxied object (`store.foo`)      | Hook (`useStore`)          | Signal `.value` or JSX unwrap    |
-| Updates               | Direct mutation (`store.foo = x`) | Direct mutation            | `signal.value = x`               |
-| Computed Values       | ✅ via `computed()`               | 😬 with selector functions | ✅ via `computed()`              |
-| Built-in JSON         | ✅ deep clone & computed eval     | ❌ (manual)                | ❌ (manual or serialize signals) |
-| Built-in diff         | ✅                                | ❌                         | ❌                               |
-| Dev Tools             | Not yet                           | ✅ Zustand DevTools        | ❌                               |
-| Middleware            | 🔮 Planned                        | ✅                         | ❌                               |
-| Conceptual Simplicity | ✅ very small mental model        | ✅ (no actions/selectors)  | ❌ (signals take time to grok)   |
+| Feature               | jods                              | [Zustand](https://github.com/pmndrs/zustand)             | [Preact Signals](https://preactjs.com/guide/v10/signals/) |
+| --------------------- | --------------------------------- | -------------------------------------------------------- | --------------------------------------------------------- |
+| Framework Dependency  | None                              | React-only                                               | Preact-only                                               |
+| State Access          | Proxied object (`store.foo`)      | Hook (`useStore`)                                        | Signal `.value` or JSX unwrap                             |
+| Updates               | Direct mutation (`store.foo = x`) | Direct mutation                                          | `signal.value = x`                                        |
+| Computed Values       | ✅ via `computed()`               | 😬 with selector functions                               | ✅ via `computed()`                                       |
+| Built-in JSON         | ✅ deep clone & computed eval     | ❌ (manual)                                              | ❌ (manual or serialize signals)                          |
+| Built-in diff         | ✅                                | ❌                                                       | ❌                                                        |
+| Dev Tools             | Not yet                           | ✅ [Zustand](https://github.com/pmndrs/zustand) DevTools | ❌                                                        |
+| Middleware            | 🔮 Planned                        | ✅                                                       | ❌                                                        |
+| Conceptual Simplicity | ✅ very small mental model        | ✅ (no actions/selectors)                                | ❌ (signals take time to grok)                            |
 
-### On Zustand vs Redux
+### On [Zustand](https://github.com/pmndrs/zustand) vs [Redux](https://redux.js.org/)
 
-**Zustand** is popular because it ditched Redux's ceremony — no need for:
+**[Zustand](https://github.com/pmndrs/zustand)** is popular because it ditched [Redux](https://redux.js.org/)'s ceremony — no need for:
 
-- action creators
-- switch statements
-- reducers
+- action creators<sup>\*\*</sup>
+- switch statements<sup>\*\*</sup>
+- reducers<sup>\*\*</sup>
+
+\*\* [Redux Toolkit](https://redux-toolkit.js.org/tutorials/quick-start) state slices help reduce this boilerplate.
 
 **Jods** takes that even further by saying:
 
@@ -230,6 +232,29 @@ app.get("/api/user", (req, res) => {
 - Built-in persistence (`jods.persist(localStorage)`)
 - Remote syncing (`jods.sync(socket)`)
 
+## Contributing
+
+We love your input! We want to make contributing to `jods` as easy and transparent as possible, whether it's:
+
+- Reporting a bug
+- Discussing the current state of the code
+- Submitting a fix
+- Proposing new features
+- Becoming a maintainer
+
+We use GitHub to host code, to track issues and feature requests, as well as accept pull requests.
+
+We actively welcome your pull requests:
+
+1. Fork the repo and create your branch from `main`.
+2. If you've added code that should be tested, add tests.
+3. If you've changed APIs, update the documentation.
+4. Ensure the test suite passes.
+5. Make sure your code lints.
+6. Issue that pull request!
+
+For more details, check out our [Contributing Guide](./CONTRIBUTING.md).
+
 ## License
 
-MIT
+[MIT](./LICENSE)
