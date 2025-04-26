@@ -49,17 +49,20 @@ const user = store({
   mood: "curious",
 });
 
-// Subscribe to changes
+// Subscribe to changes - callbacks trigger for EACH property change
 onUpdate(user, (newUserState) => {
   console.log("User state updated:", json(newUserState));
-  // Example output: { firstName: "Burt Macklin", lastName: "Macklin", mood: "sneaky", fullName: "Burt Macklin Macklin" }
+  // Updates fire granularly, once per property change:
+  // 1st update: { firstName: "Burt Macklin", lastName: "Macklin", mood: "curious" }
+  // 2nd update: { firstName: "Burt Macklin", lastName: "Macklin", mood: "sneaky" }
+  // 3rd update: { firstName: "Burt Macklin", lastName: "Macklin", mood: "sneaky", fullName: "Burt Macklin Macklin" }
 });
 
-// Mutate exsting fields
+// Mutate existing fields - each change triggers the onUpdate callback
 user.firstName = "Burt Macklin";
 user.mood = "sneaky";
 
-// Add new computed field on the fly
+// Add new computed field - also triggers onUpdate
 user.fullName = computed(() => `${user.firstName} ${user.lastName}`);
 
 console.log(json(user)); // { firstName: "Burt Macklin", lastName: "Macklin", mood: "sneaky", fullName: "Burt Macklin Macklin" }
