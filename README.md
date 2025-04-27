@@ -202,6 +202,8 @@ app.get("/api/user", (req, res) => {
 
 ## Comparison with other libraries
 
+It's just an object (kind of) with some helper methods 🤷
+
 ### JODS vs [Zustand](https://github.com/pmndrs/zustand) vs [Preact Signals](https://preactjs.com/guide/v10/signals/)
 
 | Feature               | jods                              | [Zustand](https://github.com/pmndrs/zustand)             | [Preact Signals](https://preactjs.com/guide/v10/signals/) |
