@@ -1,4 +1,4 @@
-# jods — JSON On Demand Store
+# 🐿️ 🦆 jods — JSON On Demand Store
 
 ![CI](https://github.com/clamstew/jods/workflows/CI/badge.svg)
 [![npm version](https://img.shields.io/npm/v/jods.svg)](https://www.npmjs.com/package/jods)
@@ -6,6 +6,8 @@
 [![npm downloads](https://img.shields.io/npm/dm/jods.svg)](https://www.npmjs.com/package/jods)
 [![TypeScript](https://img.shields.io/badge/TypeScript-4.9%2B-blue)](https://www.typescriptlang.org/)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/clamstew/jods/blob/main/LICENSE)
+
+> "Got state to track? Just jods it down"
 
 ![jods](https://raw.githubusercontent.com/clamstew/jods/main/assets/headline_repo_readme_image.png)
 
