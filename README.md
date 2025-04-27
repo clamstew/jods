@@ -206,7 +206,7 @@ app.get("/api/user", (req, res) => {
 
 | Feature               | jods                              | [Zustand](https://github.com/pmndrs/zustand)             | [Preact Signals](https://preactjs.com/guide/v10/signals/) |
 | --------------------- | --------------------------------- | -------------------------------------------------------- | --------------------------------------------------------- |
-| Framework Dependency  | None                              | React-only                                               | Preact-only                                               |
+| Framework Dependency  | 🙌 None                           | React-only                                               | Preact-only                                               |
 | State Access          | Proxied object (`store.foo`)      | Hook (`useStore`)                                        | Signal `.value` or JSX unwrap                             |
 | Updates               | Direct mutation (`store.foo = x`) | Direct mutation                                          | `signal.value = x`                                        |
 | Computed Values       | ✅ via `computed()`               | 😬 with selector functions                               | ✅ via `computed()`                                       |
@@ -228,7 +228,7 @@ app.get("/api/user", (req, res) => {
 
 **Jods** takes that even further by saying:
 
-- just use the object, and subscribe if you care.
+- Just use the object, and subscribe if you care.
 - It's like `useState`, but global and smarter.
 
 ## Roadmap
