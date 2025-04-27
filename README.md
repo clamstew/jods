@@ -235,6 +235,20 @@ app.get("/api/user", (req, res) => {
 - Built-in persistence (`jods.persist(localStorage)`)
 - Remote syncing (`jods.sync(socket)`)
 
+## Documentation
+
+The project documentation is built with Docusaurus and can be run locally:
+
+```bash
+# Navigate to docs directory
+cd docs
+
+# Start the development server
+pnpm start
+```
+
+The documentation will be available at http://localhost:3000/jods/
+
 ## Contributing
 
 We love your input! We want to make contributing to `jods` as easy and transparent as possible, whether it's:
