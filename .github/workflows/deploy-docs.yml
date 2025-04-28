@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "docs/**"
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -15,22 +16,55 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: pnpm
+
       - name: Install pnpm
-        run: npm install -g pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
       - name: Install dependencies
         run: |
           cd docs
-          pnpm install
+          pnpm install --frozen-lockfile
+
+      - name: Initialize Docusaurus
+        run: |
+          cd docs
+          pnpm docusaurus clean
+          pnpm docusaurus clear
+
       - name: Build website
         run: |
           cd docs
           pnpm build
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/build
+          # Keep the existing files on GitHub Pages
+          keep_files: true
+          # Add a .nojekyll file to disable GitHub Pages Jekyll processing
+          enable_jekyll: false
