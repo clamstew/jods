@@ -30,3 +30,7 @@ export type {
 
 // React-specific hooks
 export { useJods } from "./hooks/useJods";
+
+// Export debugger component
+import { createDebugger } from "./react/debugger";
+export { createDebugger };
