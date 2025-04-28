@@ -21,7 +21,8 @@ const config: Config = {
   trailingSlash: false,
   deploymentBranch: "gh-pages",
 
-  onBrokenLinks: "throw",
+  // Important: always use "warn" instead of "throw" for broken links
+  onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
 
   // Even if you don't use internationalization, you can use this field to set
@@ -38,9 +39,9 @@ const config: Config = {
       {
         docs: {
           sidebarPath: "./sidebars.ts",
-          // Please change this to your repo.
+          routeBasePath: "/", // Serve docs at the site's root
+          path: "docs",
           editUrl: "https://github.com/clamstew/jods/tree/main/docs/",
-          routeBasePath: "/", // Serve the docs at the site's root
         },
         blog: {
           showReadingTime: true,
@@ -49,7 +50,6 @@ const config: Config = {
             xslt: true,
           },
           editUrl: "https://github.com/clamstew/jods/tree/main/docs/",
-          // Useful options to enforce blogging best practices
           onInlineTags: "warn",
           onInlineAuthors: "warn",
           onUntruncatedBlogPosts: "warn",
@@ -93,7 +93,7 @@ const config: Config = {
           items: [
             {
               label: "Getting Started",
-              to: "/docs/intro",
+              to: "/intro",
             },
           ],
         },

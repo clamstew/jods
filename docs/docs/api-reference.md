@@ -124,7 +124,7 @@ counterHistory.forward();
 console.log(json(counter)); // { count: 1 }
 ```
 
-For more details on time-travel debugging, see the [Time-Travel Debugging](./time-travel-debugging.md) page.
+For more details on time-travel debugging, see the [Time-Travel Debugging](/time-travel-debugging) page.
 
 ## Framework Integration
 
@@ -170,4 +170,8 @@ function Counter() {
     </div>
   );
 }
+```
+
+```
+
 ```
