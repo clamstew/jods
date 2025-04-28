@@ -26,8 +26,6 @@ export type {
   ComputedValue,
   Subscriber,
   Unsubscribe,
-  ComputeFunction,
-  DiffResult,
 } from "./index";
 
 // React-specific hooks

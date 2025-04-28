@@ -8,5 +8,10 @@ export { history, History } from "./history";
 // Export types
 export type { Store, StoreState } from "./store";
 export type { ComputedValue } from "./computed";
-export type { Subscriber, Unsubscribe } from "./types";
+export type {
+  Subscriber,
+  Unsubscribe,
+  ComputeFunction,
+  DiffResult,
+} from "./types";
 export type { HistoryEntry, HistoryOptions } from "./history";

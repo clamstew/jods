@@ -4,6 +4,14 @@ import { onUpdate } from "../hooks";
 import { History } from "../history";
 import { DebuggerOptions } from "./debugger";
 
+// For dynamic import types
+type ReactModule = {
+  useSyncExternalStore: (
+    subscribe: (onStoreChange: () => void) => () => void,
+    getSnapshot: () => any
+  ) => any;
+};
+
 /**
  * React hook to use a jods store with automatic reactive updates
  * @param store The store to sync with React
@@ -13,7 +21,8 @@ export function useJods<T extends StoreState>(store: T & Store<T>): T {
   // Only try to use React if it's available
   try {
     // This requires React 18+
-    const React = require("react");
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const React = require("react") as ReactModule;
 
     // Get a snapshot of the store
     const getSnapshot = () => json(store) as T;
@@ -32,7 +41,7 @@ export function useJods<T extends StoreState>(store: T & Store<T>): T {
     // Return a proxy that updates the store on mutation
     return new Proxy(state, {
       set(target, prop, value) {
-        // @ts-ignore - We know the prop is a valid key
+        // @ts-expect-error - Property assignment through index signature
         store[prop] = value;
         return true;
       },
@@ -57,7 +66,8 @@ export function createDebugger<T extends StoreState>(
   // Only activate in development mode
   if (process.env.NODE_ENV !== "production") {
     // Create a history tracker for this store
-    const historyTracker = new History(store, {
+    // We don't directly use it in this simplified version
+    new History(store, {
       maxEntries: options?.maxEntries || 50,
     });
 

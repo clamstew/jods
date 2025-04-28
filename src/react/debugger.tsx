@@ -1,7 +1,12 @@
 import React from "react";
 import { Store, StoreState } from "../store";
 import { History, HistoryEntry } from "../history";
-import { json } from "../json";
+
+export interface DebuggerOptions {
+  showDiff?: boolean;
+  position?: "bottom" | "right";
+  maxEntries?: number;
+}
 
 interface TimelineMark {
   index: number;
@@ -59,7 +64,7 @@ export function JodsDebugger<T extends StoreState>({
   position = "bottom",
   width = position === "bottom" ? "100%" : "300px",
   height = position === "bottom" ? "200px" : "100%",
-}: DebuggerProps<T>): JSX.Element {
+}: DebuggerProps<T>): React.ReactElement {
   const [entries, setEntries] = React.useState<HistoryEntry<T>[]>(
     history.getEntries()
   );
@@ -273,13 +278,10 @@ export function JodsDebugger<T extends StoreState>({
  */
 export function createDebugger<T extends StoreState>(
   store: T & Store<T>,
-  options?: {
-    showDiff?: boolean;
-    position?: "bottom" | "right";
-    maxEntries?: number;
-  }
+  options?: DebuggerOptions
 ) {
   // Import history lazily in case this file is imported in a non-dev environment
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const { History } = require("../history");
 
   // Create a history tracker for this store
@@ -287,8 +289,13 @@ export function createDebugger<T extends StoreState>(
     maxEntries: options?.maxEntries || 50,
   });
 
+  // Store the historyTracker for use in the debugger
   return function StoreDebugger() {
-    // This component implementation will be provided at runtime through React entry point
-    return null;
+    // This component renders the JodsDebugger with the historyTracker
+    return React.createElement(JodsDebugger, {
+      history: historyTracker,
+      showDiff: options?.showDiff,
+      position: options?.position,
+    });
   };
 }
