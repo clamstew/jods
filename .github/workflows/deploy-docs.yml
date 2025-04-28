@@ -18,6 +18,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          lfs: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -46,8 +47,11 @@ jobs:
       - name: Install dependencies
         run: |
           cd docs
-          # Remove --frozen-lockfile to allow generating a new lockfile if missing
-          pnpm install
+          if [ -f "pnpm-lock.yaml" ]; then
+            pnpm install --frozen-lockfile
+          else
+            pnpm install
+          fi
 
       - name: Initialize Docusaurus
         run: |
