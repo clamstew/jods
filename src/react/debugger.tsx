@@ -39,7 +39,7 @@ const Timeline: React.FC<TimelineProps> = ({ current, marks, onSelect }) => {
   );
 };
 
-interface DebuggerProps<T extends StoreState> {
+export interface DebuggerProps<T extends StoreState> {
   history: History<T>;
   showDiff?: boolean;
   position?: "bottom" | "right";

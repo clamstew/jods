@@ -1,8 +1,9 @@
 import { Store, StoreState } from "../store";
 import { json } from "../json";
 import { onUpdate } from "../hooks";
-import { History } from "../history";
-import { DebuggerOptions } from "./debugger";
+import { createDebugger, DebuggerOptions } from "./debugger";
+
+export { createDebugger, DebuggerOptions };
 
 // For dynamic import types
 type ReactModule = {
@@ -51,36 +52,4 @@ export function useJods<T extends StoreState>(store: T & Store<T>): T {
     // If React is not available, just return the store
     return store;
   }
-}
-
-/**
- * Create a debugger component for a store with time travel capabilities
- * @param store The store to debug
- * @param options Debugger options
- * @returns A React component that renders the debugger
- */
-export function createDebugger<T extends StoreState>(
-  store: T & Store<T>,
-  options?: DebuggerOptions
-): () => any {
-  // Only activate in development mode
-  if (process.env.NODE_ENV !== "production") {
-    // Create a history tracker for this store
-    // We don't directly use it in this simplified version
-    new History(store, {
-      maxEntries: options?.maxEntries || 50,
-    });
-
-    // Simple placeholder component - in reality, this would render a debugger UI
-    // In an actual app, we'd create a real React component with the debugger UI
-    return function JodsDebugger() {
-      console.log(
-        "JODS debugger enabled, but custom UI implementation required"
-      );
-      return null;
-    };
-  }
-
-  // In production, return an empty component
-  return () => null;
 }
