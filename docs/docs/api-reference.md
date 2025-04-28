@@ -101,6 +101,31 @@ console.log(changes);
 // { age: { __old: 30, __new: 31 } }
 ```
 
+### `history(store, options?)`
+
+Creates a history tracker with time-travel capabilities for a store.
+
+```js
+import { store, history, json } from "jods";
+
+const counter = store({ count: 0 });
+const counterHistory = history(counter);
+
+// Make some changes
+counter.count = 1;
+counter.count = 2;
+
+// Travel back in time
+counterHistory.travelTo(0);
+console.log(json(counter)); // { count: 0 }
+
+// Move forward
+counterHistory.forward();
+console.log(json(counter)); // { count: 1 }
+```
+
+For more details on time-travel debugging, see the [Time-Travel Debugging](./time-travel-debugging.md) page.
+
 ## Framework Integration
 
 ### React

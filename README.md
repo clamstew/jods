@@ -192,6 +192,10 @@ Returns a reactive getter. Automatically re-runs when deps change.
 
 Returns a deep diff object of changes between two snapshots.
 
+### `history(store, options?)`
+
+Creates a history tracker with time-travel capabilities. See the [Time-Travel Debugging](#time-travel-debugging) section for details.
+
 ## Example: API Ready Snapshot
 
 ```js
@@ -235,9 +239,71 @@ It's just an object (kind of) with some helper methods 🤷
 
 ## Roadmap
 
-- Add time-travel debugging (`jods.history()`)
+- ~~Add time-travel debugging (`jods.history()`)~~ ✅ Implemented!
 - Built-in persistence (`jods.persist(localStorage)`)
 - Remote syncing (`jods.sync(socket)`)
+
+## Time-Travel Debugging
+
+JODS includes time-travel debugging capability, allowing you to track state changes and jump back to previous states:
+
+```js
+import { store, history, json } from "jods";
+
+// Create a store
+const counter = store({ count: 0 });
+
+// Create a history tracker
+const counterHistory = history(counter);
+
+// Make some changes
+counter.count = 1;
+counter.count = 2;
+counter.count = 3;
+
+// Time travel to first state
+counterHistory.travelTo(0);
+console.log(json(counter)); // { count: 0 }
+
+// Move forward
+counterHistory.forward();
+console.log(json(counter)); // { count: 1 }
+
+// Jump to latest state
+counterHistory.travelTo(counterHistory.getEntries().length - 1);
+console.log(json(counter)); // { count: 3 }
+```
+
+For React applications, you can use the built-in debugger component:
+
+```jsx
+import { store } from "jods";
+import { useJods, createDebugger } from "jods/react";
+
+// Create a store
+const appStore = store({ count: 0 });
+
+// Create a debugger component
+const AppDebugger = createDebugger(appStore, {
+  position: "bottom", // or 'right'
+  showDiff: true,
+  maxEntries: 50,
+});
+
+function App() {
+  const state = useJods(appStore);
+
+  return (
+    <div>
+      <h1>Count: {state.count}</h1>
+      <button onClick={() => state.count++}>Increment</button>
+
+      {/* Add the debugger component (only included in development) */}
+      <AppDebugger />
+    </div>
+  );
+}
+```
 
 ## Documentation
 
