@@ -18,6 +18,7 @@ const sidebars: SidebarsConfig = {
     "intro",
     "api-reference",
     "examples",
+    "time-travel-debugging",
     {
       type: "category",
       label: "Guides",
@@ -27,6 +28,7 @@ const sidebars: SidebarsConfig = {
         "tutorial-basics/markdown-features",
       ],
     },
+    "maintainers-guide",
   ],
 };
 
