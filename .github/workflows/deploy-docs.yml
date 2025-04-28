@@ -46,13 +46,13 @@ jobs:
       - name: Install dependencies
         run: |
           cd docs
-          pnpm install --frozen-lockfile
+          # Remove --frozen-lockfile to allow generating a new lockfile if missing
+          pnpm install
 
       - name: Initialize Docusaurus
         run: |
           cd docs
-          pnpm docusaurus clean
-          pnpm docusaurus clear
+          pnpm exec docusaurus clear
 
       - name: Build website
         run: |
