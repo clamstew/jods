@@ -7,7 +7,7 @@ import { Subscriber, DiffResult } from "./types";
 export interface HistoryEntry<T extends StoreState> {
   state: T;
   timestamp: number;
-  diff?: Record<string, any>;
+  diff?: DiffResult;
 }
 
 export interface HistoryOptions {
@@ -42,16 +42,13 @@ export class History<T extends StoreState> {
               ? this.entries[this.currentIndex].state
               : null;
           const diffResult = oldState ? diff(oldState, newState) : null;
-          this.addEntry(
-            json(newState) as T,
-            diffResult as Record<string, any> | null
-          );
+          this.addEntry(json(newState) as T, diffResult as DiffResult | null);
         }
       }) as Subscriber<T>);
     }
   }
 
-  private addEntry(state: T, diffObj: Record<string, any> | null): void {
+  private addEntry(state: T, diffObj: DiffResult | null): void {
     const entry: HistoryEntry<T> = {
       state,
       timestamp: Date.now(),
