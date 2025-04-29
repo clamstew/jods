@@ -27,6 +27,7 @@ Perfect for syncing app state, powering APIs, or building reactive UIs without h
 ## Features
 
 - Tiny reactive store (`jods.store`) with subscription
+- Fine-grained reactivity with signal-based dependency tracking
 - Lazy JSON snapshots (`jods.json()`)
 - Built-in computed fields (`computed`)
 - Smart diff/patching (`jods.diff()`)
@@ -51,13 +52,11 @@ const user = store({
   mood: "curious",
 });
 
-// Subscribe to changes - callbacks trigger for EACH property change
+// Subscribe to changes - only triggers when accessed properties change
 onUpdate(user, (newUserState) => {
   console.log("User state updated:", json(newUserState));
-  // Updates fire granularly, once per property change:
-  // 1st update: { firstName: "Burt Macklin", lastName: "Macklin", mood: "curious" }
-  // 2nd update: { firstName: "Burt Macklin", lastName: "Macklin", mood: "sneaky" }
-  // 3rd update: { firstName: "Burt Macklin", lastName: "Macklin", mood: "sneaky", fullName: "Burt Macklin Macklin" }
+  // With signal-based tracking, this only fires when properties used inside
+  // the callback change. If you access all properties, it works like a global subscriber.
 });
 
 // Mutate existing fields - each change triggers the onUpdate callback
@@ -174,7 +173,7 @@ user.mood = "sneaky";
 
 ### `store(initialState: object)`
 
-Creates a reactive store object. Direct mutations are tracked.
+Creates a reactive store object. Direct mutations are tracked. Uses signals internally for optimized fine-grained updates, only notifying subscribers that depend on changed properties.
 
 ### `json(store)`
 
@@ -182,7 +181,7 @@ Returns a deep-cloned plain JSON snapshot of the store.
 
 ### `onUpdate(store, callback)`
 
-Calls `callback(newState)` whenever any key is updated.
+Calls `callback(newState)` whenever properties accessed within the callback change. If you don't access any properties, it will respond to all changes (global subscription).
 
 ### `computed(fn)`
 
@@ -215,6 +214,7 @@ It's just an object (kind of) with some helper methods 🤷
 | Framework Dependency  | 🙌 None                           | React-only                                               | Preact-only                                               |
 | State Access          | Proxied object (`store.foo`)      | Hook (`useStore`)                                        | Signal `.value` or JSX unwrap                             |
 | Updates               | Direct mutation (`store.foo = x`) | Direct mutation                                          | `signal.value = x`                                        |
+| Fine-grained Updates  | ✅ Signals optimization           | ❌ Store-wide                                            | ✅ Signal-based                                           |
 | Computed Values       | ✅ via `computed()`               | 😬 with selector functions                               | ✅ via `computed()`                                       |
 | Built-in JSON         | ✅ deep clone & computed eval     | ❌ (manual)                                              | ❌ (manual or serialize signals)                          |
 | Built-in diff         | ✅                                | ❌                                                       | ❌                                                        |

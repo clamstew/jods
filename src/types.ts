@@ -14,6 +14,21 @@ export type Unsubscribe = () => void;
 export type ComputeFunction<T = any> = () => T;
 
 /**
+ * Signal read function type
+ */
+export type SignalReader<T> = () => T;
+
+/**
+ * Signal write function type
+ */
+export type SignalWriter<T> = (value: T) => void;
+
+/**
+ * Signal tuple type [read, write]
+ */
+export type Signal<T> = [SignalReader<T>, SignalWriter<T>];
+
+/**
  * Diff result object that contains information about differences
  */
 export interface DiffResult {

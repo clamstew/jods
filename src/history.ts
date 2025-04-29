@@ -13,20 +13,25 @@ export interface HistoryEntry<T extends StoreState> {
 export interface HistoryOptions {
   maxEntries?: number;
   active?: boolean;
+  throttleMs?: number; // Add throttle option to reduce history frequency
 }
 
 export class History<T extends StoreState> {
   private entries: HistoryEntry<T>[] = [];
   private currentIndex: number = -1;
   private maxEntries: number;
+  private throttleMs: number;
   private active: boolean;
   private unsubscribe: (() => void) | null = null;
   private store: T & Store<T>;
   private isTimeTraveling = false;
+  private lastUpdateTime = 0;
+  private pendingUpdate = false;
 
   constructor(store: T & Store<T>, options: HistoryOptions = {}) {
     this.store = store;
     this.maxEntries = options.maxEntries || 50;
+    this.throttleMs = options.throttleMs || 100; // Default throttle of 100ms
     this.active = options.active ?? process.env.NODE_ENV !== "production";
 
     if (this.active) {
@@ -34,18 +39,50 @@ export class History<T extends StoreState> {
       this.addEntry(json(store), null);
 
       // Subscribe to changes
-      this.unsubscribe = onUpdate(store, ((newState: T) => {
+      this.unsubscribe = onUpdate(store, ((_newState: T) => {
         if (!this.isTimeTraveling) {
-          // Get the old state from the latest entry, if available
-          const oldState =
-            this.entries.length > 0
-              ? this.entries[this.currentIndex].state
-              : null;
-          const diffResult = oldState ? diff(oldState, newState) : null;
-          this.addEntry(json(newState) as T, diffResult as DiffResult | null);
+          // Throttle history entries to avoid too many entries with signal-based reactivity
+          const now = Date.now();
+          if (now - this.lastUpdateTime < this.throttleMs) {
+            // If we're already throttling, skip this update
+            if (!this.pendingUpdate) {
+              this.pendingUpdate = true;
+              setTimeout(() => {
+                this.pendingUpdate = false;
+                this.captureCurrentState();
+              }, this.throttleMs);
+            }
+            return;
+          }
+
+          this.lastUpdateTime = now;
+          this.captureCurrentState();
         }
       }) as Subscriber<T>);
     }
+  }
+
+  // Separate method to capture current state to avoid duplication
+  private captureCurrentState(): void {
+    const currentState = json(this.store) as T;
+
+    // Get the old state from the latest entry, if available
+    const oldState =
+      this.entries.length > 0 ? this.entries[this.currentIndex].state : null;
+
+    // Only create a new history entry if the state has actually changed
+    if (oldState) {
+      // Simple comparison to see if anything changed
+      const hasChanged =
+        JSON.stringify(currentState) !== JSON.stringify(oldState);
+
+      if (!hasChanged) {
+        return; // Skip creating an entry if nothing changed
+      }
+    }
+
+    const diffResult = oldState ? diff(oldState, currentState) : null;
+    this.addEntry(currentState, diffResult as DiffResult | null);
   }
 
   private addEntry(state: T, diffObj: DiffResult | null): void {
@@ -94,6 +131,29 @@ export class History<T extends StoreState> {
 
     this.currentIndex = index;
     this.isTimeTraveling = false;
+  }
+
+  /**
+   * Find an entry by its state properties
+   * @param finder Function that returns true for the desired entry
+   * @returns The index of the found entry, or -1 if not found
+   */
+  findEntry(finder: (entry: HistoryEntry<T>) => boolean): number {
+    return this.entries.findIndex(finder);
+  }
+
+  /**
+   * Travel to an entry that matches certain criteria
+   * @param finder Function that returns true for the desired entry
+   * @returns Whether a matching entry was found and traveled to
+   */
+  travelToEntry(finder: (entry: HistoryEntry<T>) => boolean): boolean {
+    const index = this.findEntry(finder);
+    if (index >= 0) {
+      this.travelTo(index);
+      return true;
+    }
+    return false;
   }
 
   /**
