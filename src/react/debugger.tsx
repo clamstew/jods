@@ -11,6 +11,7 @@ export interface DebuggerOptions {
 interface TimelineMark {
   index: number;
   time: string;
+  state: any; // Store the state reference for searching
 }
 
 interface TimelineProps {
@@ -20,18 +21,32 @@ interface TimelineProps {
 }
 
 const Timeline: React.FC<TimelineProps> = ({ current, marks, onSelect }) => {
+  // Use a logarithmic spacing for marks if there are too many close together
+  const markPositions = marks.map((mark) => {
+    // If we have many entries, use a logarithmic scale to space them
+    const position =
+      marks.length <= 10
+        ? (mark.index / (marks.length - 1)) * 100
+        : (Math.log(mark.index + 1) / Math.log(marks.length)) * 100;
+
+    return {
+      ...mark,
+      position: Math.max(0, Math.min(100, position)), // Clamp between 0-100%
+    };
+  });
+
   return (
     <div className="jods-timeline">
       <div className="jods-timeline-track">
-        {marks.map((mark: TimelineMark) => (
+        {markPositions.map((mark) => (
           <div
             key={mark.index}
             className={`jods-timeline-mark ${
               current === mark.index ? "active" : ""
             }`}
-            style={{ left: `${(mark.index / (marks.length - 1)) * 100}%` }}
+            style={{ left: `${mark.position}%` }}
             onClick={() => onSelect(mark.index)}
-            title={mark.time}
+            title={`${mark.time} - State ${mark.index + 1}`}
           />
         ))}
       </div>
@@ -58,6 +73,72 @@ const formatTime = (timestamp: number): string => {
   });
 };
 
+// Enhanced function to find an entry with a specific property value
+// Handles nested properties and complex types better
+const findEntryWithProperty = <T extends StoreState>(
+  entries: HistoryEntry<T>[],
+  propertyPath: string,
+  value: any
+): number => {
+  // Parse property path (e.g., "user.name" -> ["user", "name"])
+  const path = propertyPath.split(".");
+
+  // Find the entry that matches the property value
+  return entries.findIndex((entry) => {
+    let current = entry.state;
+    for (const key of path) {
+      if (current === undefined || current === null) return false;
+      current = current[key];
+    }
+
+    // Compare objects and arrays by stringify
+    if (
+      typeof current === "object" &&
+      current !== null &&
+      typeof value === "object" &&
+      value !== null
+    ) {
+      return JSON.stringify(current) === JSON.stringify(value);
+    }
+
+    return current === value;
+  });
+};
+
+// Find state by partial match
+const findEntryWithPartialState = <T extends StoreState>(
+  entries: HistoryEntry<T>[],
+  partialState: Partial<T>
+): number => {
+  return entries.findIndex((entry) => {
+    for (const key in partialState) {
+      const entryValue = entry.state[key];
+      const searchValue = partialState[key];
+
+      // Skip if property doesn't exist
+      if (entryValue === undefined) return false;
+
+      // For objects, do deep comparison
+      if (
+        typeof entryValue === "object" &&
+        entryValue !== null &&
+        typeof searchValue === "object" &&
+        searchValue !== null
+      ) {
+        // Compare JSON string representation
+        if (JSON.stringify(entryValue) !== JSON.stringify(searchValue)) {
+          return false;
+        }
+      } else if (entryValue !== searchValue) {
+        // Simple value comparison
+        return false;
+      }
+    }
+
+    return true;
+  });
+};
+
 export function JodsDebugger<T extends StoreState>({
   history,
   showDiff = true,
@@ -72,25 +153,125 @@ export function JodsDebugger<T extends StoreState>({
     history.getCurrentIndex()
   );
   const [isOpen, setIsOpen] = React.useState<boolean>(true);
+  const [searchQuery, setSearchQuery] = React.useState<string>("");
+  const [searchProperty, setSearchProperty] = React.useState<string>("");
+  const [searchMode, setSearchMode] = React.useState<"property" | "json">(
+    "property"
+  );
 
-  // Update entries when history changes
+  // Use a ref to track the last history update
+  const historyRef = React.useRef({
+    entries: history.getEntries(),
+    currentIndex: history.getCurrentIndex(),
+    lastUpdateTime: Date.now(),
+  });
+
   React.useEffect(() => {
-    const intervalId = setInterval(() => {
-      setEntries(history.getEntries());
-      setCurrentIndex(history.getCurrentIndex());
-    }, 200);
+    // Subscribe to history updates instead of using interval
+    const updateFromHistory = () => {
+      const newEntries = history.getEntries();
+      const newIndex = history.getCurrentIndex();
+
+      // Throttle updates to avoid excessive re-renders with signal-based updates
+      const now = Date.now();
+      if (now - historyRef.current.lastUpdateTime < 50) {
+        return; // Skip update if less than 50ms has passed
+      }
+
+      // Only update if entries length changed, index changed, or content changed
+      if (
+        newEntries.length !== historyRef.current.entries.length ||
+        newIndex !== historyRef.current.currentIndex ||
+        JSON.stringify(newEntries[newIndex]?.state) !==
+          JSON.stringify(
+            historyRef.current.entries[historyRef.current.currentIndex]?.state
+          )
+      ) {
+        historyRef.current = {
+          entries: newEntries,
+          currentIndex: newIndex,
+          lastUpdateTime: now,
+        };
+
+        setEntries(newEntries);
+        setCurrentIndex(newIndex);
+      }
+    };
+
+    // Update immediately and set up an interval with lower frequency (reduced from 200ms to 500ms)
+    updateFromHistory();
+    const intervalId = setInterval(updateFromHistory, 500);
 
     return () => clearInterval(intervalId);
   }, [history]);
 
   const handleTravelTo = (index: number) => {
-    history.travelTo(index);
-    setCurrentIndex(index);
+    if (index >= 0 && index < entries.length) {
+      history.travelTo(index);
+      setCurrentIndex(index);
+    }
+  };
+
+  // Search for state with specific property value
+  const handleSearchByProperty = () => {
+    if (!searchProperty && !searchQuery) return;
+
+    if (searchMode === "json" && searchQuery) {
+      try {
+        // Parse JSON query for complex state search
+        const searchState = JSON.parse(searchQuery);
+        const foundIndex = findEntryWithPartialState(entries, searchState);
+
+        if (foundIndex >= 0) {
+          handleTravelTo(foundIndex);
+        } else {
+          alert("No matching state found");
+        }
+      } catch (e) {
+        alert("Invalid JSON format");
+      }
+    } else if (searchProperty && searchQuery) {
+      try {
+        // Try to parse the search query if it looks like JSON
+        const searchValue =
+          searchQuery.startsWith("{") ||
+          searchQuery.startsWith("[") ||
+          searchQuery === "true" ||
+          searchQuery === "false" ||
+          !isNaN(Number(searchQuery))
+            ? JSON.parse(searchQuery)
+            : searchQuery;
+
+        const foundIndex = findEntryWithProperty(
+          entries,
+          searchProperty,
+          searchValue
+        );
+        if (foundIndex >= 0) {
+          handleTravelTo(foundIndex);
+        } else {
+          alert(`No state found with ${searchProperty} = ${searchQuery}`);
+        }
+      } catch (e) {
+        // If JSON parsing fails, search as a string
+        const foundIndex = findEntryWithProperty(
+          entries,
+          searchProperty,
+          searchQuery
+        );
+        if (foundIndex >= 0) {
+          handleTravelTo(foundIndex);
+        } else {
+          alert(`No state found with ${searchProperty} = ${searchQuery}`);
+        }
+      }
+    }
   };
 
   const timeline = entries.map((entry, index) => ({
     index,
     time: formatTime(entry.timestamp),
+    state: entry.state, // Include state for searching
   }));
 
   const currentEntry = entries[currentIndex];
@@ -180,9 +361,55 @@ export function JodsDebugger<T extends StoreState>({
             onSelect={handleTravelTo}
           />
 
-          <div style={{ marginTop: "8px" }}>
-            State {currentIndex + 1} of {entries.length} —{" "}
-            {timeline[currentIndex]?.time}
+          <div
+            style={{
+              marginTop: "8px",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <div>
+              State {currentIndex + 1} of {entries.length} —{" "}
+              {timeline[currentIndex]?.time}
+            </div>
+
+            <div
+              className="jods-search-container"
+              style={{ display: "flex", alignItems: "center" }}
+            >
+              <select
+                value={searchMode}
+                onChange={(e) =>
+                  setSearchMode(e.target.value as "property" | "json")
+                }
+                style={{ marginRight: "4px" }}
+              >
+                <option value="property">Property</option>
+                <option value="json">JSON</option>
+              </select>
+
+              {searchMode === "property" ? (
+                <input
+                  type="text"
+                  placeholder="Property path (e.g. count)"
+                  value={searchProperty}
+                  onChange={(e) => setSearchProperty(e.target.value)}
+                  style={{ width: "150px", marginRight: "4px" }}
+                />
+              ) : null}
+
+              <input
+                type="text"
+                placeholder={searchMode === "property" ? "Value" : "JSON state"}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{
+                  width: searchMode === "json" ? "250px" : "100px",
+                  marginRight: "4px",
+                }}
+              />
+              <button onClick={handleSearchByProperty}>Find</button>
+            </div>
           </div>
         </div>
 
@@ -268,6 +495,13 @@ export function JodsDebugger<T extends StoreState>({
           opacity: 0.5;
           cursor: not-allowed;
         }
+        .jods-debugger input, .jods-debugger select {
+          background: #333;
+          color: #fff;
+          border: 1px solid #444;
+          padding: 4px;
+          font-size: 12px;
+        }
       `}</style>
     </>
   );
@@ -280,19 +514,23 @@ export function createDebugger<T extends StoreState>(
   store: T & Store<T>,
   options?: DebuggerOptions
 ) {
-  // Import history lazily in case this file is imported in a non-dev environment
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { History } = require("../history");
+  // Only create the debugger in development mode
+  if (process.env.NODE_ENV === "production") {
+    return function NoopDebugger() {
+      return null;
+    };
+  }
 
   // Create a history tracker for this store
-  const historyTracker = new History(store, {
+  const historyTracker = new History<T>(store, {
     maxEntries: options?.maxEntries || 50,
+    active: true,
   });
 
   // Store the historyTracker for use in the debugger
   return function StoreDebugger() {
     // This component renders the JodsDebugger with the historyTracker
-    return React.createElement(JodsDebugger, {
+    return React.createElement(JodsDebugger<T>, {
       history: historyTracker,
       showDiff: options?.showDiff,
       position: options?.position,

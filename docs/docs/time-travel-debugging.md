@@ -1,201 +1,202 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 ---
 
 # Time-Travel Debugging
 
-jods includes powerful time-travel debugging capabilities that allow you to track state changes over time and jump back to previous states. This feature is invaluable for debugging complex state changes and understanding how your application's state evolves.
+jods provides powerful time-travel debugging capabilities through the `history` function. This allows you to track state changes over time and navigate back and forth between different states.
 
 ## Basic Usage
 
-The `history()` function creates a history tracker for a store, which records all state changes and provides methods to travel between them:
-
 ```js
-import { store, history, json } from "jods";
+import { store, history } from "jods";
 
 // Create a store
 const counter = store({ count: 0 });
 
 // Create a history tracker
-const counterHistory = history(counter);
+const timeTravel = history(counter);
 
 // Make some changes
 counter.count = 1;
 counter.count = 2;
-counter.count = 3;
 
-// Time travel to first state
-counterHistory.travelTo(0);
-console.log(json(counter)); // { count: 0 }
+// Travel back in time to the initial state
+timeTravel.travelTo(0);
+console.log(counter.count); // 0
 
-// Move forward
-counterHistory.forward();
-console.log(json(counter)); // { count: 1 }
-
-// Jump to latest state
-counterHistory.travelTo(counterHistory.getEntries().length - 1);
-console.log(json(counter)); // { count: 3 }
+// Move forward one step
+timeTravel.forward();
+console.log(counter.count); // 1
 ```
 
-## History API
+## React Debugger Component
 
-### `history(store, options?)`
-
-Creates a history tracker for a store.
-
-- **Parameters**:
-
-  - `store`: The store to track
-  - `options` (optional): Configuration options
-    - `maxEntries`: Maximum number of history entries to keep (default: 50)
-    - `active`: Whether history tracking is active (default: true in development, false in production)
-
-- **Returns**: A History instance with the following methods:
-  - `travelTo(index)`: Travel to a specific point in history
-  - `back()`: Go back one step in history
-  - `forward()`: Go forward one step in history
-  - `getEntries()`: Get all history entries
-  - `getCurrentIndex()`: Get the current index in history
-  - `clear()`: Clear all history entries except the current one
-  - `destroy()`: Remove subscription to store updates
-
-## History Entries
-
-Each history entry contains:
-
-- `state`: A snapshot of the entire store state
-- `timestamp`: When the change occurred
-- `diff`: What changed from the previous state
-
-```js
-// Example of accessing history entries
-const entries = counterHistory.getEntries();
-entries.forEach((entry, index) => {
-  console.log(`Entry ${index}:`);
-  console.log(`State:`, entry.state);
-  console.log(`Time:`, new Date(entry.timestamp).toLocaleTimeString());
-  if (entry.diff) {
-    console.log(`Changes:`, entry.diff);
-  }
-});
-```
-
-## Branching History
-
-When you travel back in time and then make changes, jods automatically creates a new branch of history, discarding future states that are no longer relevant:
-
-```js
-// Start with a simple counter
-const counter = store({ count: 0 });
-const counterHistory = history(counter);
-
-// Make some changes
-counter.count = 10;
-counter.count = 20;
-counter.count = 30;
-
-// Go back to the first change
-counterHistory.travelTo(1); // count is now 10
-
-// Make a new change - this creates a branch and discards future states
-counter.count = 15;
-
-// History now contains: [0, 10, 15] instead of [0, 10, 20, 30]
-console.log(counterHistory.getEntries().map((entry) => entry.state.count));
-```
-
-## React Integration
-
-For React applications, jods provides a debugger component that renders a UI for time-travel debugging:
+For React applications, jods provides a visual debugger component that you can use to track state changes and time travel with an intuitive UI.
 
 ```jsx
 import { store } from "jods";
-import { useJods, createDebugger } from "jods/react";
+import { createDebugger } from "jods/react";
 
 // Create a store
-const appStore = store({ count: 0 });
-
-// Create a debugger component
-const AppDebugger = createDebugger(appStore, {
-  position: "bottom", // or 'right'
-  showDiff: true,
-  maxEntries: 50,
+const appState = store({
+  counter: 0,
+  user: { name: "Burt" },
+  theme: "light",
 });
 
-function App() {
-  const state = useJods(appStore);
+// Create a debugger component
+const TimeTravel = createDebugger(appState, {
+  showDiff: true, // Show what changed between states
+  position: "bottom", // Position at the bottom of the screen
+  maxEntries: 50, // Maximum history entries to keep
+});
 
+// Use the TimeTravel component in your app
+function App() {
   return (
     <div>
-      <h1>Count: {state.count}</h1>
-      <button onClick={() => state.count++}>Increment</button>
-
-      {/* Add the debugger component (only included in development) */}
-      <AppDebugger />
+      {/* Your app components */}
+      <TimeTravel />
     </div>
   );
 }
 ```
 
-The debugger component is development-only and doesn't add any overhead in production builds.
+## Enhanced State Navigation
 
-## Complete Example
+The time-travel debugger includes powerful navigation and search features that make it easy to find specific states in your application's history.
 
-Here's a more complete example of using history for debugging:
+### Timeline Navigation
 
-```js
-import { store, json, onUpdate, computed, history } from "jods";
+The timeline shows a visual representation of your application's state history:
 
-// Create a todo list store
-const todos = store({
-  items: [],
-  filter: "all",
-});
+- **Points on the timeline**: Each point represents a state update
+- **Previous/Next buttons**: Navigate backward and forward in time
+- **Direct timeline interaction**: Click on any point to jump directly to that state
 
-// Add a computed property
-todos.activeCount = computed(
-  () => todos.items.filter((item) => !item.completed).length
-);
+### State Search
 
-// Create a history tracker
-const todosHistory = history(todos);
+You can search for specific states in two ways:
 
-// Log changes as they happen
-onUpdate(todos, (state) => {
-  console.log("State updated:", json(state));
-});
+#### 1. Property Search
 
-// Add some todos
-function addTodo(text) {
-  todos.items.push({
-    id: Date.now(),
-    text,
-    completed: false,
-  });
-}
+Find all states where a specific property had a particular value:
 
-addTodo("Learn jods");
-addTodo("Build an app");
-addTodo("Master time travel");
-
-// Complete a todo
-todos.items[1].completed = true;
-
-// Inspect history
-console.log(`History has ${todosHistory.getEntries().length} entries`);
-
-// Go back to before the second todo was added
-todosHistory.travelTo(1);
-console.log("Traveled back:", json(todos));
-
-// Now add a different todo - this creates a new timeline
-addTodo("Alternative task");
-console.log("New branch:", json(todos));
+```
+Property path: user.name
+Value: Burt
 ```
 
-## Best Practices
+This will find all states where `user.name` was equal to `"Burt"`.
 
-- Only use history tracking in development or debugging scenarios
-- Set a reasonable `maxEntries` value to prevent memory issues
-- Call `destroy()` when you're done with a history tracker to prevent memory leaks
-- Use the `diff` property to understand what changed between states
+#### 2. JSON State Search
+
+Find states matching a partial state object pattern by providing a JSON fragment:
+
+```json
+{ "theme": "dark" }
+```
+
+This will find all states where the theme was "dark", regardless of other properties.
+
+You can also search for nested properties or complex state patterns:
+
+```json
+{ "user": { "preferences": { "notifications": true } } }
+```
+
+This would find all states where the user had notifications enabled.
+
+## Optimizing History Tracking
+
+The history tracker includes options to optimize performance and memory usage, especially important with signal-based reactivity:
+
+```js
+const timeTravel = history(store, {
+  maxEntries: 50, // Limit number of history entries
+  throttleMs: 200, // Throttle recording of state changes (milliseconds)
+  active: true, // Enable/disable history tracking
+});
+```
+
+### Throttling History Entries
+
+By default, the history tracker throttles state changes to avoid creating too many history entries when multiple properties change rapidly. This is especially useful with signal-based reactivity systems.
+
+### Finding States Programmatically
+
+Beyond the UI, you can programmatically find and travel to specific states:
+
+```js
+// Find a state where the user is an admin
+const foundIndex = timeTravel.findEntry(
+  (entry) => entry.state.user?.role === "admin"
+);
+
+if (foundIndex >= 0) {
+  timeTravel.travelTo(foundIndex);
+}
+
+// Or more directly:
+timeTravel.travelToEntry((entry) => entry.state.theme === "dark");
+```
+
+## API Reference
+
+### History Class
+
+```ts
+class History<T> {
+  constructor(store: T & Store<T>, options?: HistoryOptions);
+
+  // Navigation
+  travelTo(index: number): void;
+  back(): void;
+  forward(): void;
+
+  // State Access
+  getEntries(): HistoryEntry<T>[];
+  getCurrentIndex(): number;
+
+  // Search
+  findEntry(finder: (entry: HistoryEntry<T>) => boolean): number;
+  travelToEntry(finder: (entry: HistoryEntry<T>) => boolean): boolean;
+
+  // Management
+  clear(): void;
+  destroy(): void;
+}
+```
+
+### History Options
+
+```ts
+interface HistoryOptions {
+  maxEntries?: number; // Maximum entries to keep (default: 50)
+  active?: boolean; // Whether tracking is active (default: true in development)
+  throttleMs?: number; // Throttle time between entries in milliseconds (default: 100)
+}
+```
+
+### History Entry
+
+Each history entry contains:
+
+```ts
+interface HistoryEntry<T> {
+  state: T; // Complete state snapshot
+  timestamp: number; // When the state was captured
+  diff?: object; // What changed from previous state
+}
+```
+
+## Performance Considerations
+
+- **Memory Usage**: Each history entry stores a full snapshot of your state. If your state is large, consider limiting `maxEntries`
+- **Rendering Performance**: The debugger UI re-renders on state changes, but uses throttling to minimize impact
+- **Production Usage**: The debugger is automatically disabled in production builds
+
+## Example
+
+For a complete example of time-travel debugging, see the [time-travel example on GitHub](https://github.com/example/jods/examples/time-travel-example.jsx).
