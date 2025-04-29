@@ -107,12 +107,92 @@ describe("onUpdate", () => {
   });
 
   it("should match the README example behavior", () => {
-    // Skip this test since the exact behavior with signal-based implementation
-    // may vary from the original implementation in the README
+    const user = store({
+      firstName: "Burt",
+      lastName: "Macklin",
+      mood: "curious",
+    });
+
+    const callback = vi.fn((state) => {
+      // Just access properties to establish dependencies
+      // We're intentionally accessing these properties to create dependencies
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { firstName, lastName, mood } = state;
+
+      // Accessing fullName if it exists
+      if ("fullName" in state) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const fullName = state.fullName;
+      }
+    });
+
+    // Subscribe to changes
+    onUpdate(user, callback);
+
+    // Clear mock to ignore initial call that tracks dependencies
+    callback.mockClear();
+
+    // Mutate existing fields - should trigger the callback
+    user.firstName = "Burt Macklin";
+
+    // With signal-based reactivity, the callback may be called multiple times
+    // but we just want to verify it was called at least once
+    expect(callback).toHaveBeenCalled();
+
+    callback.mockClear();
+    user.mood = "sneaky";
+    expect(callback).toHaveBeenCalled();
+
+    // Add computed field
+    callback.mockClear();
+    user.fullName = computed(() => `${user.firstName} ${user.lastName}`);
+
+    // Verify final state matches expected JSON output
+    const finalState = json(user);
+    expect(finalState).toEqual({
+      firstName: "Burt Macklin",
+      lastName: "Macklin",
+      mood: "sneaky",
+      fullName: "Burt Macklin Macklin",
+    });
   });
 
   it("should return an unsubscribe function that stops updates", () => {
-    // Skip this test since unsubscribing works differently with signals
-    // A more complex test would be needed to test this properly
+    const testStore = store({
+      count: 0,
+      name: "test",
+    });
+
+    const callback = vi.fn((state) => {
+      // Access properties to track dependencies
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { count, name } = state;
+    });
+
+    // Subscribe and get unsubscribe function
+    const unsubscribe = onUpdate(testStore, callback);
+
+    // Clear mock after initial dependency tracking call
+    callback.mockClear();
+
+    // Update state - callback should be called
+    testStore.count = 1;
+
+    // With signal-based reactivity, the callback may be called multiple times
+    // but we just want to verify it was called at least once
+    expect(callback).toHaveBeenCalled();
+
+    // Unsubscribe from updates
+    unsubscribe();
+
+    // Clear mock again
+    callback.mockClear();
+
+    // Update state again - callback should NOT be called
+    testStore.count = 2;
+    testStore.name = "updated";
+
+    // Verify callback wasn't called after unsubscribe
+    expect(callback).not.toHaveBeenCalled();
   });
 });
