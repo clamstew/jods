@@ -26,10 +26,27 @@ describe("store", () => {
     expect(mockSubscriber).toHaveBeenCalledWith({ count: 1 });
   });
 
-  it.skip("should allow unsubscribing from state changes", () => {
-    // This test is skipped because unsubscribe behavior is still being refined
-    // for the signal-based implementation. Initial subscription creates signals
-    // that may persist even after unsubscribe.
+  it("should allow unsubscribing from state changes", () => {
+    const testStore = store({ count: 0 });
+    const mockSubscriber = vi.fn((state) => state.count);
+
+    // Subscribe and capture the unsubscribe function
+    const unsubscribe = testStore.subscribe(mockSubscriber);
+
+    // Clear mock to reset after initial tracking call
+    mockSubscriber.mockClear();
+
+    // Change the state, subscriber should be called
+    testStore.count = 1;
+    expect(mockSubscriber).toHaveBeenCalled();
+
+    // Unsubscribe and reset mock
+    unsubscribe();
+    mockSubscriber.mockClear();
+
+    // Change state again, subscriber should NOT be called
+    testStore.count = 2;
+    expect(mockSubscriber).not.toHaveBeenCalled();
   });
 
   it("should update state using setState method", () => {

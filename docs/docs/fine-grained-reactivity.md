@@ -62,7 +62,14 @@ const unsubscribe = store.subscribe((state) => {
 unsubscribe();
 ```
 
-With the signal-based implementation, once you unsubscribe, the subscriber will no longer be called when properties change. However, any properties that were accessed during subscription remain tracked in the internal signals system.
+When you call the unsubscribe function:
+
+1. The subscriber is immediately removed from the notification list
+2. All signal subscriptions associated with this subscriber are properly cleaned up
+3. The subscriber will never be called again when properties change
+4. Memory usage is optimized by removing all references to the subscriber
+
+This clean unsubscribe behavior ensures your application doesn't experience memory leaks or unexpected behavior when components are unmounted or subscriptions are no longer needed.
 
 ## Examples
 

@@ -222,6 +222,13 @@ The `subscribe` function automatically:
 3. Re-tracks dependencies each time your function runs (for dynamic dependencies)
 4. Treats subscribers that don't access any properties as global subscribers
 
+When calling `unsubscribe()`:
+
+1. The subscriber is immediately removed from all internal tracking maps
+2. All signal-level subscriptions are properly cleaned up
+3. The subscriber will never be called again for any state changes
+4. All references are removed, preventing memory leaks
+
 For more details on the reactivity system, see the [Fine-grained Reactivity](/fine-grained-reactivity) page.
 
 #### API

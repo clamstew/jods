@@ -24,6 +24,8 @@ function createSignal<T>(initialValue: T): Signal<T> {
     if (currentSubscriber !== null) {
       subscribers.add(currentSubscriber);
     }
+    // Expose subscribers set for cleanup during unsubscribe
+    (read as any).subscribers = subscribers;
     return value;
   }
 
@@ -64,6 +66,10 @@ export function store<T extends StoreState>(initialState: T): T & Store<T> {
   const allSubscribers = new Set<Subscriber<T>>();
   // Flag to prevent calling subscribers during initial tracking
   const trackingInProgress = new Set<Subscriber<T>>();
+  // Map each subscriber to its signal tracking callback
+  const subscriberCallbacks = new Map<Subscriber<T>, () => void>();
+  // Active subscriptions - used to prevent callbacks after unsubscribe
+  const activeSubscriptions = new Set<Subscriber<T>>();
 
   // Initialize signals for each property in the initial state
   for (const key of Object.keys(initialState)) {
@@ -111,8 +117,12 @@ export function store<T extends StoreState>(initialState: T): T & Store<T> {
 
     // Notify targeted subscribers based on dependency tracking
     subscriberDeps.forEach((deps, subscriber) => {
-      // Skip subscribers that are currently being tracked
-      if (trackingInProgress.has(subscriber)) return;
+      // Skip subscribers that are currently being tracked or have been unsubscribed
+      if (
+        trackingInProgress.has(subscriber) ||
+        !activeSubscriptions.has(subscriber)
+      )
+        return;
 
       // Check if this subscriber depends on any changed keys
       for (const key of changedKeys) {
@@ -125,8 +135,12 @@ export function store<T extends StoreState>(initialState: T): T & Store<T> {
 
     // Always notify global subscribers
     allSubscribers.forEach((subscriber) => {
-      // Skip subscribers that are currently being tracked
-      if (trackingInProgress.has(subscriber)) return;
+      // Skip subscribers that are currently being tracked or have been unsubscribed
+      if (
+        trackingInProgress.has(subscriber) ||
+        !activeSubscriptions.has(subscriber)
+      )
+        return;
       subscriber(currentState);
     });
   };
@@ -135,6 +149,9 @@ export function store<T extends StoreState>(initialState: T): T & Store<T> {
    * Subscribe to store changes with automatic dependency tracking
    */
   const subscribe = (subscriber: Subscriber<T>): Unsubscribe => {
+    // Add to active subscriptions
+    activeSubscriptions.add(subscriber);
+
     // Initialize an empty set for this subscriber's dependencies
     if (!subscriberDeps.has(subscriber)) {
       subscriberDeps.set(subscriber, new Set());
@@ -143,28 +160,33 @@ export function store<T extends StoreState>(initialState: T): T & Store<T> {
     // Mark tracking as in progress to prevent notification during initialization
     trackingInProgress.add(subscriber);
 
-    // Collect dependencies by running the subscriber once
-    const deps = subscriberDeps.get(subscriber)!;
+    // Create the tracking callback for this subscriber
     const trackingCallback = () => {
-      currentSubscriber = () => {
-        // This will be called when any accessed signal changes
-        // Only notify if we're not currently tracking dependencies
-        if (!trackingInProgress.has(subscriber)) {
-          subscriber(getState());
-        }
-      };
-
-      // Clear old dependencies before tracking new ones
-      deps.clear();
-
-      // Run the subscriber to track accessed properties
-      subscriber(getState());
-
-      currentSubscriber = null;
+      // Only notify if subscription is active and not in tracking mode
+      if (
+        !trackingInProgress.has(subscriber) &&
+        activeSubscriptions.has(subscriber)
+      ) {
+        subscriber(getState());
+      }
     };
 
-    // Initial tracking run
-    trackingCallback();
+    // Store the tracking callback for this subscriber for later cleanup
+    subscriberCallbacks.set(subscriber, trackingCallback);
+
+    // Collect dependencies by running the subscriber once
+    const deps = subscriberDeps.get(subscriber)!;
+
+    // Set up tracking
+    currentSubscriber = trackingCallback;
+
+    // Clear old dependencies before tracking new ones
+    deps.clear();
+
+    // Run the subscriber to track accessed properties
+    subscriber(getState());
+
+    currentSubscriber = null;
 
     // If no dependencies were tracked, make it a global subscriber
     if (deps.size === 0) {
@@ -174,12 +196,32 @@ export function store<T extends StoreState>(initialState: T): T & Store<T> {
     // Done tracking
     trackingInProgress.delete(subscriber);
 
-    // Return unsubscribe function
+    // Return unsubscribe function with enhanced cleanup
     return () => {
-      // Remove from dependency tracking
-      subscriberDeps.delete(subscriber);
+      // First remove from active subscriptions to prevent further calls
+      activeSubscriptions.delete(subscriber);
 
-      // Remove from global subscribers
+      // Get the tracking callback for this subscriber
+      const callback = subscriberCallbacks.get(subscriber);
+      const dependencies = subscriberDeps.get(subscriber);
+
+      // Clean up references in signal subscribers
+      if (callback && dependencies) {
+        for (const key of dependencies) {
+          const signal = signals.get(key);
+          if (signal) {
+            // Access the subscribers set in the read function and remove this callback
+            const signalSubscribers = (signal[0] as any).subscribers;
+            if (signalSubscribers instanceof Set) {
+              signalSubscribers.delete(callback);
+            }
+          }
+        }
+      }
+
+      // Remove from tracking maps
+      subscriberCallbacks.delete(subscriber);
+      subscriberDeps.delete(subscriber);
       allSubscribers.delete(subscriber);
     };
   };
@@ -257,7 +299,11 @@ export function store<T extends StoreState>(initialState: T): T & Store<T> {
 
       // Find subscribers that depend on this key
       subscriberDeps.forEach((deps, subscriber) => {
-        if (trackingInProgress.has(subscriber)) return;
+        if (
+          trackingInProgress.has(subscriber) ||
+          !activeSubscriptions.has(subscriber)
+        )
+          return;
         if (deps.has(key)) {
           affectedSubscribers.add(subscriber);
         }
@@ -265,7 +311,11 @@ export function store<T extends StoreState>(initialState: T): T & Store<T> {
 
       // Add global subscribers
       allSubscribers.forEach((subscriber) => {
-        if (trackingInProgress.has(subscriber)) return;
+        if (
+          trackingInProgress.has(subscriber) ||
+          !activeSubscriptions.has(subscriber)
+        )
+          return;
         affectedSubscribers.add(subscriber);
       });
 
