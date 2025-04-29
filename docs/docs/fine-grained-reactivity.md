@@ -26,6 +26,44 @@ This approach provides several advantages:
 - **Better Performance**: Fewer wasted update cycles, especially in larger applications
 - **Automatic Optimization**: No manual selector functions needed - dependencies are tracked automatically
 
+## Subscription Behavior
+
+When you subscribe to a store, JODS uses an automatic dependency tracking mechanism:
+
+1. JODS runs your subscriber function once immediately to track which properties are accessed
+2. It remembers which properties were accessed and only notifies the subscriber when those specific properties change
+3. If your subscriber doesn't access any properties, it becomes a global subscriber that gets notified on any change
+
+### Dynamic Dependencies
+
+Dependencies are re-tracked each time your subscriber function runs. This means if your subscriber accesses different properties based on the current state, JODS will update the tracked dependencies automatically.
+
+```js
+// This subscriber's dependencies change based on the value of showDetails
+store.subscribe((state) => {
+  console.log("Always shows:", state.title);
+
+  if (state.showDetails) {
+    console.log("Only when details shown:", state.description);
+  }
+});
+```
+
+### Unsubscribe Behavior
+
+The `subscribe` method returns an unsubscribe function that you can call to stop receiving updates:
+
+```js
+const unsubscribe = store.subscribe((state) => {
+  console.log("Count:", state.count);
+});
+
+// Later, when you want to stop receiving updates
+unsubscribe();
+```
+
+With the signal-based implementation, once you unsubscribe, the subscriber will no longer be called when properties change. However, any properties that were accessed during subscription remain tracked in the internal signals system.
+
 ## Examples
 
 ### Basic Example

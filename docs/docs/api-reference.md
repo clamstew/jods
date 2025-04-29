@@ -193,12 +193,36 @@ user.firstName = "Agent";
 
 The store uses a signal-based implementation for fine-grained reactivity:
 
-- Each property in the store is backed by a signal
-- Subscribers only re-run when properties they actually use change
-- Property access is automatically tracked to establish dependencies
+- Each property in the store is backed by a signal (read/write pair)
+- Subscribers only re-run when properties they actually access change
+- Property dependencies are tracked automatically when subscribers run
 - Updates only notify the subscribers that depend on the changed properties
+- Adding new properties dynamically is fully supported
 
-This offers significant performance benefits for large stores where different components only care about specific parts of the state.
+#### Subscription Behavior
+
+```js
+// Subscribe to changes in the store
+const unsubscribe = store.subscribe((state) => {
+  // This function runs once immediately when subscribed
+  // to track which properties you access
+  console.log("Current count:", state.count);
+
+  // Then it will run again only when those properties change
+});
+
+// Later, stop receiving updates
+unsubscribe();
+```
+
+The `subscribe` function automatically:
+
+1. Tracks which properties are accessed during the subscriber function
+2. Only notifies your subscriber when those specific properties change
+3. Re-tracks dependencies each time your function runs (for dynamic dependencies)
+4. Treats subscribers that don't access any properties as global subscribers
+
+For more details on the reactivity system, see the [Fine-grained Reactivity](/fine-grained-reactivity) page.
 
 #### API
 
