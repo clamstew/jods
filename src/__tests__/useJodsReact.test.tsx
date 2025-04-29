@@ -180,10 +180,53 @@ describe("useJods", () => {
     expect(true).toBe(true);
   });
 
-  // Add a note explaining what we need to do to properly test the React integration
-  it.todo(
-    "should be tested in a dedicated React testing environment to avoid infinite loops"
-  );
+  // Replace the todo with an actual test
+  it("should properly integrate with React component lifecycle", () => {
+    // Create a test store with multiple properties
+    const testStore = store<SignalTestStore>({
+      accessed: 1,
+      unaccessed: 1,
+      renderCount: 0,
+    });
+
+    let renderCount = 0;
+    const handleRender = () => {
+      renderCount++;
+      testStore.renderCount = renderCount;
+    };
+
+    // Render the component
+    const { unmount } = render(
+      <SignalTestComponent testStore={testStore} onRender={handleRender} />
+    );
+
+    // Initial render should happen
+    expect(renderCount).toBe(1);
+
+    // Update the accessed property - should trigger a re-render
+    act(() => {
+      testStore.accessed = 5;
+    });
+    expect(renderCount).toBe(2);
+    expect(screen.getByTestId("accessed").textContent).toBe("5");
+
+    // Multiple updates should work correctly
+    act(() => {
+      testStore.accessed = 10;
+    });
+    expect(renderCount).toBe(3);
+
+    // Clean up should prevent further updates
+    unmount();
+
+    // Update the store after unmounting - should not cause render count to increase
+    act(() => {
+      testStore.accessed = 20;
+    });
+
+    // Render count should remain the same
+    expect(renderCount).toBe(3);
+  });
 
   it.todo(
     "future tests should use memoized getSnapshot functions with signal-based store"
