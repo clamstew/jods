@@ -172,6 +172,54 @@ function Counter() {
 }
 ```
 
+### Store
+
+Creates a reactive store that can be directly mutated.
+
+```js
+import { store } from "jods";
+
+const user = store({
+  firstName: "Burt",
+  lastName: "Macklin",
+});
+
+// Direct property access & mutation
+console.log(user.firstName); // "Burt"
+user.firstName = "Agent";
+```
+
+#### Implementation Details
+
+The store uses a signal-based implementation for fine-grained reactivity:
+
+- Each property in the store is backed by a signal
+- Subscribers only re-run when properties they actually use change
+- Property access is automatically tracked to establish dependencies
+- Updates only notify the subscribers that depend on the changed properties
+
+This offers significant performance benefits for large stores where different components only care about specific parts of the state.
+
+#### API
+
+```ts
+function store<T extends Record<string, any>>(initialState: T): T & Store<T>;
+
+interface Store<T> {
+  getState(): T;
+  setState(partial: Partial<T>): void;
+  subscribe(subscriber: (state: T) => void): () => void;
+}
+```
+
+#### Methods
+
+| Method              | Description                                                    |
+| ------------------- | -------------------------------------------------------------- |
+| `getState()`        | Returns the current state object                               |
+| `setState(partial)` | Updates multiple properties at once                            |
+| `subscribe(fn)`     | Subscribes to state changes with automatic dependency tracking |
+
 ```
 
 ```

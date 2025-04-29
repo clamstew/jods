@@ -27,6 +27,7 @@ Perfect for syncing app state, powering APIs, or building reactive UIs without h
 ## Features
 
 - Tiny reactive store (`jods.store`) with subscription
+- Fine-grained reactivity with signal-based dependency tracking
 - Lazy JSON snapshots (`jods.json()`)
 - Built-in computed fields (`computed`)
 - Smart diff/patching (`jods.diff()`)
@@ -174,7 +175,7 @@ user.mood = "sneaky";
 
 ### `store(initialState: object)`
 
-Creates a reactive store object. Direct mutations are tracked.
+Creates a reactive store object. Direct mutations are tracked. Uses signals internally for optimized fine-grained updates, only notifying subscribers that depend on changed properties.
 
 ### `json(store)`
 
@@ -215,6 +216,7 @@ It's just an object (kind of) with some helper methods 🤷
 | Framework Dependency  | 🙌 None                           | React-only                                               | Preact-only                                               |
 | State Access          | Proxied object (`store.foo`)      | Hook (`useStore`)                                        | Signal `.value` or JSX unwrap                             |
 | Updates               | Direct mutation (`store.foo = x`) | Direct mutation                                          | `signal.value = x`                                        |
+| Fine-grained Updates  | ✅ Signals optimization           | ❌ Store-wide                                            | ✅ Signal-based                                           |
 | Computed Values       | ✅ via `computed()`               | 😬 with selector functions                               | ✅ via `computed()`                                       |
 | Built-in JSON         | ✅ deep clone & computed eval     | ❌ (manual)                                              | ❌ (manual or serialize signals)                          |
 | Built-in diff         | ✅                                | ❌                                                       | ❌                                                        |

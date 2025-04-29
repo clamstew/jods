@@ -19,6 +19,7 @@ const sidebars: SidebarsConfig = {
     "api-reference",
     "examples",
     "time-travel-debugging",
+    "fine-grained-reactivity",
     {
       type: "category",
       label: "Guides",
