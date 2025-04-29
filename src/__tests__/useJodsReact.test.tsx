@@ -24,6 +24,13 @@ interface ComputedTestStore {
   fullName?: ComputedValue<string>;
 }
 
+// Define a special interface for testing signal-based reactivity
+interface SignalTestStore {
+  accessed: number;
+  unaccessed: number;
+  renderCount: number;
+}
+
 // Mock React component using the hook
 function CounterTestComponent({
   testStore,
@@ -42,6 +49,28 @@ function CounterTestComponent({
       >
         Increment
       </button>
+    </div>
+  );
+}
+
+// Component that only accesses one property
+function SignalTestComponent({
+  testStore,
+  onRender,
+}: {
+  testStore: SignalTestStore & Store<SignalTestStore>;
+  onRender: () => void;
+}) {
+  // Call onRender immediately during render instead of using useEffect
+  onRender();
+
+  const state = useJods(testStore);
+
+  // Only access the 'accessed' property, not 'unaccessed'
+  return (
+    <div>
+      <div data-testid="accessed">{state.accessed}</div>
+      <div data-testid="render-count">{testStore.renderCount}</div>
     </div>
   );
 }
@@ -104,10 +133,46 @@ describe("useJods", () => {
     expect(screen.getByTestId("full-name").textContent).toBe("Jane Doe");
   });
 
-  // Add placeholder tests that will pass for now
+  // Test signal-based reactivity without causing infinite loops
   it("should handle signal-based reactivity with React components", () => {
-    // This would need a real browser environment to test properly
-    expect(true).toBe(true);
+    // Create a test store with multiple properties
+    const testStore = store<SignalTestStore>({
+      accessed: 1,
+      unaccessed: 1,
+      renderCount: 0,
+    });
+
+    let renderCount = 0;
+    const handleRender = () => {
+      renderCount++;
+      testStore.renderCount = renderCount;
+    };
+
+    // Render the component (this will call handleRender once)
+    render(
+      <SignalTestComponent testStore={testStore} onRender={handleRender} />
+    );
+
+    // Initial render should happen
+    expect(renderCount).toBe(1);
+    expect(screen.getByTestId("accessed").textContent).toBe("1");
+
+    // Update the unaccessed property - should NOT cause a re-render
+    act(() => {
+      testStore.unaccessed = 2;
+    });
+
+    // Render count should still be 1 since we didn't access 'unaccessed'
+    expect(renderCount).toBe(1);
+
+    // Update the accessed property - should cause a re-render
+    act(() => {
+      testStore.accessed = 2;
+    });
+
+    // Render count should increase to 2
+    expect(renderCount).toBe(2);
+    expect(screen.getByTestId("accessed").textContent).toBe("2");
   });
 
   it("should only update components when relevant properties change", () => {
