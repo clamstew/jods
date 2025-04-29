@@ -86,18 +86,7 @@ describe("store", () => {
     // Update count - should only trigger countSubscriber
     testStore.count = 1;
     expect(countSubscriber).toHaveBeenCalledTimes(1);
-
-    // Note: In compatibility mode, all subscribers are notified
-    // This test will only pass when the signal optimization is fully enabled
-    const isCompatibilityMode = true; // This matches the flag in src/store.ts
-    if (isCompatibilityMode) {
-      // Skip this assertion in compatibility mode
-      console.log(
-        "Skipping fine-grained dependency check in compatibility mode"
-      );
-    } else {
-      expect(nameSubscriber).not.toHaveBeenCalled();
-    }
+    expect(nameSubscriber).not.toHaveBeenCalled();
 
     // Reset mocks
     countSubscriber.mockClear();
@@ -106,10 +95,7 @@ describe("store", () => {
     // Update name - should only trigger nameSubscriber
     testStore.name = "updated";
     expect(nameSubscriber).toHaveBeenCalledTimes(1);
-
-    if (!isCompatibilityMode) {
-      expect(countSubscriber).not.toHaveBeenCalled();
-    }
+    expect(countSubscriber).not.toHaveBeenCalled();
   });
 
   it("should track dependencies when they change during subscription", () => {
@@ -129,16 +115,7 @@ describe("store", () => {
 
     // Initially depends on 'a', changing 'b' shouldn't trigger
     testStore.b = 3;
-
-    // Note: In compatibility mode, all subscribers are notified
-    // This test will only pass when the signal optimization is fully enabled
-    const isCompatibilityMode = true; // This matches the flag in src/store.ts
-    if (isCompatibilityMode) {
-      // Skip this assertion in compatibility mode
-      console.log("Skipping dependency tracking check in compatibility mode");
-    } else {
-      expect(conditionalSubscriber).not.toHaveBeenCalled();
-    }
+    expect(conditionalSubscriber).not.toHaveBeenCalled();
 
     // Change flag to true, now it should depend on 'b'
     testStore.flag = true;
@@ -150,10 +127,7 @@ describe("store", () => {
 
     conditionalSubscriber.mockClear();
     testStore.a = 5;
-
-    if (!isCompatibilityMode) {
-      expect(conditionalSubscriber).not.toHaveBeenCalled();
-    }
+    expect(conditionalSubscriber).not.toHaveBeenCalled();
   });
 
   it("should handle new properties added after creation", () => {

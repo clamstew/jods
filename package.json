@@ -1,7 +1,7 @@
 {
   "name": "jods",
-  "version": "0.1.2",
-  "description": "A minimal, reactive JSON state layer for Node.js and the browser",
+  "version": "2.0.0",
+  "description": "A minimal, reactive JSON state layer for Node.js and the browser with fine-grained reactivity",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",

@@ -52,13 +52,11 @@ const user = store({
   mood: "curious",
 });
 
-// Subscribe to changes - callbacks trigger for EACH property change
+// Subscribe to changes - only triggers when accessed properties change
 onUpdate(user, (newUserState) => {
   console.log("User state updated:", json(newUserState));
-  // Updates fire granularly, once per property change:
-  // 1st update: { firstName: "Burt Macklin", lastName: "Macklin", mood: "curious" }
-  // 2nd update: { firstName: "Burt Macklin", lastName: "Macklin", mood: "sneaky" }
-  // 3rd update: { firstName: "Burt Macklin", lastName: "Macklin", mood: "sneaky", fullName: "Burt Macklin Macklin" }
+  // With signal-based tracking, this only fires when properties used inside
+  // the callback change. If you access all properties, it works like a global subscriber.
 });
 
 // Mutate existing fields - each change triggers the onUpdate callback
@@ -183,7 +181,7 @@ Returns a deep-cloned plain JSON snapshot of the store.
 
 ### `onUpdate(store, callback)`
 
-Calls `callback(newState)` whenever any key is updated.
+Calls `callback(newState)` whenever properties accessed within the callback change. If you don't access any properties, it will respond to all changes (global subscription).
 
 ### `computed(fn)`
 
