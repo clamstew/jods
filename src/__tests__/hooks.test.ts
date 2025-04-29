@@ -1,8 +1,9 @@
 import { describe, it, expect, vi } from "vitest";
 import { store } from "../store";
 import { onUpdate } from "../hooks";
-import { computed } from "../computed";
+import { computed, ComputedValue } from "../computed";
 import { json } from "../json";
+import { StoreState } from "../store";
 
 describe("onUpdate", () => {
   it("should call callback when store properties change", () => {
@@ -107,7 +108,14 @@ describe("onUpdate", () => {
   });
 
   it("should match the README example behavior", () => {
-    const user = store({
+    interface UserState extends StoreState {
+      firstName: string;
+      lastName: string;
+      mood: string;
+      fullName?: ComputedValue<string>;
+    }
+
+    const user = store<UserState>({
       firstName: "Burt",
       lastName: "Macklin",
       mood: "curious",
