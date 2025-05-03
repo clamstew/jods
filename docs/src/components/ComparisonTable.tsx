@@ -2,7 +2,7 @@ import React from "react";
 
 export default function ComparisonTable(): React.ReactElement {
   return (
-    <section className="features-container">
+    <section id="compare" className="features-container">
       <div className="container">
         <h2 className="section-title">
           How jods <span className="gradient-text">compares</span>

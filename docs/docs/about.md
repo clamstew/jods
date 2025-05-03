@@ -42,6 +42,8 @@ With so many state management options available, you might wonder why jods neede
 
 For Remix users in particular, jods provides a model-oriented approach that combines schema validation, server-side data loading, form handling, and client-side reactivity in a cohesive package.
 
+[See how jods compares to other state management libraries →](/#compare)
+
 ## Contributing
 
 jods is open to contributions! Check out our [contribution guidelines](https://github.com/clamstew/jods/blob/main/CONTRIBUTING.md) to get started.
