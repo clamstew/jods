@@ -1,6 +1,10 @@
 /** @jsxImportSource react */
 import { StoreState, onUpdate } from "../index";
 
+// TODO: This hook should use our reactUtils module in the future,
+// but there are some complexities with React.useSyncExternalStore and infinite loops
+// that need to be resolved first. For now, keep the original implementation.
+
 // Dynamic import for React to prevent bundling issues
 function getReactHooks() {
   try {

@@ -1,58 +1,6 @@
 import { Store, StoreState } from "../store";
 import { isComputed } from "../computed";
-
-type UseSyncExternalStoreType = <T>(
-  subscribe: (onStoreChange: () => void) => () => void,
-  getSnapshot: () => T,
-  getServerSnapshot?: () => T
-) => T;
-
-// Try to dynamically get useSyncExternalStore with a function
-function getUseSyncExternalStore(): UseSyncExternalStoreType {
-  let reactModule: any;
-
-  // Try to get React module
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    reactModule = require("react");
-  } catch (e) {
-    // This shouldn't happen, but we'll handle it anyway
-    throw new Error("React is required but could not be loaded");
-  }
-
-  // Return useSyncExternalStore if available
-  if (typeof reactModule.useSyncExternalStore === "function") {
-    return reactModule.useSyncExternalStore;
-  }
-
-  // Try experimental version
-  if (typeof reactModule.unstable_useSyncExternalStore === "function") {
-    return reactModule.unstable_useSyncExternalStore;
-  }
-
-  // Create fallback implementation for React < 18
-  return function syncExternalStoreFallback<T>(
-    subscribe: (onStoreChange: () => void) => () => void,
-    getSnapshot: () => T
-  ): T {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const React = require("react");
-    const [state, setState] = React.useState(getSnapshot());
-
-    React.useEffect(() => {
-      const handleChange = () => {
-        setState(getSnapshot());
-      };
-      const unsubscribe = subscribe(handleChange);
-      return unsubscribe;
-    }, [subscribe, getSnapshot]);
-
-    return state;
-  };
-}
-
-// Get the appropriate implementation
-const useSyncExternalStore = getUseSyncExternalStore();
+import { getUseSyncExternalStore } from "../utils/reactUtils";
 
 /**
  * Creates a proxy that automatically resolves computed properties
@@ -98,6 +46,9 @@ function createComputedProxy<T extends object>(target: T): T {
  * ```
  */
 export function useJods<T extends StoreState>(store: T & Store<T>): T {
+  // Get our hook from the utility
+  const useSyncExternalStore = getUseSyncExternalStore();
+
   // Get the raw state (without evaluating computed properties)
   const rawState = useSyncExternalStore(
     store.subscribe,
