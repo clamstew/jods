@@ -8,6 +8,16 @@ By participating in this project, you agree to maintain a respectful and inclusi
 
 ## How to Contribute
 
+We love your input! We want to make contributing to jods as easy and transparent as possible, whether it's:
+
+- [Reporting a bug](https://github.com/clamstew/jods/issues/new?assignees=&labels=bug&projects=&template=bug_report.md&title=%5BBUG%5D+)
+- [Discussing the current state of the code](https://github.com/clamstew/jods/issues/new?assignees=&labels=discussion&projects=&template=code_discussion.md&title=%5BDISCUSSION%5D+)
+- [Submitting a fix](https://github.com/clamstew/jods/issues/new?assignees=&labels=fix&projects=&template=submit_fix.md&title=%5BFIX%5D+)
+- [Proposing new features](https://github.com/clamstew/jods/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=%5BFEATURE%5D+)
+- Becoming a maintainer
+
+We use GitHub to host code, to track issues and feature requests, as well as accept pull requests.
+
 ### Reporting Bugs
 
 If you find a bug, please create an issue with:

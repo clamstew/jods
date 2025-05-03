@@ -24,7 +24,7 @@ jods was built around a few fundamental beliefs:
 
 ## History 📜
 
-jods was created by [clamstew](https://github.com/clamstew) in early 2025. What began as a name registration on npm quickly evolved into a full-featured reactive state library incorporating ideas from various state management approaches:
+jods was created by [clamstew](https://github.com/clamstew) in early 2025. What began as a name registration on npm (😅) quickly evolved into a full-featured reactive state library incorporating ideas from various state management approaches (🤯):
 
 - 🔄 The proxy-based reactivity from Vue
 - 🧠 The simplicity of Zustand's API
