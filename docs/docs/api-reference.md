@@ -69,26 +69,30 @@ Registers a callback function that is triggered whenever the store changes.
 
 **Parameters:**
 
-| Name       | Type       | Description                                   |
-| ---------- | ---------- | --------------------------------------------- |
-| `store`    | `Object`   | A jods store created with `store()`           |
-| `callback` | `Function` | Function to call when the store state changes |
+| Name       | Type       | Description                                                                   |
+| ---------- | ---------- | ----------------------------------------------------------------------------- |
+| `store`    | `Object`   | A jods store created with `store()`                                           |
+| `callback` | `Function` | Function called when the store state changes with both new and previous state |
 
 **Returns:** Unsubscribe function that can be called to stop listening for updates
 
 **Example:**
 
 ```js
-import { store, onUpdate } from "jods";
+import { store, onUpdate, diff } from "jods";
 
 const counter = store({ count: 0 });
 
-// Subscribe to changes
-const unsubscribe = onUpdate(counter, (newState) => {
-  console.log("New state:", newState);
+// Subscribe to changes with access to both new and old state
+const unsubscribe = onUpdate(counter, (newState, oldState) => {
+  console.log("Changed from", oldState.count, "to", newState.count);
+
+  // You can directly use diff to track changes
+  const changes = diff(oldState, newState);
+  console.log("Changes:", changes);
 });
 
-counter.count = 1; // Logs: New state: { count: 1 }
+counter.count = 1; // Logs changes and diff information
 
 // To stop listening for updates
 unsubscribe();
