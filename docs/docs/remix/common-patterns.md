@@ -4,11 +4,11 @@ title: Common Patterns
 description: Best practices and common patterns for using jods with Remix
 ---
 
-# Common Patterns with jods and Remix
+# 🧩 Common Patterns with jods and Remix
 
 This guide covers common patterns and best practices for using jods with Remix applications.
 
-## Error Handling
+## 🚨 Error Handling
 
 Handling errors gracefully in form submissions and loaders:
 
@@ -66,7 +66,7 @@ function ProfileForm() {
 }
 ```
 
-## Dependent Data Loading
+## 🔄 Dependent Data Loading
 
 When one store depends on another:
 
@@ -94,7 +94,7 @@ export const posts = defineStore({
 export const loader = withJods([user, posts]);
 ```
 
-## Form Validation
+## ✅ Form Validation
 
 Using Zod for form validation:
 
@@ -154,7 +154,7 @@ export const contact = defineStore({
 });
 ```
 
-## Optimistic UI Updates
+## ⚡ Optimistic UI Updates
 
 Implementing optimistic UI for better user experience:
 
@@ -203,7 +203,7 @@ function TodoList() {
 }
 ```
 
-## Nested Forms
+## 📋 Nested Forms
 
 Handling nested data structures in forms:
 
@@ -248,7 +248,7 @@ function AddressForm() {
 }
 ```
 
-## Tracking Loading/Submission State
+## 🔄 Tracking Loading/Submission State
 
 Using `useJodsFetchers` and `useJodsTransition` to provide feedback:
 
@@ -272,7 +272,7 @@ function SubmitButton() {
 }
 ```
 
-## Caching Strategies
+## 💾 Caching Strategies
 
 Using the cache control utilities:
 
@@ -302,7 +302,7 @@ export const products = defineStore({
 });
 ```
 
-## Sequential Form Submissions
+## 📝 Sequential Form Submissions
 
 Handling forms that should be submitted in a specific order:
 

@@ -4,13 +4,13 @@ title: Migrating to jods
 description: Step-by-step guide to migrate from Remix loaders/actions to jods
 ---
 
-# Migrating from Loaders/Actions to jods
+# 🚀 Migrating from Loaders/Actions to jods
 
 This guide helps you incrementally migrate your existing Remix application to use jods stores for state management.
 
-## Step-by-Step Migration
+## 🛣️ Step-by-Step Migration
 
-### 1. Identify Loaders to Convert
+### 🔍 1. Identify Loaders to Convert
 
 Look for loaders that fetch and return data that would benefit from reactivity:
 
@@ -22,7 +22,7 @@ export const loader = async ({ request }) => {
 };
 ```
 
-### 2. Create a jods Store
+### 🏗️ 2. Create a jods Store
 
 ```typescript
 // After: jods store
@@ -46,7 +46,7 @@ import { withJods } from "jods/remix";
 export const loader = withJods([user]);
 ```
 
-### 3. Convert Actions to Handlers
+### 🔄 3. Convert Actions to Handlers
 
 ```typescript
 // Before: Traditional action
@@ -70,7 +70,7 @@ export const user = defineStore({
 });
 ```
 
-### 4. Update Components
+### 🧩 4. Update Components
 
 ```tsx
 // Before: Using useLoaderData
@@ -110,7 +110,7 @@ export default function Profile() {
 }
 ```
 
-## Incremental Adoption with `connectActionToJods`
+## 🔄 Incremental Adoption with `connectActionToJods`
 
 Sometimes you can't migrate a whole action at once. Use `connectActionToJods` to gradually adopt jods:
 
@@ -130,16 +130,16 @@ const existingAction = async ({ request }) => {
 export const action = connectActionToJods(user, existingAction);
 ```
 
-## Migration Checklist
+## ✅ Migration Checklist
 
-1. ✅ **Identify state** that would benefit from reactivity
-2. ✅ **Define schemas** using Zod for type safety
-3. ✅ **Create jods stores** for each data domain
-4. ✅ **Convert loaders** to use `withJods`
-5. ✅ **Migrate actions** to store handlers
-6. ✅ **Update components** to use jods hooks
+1. 🔍 **Identify state** that would benefit from reactivity
+2. 📝 **Define schemas** using Zod for type safety
+3. 🏗️ **Create jods stores** for each data domain
+4. 🔄 **Convert loaders** to use `withJods`
+5. 🛠️ **Migrate actions** to store handlers
+6. 🧩 **Update components** to use jods hooks
 
-## Handling Redirects
+## 🔀 Handling Redirects
 
 When you need to redirect after a form submission:
 
@@ -163,7 +163,7 @@ export const user = defineStore({
 });
 ```
 
-## Handling Authorization
+## 🔒 Handling Authorization
 
 For protected routes and data:
 

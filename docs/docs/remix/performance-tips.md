@@ -4,11 +4,11 @@ title: Performance Tips
 description: Optimize your Remix application with jods
 ---
 
-# Performance Optimization
+# 🚀 Performance Optimization
 
 This guide provides tips and techniques for optimizing performance when using jods with Remix applications.
 
-## Selective Hydration
+## 💧 Selective Hydration
 
 Only hydrate stores that are needed for the current route:
 
@@ -62,7 +62,7 @@ export default function App() {
 }
 ```
 
-## Lazy Loading Stores
+## 🦥 Lazy Loading Stores
 
 Dynamically import stores only when needed:
 
@@ -84,7 +84,7 @@ export default function AdminRoute() {
 import { adminStore } from "~/jods/admin.jods";
 ```
 
-## Minimizing State Size
+## 🗜️ Minimizing State Size
 
 Keep your store state lean to optimize performance:
 
@@ -116,7 +116,7 @@ export const userPreferencesStore = defineStore({
 });
 ```
 
-## Optimizing Computed Values
+## ⚡ Optimizing Computed Values
 
 Use computed values efficiently:
 
@@ -158,7 +158,7 @@ function CartSummary() {
 }
 ```
 
-## Optimizing Bundle Size
+## 📦 Optimizing Bundle Size
 
 Split your jods configuration to minimize bundle size:
 
@@ -183,7 +183,7 @@ import { user } from "~/jods/user.jods";
 // No need to import cart store in user profile route
 ```
 
-## Caching Strategies
+## 💾 Caching Strategies
 
 Implement appropriate caching for your data:
 
@@ -223,7 +223,7 @@ export const userCart = defineStore({
 });
 ```
 
-## Prefetching Data
+## 🔮 Prefetching Data
 
 Prefetch data for routes the user is likely to visit next:
 
@@ -253,7 +253,7 @@ function ProductPage() {
 }
 ```
 
-## Optimizing Form Submissions
+## 📝 Optimizing Form Submissions
 
 Reduce unnecessary form submissions:
 
@@ -293,7 +293,7 @@ function ProfileForm() {
 }
 ```
 
-## Debouncing and Throttling
+## ⏱️ Debouncing and Throttling
 
 For real-time search or filtering, implement debouncing:
 
@@ -335,7 +335,7 @@ function SearchBar() {
 }
 ```
 
-## Performance Monitoring
+## 📊 Performance Monitoring
 
 Add monitoring to identify performance bottlenecks:
 

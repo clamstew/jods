@@ -4,13 +4,13 @@ title: API Reference
 description: Complete API documentation for jods/remix
 ---
 
-# API Reference: jods/remix
+# 📚 API Reference: jods/remix
 
 This document provides detailed API documentation for all exports from the `jods/remix` package.
 
-## Core Functions
+## 🧩 Core Functions
 
-### `defineStore(options)`
+### 🏗️ `defineStore(options)`
 
 Creates a reactive store with server-side handlers and loaders.
 
@@ -27,11 +27,11 @@ Creates a reactive store with server-side handlers and loaders.
 
 **Returns:** A store object with the following properties:
 
-- `name`: The store name
-- `getState()`: Function to get the current state
-- `setState(newState)`: Function to update the state
-- `actions`: Object containing all handler functions
-- `store`: The underlying reactive store
+- 📦 `name`: The store name
+- 🔍 `getState()`: Function to get the current state
+- 🔄 `setState(newState)`: Function to update the state
+- ⚡ `actions`: Object containing all handler functions
+- 🗄️ `store`: The underlying reactive store
 
 **Example:**
 
@@ -65,9 +65,9 @@ export const user = defineStore({
 });
 ```
 
-## React Hooks
+## 🪝 React Hooks
 
-### `useJodsStore(store)`
+### 🔌 `useJodsStore(store)`
 
 React hook for subscribing to a jods store. This is the primary way to access jods data reactively in your components.
 
@@ -79,9 +79,9 @@ React hook for subscribing to a jods store. This is the primary way to access jo
 
 **Returns:** The current state of the store, updated reactively when:
 
-- Form submissions happen via `useJodsForm()`
-- Client-side store mutations occur
-- Server fetches update the store
+- 📝 Form submissions happen via `useJodsForm()`
+- 🖱️ Client-side store mutations occur
+- 🌐 Server fetches update the store
 
 **Example:**
 
@@ -101,7 +101,7 @@ function ProfilePage() {
 }
 ```
 
-### `useJodsForm(actionHandler)`
+### 📋 `useJodsForm(actionHandler)`
 
 Creates form bindings for a jods store action.
 
@@ -113,10 +113,10 @@ Creates form bindings for a jods store action.
 
 **Returns:** An object with the following properties:
 
-- `props`: Form props (action, method, etc.)
-- `submit(event)`: Function to submit the form programmatically
-- `reset()`: Function to reset the form
-- `formData`: Current form data (after submission)
+- 🔧 `props`: Form props (action, method, etc.)
+- 🚀 `submit(event)`: Function to submit the form programmatically
+- 🔄 `reset()`: Function to reset the form
+- 📊 `formData`: Current form data (after submission)
 
 **Example:**
 
@@ -137,7 +137,7 @@ function ProfileForm() {
 }
 ```
 
-### `useJodsFetchers(actionId)`
+### 📡 `useJodsFetchers(actionId)`
 
 Hook to track the state of all fetchers for a specific jods store action.
 
@@ -149,10 +149,10 @@ Hook to track the state of all fetchers for a specific jods store action.
 
 **Returns:** An object with the following properties:
 
-- `isSubmitting`: Boolean indicating if any fetchers are submitting
-- `isComplete`: Boolean indicating if all fetchers are complete
-- `count`: Number of fetchers for this action
-- `fetchers`: Array of fetcher objects
+- 🔄 `isSubmitting`: Boolean indicating if any fetchers are submitting
+- ✅ `isComplete`: Boolean indicating if all fetchers are complete
+- 🔢 `count`: Number of fetchers for this action
+- 📦 `fetchers`: Array of fetcher objects
 
 **Example:**
 
@@ -170,7 +170,7 @@ function SubmitButton() {
 }
 ```
 
-### `useJodsTransition(actionId?)`
+### 🔄 `useJodsTransition(actionId?)`
 
 Hook to track transition state for jods action submissions.
 
@@ -182,9 +182,9 @@ Hook to track transition state for jods action submissions.
 
 **Returns:** An object with the following properties:
 
-- `isSubmitting`: Boolean indicating if the transition is submitting
-- `isPending`: Boolean indicating if the transition is pending
-- `formData`: The form data being submitted
+- 📤 `isSubmitting`: Boolean indicating if the transition is submitting
+- ⏳ `isPending`: Boolean indicating if the transition is pending
+- 📝 `formData`: The form data being submitted
 
 **Example:**
 
@@ -198,7 +198,7 @@ function FormStatus() {
 }
 ```
 
-### `useOptimisticUpdate(store, actionName, optimisticDataFn)`
+### ⚡ `useOptimisticUpdate(store, actionName, optimisticDataFn)`
 
 Hook for implementing optimistic UI updates with jods stores.
 
@@ -239,9 +239,9 @@ function TodoList() {
 }
 ```
 
-## Integration with Remix
+## 🔄 Integration with Remix
 
-### `withJods(stores, loaderFn?)`
+### 🔗 `withJods(stores, loaderFn?)`
 
 Creates a Remix loader that integrates jods stores with Remix's data loading system. This enables server-loaded data to be available reactively on the client through `useJodsStore`.
 
@@ -332,9 +332,9 @@ export default function MyComponent() {
 }
 ```
 
-## Server Components
+## 🖥️ Server Components
 
-### `rehydrateClient(options?)`
+### 🔁 `rehydrateClient(options?)`
 
 Component to rehydrate jods stores on the client from server state.
 
@@ -364,9 +364,9 @@ export default function App() {
 }
 ```
 
-## Utility Functions
+## 🛠️ Utility Functions
 
-### `getJodsSnapshot()`
+### 📸 `getJodsSnapshot()`
 
 Creates a snapshot of all registered jods stores.
 
@@ -388,7 +388,7 @@ export const loader = async () => {
 };
 ```
 
-### `connectActionToJods(store, actionHandler)`
+### 🔌 `connectActionToJods(store, actionHandler)`
 
 Connects an existing Remix action to a jods store.
 
@@ -418,7 +418,7 @@ const existingAction = async ({ request }) => {
 export const action = connectActionToJods(user, existingAction);
 ```
 
-### `setJodsCacheControl(headers, options)`
+### 🔒 `setJodsCacheControl(headers, options)`
 
 Utility to set cache control headers for jods store loaders.
 
@@ -455,17 +455,17 @@ export const products = defineStore({
 });
 ```
 
-## Advanced Techniques
+## 🧠 Advanced Techniques
 
-### Accessing Initial Server Data via `useLoaderData()`
+### 🔍 Accessing Initial Server Data via `useLoaderData()`
 
 While `useJodsStore` is the recommended way to access jods data, you can also access the initial server-loaded data via `useLoaderData().__jods`. This is primarily useful for debugging and specialized use cases.
 
 **When to use `useLoaderData().__jods`:**
 
-- For debugging server/client state differences
-- When implementing "reset to initial values" functionality
-- When you specifically need to know what data was initially rendered by the server
+- 🐞 For debugging server/client state differences
+- 🔄 When implementing "reset to initial values" functionality
+- 🔎 When you specifically need to know what data was initially rendered by the server
 
 ```tsx
 import { useLoaderData } from "@remix-run/react";
@@ -498,9 +498,9 @@ export default function DebugComponent() {
 }
 ```
 
-## Internal Utilities
+## 🧰 Internal Utilities
 
-### `parseFormData(formData)`
+### 🔄 `parseFormData(formData)`
 
 Converts a FormData object into a structured JavaScript object.
 
