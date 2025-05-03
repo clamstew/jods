@@ -6,7 +6,11 @@ description: History and motivation behind the jods library
 
 # About jods ✨
 
-jods (JavaScript Object Dynamics System) is a fun, intuitive reactive state library that makes JavaScript objects come alive. It emphasizes simplicity and composability while providing powerful state management capabilities.
+**jods (JavaScript Object Dynamics System)** is a fun, intuitive reactive state library that makes JavaScript objects come alive. It emphasizes simplicity and composability while providing powerful state management capabilities.
+
+🤔 What is a [Dynamics System](#)?
+
+<!-- make page about what a dynamics system is in a full stack context like remix -->
 
 ## Core Philosophy 🧭
 

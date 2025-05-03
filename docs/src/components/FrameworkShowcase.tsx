@@ -80,8 +80,8 @@ function Counter() {
     >
       <div className="container">
         <h2 className="section-title">
-          Works with your{" "}
-          <span className="gradient-text">favorite frameworks</span>
+          🔌 Works with your{" "}
+          <span className="gradient-text">favorite frameworks 🧩</span>
         </h2>
         <p
           style={{
@@ -94,7 +94,14 @@ function Counter() {
           dedicated adapters
         </p>
 
-        <div className="tabs">
+        <div
+          className="tabs"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginBottom: "1rem",
+          }}
+        >
           {Object.entries(frameworks).map(([key, value]) => (
             <button
               key={key}
@@ -106,7 +113,10 @@ function Counter() {
           ))}
         </div>
 
-        <div className="code-container">
+        <div
+          className="code-container"
+          style={{ maxWidth: "680px", margin: "0 auto" }}
+        >
           <CodeBlock language="jsx">
             {frameworks[activeFramework].code}
           </CodeBlock>
