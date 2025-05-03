@@ -6,7 +6,7 @@ export default function FrameworkShowcase(): React.ReactElement {
 
   const frameworks = {
     react: {
-      title: "React",
+      title: "⚛️ React",
       code: `import { store } from 'jods';
 import { useJods } from 'jods/react';
 
@@ -23,7 +23,7 @@ function Counter() {
 }`,
     },
     preact: {
-      title: "Preact",
+      title: "⚡ Preact",
       code: `import { store } from 'jods';
 import { useJods } from 'jods/preact';
 
@@ -40,7 +40,7 @@ function Counter() {
 }`,
     },
     remix: {
-      title: "Remix",
+      title: "💿 Remix",
       code: `import { defineStore, withJods, useJodsStore } from 'jods/remix';
 
 export const counter = defineStore({
