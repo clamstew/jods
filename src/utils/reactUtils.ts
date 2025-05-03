@@ -13,6 +13,10 @@ type UseEffectHook = (
   effect: () => void | (() => void),
   deps?: ReadonlyArray<any>
 ) => void;
+type UseMemoHook = <T>(
+  factory: () => T,
+  deps: ReadonlyArray<any> | undefined
+) => T;
 type UseSyncExternalStoreType = <T>(
   subscribe: (onStoreChange: () => void) => () => void,
   getSnapshot: () => T,
@@ -46,6 +50,14 @@ export function getUseState(): UseStateHook {
  */
 export function getUseEffect(): UseEffectHook {
   return getReact().useEffect;
+}
+
+/**
+ * Gets React's useMemo hook
+ * @returns The useMemo hook
+ */
+export function getUseMemo(): UseMemoHook {
+  return getReact().useMemo;
 }
 
 /**
@@ -103,5 +115,6 @@ export function getBasicHooks() {
   return {
     useState: getUseState(),
     useEffect: getUseEffect(),
+    useMemo: getUseMemo(),
   };
 }

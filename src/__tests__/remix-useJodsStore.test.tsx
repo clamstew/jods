@@ -64,7 +64,14 @@ function TestComponent({ store }: { store: any }) {
       <button
         data-testid="update-theme"
         onClick={() => {
-          store.store.preferences.theme = "dark";
+          // Update using setState to ensure reactivity
+          store.setState({
+            ...store.getState(),
+            preferences: {
+              ...store.getState().preferences,
+              theme: "dark",
+            },
+          });
         }}
       >
         Update Theme
@@ -110,10 +117,20 @@ describe("useJodsStore", () => {
     // Initial theme
     expect(screen.getByTestId("theme").textContent).toBe("light");
 
+    // Log the starting state
+    console.log("Before update:", testStore.getState());
+
     // Update theme
     await act(async () => {
       fireEvent.click(screen.getByTestId("update-theme"));
     });
+
+    // Log the state after clicking
+    console.log("After update:", testStore.getState());
+    console.log(
+      "Current theme content:",
+      screen.getByTestId("theme").textContent
+    );
 
     expect(screen.getByTestId("theme").textContent).toBe("dark");
 

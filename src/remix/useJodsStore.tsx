@@ -1,40 +1,6 @@
 /** @jsxImportSource react */
-import { StoreState, onUpdate } from "../index";
-
-// TODO: This hook should use our reactUtils module in the future,
-// but there are some complexities with React.useSyncExternalStore and infinite loops
-// that need to be resolved first. For now, keep the original implementation.
-
-// Dynamic import for React to prevent bundling issues
-function getReactHooks() {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const React = require("react");
-    if (typeof React.useSyncExternalStore === "function") {
-      return {
-        useSyncExternalStore: React.useSyncExternalStore,
-      };
-    }
-
-    // Fallback for older React versions
-    return {
-      useSyncExternalStore: (subscribe: any, getSnapshot: any) => {
-        const [state, setState] = React.useState(getSnapshot());
-
-        React.useEffect(() => {
-          const unsubscribe = subscribe(() => {
-            setState(getSnapshot());
-          });
-          return unsubscribe;
-        }, [subscribe, getSnapshot]);
-
-        return state;
-      },
-    };
-  } catch (e) {
-    throw new Error("React is required but could not be loaded");
-  }
-}
+import { StoreState } from "../index";
+import { getBasicHooks } from "../utils/reactUtils";
 
 /**
  * React hook for subscribing to a jods store defined with defineStore
@@ -59,18 +25,47 @@ function getReactHooks() {
  *   );
  * }
  * ```
+ *
+ * @remarks
+ * For updating nested properties, always use the `setState` method instead of direct property assignment:
+ *
+ * ```tsx
+ * // DO THIS - ensures reactivity for nested properties
+ * cart.setState({
+ *   ...cart.getState(),
+ *   preferences: {
+ *     ...cart.getState().preferences,
+ *     theme: "dark"
+ *   }
+ * });
+ *
+ * // DON'T DO THIS - may not trigger component updates
+ * cart.store.preferences.theme = "dark";
+ * ```
  */
 export function useJodsStore<T extends StoreState>(store: any): T {
-  const { useSyncExternalStore } = getReactHooks();
+  const { useState, useEffect, useMemo } = getBasicHooks();
 
-  // Create a subscription function that uses the store's onUpdate
-  const subscribe = (callback: () => void) => {
-    return onUpdate(store.store, callback);
-  };
+  // NOTE: While useSyncExternalStore would be ideal for working with the signal-based
+  // reactivity system, it causes infinite update loops in the current implementation.
+  // This useState/useEffect approach ensures stable behavior while still benefiting
+  // from the optimized signal-based updates in the underlying store.
 
-  // Get the current state
-  const getSnapshot = () => store.getState();
+  // Store reference won't change during component lifetime
+  const storeRef = useMemo(() => ({ current: store }), []);
 
-  // Use React's useSyncExternalStore hook
-  return useSyncExternalStore(subscribe, getSnapshot);
+  // Get initial state
+  const [state, setState] = useState(() => store.getState());
+
+  useEffect(() => {
+    // Only subscribe once per store instance
+    const unsubscribe = storeRef.current.store.subscribe(() => {
+      // Get updated state when changes occur
+      setState(storeRef.current.getState());
+    });
+
+    return unsubscribe;
+  }, [storeRef]);
+
+  return state;
 }
