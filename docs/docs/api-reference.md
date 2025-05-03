@@ -38,9 +38,9 @@ Returns a deep-cloned plain JSON snapshot of the store, evaluating all computed 
 
 **Parameters:**
 
-| Name    | Type     | Description                       |
-| ------- | -------- | --------------------------------- |
-| `store` | `Object` | A jods store created with store() |
+| Name    | Type     | Description                         |
+| ------- | -------- | ----------------------------------- |
+| `store` | `Object` | A jods store created with `store()` |
 
 **Returns:** A plain JavaScript object containing the store's state
 
@@ -71,7 +71,7 @@ Registers a callback function that is triggered whenever the store changes.
 
 | Name       | Type       | Description                                   |
 | ---------- | ---------- | --------------------------------------------- |
-| `store`    | `Object`   | A jods store created with store()             |
+| `store`    | `Object`   | A jods store created with `store()`           |
 | `callback` | `Function` | Function to call when the store state changes |
 
 **Returns:** Unsubscribe function that can be called to stop listening for updates
@@ -161,7 +161,7 @@ Creates a history tracker with time-travel capabilities for a store.
 
 | Name              | Type     | Description                                              |
 | ----------------- | -------- | -------------------------------------------------------- |
-| `store`           | `Object` | A jods store created with store()                        |
+| `store`           | `Object` | A jods store created with `store()`                      |
 | `options`         | `Object` | Optional configuration options                           |
 | `options.maxSize` | `number` | Maximum number of history entries to keep (default: 100) |
 
@@ -206,9 +206,9 @@ React hook for subscribing to a jods store.
 
 **Parameters:**
 
-| Name    | Type     | Description                       |
-| ------- | -------- | --------------------------------- |
-| `store` | `Object` | A jods store created with store() |
+| Name    | Type     | Description                         |
+| ------- | -------- | ----------------------------------- |
+| `store` | `Object` | A jods store created with `store()` |
 
 **Returns:** The current state of the store, updated reactively
 
@@ -242,9 +242,9 @@ Preact hook for subscribing to a jods store.
 
 **Parameters:**
 
-| Name    | Type     | Description                       |
-| ------- | -------- | --------------------------------- |
-| `store` | `Object` | A jods store created with store() |
+| Name    | Type     | Description                         |
+| ------- | -------- | ----------------------------------- |
+| `store` | `Object` | A jods store created with `store()` |
 
 **Returns:** The current state of the store, updated reactively
 
