@@ -28,6 +28,16 @@
  * ```
  */
 
+/**
+ * jods/remix provides integration between jods stores and Remix applications.
+ *
+ * NOTE: This integration is compatible with both the current store implementation
+ * and the upcoming signals-based implementation (PR #20).
+ *
+ * When signals are introduced, all APIs will remain backward compatible but will
+ * gain improved performance and reduced bundle size.
+ */
+
 // Re-export core functionality
 export { store, onUpdate, computed, isComputed, json, diff } from "./index";
 export type {
@@ -41,12 +51,17 @@ export type {
 } from "./index";
 
 // Remix-specific utilities
-export { useJodsForm } from "./remix/useJodsForm";
-export { useJodsStore } from "./remix/useJodsStore";
-export { withJods } from "./remix/withJods";
-export { rehydrateClient } from "./remix/rehydrateClient";
-export { getJodsSnapshot } from "./remix/getJodsSnapshot";
-export { defineStore } from "./remix/defineStore";
+export * from "./remix/defineStore";
+export * from "./remix/getJodsSnapshot";
+export * from "./remix/rehydrateClient";
+export * from "./remix/useJodsForm";
+export * from "./remix/useJodsStore";
+export * from "./remix/useJodsFetchers";
+export * from "./remix/useJodsTransition";
+export * from "./remix/useOptimisticUpdate";
+export * from "./remix/withJods";
+export * from "./remix/connectActionToJods";
+export * from "./remix/cachingUtils";
 
 // Internal utilities
 export { parseFormData } from "./remix/internal/formUtils";

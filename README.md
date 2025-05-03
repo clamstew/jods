@@ -375,78 +375,99 @@ function Todos() {
 }
 ```
 
-### Remix
-
-```jsx
-import { defineStore } from "jods/remix";
-import { useJodsStore, useJodsForm } from "jods/remix";
-
-// 1. Define a store with server-side handlers
-export const cart = defineStore({
-  name: "cart",
-  schema: z.object({
-    items: z.array(
-      z.object({
-        id: z.string(),
-        name: z.string(),
-        quantity: z.number(),
-      })
-    ),
-  }),
-  defaults: { items: [] },
-  handlers: {
-    async addItem({ current, form }) {
-      // Handle form submission on the server
-      const productId = form.get("productId");
-      // ... server-side logic
-      return updatedCart;
-    },
-  },
-});
-
-// 2. Use in loaders with withJods
-export const loader = withJods([cart], async () => {
-  return { otherData: "value" };
-});
-
-// 3. Use in components with fine-grained reactivity
-function CartComponent() {
-  // Reactively updates when any used properties change
-  const cartState = useJodsStore(cart);
-
-  // Create a form that submits to the cart's addItem handler
-  const { Form } = useJodsForm(cart, "addItem");
-
-  return (
-    <div>
-      <h2>Cart ({cartState.items.length} items)</h2>
-
-      <Form>
-        <input type="hidden" name="productId" value="123" />
-        <button type="submit">Add to Cart</button>
-      </Form>
-
-      {cartState.items.map((item) => (
-        <div key={item.id}>
-          {item.name} - Qty: {item.quantity}
-        </div>
-      ))}
-    </div>
-  );
-}
-```
-
 ### Preact
 
 ```jsx
 import { store } from "jods";
 import { useJods } from "jods/preact";
 
-// Same API as React integration
-const userStore = store({ name: "User" });
+const todoStore = store({
+  items: [],
+  filter: "all",
+});
 
-function User() {
-  const user = useJods(userStore);
-  return <div>{user.name}</div>;
+function Todos() {
+  const todos = useJods(todoStore);
+
+  return (
+    <div>
+      <ul>
+        {todos.items.map((item) => (
+          <li key={item.id}>{item.text}</li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 ```
+
+### Remix
+
+jods provides first-class support for Remix applications, replacing traditional loaders and actions with reactive stores:
+
+```jsx
+// Define a store in app/jods/user.jods.ts
+import { defineStore } from "jods/remix";
+import { z } from "zod";
+
+export const user = defineStore({
+  name: "user",
+  schema: z.object({
+    name: z.string(),
+    email: z.string().email(),
+  }),
+  handlers: {
+    async updateProfile({ current, form }) {
+      return {
+        ...current,
+        name: form.get("name"),
+        email: form.get("email"),
+      };
+    },
+  },
+  loader: async () => {
+    // Load user data from database
+    return { name: "John", email: "john@example.com" };
+  },
+});
+
+// Use in your route component
+import { useJodsStore, useJodsForm } from "jods/remix";
+import { user } from "~/jods/user.jods";
+
+export default function Profile() {
+  const userData = useJodsStore(user);
+  const form = useJodsForm(user.actions.updateProfile);
+
+  return (
+    <div>
+      <h1>Profile</h1>
+      <form {...form.props}>
+        <input name="name" defaultValue={userData.name} />
+        <input name="email" defaultValue={userData.email} />
+        <button type="submit">Update Profile</button>
+      </form>
+    </div>
+  );
+}
+```
+
+Key features:
+
+- Server-Client Synchronization: State is automatically hydrated from server to client
+- Form Handling: Built-in form utilities with validation
+- Type Safety: Full TypeScript and Zod schema support
+- Optimistic Updates: Manage pending state with useJodsFetchers
+
+For detailed documentation, see [Remix Integration Guide](./docs/remix-integration.md).
+
+## Exports
+
+jods is organized into distinct modules:
+
+- **Core**: `import { store } from 'jods'`
+- **React**: `import { useJods } from 'jods/react'`
+- **Preact**: `import { useJods } from 'jods/preact'`
+- **Remix**: `import { defineStore, useJodsStore } from 'jods/remix'`
+
+Each integration is tree-shakable and only includes what you need.
