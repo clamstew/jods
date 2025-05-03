@@ -2,13 +2,13 @@
 sidebar_position: 1
 ---
 
-# Introduction to jods 🐿️ 🦆
+# 🐿️ 🦆 Introduction to jods
 
 > "Got state to track? Just jods it down"
 
 jods (JavaScript Object Dynamics System) is a fun, intuitive reactive state library that makes JavaScript objects come alive. Build lightweight stores that respond to changes, compute derived values, and keep your application state in sync.
 
-## What is jods? 🤔
+## 🤔 What is jods?
 
 jods is a tiny state management library designed to be simple, flexible, and powerful. It's perfect for:
 
@@ -16,7 +16,7 @@ jods is a tiny state management library designed to be simple, flexible, and pow
 - 🚀 Powering APIs
 - 🎨 Building reactive UIs without heavy frameworks
 
-## Key Features ✨
+## ✨ Key Features
 
 - ☁️ Zero dependencies
 - 🧠 Computed values are built-in
@@ -26,13 +26,13 @@ jods is a tiny state management library designed to be simple, flexible, and pow
 - 🧪 Diff detection baked in
 - 🧩 Framework agnostic, but integrates well with React/Preact
 
-## Installation 📦
+## 📦 Installation
 
 ```bash
 npm install jods
 ```
 
-## Basic Usage 💻
+## 💻 Basic Usage
 
 ```js
 import { store, json, onUpdate, computed } from "jods";
@@ -59,7 +59,7 @@ console.log(json(user));
 // { firstName: "Burt Macklin", lastName: "Macklin", mood: "sneaky", fullName: "Burt Macklin Macklin" }
 ```
 
-## Why Choose jods? 🌟
+## 🌟 Why Choose jods?
 
 jods takes state management back to basics. It provides a simple, intuitive API that feels like working with regular JavaScript objects, while adding powerful reactive capabilities.
 
