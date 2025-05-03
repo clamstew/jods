@@ -21,7 +21,9 @@ export const cart = defineStore({
       const productId = form.get("productId")!;
       const quantity = Number(form.get("quantity") || 1);
 
-      const product = await db.product.findUnique({ where: { id: productId } });
+      const product = await db.product.findUnique({
+        where: { id: String(productId) },
+      });
       if (!product) throw new Error("Product not found");
 
       const existing = current.items.find((i) => i.id === productId);
@@ -29,7 +31,7 @@ export const cart = defineStore({
         existing.quantity += quantity;
       } else {
         current.items.push({
-          id: productId,
+          id: String(productId),
           title: product.title,
           quantity,
         });
