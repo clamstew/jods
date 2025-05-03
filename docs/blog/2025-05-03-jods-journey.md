@@ -55,7 +55,7 @@ function Profile() {
 }
 ```
 
-The simplicity compared to some other libraries surprised me. No need for selectors, actions, or reducers — just directly use the object. That "aha moment" when I realized I could just write `user.mood = "sneaky"` and have the UI update automatically was when I knew this approach had merit.
+The simplicity compared to some other libraries surprised me 🤔. No need for selectors, actions, or reducers — just directly use the object. That "aha moment" when I realized I could just write `user.mood = "sneaky"` and have the UI update automatically was when I knew this approach had merit. 🙌
 
 ## The Signal Revolution
 
