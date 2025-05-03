@@ -6,26 +6,34 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-color-primary: #6b3369;
+  --ifm-color-primary-dark: #5e2d5c;
+  --ifm-color-primary-darker: #592a57;
+  --ifm-color-primary-darkest: #3f214f;
+  --ifm-color-primary-light: #783976;
+  --ifm-color-primary-lighter: #7d3c7b;
+  --ifm-color-primary-lightest: #8a3458;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+
+  /* Custom colors for the dream-like vibe */
+  --jods-purple-dark: #332954;
+  --jods-purple-mid: #6b3369;
+  --jods-purple-light: #8a3458;
+  --jods-orange: #ff9a5c;
+  --jods-orange-light: #ffc559;
+  --jods-neon-glow: rgba(255, 255, 255, 0.8);
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme="dark"] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
+  --ifm-color-primary: #8a3458;
+  --ifm-color-primary-dark: #783976;
+  --ifm-color-primary-darker: #6b3369;
+  --ifm-color-primary-darkest: #5e2d5c;
+  --ifm-color-primary-light: #9a3c65;
+  --ifm-color-primary-lighter: #a4426d;
+  --ifm-color-primary-lightest: #b54e7a;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
@@ -108,6 +116,43 @@
   display: flex;
   gap: 1rem;
   justify-content: center;
+}
+
+/* Custom button styling to match the dream-like vibe */
+.button--primary {
+  background: linear-gradient(
+    135deg,
+    var(--jods-purple-mid),
+    var(--jods-purple-light)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.button--primary:hover {
+  background: linear-gradient(
+    135deg,
+    var(--jods-purple-light),
+    var(--jods-orange)
+  );
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.button--secondary {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+.button--secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
 }
 
 /* Feature cards */
@@ -239,4 +284,49 @@
   100% {
     transform: translateY(0) rotate(0deg);
   }
+}
+
+/* Custom styling for the comparison table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+table thead {
+  background: linear-gradient(135deg, #332954 0%, #6b3369 50%, #8a3458 100%);
+  color: white;
+}
+
+table th {
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  font-size: 0.9rem;
+  padding: 1rem;
+  text-align: left;
+  border: none;
+}
+
+table tbody tr:nth-child(odd) {
+  background-color: var(--ifm-table-stripe-background);
+}
+
+table td {
+  padding: 1rem;
+  border: none;
+  border-bottom: 1px solid var(--ifm-table-border-color);
+}
+
+/* Custom checkmark and x styling */
+table .green-check {
+  color: var(--jods-orange);
+  font-weight: bold;
+}
+
+table .red-x {
+  color: #ff5757;
+  font-weight: bold;
 }

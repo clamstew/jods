@@ -25,37 +25,14 @@ export default function ComparisonTable(): React.ReactElement {
             margin: "0 auto",
           }}
         >
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              fontSize: "0.9rem",
-            }}
-          >
+          <table>
             <thead>
-              <tr
-                style={{
-                  background: "var(--ifm-color-primary-darkest)",
-                  color: "white",
-                  textAlign: "left",
-                }}
-              >
-                <th style={{ padding: "1rem", borderRadius: "8px 0 0 0" }}>
-                  Feature
-                </th>
-                <th
-                  style={{
-                    padding: "1rem",
-                    background: "var(--ifm-color-primary-darker)",
-                  }}
-                >
-                  <strong>jods</strong>
-                </th>
-                <th style={{ padding: "1rem" }}>Zustand</th>
-                <th style={{ padding: "1rem" }}>Redux</th>
-                <th style={{ padding: "1rem", borderRadius: "0 8px 0 0" }}>
-                  MobX
-                </th>
+              <tr>
+                <th>Feature</th>
+                <th>jods</th>
+                <th>Zustand</th>
+                <th>Redux</th>
+                <th>MobX</th>
               </tr>
             </thead>
             <tbody>
@@ -69,24 +46,26 @@ export default function ComparisonTable(): React.ReactElement {
                 },
                 {
                   feature: "Direct Mutations",
-                  jods: "✅",
-                  zustand: "✅",
-                  redux: "❌ (requires action creators)",
-                  mobx: "✅",
+                  jods: <span className="green-check">✅</span>,
+                  zustand: <span className="green-check">✅</span>,
+                  redux: (
+                    <span className="red-x">❌ (requires action creators)</span>
+                  ),
+                  mobx: <span className="green-check">✅</span>,
                 },
                 {
                   feature: "Built-in Computed Values",
-                  jods: "✅",
-                  zustand: "❌",
-                  redux: "❌ (requires selectors)",
-                  mobx: "✅",
+                  jods: <span className="green-check">✅</span>,
+                  zustand: <span className="red-x">❌</span>,
+                  redux: <span className="red-x">❌ (requires selectors)</span>,
+                  mobx: <span className="green-check">✅</span>,
                 },
                 {
                   feature: "JSON Snapshots",
-                  jods: "✅ (built-in)",
-                  zustand: "❌ (manual)",
-                  redux: "✅ (manual)",
-                  mobx: "❌ (manual)",
+                  jods: <span className="green-check">✅ (built-in)</span>,
+                  zustand: <span className="red-x">❌ (manual)</span>,
+                  redux: <span className="green-check">✅ (manual)</span>,
+                  mobx: <span className="red-x">❌ (manual)</span>,
                 },
                 {
                   feature: "Framework Support",
@@ -104,38 +83,18 @@ export default function ComparisonTable(): React.ReactElement {
                 },
                 {
                   feature: "Server Integration",
-                  jods: "✅ (Remix)",
-                  zustand: "❌",
-                  redux: "❌ (manual)",
-                  mobx: "❌ (manual)",
+                  jods: <span className="green-check">✅ (Remix)</span>,
+                  zustand: <span className="red-x">❌</span>,
+                  redux: <span className="red-x">❌ (manual)</span>,
+                  mobx: <span className="red-x">❌ (manual)</span>,
                 },
               ].map((row, i) => (
-                <tr
-                  key={i}
-                  style={{
-                    background:
-                      i % 2 === 0
-                        ? "var(--ifm-background-surface-color)"
-                        : "var(--ifm-background-color)",
-                  }}
-                >
-                  <td style={{ padding: "1rem", fontWeight: "bold" }}>
-                    {row.feature}
-                  </td>
-                  <td
-                    style={{
-                      padding: "1rem",
-                      background:
-                        i % 2 === 0
-                          ? "rgba(14, 177, 210, 0.1)"
-                          : "rgba(14, 177, 210, 0.05)",
-                    }}
-                  >
-                    {row.jods}
-                  </td>
-                  <td style={{ padding: "1rem" }}>{row.zustand}</td>
-                  <td style={{ padding: "1rem" }}>{row.redux}</td>
-                  <td style={{ padding: "1rem" }}>{row.mobx}</td>
+                <tr key={i}>
+                  <td>{row.feature}</td>
+                  <td>{row.jods}</td>
+                  <td>{row.zustand}</td>
+                  <td>{row.redux}</td>
+                  <td>{row.mobx}</td>
                 </tr>
               ))}
             </tbody>
