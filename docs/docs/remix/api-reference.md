@@ -65,94 +65,11 @@ export const user = defineStore({
 });
 ```
 
-### `withJods(stores, loaderFn?)`
-
-Creates a Remix loader that integrates with jods stores.
-
-**Parameters:**
-
-| Name       | Type       | Description                                   |
-| ---------- | ---------- | --------------------------------------------- |
-| `stores`   | `Array`    | Array of jods stores created with defineStore |
-| `loaderFn` | `Function` | Optional function to provide additional data  |
-
-**Returns:** A Remix-compatible loader function
-
-**Usage with useLoaderData:**
-
-When using `withJods` in a loader, the jods data is automatically made available in the component. You can access it in two ways:
-
-1. **Method 1 (Recommended): Using useJodsStore** - Access store data reactively with `useJodsStore(store)`
-2. **Method 2: Using useLoaderData** - Access the initial store data from the loader with `useLoaderData()`, where jods data is available in the `__jods` property
-
-**When to use Method 2 (useLoaderData):**
-
-- When you need to compare current state against initial server data
-- For implementing "reset to initial values" functionality
-- When migrating existing Remix applications that use `useLoaderData()`
-- For debugging server/client state differences
-- When you need to know what data was initially rendered by the server
-
-:::info Reactivity Difference
-The key distinction between these methods is _reactivity_:
-
-- `useJodsStore(user)` provides a _reactive_ reference that automatically updates when:
-
-  - Form submissions happen via `useJodsForm()`
-  - Client-side store mutations occur (like `userData.name = "New Name"`)
-  - Server fetches update the store
-
-- `useLoaderData().__jods.user` is a _static snapshot_ of what the server initially returned. This data never changes automatically, even when the underlying store is updated.
-
-This difference is why Method 1 is recommended for most UI rendering, while Method 2 is useful for comparing against or reverting to initial server state.
-:::
-
-**Example:**
-
-```typescript
-import { withJods } from "jods/remix";
-import { user } from "~/jods/user.jods";
-import { cart } from "~/jods/cart.jods";
-
-export const loader = withJods([user, cart], async ({ request }) => {
-  // Return additional data
-  return {
-    flash: getFlashMessage(request),
-  };
-});
-
-// In your component
-import { useLoaderData } from "@remix-run/react";
-import { useJodsStore } from "jods/remix";
-
-export default function MyComponent() {
-  // Method 1: Get reactive store data
-  const userData = useJodsStore(user);
-
-  // Method 2: Get loader data including initial jods state
-  const data = useLoaderData();
-  const flashMessage = data.flash;
-  const initialUserData = data.__jods?.user; // Initial non-reactive data
-
-  return (
-    <div>
-      <p>Flash message: {flashMessage}</p>
-
-      {/* Using reactive store data */}
-      <p>Current user: {userData.name}</p>
-
-      {/* Using initial store data from loader */}
-      <p>Initial user: {initialUserData?.name}</p>
-    </div>
-  );
-}
-```
-
 ## React Hooks
 
 ### `useJodsStore(store)`
 
-React hook for subscribing to a jods store.
+React hook for subscribing to a jods store. This is the primary way to access jods data reactively in your components.
 
 **Parameters:**
 
@@ -160,7 +77,11 @@ React hook for subscribing to a jods store.
 | ------- | -------- | ------------------------------------- |
 | `store` | `Object` | A jods store created with defineStore |
 
-**Returns:** The current state of the store, updated reactively
+**Returns:** The current state of the store, updated reactively when:
+
+- Form submissions happen via `useJodsForm()`
+- Client-side store mutations occur
+- Server fetches update the store
 
 **Example:**
 
@@ -318,6 +239,97 @@ function TodoList() {
 }
 ```
 
+## Integration with Remix
+
+### `withJods(stores, loaderFn?)`
+
+Creates a Remix loader that integrates jods stores with Remix's data loading system. This enables server-loaded data to be available reactively on the client through `useJodsStore`.
+
+**Parameters:**
+
+| Name       | Type       | Description                                   |
+| ---------- | ---------- | --------------------------------------------- |
+| `stores`   | `Array`    | Array of jods stores created with defineStore |
+| `loaderFn` | `Function` | Optional function to provide additional data  |
+
+**Returns:** A Remix-compatible loader function
+
+**Simplified Usage Pattern:**
+
+The most common pattern is to define a store in a dedicated jods file and export ready-to-use loader and action functions:
+
+```typescript
+// app/jods/cart.jods.ts
+import { defineStore, withJods } from "jods/remix";
+
+export const cart = defineStore({
+  name: "cart",
+  defaults: { items: [] },
+  handlers: {
+    async addItem({ current, form }) {
+      // Implementation
+    },
+  },
+  loader: async ({ request }) => {
+    // Load cart items
+    return { items: await fetchCartItems(request) };
+  },
+});
+
+// Export ready-to-use loader and action for routes
+export const loader = withJods([cart]);
+export const action = cart.action;
+```
+
+Then in your route file:
+
+```typescript
+// app/routes/cart.tsx
+export { loader, action } from "~/jods/cart.jods";
+
+import { useJodsStore, useJodsForm } from "jods/remix";
+import { cart } from "~/jods/cart.jods";
+
+export default function CartRoute() {
+  const cartData = useJodsStore(cart);
+  const addItemForm = useJodsForm(cart.actions.addItem);
+
+  return (
+    // UI implementation
+  );
+}
+```
+
+This pattern eliminates the need to write loader and action functions in your route files, making them much cleaner.
+
+**Example with Additional Data:**
+
+```typescript
+import { withJods } from "jods/remix";
+import { user } from "~/jods/user.jods";
+import { cart } from "~/jods/cart.jods";
+
+export const loader = withJods([user, cart], async ({ request }) => {
+  // Return additional data
+  return {
+    flash: getFlashMessage(request),
+  };
+});
+
+// In your component
+import { useJodsStore } from "jods/remix";
+
+export default function MyComponent() {
+  const userData = useJodsStore(user);
+  const cartData = useJodsStore(cart);
+
+  // Use userData and cartData reactively
+  return (
+    // UI implementation
+  );
+}
+```
+
 ## Server Components
 
 ### `rehydrateClient(options?)`
@@ -370,7 +382,7 @@ export const loader = async () => {
   // Get snapshot of all stores
   const storeSnapshot = getJodsSnapshot();
 
-  return json({ snapshot: storeSnapshot });
+  return { snapshot: storeSnapshot };
 };
 ```
 
@@ -439,6 +451,49 @@ export const products = defineStore({
     return getProducts();
   },
 });
+```
+
+## Advanced Techniques
+
+### Accessing Initial Server Data via `useLoaderData()`
+
+While `useJodsStore` is the recommended way to access jods data, you can also access the initial server-loaded data via `useLoaderData().__jods`. This is primarily useful for debugging and specialized use cases.
+
+**When to use `useLoaderData().__jods`:**
+
+- For debugging server/client state differences
+- When implementing "reset to initial values" functionality
+- When you specifically need to know what data was initially rendered by the server
+
+```tsx
+import { useLoaderData } from "@remix-run/react";
+import { useJodsStore } from "jods/remix";
+import { user } from "~/jods/user.jods";
+
+export default function DebugComponent() {
+  // Reactive store data that updates with form submissions/mutations
+  const userData = useJodsStore(user);
+
+  // Static snapshot of initial server data (never changes)
+  const data = useLoaderData();
+  const initialUserData = data.__jods?.user;
+
+  // Compare current state to initial server state
+  const hasChanged =
+    JSON.stringify(userData) !== JSON.stringify(initialUserData);
+
+  return (
+    <div>
+      <div>Current state: {JSON.stringify(userData)}</div>
+      <div>Initial state: {JSON.stringify(initialUserData)}</div>
+      {hasChanged && (
+        <button onClick={() => user.setState(initialUserData)}>
+          Reset to initial state
+        </button>
+      )}
+    </div>
+  );
+}
 ```
 
 ## Internal Utilities
