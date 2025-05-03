@@ -137,4 +137,4 @@ I never expected to build all this in less than two weeks, but it's amazing what
 
 I'd love to hear your thoughts and see what you build with jods!
 
-— Clay
+— [clamstew](https://www.github.com/clamstew)
