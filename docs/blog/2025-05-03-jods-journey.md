@@ -11,7 +11,7 @@ What started as a simple npm name-squatting exercise has evolved into something 
 
 ## The Beginning: A Short Name on npm
 
-About two weeks ago, I decided to claim a short, memorable name on npm — [@jods](https://www.npmjs.com/package/jods) (JavaScript Object Dynamics System). I had a loose idea about creating a state management library, but nothing concrete. I just wanted a name that was easy to remember and type.
+About two weeks ago, I decided to claim a short, memorable name on npm — [@jods](https://www.npmjs.com/package/jods) (JavaScript Object Dynamics System). Initially, after playing around with [BullMQ](https://github.com/taskforcesh/bullmq), I thought it might become a job queuing system (jods = jobs, get it?). But I quickly pivoted when I had a loose idea about creating a state management library instead. At that point, I just wanted to secure a name that was easy to remember and type.
 
 ## Creating a Simple API
 
@@ -42,13 +42,20 @@ function Profile() {
 
   return (
     <div>
-      <h1>Hello, {userData.name}</h1>
+      <h1>Hello, {userData.firstName}</h1>
+      <p>Mood: {userData.mood}</p>
+
+      {/* Direct state mutations - no actions, reducers, or dispatchers needed */}
+      <button onClick={() => (user.mood = "sneaky")}>Go Undercover</button>
+      <button onClick={() => (user.firstName = "Burt Macklin")}>
+        Use FBI Name
+      </button>
     </div>
   );
 }
 ```
 
-The simplicity compared to some other libraries surprised me. No need for selectors, actions, or reducers — just directly use the object.
+The simplicity compared to some other libraries surprised me. No need for selectors, actions, or reducers — just directly use the object. That "aha moment" when I realized I could just write `user.mood = "sneaky"` and have the UI update automatically was when I knew this approach had merit.
 
 ## The Signal Revolution
 
