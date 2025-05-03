@@ -65,7 +65,7 @@ function ComputedComponent({
       <button
         data-testid="change-name"
         onClick={() => {
-          testStore.firstName = "Jane";
+          testStore.firstName = "Michael";
         }}
       >
         Change Name
@@ -103,8 +103,8 @@ describe("useJods (Preact Component Integration)", () => {
 
   it("should handle computed properties in components", async () => {
     const testStore = store<ComputedTestStore>({
-      firstName: "John",
-      lastName: "Doe",
+      firstName: "Burt",
+      lastName: "Macklin",
     });
 
     testStore.fullName = computed(
@@ -112,16 +112,16 @@ describe("useJods (Preact Component Integration)", () => {
     );
 
     render(<ComputedComponent testStore={testStore} />);
-    expect(screen.getByTestId("full-name").textContent).toBe("John Doe");
+    expect(screen.getByTestId("full-name").textContent).toBe("Burt Macklin");
 
     await act(() => {
       fireEvent.click(screen.getByTestId("change-name"));
     });
-    expect(screen.getByTestId("full-name").textContent).toBe("Jane Doe");
+    expect(screen.getByTestId("full-name").textContent).toBe("Michael Macklin");
 
     await act(() => {
-      testStore.lastName = "Smith";
+      testStore.lastName = "Scarn";
     });
-    expect(screen.getByTestId("full-name").textContent).toBe("Jane Smith");
+    expect(screen.getByTestId("full-name").textContent).toBe("Michael Scarn");
   });
 });

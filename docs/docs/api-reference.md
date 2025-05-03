@@ -30,8 +30,8 @@ Returns a deep-cloned plain JSON snapshot of the store, evaluating all computed 
 import { store, json, computed } from "jods";
 
 const user = store({
-  firstName: "John",
-  lastName: "Doe",
+  firstName: "Burt",
+  lastName: "Macklin",
 });
 
 // Add a computed property
@@ -40,7 +40,7 @@ user.fullName = computed(() => `${user.firstName} ${user.lastName}`);
 // Get a JSON snapshot
 const snapshot = json(user);
 console.log(snapshot);
-// { firstName: 'John', lastName: 'Doe', fullName: 'John Doe' }
+// { firstName: 'Burt', lastName: 'Macklin', fullName: 'Burt Macklin' }
 ```
 
 ### `onUpdate(store, callback)`
@@ -93,8 +93,8 @@ Generates a detailed diff object showing changes between two states.
 ```js
 import { store, diff } from "jods";
 
-const before = store({ name: "John", age: 30 });
-const after = store({ name: "John", age: 31 });
+const before = store({ name: "Burt", age: 30 });
+const after = store({ name: "Burt", age: 31 });
 
 const changes = diff(before, after);
 console.log(changes);
@@ -189,7 +189,7 @@ export const user = defineStore({
   }),
   loader: async () => {
     // Load user data from database
-    return { name: "John", email: "john@example.com" };
+    return { name: "Burt Macklin", email: "burt.macklin@fbi.pawnee.city" };
   },
   handlers: {
     async updateProfile({ current, form }) {

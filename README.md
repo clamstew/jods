@@ -427,7 +427,7 @@ export const user = defineStore({
   },
   loader: async () => {
     // Load user data from database
-    return { name: "John", email: "john@example.com" };
+    return { name: "Burt Macklin", email: "burt.macklin@fbi.pawnee.city" };
   },
 });
 

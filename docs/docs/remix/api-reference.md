@@ -60,7 +60,7 @@ export const user = defineStore({
   },
   loader: async ({ request }) => {
     // Load user data
-    return { name: "John", email: "john@example.com" };
+    return { name: "Burt Macklin", email: "burt.macklin@fbi.pawnee.city" };
   },
 });
 ```
@@ -518,9 +518,9 @@ Converts a FormData object into a structured JavaScript object.
 import { parseFormData } from "jods/remix";
 
 const form = new FormData();
-form.append("user.name", "John");
-form.append("user.email", "john@example.com");
+form.append("user.name", "Burt Macklin");
+form.append("user.email", "burt.macklin@fbi.pawnee.city");
 
 const parsed = parseFormData(form);
-// Result: { user: { name: "John", email: "john@example.com" } }
+// Result: { user: { name: "Burt Macklin", email: "burt.macklin@fbi.pawnee.city" } }
 ```

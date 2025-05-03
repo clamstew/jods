@@ -54,8 +54,8 @@ export const user = defineStore({
   loader: async ({ request }) => {
     // Load user data from database
     return {
-      name: "John Doe",
-      email: "john@example.com",
+      name: "Burt Macklin",
+      email: "burt.macklin@fbi.pawnee.city",
       preferences: { theme: "light" },
     };
   },

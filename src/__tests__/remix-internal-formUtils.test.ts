@@ -5,8 +5,8 @@ describe("parseFormData", () => {
   it("should convert FormData to a plain object", () => {
     // Create a FormData instance
     const form = new FormData();
-    form.append("name", "John Doe");
-    form.append("email", "john@example.com");
+    form.append("name", "Burt Macklin");
+    form.append("email", "burt.macklin@fbi.pawnee.city");
     form.append("age", "30");
 
     // Parse the form data
@@ -14,8 +14,8 @@ describe("parseFormData", () => {
 
     // Verify conversion
     expect(result).toEqual({
-      name: "John Doe",
-      email: "john@example.com",
+      name: "Burt Macklin",
+      email: "burt.macklin@fbi.pawnee.city",
       age: "30",
     });
   });

@@ -67,8 +67,8 @@ export const user = defineStore({
     // This would typically fetch user data from a database
     // For this example, just set the last login time
     return {
-      name: "John Doe",
-      email: "john@example.com",
+      name: "Burt Macklin",
+      email: "burt.macklin@fbi.pawnee.city",
       role: "user" as const,
       preferences: {
         theme: "light" as const,

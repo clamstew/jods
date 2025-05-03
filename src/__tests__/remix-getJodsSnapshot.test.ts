@@ -9,8 +9,8 @@ describe("getJodsSnapshot", () => {
     const userStore = {
       name: "user",
       getState: vi.fn().mockReturnValue({
-        name: "John Doe",
-        email: "john@example.com",
+        name: "Burt Macklin",
+        email: "burt.macklin@fbi.pawnee.city",
       }),
     };
 
@@ -31,8 +31,8 @@ describe("getJodsSnapshot", () => {
     // Verify snapshot structure
     expect(snapshot).toEqual({
       user: {
-        name: "John Doe",
-        email: "john@example.com",
+        name: "Burt Macklin",
+        email: "burt.macklin@fbi.pawnee.city",
       },
       cart: {
         items: [{ id: "1", name: "Product 1", quantity: 2 }],

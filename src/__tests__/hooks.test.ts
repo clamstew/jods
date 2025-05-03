@@ -9,8 +9,8 @@ import { ComputedValue } from "../computed";
 describe("onUpdate", () => {
   it("should call callback when store properties change", () => {
     const testStore = store({
-      firstName: "John",
-      lastName: "Doe",
+      firstName: "Burt",
+      lastName: "Macklin",
       mood: "calm",
     });
 
@@ -21,14 +21,14 @@ describe("onUpdate", () => {
     expect(callback).not.toHaveBeenCalled();
 
     // Update property
-    testStore.firstName = "Jane";
+    testStore.firstName = "Michael";
 
     // Callback should be called once with new state
     expect(callback).toHaveBeenCalledTimes(1);
     expect(callback).toHaveBeenCalledWith(
       expect.objectContaining({
-        firstName: "Jane",
-        lastName: "Doe",
+        firstName: "Michael",
+        lastName: "Macklin",
         mood: "calm",
       })
     );
@@ -36,8 +36,8 @@ describe("onUpdate", () => {
 
   it("should trigger callback for each individual property change", () => {
     const testStore = store({
-      firstName: "John",
-      lastName: "Doe",
+      firstName: "Burt",
+      lastName: "Macklin",
       mood: "calm",
     });
 
@@ -45,7 +45,7 @@ describe("onUpdate", () => {
     onUpdate(testStore, callback);
 
     // First update
-    testStore.firstName = "Jane";
+    testStore.firstName = "Michael";
     expect(callback).toHaveBeenCalledTimes(1);
 
     // Second update
@@ -55,8 +55,8 @@ describe("onUpdate", () => {
     // The second call should have both updates
     expect(callback).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        firstName: "Jane",
-        lastName: "Doe",
+        firstName: "Michael",
+        lastName: "Macklin",
         mood: "happy",
       })
     );
@@ -64,8 +64,8 @@ describe("onUpdate", () => {
 
   it("should handle computed properties correctly", () => {
     const testStore = store({
-      firstName: "John",
-      lastName: "Doe",
+      firstName: "Burt",
+      lastName: "Macklin",
     });
 
     const callback = vi.fn();
@@ -78,15 +78,16 @@ describe("onUpdate", () => {
     expect(callback).toHaveBeenCalledTimes(1);
 
     // Update underlying property and check if callback is triggered again
-    testStore.firstName = "Jane";
-    expect(callback).toHaveBeenCalledTimes(2);
+    testStore.firstName = "Michael";
+    testStore.lastName = "Scarn";
+    expect(callback).toHaveBeenCalledTimes(3);
 
     // Verify computed property is included in the callback
-    const lastCallArg = json(callback.mock.calls[1][0]);
+    const lastCallArg = json(callback.mock.calls[2][0]);
     expect(lastCallArg).toEqual({
-      firstName: "Jane",
-      lastName: "Doe",
-      fullName: "Jane Doe",
+      firstName: "Michael",
+      lastName: "Scarn",
+      fullName: "Michael Scarn",
     });
   });
 

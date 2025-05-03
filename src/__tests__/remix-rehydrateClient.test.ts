@@ -67,8 +67,8 @@ describe("rehydrateClient", () => {
     // Create a snapshot that would come from the server
     const snapshot = {
       user: {
-        name: "John Doe",
-        email: "john@example.com",
+        name: "Burt Macklin",
+        email: "burt.macklin@fbi.pawnee.city",
       } as UserState,
       cart: {
         items: [
@@ -86,8 +86,8 @@ describe("rehydrateClient", () => {
     const cartState = cartStore.getState() as CartState;
 
     // Verify stores were updated
-    expect(userState.name).toBe("John Doe");
-    expect(userState.email).toBe("john@example.com");
+    expect(userState.name).toBe("Burt Macklin");
+    expect(userState.email).toBe("burt.macklin@fbi.pawnee.city");
 
     expect(cartState.items).toHaveLength(2);
     expect(cartState.items[0].name).toBe("Product 1");
@@ -101,8 +101,8 @@ describe("rehydrateClient", () => {
     // Create a partial snapshot with only one store
     const snapshot = {
       user: {
-        name: "Jane Smith",
-        email: "jane@example.com",
+        name: "Michael Scarn",
+        email: "michael.scarn@threatlevelmidnight.com",
       } as UserState,
       // cart is missing
     };
@@ -115,7 +115,7 @@ describe("rehydrateClient", () => {
     const cartState = cartStore.getState() as CartState;
 
     // Verify user store was updated
-    expect(userState.name).toBe("Jane Smith");
+    expect(userState.name).toBe("Michael Scarn");
 
     // Cart store should remain with defaults
     expect(cartState.items).toEqual([]);
