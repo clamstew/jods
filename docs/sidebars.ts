@@ -28,6 +28,17 @@ const sidebars: SidebarsConfig = {
         "tutorial-basics/markdown-features",
       ],
     },
+    {
+      type: "category",
+      label: "Remix Integration",
+      items: [
+        "remix/index",
+        "remix/migration-guide",
+        "remix/common-patterns",
+        "remix/performance-tips",
+        "remix/api-reference",
+      ],
+    },
     "maintainers-guide",
   ],
 };
