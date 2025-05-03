@@ -150,4 +150,6 @@ In the age of AI-assisted coding, the Dynamics System approach unlocks new possi
 
 A **Dynamics System** is more than just a state container - it's a living model of your application that reacts, computes, and synchronizes automatically. By embracing the natural way JavaScript works while adding reactivity and computed values, jods creates a development experience that is both simpler and more powerful.
 
-The days of complex state management are coming to an end. Welcome to the era of Dynamics Systems, where your objects come alive. 🐿️ 🦆
+The days of complex state management are coming to an end. 🎬
+
+👋 Welcome to the era of Dynamics Systems, where your objects come alive. 🐿️ 🦆
