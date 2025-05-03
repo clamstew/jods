@@ -29,11 +29,56 @@ export default function ComparisonTable(): React.ReactElement {
             <thead>
               <tr>
                 <th>Feature</th>
-                <th>jods</th>
-                <th>Zustand</th>
-                <th>Redux</th>
-                <th>MobX</th>
-                <th>Preact Signals</th>
+                <th>
+                  <a
+                    href="https://github.com/clamstew/jods"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: "inherit", textDecoration: "none" }}
+                  >
+                    jods
+                  </a>
+                </th>
+                <th>
+                  <a
+                    href="https://github.com/pmndrs/zustand"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: "inherit", textDecoration: "none" }}
+                  >
+                    Zustand
+                  </a>
+                </th>
+                <th>
+                  <a
+                    href="https://github.com/reduxjs/redux"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: "inherit", textDecoration: "none" }}
+                  >
+                    Redux
+                  </a>
+                </th>
+                <th>
+                  <a
+                    href="https://github.com/mobxjs/mobx"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: "inherit", textDecoration: "none" }}
+                  >
+                    MobX
+                  </a>
+                </th>
+                <th>
+                  <a
+                    href="https://github.com/preactjs/signals"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: "inherit", textDecoration: "none" }}
+                  >
+                    Preact Signals
+                  </a>
+                </th>
               </tr>
             </thead>
             <tbody>
