@@ -22,7 +22,7 @@ function Feature({
 
 export default function FeatureHighlights(): React.ReactElement {
   return (
-    <section className="features-container">
+    <section className="features-container" id="features">
       <div className="container">
         <h2 className="section-title">
           ⚡️Powerful features,{" "}

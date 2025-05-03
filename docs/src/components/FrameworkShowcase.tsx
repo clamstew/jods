@@ -6,7 +6,11 @@ export default function FrameworkShowcase(): React.ReactElement {
 
   const frameworks = {
     react: {
-      title: "⚛️ React",
+      title: (
+        <>
+          <span style={{ fontSize: "1.8rem" }}>⚛️</span> React
+        </>
+      ),
       code: `import { store } from 'jods';
 import { useJods } from 'jods/react';
 
@@ -23,7 +27,11 @@ function Counter() {
 }`,
     },
     preact: {
-      title: "⚡ Preact",
+      title: (
+        <>
+          <span style={{ fontSize: "1.8rem" }}>⚡</span> Preact
+        </>
+      ),
       code: `import { store } from 'jods';
 import { useJods } from 'jods/preact';
 
@@ -40,7 +48,11 @@ function Counter() {
 }`,
     },
     remix: {
-      title: "💿 Remix",
+      title: (
+        <>
+          <span style={{ fontSize: "1.8rem" }}>💿</span> Remix
+        </>
+      ),
       code: `import { defineStore, withJods, useJodsStore } from 'jods/remix';
 
 export const counter = defineStore({
@@ -76,6 +88,7 @@ function Counter() {
   return (
     <section
       className="features-container"
+      id="framework-showcase"
       style={{ background: "var(--ifm-background-surface-color)" }}
     >
       <div className="container">
@@ -107,6 +120,7 @@ function Counter() {
               key={key}
               className={`tab ${activeFramework === key ? "active" : ""}`}
               onClick={() => setActiveFramework(key)}
+              style={{ fontWeight: "700" }}
             >
               {value.title}
             </button>

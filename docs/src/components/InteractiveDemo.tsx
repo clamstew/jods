@@ -36,7 +36,7 @@ ${JSON.stringify(
 */`;
 
   return (
-    <section className="features-container">
+    <section className="features-container" id="try-jods-live">
       <div className="container">
         <h2 className="section-title">
           🚀 Try jods <span className="gradient-text">live</span> 🧑‍💻
