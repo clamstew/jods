@@ -101,7 +101,7 @@ console.log(changes);
 // { age: { __old: 30, __new: 31 } }
 ```
 
-### `history(store, options?)` ⏰
+### `history(store, options?)` 🕰️
 
 Creates a history tracker with time-travel capabilities for a store.
 
@@ -150,7 +150,7 @@ function Counter() {
 }
 ```
 
-### Preact 🦋
+### Preact ⚡️
 
 ```jsx
 import { useJods } from "jods/preact";

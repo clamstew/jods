@@ -38,7 +38,7 @@ const sidebars: SidebarsConfig = {
     {
       type: "doc",
       id: "time-travel-debugging",
-      label: "⏰ Time-Travel Debugging",
+      label: "🕰️ Time-Travel Debugging",
     },
     {
       type: "category",

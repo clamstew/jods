@@ -45,7 +45,7 @@ When adding a new feature to jods, make sure to update all of these components:
 If the feature interacts with frameworks:
 
 - [ ] Update React integration in `src/react/` ⚛️
-- [ ] Update Preact integration in `src/preact/` 🦋
+- [ ] Update Preact integration in `src/preact/` ⚡️
 - [ ] Update Remix integration in `src/remix/` 💿
 - [ ] Add examples showing framework integration
 
@@ -97,7 +97,7 @@ You're helping add a new feature to jods (JavaScript Object Dynamics System 🐿
 7. Add examples in examples/ directory
 8. For framework integration:
    - Update src/react/ ⚛️ (if applicable)
-   - Update src/preact/ 🦋 (if applicable)
+   - Update src/preact/ ⚡️ (if applicable)
    - Update src/remix/ 💿 (if applicable)
 
 ## Style Guidelines 🎨

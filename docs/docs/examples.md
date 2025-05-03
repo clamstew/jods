@@ -189,7 +189,7 @@ function App(): React.ReactElement {
 }
 ```
 
-## Preact Integration 🦋
+## Preact Integration ⚡️
 
 jods includes native Preact support through a dedicated entry point. The API is identical to the React integration, making it easy to use in Preact applications.
 

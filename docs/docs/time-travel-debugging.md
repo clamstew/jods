@@ -2,7 +2,7 @@
 sidebar_position: 4
 ---
 
-# Time-Travel Debugging ⏰ 🔄 🐿️
+# Time-Travel Debugging 🕰️ 🔄 🐿️
 
 jods includes powerful time-travel debugging capabilities that allow you to track state changes over time and jump back to previous states. This feature is invaluable for debugging complex state changes and understanding how your application's state evolves.
 
@@ -195,7 +195,7 @@ console.log("New branch:", json(todos));
 
 ## Best Practices ✅
 
-- [x] Only use history tracking in development or debugging scenarios
-- [x] Set a reasonable `maxEntries` value to prevent memory issues
-- [x] Call `destroy()` when you're done with a history tracker to prevent memory leaks
-- [x] Use the `diff` property to understand what changed between states
+- 🔬 Only use history tracking in development or debugging scenarios
+- 📊 Set a reasonable `maxEntries` value to prevent memory issues
+- 🧹 Call `destroy()` when you're done with a history tracker to prevent memory leaks
+- 🔍 Use the `diff` property to understand what changed between states
