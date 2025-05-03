@@ -44,11 +44,31 @@ const sidebars: SidebarsConfig = {
       type: "category",
       label: "💿 Remix Integration",
       items: [
-        "remix/index",
-        "remix/migration-guide",
-        "remix/common-patterns",
-        "remix/performance-tips",
-        "remix/api-reference",
+        {
+          type: "doc",
+          id: "remix/index",
+          label: "🌐 Overview",
+        },
+        {
+          type: "doc",
+          id: "remix/migration-guide",
+          label: "🔄 Migration Guide",
+        },
+        {
+          type: "doc",
+          id: "remix/common-patterns",
+          label: "🧩 Common Patterns",
+        },
+        {
+          type: "doc",
+          id: "remix/performance-tips",
+          label: "⚡ Performance Tips",
+        },
+        {
+          type: "doc",
+          id: "remix/api-reference",
+          label: "📚 API Reference",
+        },
       ],
     },
     {
