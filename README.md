@@ -345,3 +345,108 @@ For more details, check out our [Contributing Guide](./CONTRIBUTING.md).
 ## License
 
 [MIT](./LICENSE)
+
+## Framework Integrations
+
+### React
+
+```jsx
+import { store } from "jods";
+import { useJods } from "jods/react";
+
+const todoStore = store({
+  items: [],
+  filter: "all",
+});
+
+function Todos() {
+  const todos = useJods(todoStore);
+
+  return (
+    <div>
+      {/* Only re-renders when todos.items changes */}
+      <ul>
+        {todos.items.map((item) => (
+          <li key={item.id}>{item.text}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+### Remix
+
+```jsx
+import { defineStore } from "jods/remix";
+import { useJodsStore, useJodsForm } from "jods/remix";
+
+// 1. Define a store with server-side handlers
+export const cart = defineStore({
+  name: "cart",
+  schema: z.object({
+    items: z.array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        quantity: z.number(),
+      })
+    ),
+  }),
+  defaults: { items: [] },
+  handlers: {
+    async addItem({ current, form }) {
+      // Handle form submission on the server
+      const productId = form.get("productId");
+      // ... server-side logic
+      return updatedCart;
+    },
+  },
+});
+
+// 2. Use in loaders with withJods
+export const loader = withJods([cart], async () => {
+  return { otherData: "value" };
+});
+
+// 3. Use in components with fine-grained reactivity
+function CartComponent() {
+  // Reactively updates when any used properties change
+  const cartState = useJodsStore(cart);
+
+  // Create a form that submits to the cart's addItem handler
+  const { Form } = useJodsForm(cart, "addItem");
+
+  return (
+    <div>
+      <h2>Cart ({cartState.items.length} items)</h2>
+
+      <Form>
+        <input type="hidden" name="productId" value="123" />
+        <button type="submit">Add to Cart</button>
+      </Form>
+
+      {cartState.items.map((item) => (
+        <div key={item.id}>
+          {item.name} - Qty: {item.quantity}
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+### Preact
+
+```jsx
+import { store } from "jods";
+import { useJods } from "jods/preact";
+
+// Same API as React integration
+const userStore = store({ name: "User" });
+
+function User() {
+  const user = useJods(userStore);
+  return <div>{user.name}</div>;
+}
+```

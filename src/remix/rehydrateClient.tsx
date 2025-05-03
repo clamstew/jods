@@ -6,11 +6,12 @@ export function rehydrateClient(
   jodsSnapshot: Record<string, any>,
   stores: any[]
 ) {
-  // No hooks needed, just update the stores directly
+  // Update each store with its snapshot data, properly triggering signals
   for (const store of stores) {
     const snap = jodsSnapshot?.[store.name];
     if (snap) {
-      store.setState(snap);
+      // Use Object.assign to update store properties and trigger proper signals
+      Object.assign(store.store, snap);
     }
   }
 }

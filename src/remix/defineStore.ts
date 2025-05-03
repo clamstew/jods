@@ -1,6 +1,7 @@
 import { z } from "zod";
+import { store, json, type StoreState } from "../index";
 
-type StoreConfig<T> = {
+type StoreConfig<T extends StoreState> = {
   name: string;
   schema: z.ZodType<T>;
   defaults: T;
@@ -14,21 +15,24 @@ type StoreConfig<T> = {
   loader?: (ctx: { request: Request }) => Promise<T>;
 };
 
-export function defineStore<T>(config: StoreConfig<T>) {
-  let state: T = config.defaults;
+export function defineStore<T extends StoreState>(config: StoreConfig<T>) {
+  // Create a jods store with signals instead of simple state variable
+  const jodsStore = store(config.defaults);
 
   return {
     ...config,
-    getState: () => state,
+    store: jodsStore,
+    getState: () => json(jodsStore),
     setState: (newState: T) => {
-      state = newState;
+      // Update store properties to trigger proper signals
+      Object.assign(jodsStore, newState);
     },
     loader: async ({ request }: { request: Request }) => {
       if (config.loader) {
         const loaded = await config.loader({ request });
-        state = loaded;
+        Object.assign(jodsStore, loaded);
       }
-      return { [config.name]: state };
+      return { [config.name]: json(jodsStore) };
     },
     action: async ({ request }: { request: Request }) => {
       const form = await request.formData();
@@ -37,12 +41,13 @@ export function defineStore<T>(config: StoreConfig<T>) {
         throw new Error(`Invalid handler: ${handlerName}`);
       }
       const updated = await config.handlers[handlerName]({
-        current: state,
+        current: json(jodsStore) as T,
         form,
         request,
       });
-      state = config.schema.parse(updated);
-      return { [config.name]: state };
+      const validated = config.schema.parse(updated);
+      Object.assign(jodsStore, validated);
+      return { [config.name]: json(jodsStore) };
     },
   };
 }

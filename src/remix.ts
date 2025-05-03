@@ -42,6 +42,7 @@ export type {
 
 // Remix-specific utilities
 export { useJodsForm } from "./remix/useJodsForm";
+export { useJodsStore } from "./remix/useJodsStore";
 export { withJods } from "./remix/withJods";
 export { rehydrateClient } from "./remix/rehydrateClient";
 export { getJodsSnapshot } from "./remix/getJodsSnapshot";
