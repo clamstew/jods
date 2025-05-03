@@ -1,5 +1,5 @@
 /** @jsxImportSource react */
-import { useTransition } from "@remix-run/react";
+import { useNavigation } from "@remix-run/react";
 
 /**
  * Hook to track transition state for jods action submissions
@@ -8,24 +8,25 @@ import { useTransition } from "@remix-run/react";
  * @returns Object with transition state information
  */
 export function useJodsTransition(actionId?: string) {
-  const transition = useTransition();
+  const navigation = useNavigation();
 
   // If no actionId provided, return general transition state
-  if (!actionId || !transition.submission) {
+  if (!actionId || !navigation.formData) {
     return {
-      isSubmitting: transition.state === "submitting",
-      isPending: transition.state !== "idle",
-      formData: transition.submission?.formData,
+      isSubmitting: navigation.state === "submitting",
+      isPending: navigation.state !== "idle",
+      formData: navigation.formData,
     };
   }
 
   // Check if this transition is for the specified action
-  const isRelevant =
-    transition.submission?.formData?.get("__jods_action") === actionId;
+  const isRelevant = navigation.formData?.get("__jods_action") === actionId;
 
   return {
-    isSubmitting: transition.state === "submitting" && isRelevant,
-    isPending: transition.state !== "idle" && isRelevant,
-    formData: isRelevant ? transition.submission?.formData : null,
+    isSubmitting: navigation.state === "submitting" && isRelevant,
+    isPending:
+      (navigation.state === "loading" || navigation.state === "submitting") &&
+      isRelevant,
+    formData: isRelevant ? navigation.formData : null,
   };
 }
