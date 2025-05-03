@@ -6,6 +6,14 @@ description: Understanding jods as a JavaScript Object Dynamics System
 
 # 🧠 What is a Dynamics System?
 
+<div style={{float: 'right', margin: '0 0 20px 20px', maxWidth: '50%'}}>
+  <img 
+    src="img/articles/dynamic-system/mascots-and-the-system.png" 
+    alt="jods mascots and the dynamics system" 
+    style={{width: '100%', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)'}} 
+  />
+</div>
+
 ## 🔄 Beyond Traditional State Management
 
 A **Dynamics System** represents a significant evolution in how we think about state management in JavaScript applications. Unlike traditional state management solutions that focus solely on storing and updating values, a Dynamics System creates a _living, responsive ecosystem_ where objects intuitively react to changes, compute derived values, and maintain consistency across your application.
@@ -16,7 +24,7 @@ jods (**J**avaScript **O**bject **D**ynamics **S**ystem) takes a fundamentally d
 
 At its core, a Dynamics System:
 
-1. **📱 Feels Natural**: Uses direct mutations (`store.value = 5`) instead of verbose action dispatchers
+1. **📱 Feels Natural**: Uses direct mutations (`user.name = "Burt"`) instead of verbose action dispatchers
 2. **🔄 Reacts Intelligently**: Automatically tracks dependencies and triggers updates
 3. **🧮 Computes Effortlessly**: Handles derived values through simple function declarations
 4. **🪞 Snapshots Seamlessly**: Creates consistent, serializable snapshots of application state
@@ -26,13 +34,13 @@ At its core, a Dynamics System:
 
 Let's compare jods with some other popular approaches:
 
-| Feature               | Traditional Object    | Redux                   | Zustand                 | jods (Dynamics System)              |
-| --------------------- | --------------------- | ----------------------- | ----------------------- | ----------------------------------- |
-| Updating state        | `obj.value = 5`       | `dispatch(setValue(5))` | `setState({value: 5})`  | `store.value = 5`                   |
-| Reactivity            | None                  | Manual subscriptions    | Selector functions      | Automatic + granular                |
-| Computed values       | Manual functions      | Selector functions      | Selector functions      | `computed(() => store.x + store.y)` |
-| Serialization         | `JSON.stringify(obj)` | Need custom serializers | Need custom serializers | `json(store)`                       |
-| Framework integration | None                  | Requires connectors     | Hooks                   | Lightweight direct hooks            |
+| Feature               | Traditional Object    | Redux                       | Zustand                    | jods (Dynamics System)                                 |
+| --------------------- | --------------------- | --------------------------- | -------------------------- | ------------------------------------------------------ |
+| Updating state        | `obj.name = "Burt"`   | `dispatch(setName("Burt"))` | `setState({name: "Burt"})` | `user.name = "Burt"`                                   |
+| Reactivity            | None                  | Manual subscriptions        | Selector functions         | Automatic + granular                                   |
+| Computed values       | Manual functions      | Selector functions          | Selector functions         | `computed(() => user.firstName + " " + user.lastName)` |
+| Serialization         | `JSON.stringify(obj)` | Need custom serializers     | Need custom serializers    | `json(user)`                                           |
+| Framework integration | None                  | Requires connectors         | Hooks                      | Lightweight direct hooks                               |
 
 ## ⚡ The Power of Dynamics: Code Examples
 
@@ -43,8 +51,8 @@ import { store, computed, onUpdate, json } from "jods";
 
 // Create a reactive store
 const user = store({
-  firstName: "Ada",
-  lastName: "Lovelace",
+  firstName: "Burt",
+  lastName: "Macklin",
   age: 36,
 });
 
@@ -57,9 +65,9 @@ onUpdate(user, (newState) => {
 });
 
 // Make changes directly - feels like regular JavaScript!
-user.firstName = "Grace";
-user.lastName = "Hopper";
-// Logs: "User updated: { firstName: 'Grace', lastName: 'Hopper', age: 36, fullName: 'Grace Hopper' }"
+user.firstName = "FBI Agent";
+user.lastName = "Macklin";
+// Logs: "User updated: { firstName: 'FBI Agent', lastName: 'Macklin', age: 36, fullName: 'FBI Agent Macklin' }"
 ```
 
 ## 🦋 Dynamic Adaptability
