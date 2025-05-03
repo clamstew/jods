@@ -6,7 +6,7 @@ description: History and motivation behind the jods library
 
 # About jods
 
-jods (JSON On Demand Store) is a minimal reactive state management library for JavaScript that emphasizes simplicity and composability.
+jods (JavaScript Object Dynamics System) is a fun, intuitive reactive state library that makes JavaScript objects come alive. It emphasizes simplicity and composability while providing powerful state management capabilities.
 
 ## Core Philosophy
 

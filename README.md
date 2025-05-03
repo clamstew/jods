@@ -1,4 +1,4 @@
-# 🐿️ 🦆 jods — JSON On Demand Store
+# 🐿️ 🦆 jods — JavaScript Object Dynamics System
 
 ![CI](https://github.com/clamstew/jods/workflows/CI/badge.svg)
 [![npm version](https://img.shields.io/npm/v/jods.svg)](https://www.npmjs.com/package/jods)
@@ -11,8 +11,7 @@
 
 ![jods](https://raw.githubusercontent.com/clamstew/jods/main/assets/headline_repo_readme_image.png)
 
-A minimal, reactive JSON state layer for Node.js and the browser. Create lightweight observable stores that emit JSON snapshots on demand.
-Perfect for syncing app state, powering APIs, or building reactive UIs without heavy frameworks.
+A fun, intuitive reactive state library that makes JavaScript objects come alive. Build lightweight stores that respond to changes, compute derived values, and keep your application state in sync - all with a simple, playful API that feels natural to use.
 
 ## Why JODS?
 

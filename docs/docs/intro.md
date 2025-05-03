@@ -6,7 +6,7 @@ sidebar_position: 1
 
 > "Got state to track? Just jods it down"
 
-jods (JSON On Demand Store) is a minimal, reactive JSON state layer for Node.js and the browser. Create lightweight observable stores that emit JSON snapshots on demand.
+jods (JavaScript Object Dynamics System) is a fun, intuitive reactive state library that makes JavaScript objects come alive. Build lightweight stores that respond to changes, compute derived values, and keep your application state in sync.
 
 ## What is jods?
 

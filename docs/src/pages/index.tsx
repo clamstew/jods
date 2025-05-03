@@ -11,8 +11,8 @@ export default function Home(): React.ReactElement {
   const { siteConfig } = useDocusaurusContext();
   return (
     <Layout
-      title={`${siteConfig.title} - JSON On Demand Store`}
-      description="A minimal, reactive JSON state layer for Node.js and the browser"
+      title={`${siteConfig.title} - JavaScript Object Dynamics System`}
+      description="A fun, intuitive reactive state library that makes JavaScript objects come alive"
     >
       <HomepageHero />
       <FeatureHighlights />

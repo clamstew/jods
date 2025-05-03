@@ -12,7 +12,7 @@ export default function HomepageHero(): React.ReactElement {
     const jsonSnippets = [
       '{ "name": "jods" }',
       '{ "reactive": true }',
-      '{ "json": "on-demand" }',
+      '{ "dynamic": true }',
       '{ "size": "tiny" }',
       '{ "computed": () => {} }',
     ];
@@ -52,10 +52,10 @@ export default function HomepageHero(): React.ReactElement {
         <h1 className="hero-title">
           <span className="gradient-text">jods</span>
         </h1>
-        <p className="hero-subtitle">JSON On Demand Store</p>
+        <p className="hero-subtitle">JavaScript Object Dynamics System</p>
         <p className="hero-description">
-          A minimal, reactive state layer that brings simplicity back to state
-          management
+          A fun, intuitive reactive state library that makes JavaScript objects
+          come alive
         </p>
         <div className="hero-buttons">
           <Link className="button button--primary button--lg" to="/intro">

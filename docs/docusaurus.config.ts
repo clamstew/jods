@@ -6,7 +6,8 @@ import type * as Preset from "@docusaurus/preset-classic";
 
 const config: Config = {
   title: "jods",
-  tagline: "JSON On Demand Store - A minimal reactive state layer",
+  tagline:
+    "JavaScript Object Dynamics System - A fun, intuitive reactive state library",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
