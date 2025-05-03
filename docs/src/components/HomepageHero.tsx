@@ -15,6 +15,8 @@ export default function HomepageHero(): React.ReactElement {
       '{ "dynamic": true }',
       '{ "size": "tiny" }',
       '{ "computed": () => {} }',
+      '{ "frameworks"?: ["remix", "react", "preact", "vanilla"] }',
+      '{ "🐿️": "🦆" }',
     ];
 
     // Create JSON floating elements

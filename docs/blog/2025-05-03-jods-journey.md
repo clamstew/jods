@@ -5,7 +5,7 @@ authors: [clay]
 tags: [jods, react, remix, signals, reactivity]
 ---
 
-# The jods Journey: From Name-Squatting to Full Framework Integration
+# My jods Journey: From npm Name-Squatting to Full Framework Integration
 
 What started as a simple npm name-squatting exercise has evolved into something far more meaningful in just under two weeks. Here's the story of how jods came to be.
 
