@@ -2,13 +2,13 @@
 sidebar_position: 2
 ---
 
-# API Reference
+# API Reference 📚 🐿️ 🦆
 
 jods provides a small but powerful API for state management.
 
-## Core Functions
+## Core Functions 🧰
 
-### `store(initialState)`
+### `store(initialState)` 📦
 
 Creates a reactive store with the provided initial state.
 
@@ -22,7 +22,7 @@ counter.count = 1; // Updates the store
 console.log(counter.count); // 1
 ```
 
-### `json(store)`
+### `json(store)` 🪞
 
 Returns a deep-cloned plain JSON snapshot of the store, evaluating all computed properties.
 
@@ -43,7 +43,7 @@ console.log(snapshot);
 // { firstName: 'Burt', lastName: 'Macklin', fullName: 'Burt Macklin' }
 ```
 
-### `onUpdate(store, callback)`
+### `onUpdate(store, callback)` 👂
 
 Registers a callback function that is triggered whenever the store changes.
 
@@ -63,7 +63,7 @@ counter.count = 1; // Logs: New state: { count: 1 }
 unsubscribe();
 ```
 
-### `computed(fn)`
+### `computed(fn)` 🧮
 
 Creates a computed property that automatically updates when its dependencies change.
 
@@ -86,7 +86,7 @@ prices.items.push(40);
 console.log(prices.total()); // 100
 ```
 
-### `diff(oldState, newState)`
+### `diff(oldState, newState)` 🔍
 
 Generates a detailed diff object showing changes between two states.
 
@@ -101,7 +101,7 @@ console.log(changes);
 // { age: { __old: 30, __new: 31 } }
 ```
 
-### `history(store, options?)`
+### `history(store, options?)` ⏰
 
 Creates a history tracker with time-travel capabilities for a store.
 
@@ -126,9 +126,9 @@ console.log(json(counter)); // { count: 1 }
 
 For more details on time-travel debugging, see the [Time-Travel Debugging](/time-travel-debugging) page.
 
-## Framework Integration
+## Framework Integration 🔌
 
-### React
+### React ⚛️
 
 ```jsx
 import { useJods } from "jods/react";
@@ -150,7 +150,7 @@ function Counter() {
 }
 ```
 
-### Preact
+### Preact 🦋
 
 ```jsx
 import { useJods } from "jods/preact";
@@ -172,9 +172,9 @@ function Counter() {
 }
 ```
 
-### Remix
+### Remix 💿
 
-jods provides first-class integration with Remix, replacing traditional loaders and actions with reactive stores.
+jods provides first-class integration with Remix 💿, replacing traditional loaders and actions with reactive stores.
 
 ```jsx
 // Define a store with server-side handlers
@@ -219,4 +219,4 @@ function ProfileComponent() {
 }
 ```
 
-For comprehensive documentation on Remix integration, see the [Remix Integration Guide](/remix).
+For comprehensive documentation on Remix integration, see the [Remix Integration Guide](/remix) 💿.

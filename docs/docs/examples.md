@@ -2,11 +2,11 @@
 sidebar_position: 3
 ---
 
-# Examples
+# Examples 💡 🐿️ 🦆
 
 Here are some practical examples showing how to use jods in different contexts.
 
-## Basic Usage
+## Basic Usage 🧩
 
 This example demonstrates the core features of jods, including store creation, computed properties, change tracking, and JSON snapshots.
 
@@ -70,7 +70,7 @@ console.log(`Total updates triggered: ${updateCount}`);
 console.log("Final state with computed values:", json(user));
 ```
 
-## React Integration
+## React Integration ⚛️
 
 This example shows how to use jods with React components using the `useJods` hook.
 
@@ -189,7 +189,7 @@ function App(): React.ReactElement {
 }
 ```
 
-## Preact Integration
+## Preact Integration 🦋
 
 jods includes native Preact support through a dedicated entry point. The API is identical to the React integration, making it easy to use in Preact applications.
 
@@ -319,7 +319,7 @@ export function App() {
 }
 ```
 
-## Using onUpdate for Event Handling
+## Using onUpdate for Event Handling 👂
 
 This example shows how to use the `onUpdate` function to track state changes.
 
@@ -355,15 +355,15 @@ addTask("Learn jods");
 addTask("Build an app");
 ```
 
-## Remix Integration
+## Remix Integration 💿
 
-jods provides a first-class integration with Remix that simplifies state management across server and client. The integration combines loaders, actions, schema validation, and reactive client state.
+jods provides a first-class integration with Remix 💿 that simplifies state management across server and client. The integration combines loaders, actions, schema validation, and reactive client state.
 
-Check out the [Remix Integration](/remix) section for detailed examples and documentation, including:
+Check out the [Remix Integration](/remix) 💿 section for detailed examples and documentation, including:
 
-- Defining stores with server-side data loading
-- Creating form handlers with automatic validation
-- Implementing optimistic UI updates
-- Integrating with Remix's routing system
+- Defining stores with server-side data loading 🔄
+- Creating form handlers with automatic validation ✅
+- Implementing optimistic UI updates ⚡
+- Integrating with Remix's routing system 🛣️
 
-For more examples, check out the [GitHub repository](https://github.com/clamstew/jods/tree/main/examples).
+For more examples, check out the [GitHub repository](https://github.com/clamstew/jods/tree/main/examples) 🐿️ 🦆.

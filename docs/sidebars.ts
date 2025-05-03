@@ -15,14 +15,34 @@ import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
 const sidebars: SidebarsConfig = {
   // Define a manual sidebar structure
   jodsSidebar: [
-    "about",
-    "intro",
-    "api-reference",
-    "examples",
-    "time-travel-debugging",
+    {
+      type: "doc",
+      id: "about",
+      label: "✨ About jods",
+    },
+    {
+      type: "doc",
+      id: "intro",
+      label: "🚀 Introduction",
+    },
+    {
+      type: "doc",
+      id: "api-reference",
+      label: "📚 API Reference",
+    },
+    {
+      type: "doc",
+      id: "examples",
+      label: "💡 Examples",
+    },
+    {
+      type: "doc",
+      id: "time-travel-debugging",
+      label: "⏰ Time-Travel Debugging",
+    },
     {
       type: "category",
-      label: "Remix Integration",
+      label: "💿 Remix Integration",
       items: [
         "remix/index",
         "remix/migration-guide",
@@ -31,7 +51,11 @@ const sidebars: SidebarsConfig = {
         "remix/api-reference",
       ],
     },
-    "maintainers-guide",
+    {
+      type: "doc",
+      id: "maintainers-guide",
+      label: "🛠️ Maintainer's Guide",
+    },
   ],
 };
 

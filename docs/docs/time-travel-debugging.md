@@ -2,11 +2,11 @@
 sidebar_position: 4
 ---
 
-# Time-Travel Debugging
+# Time-Travel Debugging ⏰ 🔄 🐿️
 
 jods includes powerful time-travel debugging capabilities that allow you to track state changes over time and jump back to previous states. This feature is invaluable for debugging complex state changes and understanding how your application's state evolves.
 
-## Basic Usage
+## Basic Usage 🚀
 
 The `history()` function creates a history tracker for a store, which records all state changes and provides methods to travel between them:
 
@@ -37,9 +37,9 @@ counterHistory.travelTo(counterHistory.getEntries().length - 1);
 console.log(json(counter)); // { count: 3 }
 ```
 
-## History API
+## History API 📖
 
-### `history(store, options?)`
+### `history(store, options?)` 🕰️
 
 Creates a history tracker for a store.
 
@@ -51,21 +51,21 @@ Creates a history tracker for a store.
     - `active`: Whether history tracking is active (default: true in development, false in production)
 
 - **Returns**: A History instance with the following methods:
-  - `travelTo(index)`: Travel to a specific point in history
-  - `back()`: Go back one step in history
-  - `forward()`: Go forward one step in history
-  - `getEntries()`: Get all history entries
-  - `getCurrentIndex()`: Get the current index in history
-  - `clear()`: Clear all history entries except the current one
-  - `destroy()`: Remove subscription to store updates
+  - `travelTo(index)` 🚗: Travel to a specific point in history
+  - `back()` ⏮️: Go back one step in history
+  - `forward()` ⏭️: Go forward one step in history
+  - `getEntries()` 📋: Get all history entries
+  - `getCurrentIndex()` 🔍: Get the current index in history
+  - `clear()` 🧹: Clear all history entries except the current one
+  - `destroy()` 🗑️: Remove subscription to store updates
 
-## History Entries
+## History Entries 📝
 
 Each history entry contains:
 
-- `state`: A snapshot of the entire store state
-- `timestamp`: When the change occurred
-- `diff`: What changed from the previous state
+- `state` 📦: A snapshot of the entire store state
+- `timestamp` ⏱️: When the change occurred
+- `diff` 🔄: What changed from the previous state
 
 ```js
 // Example of accessing history entries
@@ -80,7 +80,7 @@ entries.forEach((entry, index) => {
 });
 ```
 
-## Branching History
+## Branching History 🌲
 
 When you travel back in time and then make changes, jods automatically creates a new branch of history, discarding future states that are no longer relevant:
 
@@ -104,7 +104,7 @@ counter.count = 15;
 console.log(counterHistory.getEntries().map((entry) => entry.state.count));
 ```
 
-## React Integration
+## React Integration ⚛️
 
 For React applications, jods provides a debugger component that renders a UI for time-travel debugging:
 
@@ -139,7 +139,7 @@ function App() {
 
 The debugger component is development-only and doesn't add any overhead in production builds.
 
-## Complete Example
+## Complete Example 🦆
 
 Here's a more complete example of using history for debugging:
 
@@ -193,9 +193,9 @@ addTodo("Alternative task");
 console.log("New branch:", json(todos));
 ```
 
-## Best Practices
+## Best Practices ✅
 
-- Only use history tracking in development or debugging scenarios
-- Set a reasonable `maxEntries` value to prevent memory issues
-- Call `destroy()` when you're done with a history tracker to prevent memory leaks
-- Use the `diff` property to understand what changed between states
+- [x] Only use history tracking in development or debugging scenarios
+- [x] Set a reasonable `maxEntries` value to prevent memory issues
+- [x] Call `destroy()` when you're done with a history tracker to prevent memory leaks
+- [x] Use the `diff` property to understand what changed between states
