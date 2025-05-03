@@ -41,6 +41,11 @@ const sidebars: SidebarsConfig = {
       label: "🕰️ Time-Travel Debugging",
     },
     {
+      type: "doc",
+      id: "time-travel-debugging-old",
+      label: "🕰️ Time-Travel Debugging (Old)",
+    },
+    {
       type: "category",
       label: "💿 Remix Integration",
       items: [
