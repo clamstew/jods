@@ -17,3 +17,28 @@ hola:
   label: Hola
   permalink: /hola
   description: Hola tag description
+
+jods:
+  label: jods
+  permalink: /jods
+  description: Posts about the jods state management library
+
+react:
+  label: React
+  permalink: /react
+  description: Posts about React development
+
+remix:
+  label: Remix
+  permalink: /remix
+  description: Posts about the Remix framework
+
+signals:
+  label: Signals
+  permalink: /signals
+  description: Posts about signals and reactivity patterns
+
+reactivity:
+  label: Reactivity
+  permalink: /reactivity
+  description: Posts about reactive programming concepts

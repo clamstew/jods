@@ -15,19 +15,11 @@ import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
 const sidebars: SidebarsConfig = {
   // Define a manual sidebar structure
   jodsSidebar: [
+    "about",
     "intro",
     "api-reference",
     "examples",
     "time-travel-debugging",
-    {
-      type: "category",
-      label: "Guides",
-      items: [
-        "tutorial-basics/create-a-document",
-        "tutorial-basics/create-a-blog-post",
-        "tutorial-basics/markdown-features",
-      ],
-    },
     {
       type: "category",
       label: "Remix Integration",

@@ -6,7 +6,7 @@ import type * as Preset from "@docusaurus/preset-classic";
 
 const config: Config = {
   title: "jods",
-  tagline: "JSON On Demand Store",
+  tagline: "JSON On Demand Store - A minimal reactive state layer",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
@@ -78,6 +78,7 @@ const config: Config = {
           label: "Docs",
         },
         { to: "/blog", label: "Blog", position: "left" },
+        { to: "/about", label: "About", position: "left" },
         {
           href: "https://github.com/clamstew/jods",
           label: "GitHub",
@@ -95,6 +96,14 @@ const config: Config = {
               label: "Getting Started",
               to: "/intro",
             },
+            {
+              label: "About jods",
+              to: "/about",
+            },
+            {
+              label: "API Reference",
+              to: "/api-reference",
+            },
           ],
         },
         {
@@ -107,6 +116,10 @@ const config: Config = {
             {
               label: "GitHub Issues",
               href: "https://github.com/clamstew/jods/issues",
+            },
+            {
+              label: "Creator",
+              href: "https://x.com/clay_stewart",
             },
           ],
         },
@@ -128,7 +141,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} jods contributors. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} clamstew and jods contributors. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,

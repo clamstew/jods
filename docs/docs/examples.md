@@ -189,6 +189,136 @@ function App(): React.ReactElement {
 }
 ```
 
+## Preact Integration
+
+jods includes native Preact support through a dedicated entry point. The API is identical to the React integration, making it easy to use in Preact applications.
+
+```tsx
+import { h } from "preact";
+import { useState } from "preact/hooks";
+import { store, computed } from "jods";
+import { useJods } from "jods/preact";
+
+// Define a cart store
+const cart = store({
+  items: [],
+  couponCode: "",
+});
+
+// Add computed properties
+cart.itemCount = computed(() => cart.items.length);
+cart.subtotal = computed(() =>
+  cart.items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+);
+cart.discount = computed(() =>
+  cart.couponCode === "SAVE20" ? cart.subtotal * 0.2 : 0
+);
+cart.total = computed(() => cart.subtotal - cart.discount);
+
+// Product list component
+function ProductList() {
+  const products = [
+    { id: 1, name: "Widget", price: 9.99 },
+    { id: 2, name: "Gadget", price: 14.99 },
+    { id: 3, name: "Doohickey", price: 19.99 },
+  ];
+
+  function addToCart(product) {
+    const existingItem = cart.items.find((item) => item.id === product.id);
+
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      cart.items.push({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: 1,
+      });
+    }
+  }
+
+  return (
+    <div class="products">
+      <h2>Products</h2>
+      {products.map((product) => (
+        <div key={product.id} class="product">
+          <h3>{product.name}</h3>
+          <p>${product.price.toFixed(2)}</p>
+          <button onClick={() => addToCart(product)}>Add to Cart</button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// Shopping cart component
+function ShoppingCart() {
+  const cartState = useJods(cart);
+  const [coupon, setCoupon] = useState("");
+
+  function applyCoupon() {
+    cart.couponCode = coupon;
+  }
+
+  function removeItem(itemId) {
+    cart.items = cart.items.filter((item) => item.id !== itemId);
+  }
+
+  return (
+    <div class="cart">
+      <h2>Shopping Cart ({cartState.itemCount} items)</h2>
+
+      {cartState.items.length === 0 ? (
+        <p>Your cart is empty</p>
+      ) : (
+        <>
+          <ul>
+            {cartState.items.map((item) => (
+              <li key={item.id}>
+                {item.name} - ${item.price.toFixed(2)} x {item.quantity}
+                <button onClick={() => removeItem(item.id)}>Remove</button>
+              </li>
+            ))}
+          </ul>
+
+          <div class="coupon">
+            <input
+              type="text"
+              value={coupon}
+              onInput={(e) => setCoupon(e.target.value)}
+              placeholder="Coupon code"
+            />
+            <button onClick={applyCoupon}>Apply</button>
+          </div>
+
+          <div class="summary">
+            <p>Subtotal: ${cartState.subtotal.toFixed(2)}</p>
+            {cartState.discount > 0 && (
+              <p>Discount: -${cartState.discount.toFixed(2)}</p>
+            )}
+            <p class="total">Total: ${cartState.total.toFixed(2)}</p>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// Main app component
+export function App() {
+  return (
+    <div class="app">
+      <h1>JODS Preact Shopping Cart Example</h1>
+      <div class="container">
+        <ProductList />
+        <ShoppingCart />
+      </div>
+    </div>
+  );
+}
+```
+
 ## Using onUpdate for Event Handling
 
 This example shows how to use the `onUpdate` function to track state changes.
@@ -224,5 +354,16 @@ onUpdate(todoStore, (newState) => {
 addTask("Learn jods");
 addTask("Build an app");
 ```
+
+## Remix Integration
+
+jods provides a first-class integration with Remix that simplifies state management across server and client. The integration combines loaders, actions, schema validation, and reactive client state.
+
+Check out the [Remix Integration](/remix) section for detailed examples and documentation, including:
+
+- Defining stores with server-side data loading
+- Creating form handlers with automatic validation
+- Implementing optimistic UI updates
+- Integrating with Remix's routing system
 
 For more examples, check out the [GitHub repository](https://github.com/clamstew/jods/tree/main/examples).
