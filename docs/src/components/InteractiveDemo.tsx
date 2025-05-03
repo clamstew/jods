@@ -39,7 +39,7 @@ ${JSON.stringify(
     <section className="features-container">
       <div className="container">
         <h2 className="section-title">
-          Try jods <span className="gradient-text">live</span>
+          🚀 Try jods <span className="gradient-text">live</span> 🧑‍💻
         </h2>
         <p
           style={{
