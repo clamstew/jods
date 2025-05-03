@@ -91,7 +91,7 @@ const config: Config = {
       style: "dark",
       links: [
         {
-          title: "DOCS 📚",
+          title: "DOCUMENTATION",
           items: [
             {
               label: "📖 Getting Started",
@@ -108,14 +108,14 @@ const config: Config = {
           ],
         },
         {
-          title: "COMMUNITY 👥",
+          title: "COMMUNITY",
           items: [
             {
-              label: "💬 GitHub Discussions",
+              label: "💬 Discussions",
               href: "https://github.com/clamstew/jods/discussions",
             },
             {
-              label: "🐛 GitHub Issues",
+              label: "🐛 Issues",
               href: "https://github.com/clamstew/jods/issues",
             },
             {
@@ -125,7 +125,7 @@ const config: Config = {
           ],
         },
         {
-          title: "MORE 🔍",
+          title: "RESOURCES",
           items: [
             {
               label: "📝 Blog",
@@ -142,7 +142,13 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `<span class="footer__love"><span class="footer__heart">❤️</span></span> <a href="https://github.com/clamstew">clamstew</a>. Copyright © ${new Date().getFullYear()} and jods contributors.<br /> Docs built with <a href="https://docusaurus.io/">Docusaurus</a><span class="footer__pray">🙏</span>.`,
+      copyright: `<div class="footer__signature">
+        <div class="footer__mascots">🐿️ 🦆</div>
+        <div class="footer__copyright">
+          Built with <span class="footer__heart">♥</span> by <a href="https://github.com/clamstew">clamstew</a><br />
+          Copyright © ${new Date().getFullYear()} jods contributors
+        </div>
+      </div>`,
     },
     prism: {
       theme: prismThemes.github,

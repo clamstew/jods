@@ -368,15 +368,36 @@ table .red-x {
 
 .footer__title {
   color: var(--jods-orange-light);
-  font-weight: bold;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  display: inline-block;
+}
+
+.footer__title:after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 30px;
+  height: 2px;
+  background: var(--jods-orange);
+}
+
+.footer__item {
+  margin-bottom: 0.75rem;
 }
 
 .footer__item a {
   color: rgba(255, 255, 255, 0.8);
-  transition: color 0.2s ease, transform 0.2s ease;
+  transition: all 0.2s ease;
   display: inline-block;
+  padding: 0.2rem 0;
+  font-weight: 500;
+  letter-spacing: 0.5px;
 }
 
 .footer__item a:hover {
@@ -385,38 +406,60 @@ table .red-x {
   transform: translateX(3px);
 }
 
-.footer__copyright {
+/* Signature section */
+.footer__signature {
   text-align: center;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.footer__mascots {
+  font-size: 1.5rem;
+  letter-spacing: 0.5rem;
+  margin-bottom: 0.5rem;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+}
+
+.footer__copyright {
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.7);
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  line-height: 1.6;
 }
 
 .footer__copyright a {
   color: var(--jods-orange-light);
   text-decoration: none;
-}
-
-.footer__love {
-  display: inline-block;
+  font-weight: 500;
   position: relative;
-  padding: 0;
 }
 
-.footer__love:before {
-  content: "Made with ";
+.footer__copyright a:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: -1px;
+  left: 0;
+  background: var(--jods-orange-light);
+  transition: width 0.3s ease;
 }
 
-.footer__love:after {
-  content: " by";
+.footer__copyright a:hover:after {
+  width: 100%;
 }
 
 .footer__heart {
   color: #ff5757;
   display: inline-block;
-  animation: heartbeat 1.5s infinite;
+  animation: heartbeat 2s infinite;
+  font-size: 1rem;
+  position: relative;
+  top: 1px;
 }
 
 @keyframes heartbeat {
@@ -424,23 +467,11 @@ table .red-x {
   100% {
     transform: scale(1);
   }
-  50% {
-    transform: scale(1.15);
+  10%,
+  30% {
+    transform: scale(1.2);
   }
-}
-
-.footer__pray {
-  display: inline-block;
-  color: #ffc559;
-  animation: float-pray 2s ease-in-out infinite;
-}
-
-@keyframes float-pray {
-  0%,
-  100% {
-    transform: translateY(0) scale(1);
-  }
-  50% {
-    transform: translateY(-4px) scale(1.1);
+  20% {
+    transform: scale(0.9);
   }
 }
