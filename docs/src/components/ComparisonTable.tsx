@@ -18,7 +18,13 @@ export default function ComparisonTable(): React.ReactElement {
           libraries
         </p>
 
-        <div style={{ overflowX: "auto" }}>
+        <div
+          style={{
+            overflowX: "auto",
+            maxWidth: "900px",
+            margin: "0 auto",
+          }}
+        >
           <table
             style={{
               width: "100%",
