@@ -60,10 +60,10 @@ git clone https://github.com/yourusername/jods.git
 cd jods
 
 # Install dependencies
-npm install
+pnpm install
 
 # Run tests
-npm test
+pnpm test
 ```
 
 ## License
