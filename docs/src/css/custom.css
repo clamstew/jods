@@ -31,6 +31,25 @@
 
 /* Add your custom styles here */
 
+/* Logo styling */
+.navbar__logo {
+  display: flex;
+  align-items: center;
+}
+
+.navbar__logo img {
+  height: 38px;
+  width: auto;
+  margin-right: 8px;
+  border-radius: 4px;
+  padding: 2px 0;
+}
+
+.navbar__items {
+  display: flex;
+  align-items: center;
+}
+
 /* Hero section styles */
 .hero-container {
   padding: 4rem 0;

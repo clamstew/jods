@@ -67,8 +67,8 @@ const config: Config = {
     navbar: {
       title: "jods",
       logo: {
-        alt: "jods Logo",
-        src: "img/logo.svg",
+        alt: "jods Logo with Squirrel and Duck",
+        src: "img/simple-jods-mascots-logo.png", // Using the squirrel and duck illustration
       },
       items: [
         {
