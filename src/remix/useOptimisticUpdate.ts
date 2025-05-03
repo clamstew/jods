@@ -2,13 +2,20 @@
 import { StoreState } from "../index";
 import { useJodsFetchers } from "./useJodsFetchers";
 
+// Define the React hook types we need
+type SetStateAction<S> = S | ((prevState: S) => S);
+type Dispatch<A> = (value: A) => void;
+type UseStateHook = <S>(
+  initialState: S | (() => S)
+) => [S, Dispatch<SetStateAction<S>>];
+
 // Dynamic import for React to prevent bundling issues
 function getReactHooks() {
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const React = require("react");
     return {
-      useState: React.useState,
+      useState: React.useState as UseStateHook,
       useEffect: React.useEffect,
     };
   } catch (e) {
