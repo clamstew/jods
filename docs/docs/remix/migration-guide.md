@@ -132,12 +132,12 @@ export const action = connectActionToJods(user, existingAction);
 
 ## ✅ Migration Checklist
 
-1. 🔍 **Identify state** that would benefit from reactivity
-2. 📝 **Define schemas** using Zod for type safety
-3. 🏗️ **Create jods stores** for each data domain
-4. 🔄 **Convert loaders** to use `withJods`
-5. 🛠️ **Migrate actions** to store handlers
-6. 🧩 **Update components** to use jods hooks
+- [x] 🔍 **Identify state** that would benefit from reactivity
+- [x] 📝 **Define schemas** using Zod for type safety
+- [x] 🏗️ **Create jods stores** for each data domain
+- [x] 🔄 **Convert loaders** to use `withJods`
+- [x] 🛠️ **Migrate actions** to store handlers
+- [x] 🧩 **Update components** to use jods hooks
 
 ## 🔀 Handling Redirects
 
