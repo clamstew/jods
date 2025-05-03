@@ -136,15 +136,15 @@ function TodoApp() {
 }
 ```
 
-## Why "Dynamics" Matters for AI Collaboration
+## Why "Dynamics" Matters for AI Collaboration 🤖 🧠
 
 In the age of AI-assisted coding, the Dynamics System approach unlocks new possibilities. When you and AI tools collaborate on code, jods provides a mental model that:
 
-- Is easy to explain to AI ("update this state directly")
-- Is easy for AI to generate correct code for
-- Minimizes boilerplate that AI has to generate
-- Provides consistent patterns that AI can understand and maintain
-- Allows AI to focus on business logic, not state plumbing
+- 🗣️ Is easy to explain to AI ("update this state directly")
+- 💻 Is easy for AI to generate correct code for
+- 📉 Minimizes boilerplate that AI has to generate
+- 🔄 Provides consistent patterns that AI can understand and maintain
+- 🧩 Allows AI to focus on business logic, not state plumbing
 
 ## In Summary
 
