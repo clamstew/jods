@@ -12,6 +12,16 @@ jods provides a small but powerful API for state management.
 
 Creates a reactive store with the provided initial state.
 
+**Parameters:**
+
+| Name           | Type     | Description                        |
+| -------------- | -------- | ---------------------------------- |
+| `initialState` | `Object` | Initial state object for the store |
+
+**Returns:** A reactive store object that can be modified directly
+
+**Example:**
+
 ```js
 import { store } from "jods";
 
@@ -25,6 +35,16 @@ console.log(counter.count); // 1
 ### 🪞 `json(store)`
 
 Returns a deep-cloned plain JSON snapshot of the store, evaluating all computed properties.
+
+**Parameters:**
+
+| Name    | Type     | Description                       |
+| ------- | -------- | --------------------------------- |
+| `store` | `Object` | A jods store created with store() |
+
+**Returns:** A plain JavaScript object containing the store's state
+
+**Example:**
 
 ```js
 import { store, json, computed } from "jods";
@@ -47,6 +67,17 @@ console.log(snapshot);
 
 Registers a callback function that is triggered whenever the store changes.
 
+**Parameters:**
+
+| Name       | Type       | Description                                   |
+| ---------- | ---------- | --------------------------------------------- |
+| `store`    | `Object`   | A jods store created with store()             |
+| `callback` | `Function` | Function to call when the store state changes |
+
+**Returns:** Unsubscribe function that can be called to stop listening for updates
+
+**Example:**
+
 ```js
 import { store, onUpdate } from "jods";
 
@@ -66,6 +97,16 @@ unsubscribe();
 ### 🧮 `computed(fn)`
 
 Creates a computed property that automatically updates when its dependencies change.
+
+**Parameters:**
+
+| Name | Type       | Description                                              |
+| ---- | ---------- | -------------------------------------------------------- |
+| `fn` | `Function` | Function that computes a value based on store properties |
+
+**Returns:** A function that returns the computed value when called
+
+**Example:**
 
 ```js
 import { store, computed } from "jods";
@@ -90,6 +131,17 @@ console.log(prices.total()); // 100
 
 Generates a detailed diff object showing changes between two states.
 
+**Parameters:**
+
+| Name       | Type     | Description               |
+| ---------- | -------- | ------------------------- |
+| `oldState` | `Object` | Previous state to compare |
+| `newState` | `Object` | Current state to compare  |
+
+**Returns:** An object detailing the differences between states
+
+**Example:**
+
 ```js
 import { store, diff } from "jods";
 
@@ -104,6 +156,24 @@ console.log(changes);
 ### 🕰️ `history(store, options?)`
 
 Creates a history tracker with time-travel capabilities for a store.
+
+**Parameters:**
+
+| Name              | Type     | Description                                              |
+| ----------------- | -------- | -------------------------------------------------------- |
+| `store`           | `Object` | A jods store created with store()                        |
+| `options`         | `Object` | Optional configuration options                           |
+| `options.maxSize` | `number` | Maximum number of history entries to keep (default: 100) |
+
+**Returns:** A history controller object with the following methods:
+
+- ⏮️ `back()`: Move back one step in history
+- ⏭️ `forward()`: Move forward one step in history
+- 🔢 `travelTo(index)`: Jump to a specific point in history
+- 📜 `getHistory()`: Get the full history array
+- 🧹 `clear()`: Clear the history
+
+**Example:**
 
 ```js
 import { store, history, json } from "jods";
@@ -130,6 +200,20 @@ For more details on time-travel debugging, see the [Time-Travel Debugging](/time
 
 ### ⚛️ React
 
+**`useJods(store)`**
+
+React hook for subscribing to a jods store.
+
+**Parameters:**
+
+| Name    | Type     | Description                       |
+| ------- | -------- | --------------------------------- |
+| `store` | `Object` | A jods store created with store() |
+
+**Returns:** The current state of the store, updated reactively
+
+**Example:**
+
 ```jsx
 import { useJods } from "jods/react";
 import { store } from "jods";
@@ -151,6 +235,20 @@ function Counter() {
 ```
 
 ### ⚡️ Preact
+
+**`useJods(store)`**
+
+Preact hook for subscribing to a jods store.
+
+**Parameters:**
+
+| Name    | Type     | Description                       |
+| ------- | -------- | --------------------------------- |
+| `store` | `Object` | A jods store created with store() |
+
+**Returns:** The current state of the store, updated reactively
+
+**Example:**
 
 ```jsx
 import { useJods } from "jods/preact";
@@ -175,6 +273,23 @@ function Counter() {
 ### 💿 Remix
 
 jods provides first-class integration with Remix 💿, replacing traditional loaders and actions with reactive stores.
+
+**`defineStore(options)`**
+
+Creates a reactive store with server-side handlers and loaders.
+
+**Parameters:**
+
+| Name               | Type        | Description                                                     |
+| ------------------ | ----------- | --------------------------------------------------------------- |
+| `options`          | `Object`    | Configuration options for the store                             |
+| `options.name`     | `string`    | Unique name for the store (required)                            |
+| `options.schema`   | `ZodSchema` | Zod schema for type validation                                  |
+| `options.defaults` | `Object`    | Default values for store properties                             |
+| `options.handlers` | `Object`    | Form handler functions that process form submissions            |
+| `options.loader`   | `Function`  | Async function that loads server data, similar to Remix loaders |
+
+**Example:**
 
 ```jsx
 // Define a store with server-side handlers
