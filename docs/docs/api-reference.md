@@ -172,6 +172,51 @@ function Counter() {
 }
 ```
 
+### Remix
+
+jods provides first-class integration with Remix, replacing traditional loaders and actions with reactive stores.
+
+```jsx
+// Define a store with server-side handlers
+import { defineStore } from "jods/remix";
+import { z } from "zod";
+
+export const user = defineStore({
+  name: "user",
+  schema: z.object({
+    name: z.string(),
+    email: z.string().email(),
+  }),
+  loader: async () => {
+    // Load user data from database
+    return { name: "John", email: "john@example.com" };
+  },
+  handlers: {
+    async updateProfile({ current, form }) {
+      // Process form submission
+      return {
+        ...current,
+        name: form.get("name"),
+        email: form.get("email"),
+      };
+    },
+  },
+});
+
+// In your component
+import { useJodsStore, useJodsForm } from "jods/remix";
+
+function ProfileComponent() {
+  const userData = useJodsStore(user);
+  const form = useJodsForm(user.actions.updateProfile);
+
+  return (
+    <form {...form.props}>
+      <input name="name" defaultValue={userData.name} />
+      <button type="submit">Update</button>
+    </form>
+  );
+}
 ```
 
-```
+For comprehensive documentation on Remix integration, see the [Remix Integration Guide](/remix).
