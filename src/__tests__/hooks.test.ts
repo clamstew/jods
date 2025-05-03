@@ -23,11 +23,16 @@ describe("onUpdate", () => {
     // Update property
     testStore.firstName = "Michael";
 
-    // Callback should be called once with new state
+    // Callback should be called once with new state and old state
     expect(callback).toHaveBeenCalledTimes(1);
     expect(callback).toHaveBeenCalledWith(
       expect.objectContaining({
         firstName: "Michael",
+        lastName: "Macklin",
+        mood: "calm",
+      }),
+      expect.objectContaining({
+        firstName: "Burt",
         lastName: "Macklin",
         mood: "calm",
       })
@@ -58,6 +63,11 @@ describe("onUpdate", () => {
         firstName: "Michael",
         lastName: "Macklin",
         mood: "happy",
+      }),
+      expect.objectContaining({
+        firstName: "Michael",
+        lastName: "Macklin",
+        mood: "calm",
       })
     );
   });

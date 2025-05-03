@@ -3,18 +3,13 @@ import {
   registerStore,
   getStore,
   getAllStores,
+  _clearRegistryForTesting,
 } from "../remix/internal/registry";
 
 describe("Store Registry", () => {
   // Clear the registry before each test to ensure test isolation
   beforeEach(() => {
-    // Access the internal storeRegistry and clear it
-    // This is a bit of a hack, but it's the easiest way to reset the registry between tests
-    const anyRegistry = getAllStores as any;
-    const registry = anyRegistry.__registry || {};
-    Object.keys(registry).forEach((key) => {
-      delete registry[key];
-    });
+    _clearRegistryForTesting();
   });
 
   it("should register and retrieve a store", () => {

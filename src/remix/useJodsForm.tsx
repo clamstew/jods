@@ -7,6 +7,7 @@ export function useJodsForm(store: any, handler: string) {
   const createElement = getCreateElement();
 
   const HiddenInput = createElement("input", {
+    key: "_jods_handler_input",
     type: "hidden",
     name: "_jods_handler",
     value: handler,

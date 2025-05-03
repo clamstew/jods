@@ -15,6 +15,16 @@ export function getAllStores() {
 }
 
 /**
+ * Clears the registry - for testing purposes only
+ * @internal
+ */
+export function _clearRegistryForTesting() {
+  Object.keys(storeRegistry).forEach((key) => {
+    delete storeRegistry[key];
+  });
+}
+
+/**
  * Gets the registry object with utility methods for interacting with stores
  */
 export function getRegistry() {
