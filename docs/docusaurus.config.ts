@@ -91,52 +91,52 @@ const config: Config = {
       style: "dark",
       links: [
         {
-          title: "Docs",
+          title: "DOCS 📚",
           items: [
             {
-              label: "Getting Started",
+              label: "📖 Getting Started",
               to: "/intro",
             },
             {
-              label: "About jods",
+              label: "ℹ️ About jods",
               to: "/about",
             },
             {
-              label: "API Reference",
+              label: "🧩 API Reference",
               to: "/api-reference",
             },
           ],
         },
         {
-          title: "Community",
+          title: "COMMUNITY 👥",
           items: [
             {
-              label: "GitHub Discussions",
+              label: "💬 GitHub Discussions",
               href: "https://github.com/clamstew/jods/discussions",
             },
             {
-              label: "GitHub Issues",
+              label: "🐛 GitHub Issues",
               href: "https://github.com/clamstew/jods/issues",
             },
             {
-              label: "Creator",
+              label: "👨‍💻 Creator",
               href: "https://x.com/clay_stewart",
             },
           ],
         },
         {
-          title: "More",
+          title: "MORE 🔍",
           items: [
             {
-              label: "Blog",
+              label: "📝 Blog",
               to: "/blog",
             },
             {
-              label: "GitHub",
+              label: "🐙 GitHub",
               href: "https://github.com/clamstew/jods",
             },
             {
-              label: "npm",
+              label: "📦 npm",
               href: "https://www.npmjs.com/package/jods",
             },
           ],
