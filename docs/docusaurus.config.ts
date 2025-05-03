@@ -142,7 +142,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} clamstew and jods contributors. Built with Docusaurus.`,
+      copyright: `<span class="footer__love"><span class="footer__heart">❤️</span></span> <a href="https://github.com/clamstew">clamstew</a>. Copyright © ${new Date().getFullYear()} and jods contributors.<br /> Docs built with <a href="https://docusaurus.io/">Docusaurus</a>🙏.`,
     },
     prism: {
       theme: prismThemes.github,

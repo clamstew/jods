@@ -330,3 +330,100 @@ table .red-x {
   color: #ff5757;
   font-weight: bold;
 }
+
+/* Footer styling with purple gradient */
+.footer {
+  background: linear-gradient(
+    135deg,
+    var(--jods-purple-dark) 0%,
+    var(--jods-purple-mid) 50%,
+    var(--jods-purple-light) 100%
+  );
+  position: relative;
+  overflow: hidden;
+  color: white;
+  padding-top: 3rem;
+  padding-bottom: 2rem;
+}
+
+.footer:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--jods-orange-light),
+    transparent
+  );
+}
+
+.footer__links {
+  margin-bottom: 3rem;
+}
+
+.footer__title {
+  color: var(--jods-orange-light);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.footer__item a {
+  color: rgba(255, 255, 255, 0.8);
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: inline-block;
+}
+
+.footer__item a:hover {
+  color: var(--jods-orange-light);
+  text-decoration: none;
+  transform: translateX(3px);
+}
+
+.footer__copyright {
+  text-align: center;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer__copyright a {
+  color: var(--jods-orange-light);
+  text-decoration: none;
+}
+
+.footer__love {
+  display: inline-block;
+  position: relative;
+  padding: 0;
+}
+
+.footer__love:before {
+  content: "Made with ";
+}
+
+.footer__love:after {
+  content: " by";
+}
+
+.footer__heart {
+  color: #ff5757;
+  display: inline-block;
+  animation: heartbeat 1.5s infinite;
+}
+
+@keyframes heartbeat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+}
