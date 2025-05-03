@@ -18,7 +18,8 @@ export default function RemixIntegration(): React.ReactElement {
           className="section-title"
           style={{ textAlign: "center", marginBottom: "1rem" }}
         >
-          The <span className="gradient-text">Active Record</span> for 💿 Remix
+          The <span className="gradient-text">Active Record</span> for 💿 Remix{" "}
+          <sup style={{ fontSize: "0.5em", opacity: "0.7" }}>(potentially)</sup>
         </h2>
         <p
           className="section-description"
