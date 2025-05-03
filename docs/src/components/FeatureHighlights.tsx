@@ -25,7 +25,8 @@ export default function FeatureHighlights(): React.ReactElement {
     <section className="features-container">
       <div className="container">
         <h2 className="section-title">
-          Powerful features, <span className="gradient-text">minimal API</span>
+          ⚡️Powerful features,{" "}
+          <span className="gradient-text">minimal API 🪶</span>
         </h2>
 
         <div className="features-grid">
