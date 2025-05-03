@@ -50,9 +50,12 @@ export default function HomepageHero(): React.ReactElement {
     <div className="hero-container" ref={containerRef}>
       <div className="hero-content">
         <h1 className="hero-title">
-          <span className="gradient-text">jods</span>
+          <span className="gradient-text">💫 jods {}</span>
         </h1>
-        <p className="hero-subtitle">JavaScript Object Dynamics System</p>
+        <p className="hero-subtitle">
+          <span className="gradient-text">✨</span> JavaScript Object Dynamics
+          System 🔄
+        </p>
         <p className="hero-description">
           A fun, intuitive reactive state library that makes JavaScript objects
           come alive
