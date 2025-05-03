@@ -277,7 +277,9 @@ export const cart = defineStore({
 });
 
 // Export ready-to-use loader and action for routes
-export const loader = withJods([cart]);
+// You can export the loader in two equivalent ways:
+export const loader = withJods([cart]); // Method 1: Using withJods
+// export const loader = cart.loader;    // Method 2: Direct export (simpler for single store)
 export const action = cart.action;
 ```
 
