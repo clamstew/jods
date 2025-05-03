@@ -78,6 +78,35 @@ Creates a Remix loader that integrates with jods stores.
 
 **Returns:** A Remix-compatible loader function
 
+**Usage with useLoaderData:**
+
+When using `withJods` in a loader, the jods data is automatically made available in the component. You can access it in two ways:
+
+1. **Method 1 (Recommended): Using useJodsStore** - Access store data reactively with `useJodsStore(store)`
+2. **Method 2: Using useLoaderData** - Access the initial store data from the loader with `useLoaderData()`, where jods data is available in the `__jods` property
+
+**When to use Method 2 (useLoaderData):**
+
+- When you need to compare current state against initial server data
+- For implementing "reset to initial values" functionality
+- When migrating existing Remix applications that use `useLoaderData()`
+- For debugging server/client state differences
+- When you need to know what data was initially rendered by the server
+
+:::info Reactivity Difference
+The key distinction between these methods is _reactivity_:
+
+- `useJodsStore(user)` provides a _reactive_ reference that automatically updates when:
+
+  - Form submissions happen via `useJodsForm()`
+  - Client-side store mutations occur (like `userData.name = "New Name"`)
+  - Server fetches update the store
+
+- `useLoaderData().__jods.user` is a _static snapshot_ of what the server initially returned. This data never changes automatically, even when the underlying store is updated.
+
+This difference is why Method 1 is recommended for most UI rendering, while Method 2 is useful for comparing against or reverting to initial server state.
+:::
+
 **Example:**
 
 ```typescript
@@ -91,6 +120,32 @@ export const loader = withJods([user, cart], async ({ request }) => {
     flash: getFlashMessage(request),
   };
 });
+
+// In your component
+import { useLoaderData } from "@remix-run/react";
+import { useJodsStore } from "jods/remix";
+
+export default function MyComponent() {
+  // Method 1: Get reactive store data
+  const userData = useJodsStore(user);
+
+  // Method 2: Get loader data including initial jods state
+  const data = useLoaderData();
+  const flashMessage = data.flash;
+  const initialUserData = data.__jods?.user; // Initial non-reactive data
+
+  return (
+    <div>
+      <p>Flash message: {flashMessage}</p>
+
+      {/* Using reactive store data */}
+      <p>Current user: {userData.name}</p>
+
+      {/* Using initial store data from loader */}
+      <p>Initial user: {initialUserData?.name}</p>
+    </div>
+  );
+}
 ```
 
 ## React Hooks
