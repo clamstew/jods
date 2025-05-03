@@ -8,7 +8,7 @@ export default function RemixIntegration(): React.ReactElement {
       className="features-container"
       id="remix-integration"
       style={{
-        background: "var(--ifm-color-primary-lightest)",
+        background: "var(--ifm-color-emphasis-100)",
         padding: "4rem 0",
         color: "var(--ifm-font-color-base)",
       }}
@@ -18,7 +18,7 @@ export default function RemixIntegration(): React.ReactElement {
           className="section-title"
           style={{ textAlign: "center", marginBottom: "1rem" }}
         >
-          💿 The <span className="gradient-text">Active Record</span> for Remix
+          The <span className="gradient-text">Active Record</span> for 💿 Remix
         </h2>
         <p
           className="section-description"
@@ -29,18 +29,19 @@ export default function RemixIntegration(): React.ReactElement {
             fontSize: "1.2rem",
           }}
         >
-          jods/remix transforms how you build Remix applications by replacing
-          disconnected loaders and actions with a cohesive model-driven
-          approach.
+          <code>jods/remix</code> transforms how you build Remix applications by
+          replacing disconnected loaders and actions with a cohesive{" "}
+          <strong>model-driven</strong> approach.
         </p>
 
         <div
           className="grid-container"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+            gridTemplateColumns: "repeat(2, minmax(300px, 400px))",
             gap: "2rem",
             marginBottom: "3rem",
+            justifyContent: "center",
           }}
         >
           <div
@@ -49,7 +50,7 @@ export default function RemixIntegration(): React.ReactElement {
               background: "var(--ifm-background-surface-color)",
               padding: "1.5rem",
               borderRadius: "8px",
-              boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
+              boxShadow: "var(--ifm-global-shadow-lw)",
             }}
           >
             <h3>
@@ -71,7 +72,7 @@ export default function RemixIntegration(): React.ReactElement {
               background: "var(--ifm-background-surface-color)",
               padding: "1.5rem",
               borderRadius: "8px",
-              boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
+              boxShadow: "var(--ifm-global-shadow-lw)",
             }}
           >
             <h3>
@@ -93,7 +94,7 @@ export default function RemixIntegration(): React.ReactElement {
               background: "var(--ifm-background-surface-color)",
               padding: "1.5rem",
               borderRadius: "8px",
-              boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
+              boxShadow: "var(--ifm-global-shadow-lw)",
             }}
           >
             <h3>
@@ -115,7 +116,7 @@ export default function RemixIntegration(): React.ReactElement {
               background: "var(--ifm-background-surface-color)",
               padding: "1.5rem",
               borderRadius: "8px",
-              boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
+              boxShadow: "var(--ifm-global-shadow-lw)",
             }}
           >
             <h3>
@@ -138,7 +139,7 @@ export default function RemixIntegration(): React.ReactElement {
             background: "var(--ifm-background-surface-color)",
             padding: "2rem",
             borderRadius: "8px",
-            boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
+            boxShadow: "var(--ifm-global-shadow-lw)",
             marginBottom: "3rem",
           }}
         >
@@ -191,9 +192,31 @@ function Todos() {
 }`}
               </CodeBlock>
             </div>
-            <div style={{ flex: 1, minWidth: "300px" }}>
-              <CodeBlock language="tsx">
-                {`// todos.jods.ts
+            <div
+              style={{
+                flex: 1,
+                minWidth: "300px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+              }}
+            >
+              <div>
+                <h4 style={{ margin: "0 0 0.5rem" }}>
+                  1. Define the model with Zod
+                </h4>
+                <CodeBlock language="tsx">
+                  {`// todos.jods.ts
+import { z } from "zod";
+import { defineStore } from "jods/remix";
+
+// Define schema with Zod
+const todoSchema = z.object({
+  id: z.string(),
+  title: z.string().min(1),
+  completed: z.boolean().default(false)
+});
+
 export const todos = defineStore({
   name: "todos",
   schema: z.object({
@@ -217,9 +240,18 @@ export const todos = defineStore({
 
 // Export for route
 export const loader = todos.loader;
-export const action = todos.action;
+export const action = todos.action;`}
+                </CodeBlock>
+              </div>
+              <div>
+                <h4 style={{ margin: "0 0 0.5rem" }}>
+                  2. Import and use in your component
+                </h4>
+                <CodeBlock language="tsx">
+                  {`// Component.tsx - that's all you need!
+import { useJodsStore, useJodsForm } from "jods/remix";
+import { todos } from "~/jods/todos.jods";
 
-// Component.tsx
 function Todos() {
   const data = useJodsStore(todos);
   const form = useJodsForm(todos.actions.addTodo);
@@ -238,7 +270,8 @@ function Todos() {
     </div>
   );
 }`}
-              </CodeBlock>
+                </CodeBlock>
+              </div>
             </div>
           </div>
         </div>
@@ -246,45 +279,126 @@ function Todos() {
         <div
           className="key-benefits"
           style={{
-            textAlign: "center",
+            background: "var(--ifm-background-surface-color)",
+            padding: "2rem",
+            borderRadius: "8px",
+            boxShadow: "var(--ifm-global-shadow-lw)",
             maxWidth: "800px",
             margin: "0 auto 3rem",
           }}
         >
-          <h3>Unlike other Remix state libraries, jods:</h3>
+          <h3 style={{ textAlign: "center", marginBottom: "1rem" }}>
+            Unlike other Remix state libraries, jods:
+          </h3>
           <ul
             style={{
               textAlign: "left",
               fontSize: "1.1rem",
               listStyleType: "none",
               padding: 0,
+              marginBottom: 0,
             }}
           >
-            <li style={{ padding: "0.5rem 0" }}>
-              <span style={{ fontWeight: "bold", marginRight: "0.5rem" }}>
+            <li
+              style={{
+                padding: "0.5rem 0",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <span
+                style={{
+                  fontWeight: "bold",
+                  marginRight: "1rem",
+                  fontSize: "1.2rem",
+                }}
+              >
                 🔮
               </span>
-              Automatically syncs server and client state without manual
-              hydration
+              <span>
+                Automatically syncs server and client state without manual
+                hydration
+              </span>
             </li>
-            <li style={{ padding: "0.5rem 0" }}>
-              <span style={{ fontWeight: "bold", marginRight: "0.5rem" }}>
+            <li
+              style={{
+                padding: "0.5rem 0",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <span
+                style={{
+                  fontWeight: "bold",
+                  marginRight: "1rem",
+                  fontSize: "1.2rem",
+                }}
+              >
                 🔄
               </span>
-              Provides true reactivity for optimistic UI updates
+              <span>Provides true reactivity for optimistic UI updates</span>
             </li>
-            <li style={{ padding: "0.5rem 0" }}>
-              <span style={{ fontWeight: "bold", marginRight: "0.5rem" }}>
+            <li
+              style={{
+                padding: "0.5rem 0",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <span
+                style={{
+                  fontWeight: "bold",
+                  marginRight: "1rem",
+                  fontSize: "1.2rem",
+                }}
+              >
+                📝
+              </span>
+              <span>
+                Uses Zod schemas for runtime type validation and great DX
+              </span>
+            </li>
+            <li
+              style={{
+                padding: "0.5rem 0",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <span
+                style={{
+                  fontWeight: "bold",
+                  marginRight: "1rem",
+                  fontSize: "1.2rem",
+                }}
+              >
                 🔧
               </span>
-              Works with any backend or database (Prisma, MongoDB, SQLite, etc.)
+              <span>
+                Works with any backend or database (Prisma, MongoDB, SQLite,
+                etc.)
+              </span>
             </li>
-            <li style={{ padding: "0.5rem 0" }}>
-              <span style={{ fontWeight: "bold", marginRight: "0.5rem" }}>
+            <li
+              style={{
+                padding: "0.5rem 0",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <span
+                style={{
+                  fontWeight: "bold",
+                  marginRight: "1rem",
+                  fontSize: "1.2rem",
+                }}
+              >
                 🧩
               </span>
-              Offers a consistent model-based pattern across your entire
-              application
+              <span>
+                Offers a consistent model-based pattern across your entire
+                application
+              </span>
             </li>
           </ul>
         </div>
@@ -292,12 +406,12 @@ function Todos() {
         <div className="cta-container" style={{ textAlign: "center" }}>
           <Link
             className="button button--primary button--lg"
-            to="/docs/remix"
+            to="/remix"
             style={{
               fontWeight: "bold",
               padding: "0.8rem 1.5rem",
               borderRadius: "8px",
-              boxShadow: "0 4px 14px rgba(0,0,0,0.1)",
+              boxShadow: "var(--ifm-global-shadow-md)",
             }}
           >
             Explore Remix Integration →
