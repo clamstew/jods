@@ -21,6 +21,11 @@
       "import": "./dist/preact.js",
       "require": "./dist/preact.cjs",
       "types": "./dist/preact.d.ts"
+    },
+    "./remix": {
+      "import": "./dist/remix.js",
+      "require": "./dist/remix.cjs",
+      "types": "./dist/remix.d.ts"
     }
   },
   "files": [
@@ -33,7 +38,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "lint": "eslint \"src/**/*.ts\"",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "prepublishOnly": "npm run build",
     "docs:dev": "cd docs && pnpm start",
     "docs:build": "cd docs && pnpm build",
@@ -50,6 +55,7 @@
   "license": "MIT",
   "packageManager": "pnpm@10.8.0",
   "devDependencies": {
+    "@remix-run/react": "^2.16.5",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/preact": "^3.2.4",
     "@testing-library/react": "^16.3.0",
@@ -66,9 +72,11 @@
     "typescript": "^5.3.3",
     "vite": "^5.1.4",
     "vite-plugin-dts": "^3.7.2",
-    "vitest": "^1.2.2"
+    "vitest": "^1.2.2",
+    "zod": "^3.24.3"
   },
   "peerDependencies": {
+    "@remix-run/react": ">=1.0.0",
     "preact": ">=10.0.0",
     "react": ">=16.8.0"
   },
@@ -77,6 +85,9 @@
       "optional": true
     },
     "preact": {
+      "optional": true
+    },
+    "@remix-run/react": {
       "optional": true
     }
   }
