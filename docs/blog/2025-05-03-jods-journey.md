@@ -11,7 +11,7 @@ What started as a simple npm name-squatting exercise has evolved into something 
 
 ## The Beginning: A Short Name on npm
 
-About a week and a half ago, I decided to claim a short, memorable name on npm — [@jods](https://www.npmjs.com/package/jods) (JSON On Demand Store). I had a loose idea about creating a state management library, but nothing concrete. I just wanted a name that was easy to remember and type.
+About two weeks ago, I decided to claim a short, memorable name on npm — [@jods](https://www.npmjs.com/package/jods) (JavaScript Object Dynamics System). I had a loose idea about creating a state management library, but nothing concrete. I just wanted a name that was easy to remember and type.
 
 ## Creating a Simple API
 
@@ -116,9 +116,9 @@ function ProfilePage() {
 
 While I'm thrilled with how far jods has come in such a short time, there's still much more to explore:
 
-- Enhanced persistence options
-- Remote syncing capabilities
-- Streaming updates from server sources
+- Enhanced persistence options ([#5](https://github.com/clamstew/jods/issues/5))
+- Remote syncing capabilities ([#7](https://github.com/clamstew/jods/issues/7))
+- Streaming updates from server sources ([#9](https://github.com/clamstew/jods/issues/9))
 - Time-travel debugging
 - Developer tools
 
