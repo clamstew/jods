@@ -5,6 +5,7 @@ import HomepageHero from "@site/src/components/HomepageHero";
 import FeatureHighlights from "@site/src/components/FeatureHighlights";
 import InteractiveDemo from "@site/src/components/InteractiveDemo";
 import FrameworkShowcase from "@site/src/components/FrameworkShowcase";
+import RemixIntegration from "@site/src/components/RemixIntegration";
 import ComparisonTable from "@site/src/components/ComparisonTable";
 
 export default function Home(): React.ReactElement {
@@ -18,6 +19,7 @@ export default function Home(): React.ReactElement {
       <FeatureHighlights />
       <InteractiveDemo />
       <FrameworkShowcase />
+      <RemixIntegration />
       <ComparisonTable />
     </Layout>
   );
