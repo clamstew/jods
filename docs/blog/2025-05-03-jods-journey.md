@@ -17,10 +17,10 @@ About two weeks ago, I decided to claim a short, memorable name on npm — [@jod
 
 After securing the name, I started to flesh out what this library could be. I knew I wanted something with:
 
-- A simple, intuitive API
-- Zero dependencies
-- Easy integration with any framework
-- JSON snapshot capability out of the box
+- 🌟 A simple, intuitive API
+- 🎯 Zero dependencies
+- 🔌 Easy integration with any framework
+- 📸 JSON snapshot capability out of the box
 
 I quickly realized that with a proxy-based approach, I could create something that felt natural to use — just plain JavaScript objects that magically become reactive.
 
@@ -52,9 +52,9 @@ The simplicity compared to some other libraries surprised me. No need for select
 
 ## The Signal Revolution
 
-As the project progressed, I couldn't ignore the growing popularity of signals in frameworks like Preact, Solid, and Angular. The proposed TC39 signals spec also caught my attention.
+As the project progressed, I couldn't ignore the growing popularity of signals in frameworks like Preact, Solid, and Angular. The [proposed TC39 signals spec](https://github.com/tc39/proposal-signals) caught my attention, and I even [opened an issue](https://github.com/clamstew/jods/issues/11) to track our potential adoption of native signals.
 
-So one morning, I created a branch to rewrite jods with signals as the foundation. This enabled more fine-grained reactivity — only updating components when the specific properties they use change, rather than the entire store.
+So one morning, I created a [branch to rewrite jods with signals](https://github.com/clamstew/jods/pull/20) as the foundation. This enabled more fine-grained reactivity — only updating components when the specific properties they use change, rather than the entire store. The community showed interest too, with discussions emerging around [signal integration strategies](https://github.com/clamstew/jods/issues/23).
 
 ## Enter Remix: Rethinking the Model Layer
 
@@ -62,10 +62,10 @@ With the core reactivity model working well, I decided to tackle one of my favor
 
 I realized jods could serve as a bridge — creating a more model-centric approach where your data models define their:
 
-- Schema validation
-- Server-side loaders
-- Form handlers
-- Client-side reactivity
+- 📝 Schema validation
+- 🔄 Server-side loaders
+- 📋 Form handlers
+- ⚡️ Client-side reactivity
 
 The result is what we now have in `jods/remix` — a streamlined approach that reduces boilerplate and brings a more familiar model-view pattern to Remix development:
 
@@ -116,11 +116,11 @@ function ProfilePage() {
 
 While I'm thrilled with how far jods has come in such a short time, there's still much more to explore:
 
-- Enhanced persistence options ([#5](https://github.com/clamstew/jods/issues/5))
-- Remote syncing capabilities ([#7](https://github.com/clamstew/jods/issues/7))
-- Streaming updates from server sources ([#9](https://github.com/clamstew/jods/issues/9))
-- Time-travel debugging
-- Developer tools
+- 💾 Enhanced persistence options ([#5](https://github.com/clamstew/jods/issues/5))
+- 🔄 Remote syncing capabilities ([#7](https://github.com/clamstew/jods/issues/7))
+- 📡 Streaming updates from server sources ([#9](https://github.com/clamstew/jods/issues/9))
+- ⏰ Time-travel debugging
+- 🛠️ Developer tools
 
 ## Final Thoughts
 
