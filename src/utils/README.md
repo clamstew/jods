@@ -1,18 +1,18 @@
-# Utility Modules
+# 🛠️ Utility Modules
 
 This directory contains utility modules that provide shared functionality across the jods codebase.
 
-## reactUtils.ts
+## 🔄 reactUtils.ts
 
 This module provides utility functions for dynamically loading React, allowing:
 
-1. **Tree-shakable imports**: Only import what you need from React
-2. **Peer dependency**: React doesn't need to be bundled with jods
-3. **Dynamic loading**: Handles React loading at runtime with error protection
-4. **Consistent implementations**: Standardizes patterns for React hooks and functions
-5. **Fallback mechanisms**: Provides compatibility with different React versions
+1. **🌳 Tree-shakable imports**: Only import what you need from React
+2. **🔗 Peer dependency**: React doesn't need to be bundled with jods
+3. **⚡ Dynamic loading**: Handles React loading at runtime with error protection
+4. **🧰 Consistent implementations**: Standardizes patterns for React hooks and functions
+5. **🔄 Fallback mechanisms**: Provides compatibility with different React versions
 
-### Example Usage
+### 📚 Example Usage
 
 ```typescript
 import {
@@ -31,7 +31,7 @@ const useState = getUseState();
 const useSyncExternalStore = getUseSyncExternalStore();
 ```
 
-### Available Functions
+### 🧩 Available Functions
 
 - `getReact()`: Dynamically loads React
 - `getUseState()`: Gets React's useState hook
@@ -40,8 +40,8 @@ const useSyncExternalStore = getUseSyncExternalStore();
 - `getUseSyncExternalStore()`: Gets React's useSyncExternalStore with fallbacks
 - `getBasicHooks()`: Gets common React hooks (useState, useEffect)
 
-## Future Improvements
+## 🔮 Future Improvements
 
-The following hooks currently use their own implementations and should be updated to use reactUtils in the future:
+The following hooks currently use their own implementations and should be updated to use `reactUtils` in the future:
 
 - `useJodsStore.tsx`: Has issues with React.useSyncExternalStore and infinite loops
