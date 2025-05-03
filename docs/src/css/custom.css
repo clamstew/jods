@@ -427,3 +427,19 @@ table .red-x {
     transform: scale(1.15);
   }
 }
+
+.footer__pray {
+  display: inline-block;
+  color: #ffc559;
+  animation: float-pray 2s ease-in-out infinite;
+}
+
+@keyframes float-pray {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.1);
+  }
+}
