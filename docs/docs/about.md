@@ -53,5 +53,5 @@ jods is open to contributions! Check out our [contribution guidelines](https://g
 **Clay Stewart** is a software developer with a passion for creating intuitive developer experiences. You can find him on:
 
 - [GitHub](https://github.com/clamstew)
-- [Twitter](https://x.com/clay_stewart)
+- [X](https://x.com/clay_stewart)
 - [LinkedIn](https://www.linkedin.com/in/claystewart/)
