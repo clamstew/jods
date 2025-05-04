@@ -4,11 +4,12 @@ import HeroContent from "./HeroContent";
 import Mascots from "./Mascots";
 import AnimationControls from "./AnimationControls";
 import BackgroundAnimations from "./BackgroundAnimations";
+import { useAnimationState } from "../AnimationPauseControl";
 import "./styles.css";
 
 export default function HomepageHero(): React.ReactElement {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isPaused, setIsPaused] = useState(false);
+  const { isPaused } = useAnimationState();
   const isBrowser = useIsBrowser();
   const [colorMode, setColorMode] = useState<"dark" | "light">("light");
   const [mascotsInteracting, setMascotsInteracting] = useState(false);
@@ -39,33 +40,12 @@ export default function HomepageHero(): React.ReactElement {
     }
   }, [isBrowser]);
 
-  const toggleAnimation = () => {
-    setIsPaused((prev) => {
-      const newState = !prev;
-
-      if (containerRef.current) {
-        const elements = containerRef.current.querySelectorAll<HTMLDivElement>(
-          ".json-animation, .firefly, .hero__mascot"
-        );
-        elements.forEach((el) => {
-          if (newState) {
-            // Pause by storing current animation state
-            el.style.animationPlayState = "paused";
-          } else {
-            // Resume animation
-            el.style.animationPlayState = "running";
-          }
-        });
-
-        // Reset mascot interaction when pausing
-        if (newState) {
-          setMascotsInteracting(false);
-        }
-      }
-
-      return newState;
-    });
-  };
+  // Effect to handle mascot interaction state based on animation paused state
+  useEffect(() => {
+    if (isPaused && mascotsInteracting) {
+      setMascotsInteracting(false);
+    }
+  }, [isPaused, mascotsInteracting]);
 
   // Function to correctly handle speech bubble orientations
   const handleMascotHover = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -111,10 +91,7 @@ export default function HomepageHero(): React.ReactElement {
       />
 
       {/* Animation controls */}
-      <AnimationControls
-        isPaused={isPaused}
-        toggleAnimation={toggleAnimation}
-      />
+      <AnimationControls />
     </div>
   );
 }

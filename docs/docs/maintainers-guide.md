@@ -50,6 +50,82 @@ If the feature interacts with frameworks:
 - [ ] Update Remix integration in `src/remix/` 💿
 - [ ] Add examples showing framework integration
 
+## 🎨 Documentation Site Animation System
+
+The documentation site includes interactive animations to showcase jods's reactive features. To ensure accessibility, we provide animation controls for users who prefer reduced motion.
+
+### Animation Control Architecture 🎮
+
+We use a global React Context (`AnimationContext`) to synchronize animation state across components:
+
+1. Animation state is managed in `AnimationProvider` in `docs/src/components/AnimationPauseControl.tsx`
+2. Control buttons are placed in two key locations:
+   - Bottom right corner of the hero section
+   - Bottom right corner of the footer
+
+### Guidelines for Animation Features ✨
+
+When adding new animated components to the documentation site:
+
+1. Use the animation context by importing:
+
+   ```jsx
+   import { useAnimationState } from "../components/AnimationPauseControl";
+
+   function MyComponent() {
+     const { isPaused, toggleAnimation } = useAnimationState();
+     // ...
+   }
+   ```
+
+2. For significant animation sections, add a local control button in the bottom right corner:
+
+   ```jsx
+   <button
+     onClick={toggleAnimation}
+     className="animation-control-button"
+     aria-label={isPaused ? "Play animations" : "Pause animations"}
+     title={isPaused ? "Play animations" : "Pause animations"}
+   >
+     {isPaused ? (
+       <svg>...</svg> // Play icon
+     ) : (
+       <svg>...</svg> // Pause icon
+     )}
+   </button>
+   ```
+
+3. For CSS animations, check the `isPaused` state and apply conditional styles:
+
+   ```jsx
+   <div
+     style={{
+       animationPlayState: isPaused ? "paused" : "running",
+     }}
+   />
+   ```
+
+4. For JavaScript animations, respect the paused state in animation loops:
+
+   ```js
+   const animate = () => {
+     if (isPaused) {
+       requestAnimationFrame(animate);
+       return;
+     }
+
+     // Animation code
+     requestAnimationFrame(animate);
+   };
+   ```
+
+5. Always consider reduced motion preferences and follow established patterns in the codebase.
+
+### User Preferences 🔄
+
+- Animation state is stored in localStorage as `jods-animations-paused`
+- The site also respects the OS-level `prefers-reduced-motion` setting
+
 ## ⚠️ Common Gotchas
 
 - When adding a new export, make sure it's included in both ESM and CJS builds

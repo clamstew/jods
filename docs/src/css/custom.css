@@ -277,3 +277,73 @@ table .red-x {
   color: #ff5757;
   font-weight: bold;
 }
+
+/* Global animation pause styling */
+html.animations-paused *,
+.animations-paused * {
+  /*
+   * This will pause all CSS animations and transitions site-wide
+   * when the class 'animations-paused' is added to the html element
+   */
+  animation-play-state: paused !important;
+  transition: none !important;
+}
+
+/* Additional styles to freeze hover effects when animations are paused */
+.animations-paused .button:hover,
+.animations-paused a:hover,
+.animations-paused .feature-card:hover,
+.animations-paused .footer__item a:hover {
+  transform: none !important;
+  box-shadow: inherit !important;
+  color: inherit !important;
+  background: inherit !important;
+}
+
+/* Fix for the gradient text to ensure it stays visible even when animations are paused */
+.animations-paused .gradient-text {
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+}
+
+/* When animations are paused, still allow for subtle movement in certain elements */
+html.animations-paused .firefly,
+.animations-paused .firefly,
+html.animations-paused .footer-firefly,
+.animations-paused .footer-firefly,
+html.animations-paused .hero__mascots-sparkle,
+.animations-paused .hero__mascots-sparkle,
+html.animations-paused .footer__mascots-sparkle,
+.animations-paused .footer__mascots-sparkle {
+  /* Allow sparkles and stars to continue with subtle animation */
+  animation-play-state: running !important;
+  animation-duration: 4s !important; /* Slower animation */
+  opacity: 0.4 !important; /* Less visible */
+}
+
+/* Disable yellow line animation when paused */
+html.animations-paused .footer::after,
+.animations-paused .footer::after {
+  animation-play-state: paused !important;
+}
+
+/* Specifically target the yellow lines under nav headers */
+html.animations-paused .footer__title:after,
+.animations-paused .footer__title:after,
+html.animations-paused .footer__item a:hover,
+.animations-paused .footer__item a:hover {
+  animation-play-state: paused !important;
+  transition: none !important;
+  transform: none !important;
+}
+
+/* Respect prefers-reduced-motion setting */
+@media (prefers-reduced-motion: reduce) {
+  /* Auto-disable animations if user has requested reduced motion in their OS settings */
+  :root:not(.animations-enabled) * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

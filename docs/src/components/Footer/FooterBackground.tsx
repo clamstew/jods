@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useAnimationState } from "../AnimationPauseControl";
 
 interface Firefly {
   id: number;
@@ -12,7 +13,7 @@ interface Firefly {
 
 export function FooterBackground(): React.ReactElement {
   const [fireflies, setFireflies] = useState<Firefly[]>([]);
-  const [isPaused, setIsPaused] = useState(false);
+  const { isPaused, toggleAnimation } = useAnimationState();
   const containerRef = useRef<HTMLDivElement>(null);
   const animationFrameRef = useRef<number | null>(null);
 
@@ -73,10 +74,6 @@ export function FooterBackground(): React.ReactElement {
     };
   };
 
-  const togglePause = () => {
-    setIsPaused((prev) => !prev);
-  };
-
   return (
     <div className="footer-background" ref={containerRef} style={{ zIndex: 2 }}>
       {/* Actual fireflies */}
@@ -100,44 +97,40 @@ export function FooterBackground(): React.ReactElement {
 
       {/* Accessibility: Animation control */}
       <button
-        onClick={togglePause}
+        onClick={toggleAnimation}
         className="footer-animation-control"
         aria-label={isPaused ? "Play animations" : "Pause animations"}
         title={isPaused ? "Play animations" : "Pause animations"}
       >
         {isPaused ? (
-          <>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polygon points="5 3 19 12 5 21 5 3"></polygon>
-            </svg>
-          </>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
         ) : (
-          <>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <rect x="6" y="4" width="4" height="16"></rect>
-              <rect x="14" y="4" width="4" height="16"></rect>
-            </svg>
-          </>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <rect x="6" y="4" width="4" height="16"></rect>
+            <rect x="14" y="4" width="4" height="16"></rect>
+          </svg>
         )}
       </button>
     </div>
