@@ -500,14 +500,18 @@ export default function HomepageHero(): React.ReactElement {
         
         .hero-title .gradient-text {
           background-image: linear-gradient(135deg, 
-            ${colorMode === "dark" ? "#ff9d00, #ffbf30" : "#0ea5e9, #38bdf8"});
+            ${
+              colorMode === "dark"
+                ? "#f59e0b, #d97706" // Toned down amber/orange that matches "minimal API"
+                : "#0ea5e9, #38bdf8"
+            });
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
           display: inline-block;
           filter: drop-shadow(0 2px 5px ${
             colorMode === "dark"
-              ? "rgba(255, 163, 26, 0.4)"
+              ? "rgba(217, 119, 6, 0.4)" // Adjusted shadow to match new color
               : "rgba(56, 189, 248, 0.4)"
           });
         }
@@ -742,13 +746,18 @@ export default function HomepageHero(): React.ReactElement {
         .speech-bubble::after {
           content: '';
           position: absolute;
-          bottom: -10px;
-          width: 20px;
-          height: 20px;
+          bottom: -8px;
+          width: 16px;
+          height: 16px;
           background: inherit;
           border-right: inherit;
           border-bottom: inherit;
+          border-top: 0;
+          border-left: 0;
           transform: rotate(45deg);
+          backdrop-filter: blur(5px);
+          box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
+          z-index: -1;
         }
 
         .hero__mascot--squirrel .speech-bubble::after {
