@@ -644,3 +644,67 @@ table#compare,
   display: table !important;
   min-width: unset !important;
 }
+
+/* Enhanced API documentation styling with code colors */
+[data-theme="dark"] article h2 code,
+[data-theme="dark"] article h3 code {
+  color: #f59e0b; /* Yellow-orange for method names in headings */
+}
+
+/* Parameter name column in tables */
+[data-theme="dark"] article table tr td:first-child,
+[data-theme="dark"] [class*="docItemContainer"] table tr td:first-child {
+  color: #10b981; /* Green for parameter names */
+  font-weight: 600;
+}
+
+/* Type column in API tables */
+[data-theme="dark"] article table tr td:nth-child(2),
+[data-theme="dark"] [class*="docItemContainer"] table tr td:nth-child(2) {
+  color: #c084fc; /* Purple for types */
+  font-family: var(--ifm-font-family-monospace);
+}
+
+/* Match API method name styling with code blocks */
+[data-theme="dark"] article h2[id^="store"],
+[data-theme="dark"] article h2[id^="json"],
+[data-theme="dark"] article h2[id^="computed"],
+[data-theme="dark"] article h2[id^="diff"],
+[data-theme="dark"] article h2[id^="history"],
+[data-theme="dark"] article h2[id^="onupdate"],
+[data-theme="dark"] article h3[id^="usejods"] {
+  color: #f59e0b; /* Yellow-orange for API method names */
+}
+
+/* Function names in sidebar - using brighter yellow */
+[data-theme="dark"] .menu__link code,
+[data-theme="dark"] .table-of-contents__link code {
+  color: rgb(241, 250, 140); /* Yellow-green from code highlighting */
+  font-weight: 600;
+}
+
+/* Function names in right sidebar */
+[data-theme="dark"] .table-of-contents__link {
+  transition: color 0.2s;
+}
+
+[data-theme="dark"] .table-of-contents__link:hover {
+  color: rgb(241, 250, 140);
+}
+
+/* Function declarations in headers with params */
+[data-theme="dark"] article h1 code,
+[data-theme="dark"] article h2 code,
+[data-theme="dark"] article h3 code {
+  color: rgb(241, 250, 140); /* Yellow-green from code highlighting */
+  font-weight: 600;
+}
+
+/* Style the useJods and other function references in the text */
+[data-theme="dark"] article p code,
+[data-theme="dark"] article li code {
+  color: #f59e0b; /* match with other API references */
+  background: rgba(245, 158, 11, 0.1);
+  padding: 2px 4px;
+  border-radius: 4px;
+}
