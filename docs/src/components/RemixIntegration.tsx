@@ -261,7 +261,7 @@ export default function TodosPage() {
       </div>
 
       <div className={styles.footer}>
-        <a href="/docs/integrations/remix" className={styles.button}>
+        <a href="/jods/remix" className={styles.button}>
           Explore Remix Integration →
         </a>
       </div>
