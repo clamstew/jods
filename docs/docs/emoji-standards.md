@@ -3,11 +3,11 @@ id: emoji-standards
 title: 🎭 Emoji Standards Guide
 ---
 
-# 🎭 Emoji Standards Guide for jods
+# 🎭 Emoji Standards Guide for jods ✨
 
 This document outlines the standardized emoji usage across jods documentation and code. Consistent emoji usage helps maintain a cohesive visual language and improves recognition of concepts across different parts of the codebase and documentation.
 
-## Core Concepts
+## 📦 Core Concepts
 
 | Emoji | Concept             | Usage                                                   |
 | ----- | ------------------- | ------------------------------------------------------- |
@@ -19,7 +19,7 @@ This document outlines the standardized emoji usage across jods documentation an
 | 🕰️    | **Time-Travel**     | History and time-travel debugging features              |
 | 👂    | **Subscriptions**   | Listeners and subscription mechanisms like `onUpdate`   |
 
-## Framework Integrations
+## ⚡ Framework Integrations
 
 | Emoji | Framework  | Usage                                      |
 | ----- | ---------- | ------------------------------------------ |
@@ -27,7 +27,7 @@ This document outlines the standardized emoji usage across jods documentation an
 | ⚡    | **Preact** | Preact integration and performance         |
 | 💿    | **Remix**  | Remix integration and server-side features |
 
-## Documentation Organization
+## 📚 Documentation Organization
 
 | Emoji | Section                | Usage                                        |
 | ----- | ---------------------- | -------------------------------------------- |
@@ -38,7 +38,7 @@ This document outlines the standardized emoji usage across jods documentation an
 | ✨    | **Features**           | Feature highlights and capabilities          |
 | 🛠️    | **Maintainer's Guide** | Development and maintenance instructions     |
 
-## Product Qualities
+## ⭐ Product Qualities
 
 | Emoji | Quality       | Usage                                  |
 | ----- | ------------- | -------------------------------------- |
@@ -48,28 +48,28 @@ This document outlines the standardized emoji usage across jods documentation an
 | ⚡    | **Fast**      | Performance benefits and optimizations |
 | 🧬    | **Simple**    | Simple mental model and ease of use    |
 
-## Mascots/Branding
+## 🐿️🦆 Mascots/Branding
 
 The squirrel and duck mascots 🐿️ 🦆 should be used consistently to represent jods branding:
 
 - 🐿️ - Often used for data modeling and structure
 - 🦆 - Often used for components and UI integration
 
-## Project Identity
+## 💫 Project Identity
 
 | Emoji | Usage                                     |
 | ----- | ----------------------------------------- |
 | 💫    | Main jods logo/brand marker               |
 | ✨    | Feature highlights and magic capabilities |
 
-## Best Practices
+## 🔧 Best Practices
 
-1. **Consistency**: Use the same emoji for the same concept across all documentation
-2. **Clarity**: Choose emojis that clearly represent the concept
-3. **Moderation**: Don't overuse emojis; they should enhance, not distract
-4. **Accessibility**: Always include text descriptions alongside emojis
+1. **Consistency** ✅: Use the same emoji for the same concept across all documentation
+2. **Clarity** 🔍: Choose emojis that clearly represent the concept
+3. **Moderation** ⚖️: Don't overuse emojis; they should enhance, not distract
+4. **Accessibility** ♿: Always include text descriptions alongside emojis
 
-## Implementation in Code Comments
+## 💻 Implementation in Code Comments
 
 ```js
 // 📦 Store creation
@@ -96,6 +96,6 @@ const history = history(myStore);
 onUpdate(myStore, (state) => console.log("Store updated"));
 ```
 
-## Review and Updates
+## 🔄 Review and Updates
 
 This emoji guide should be reviewed periodically to ensure it remains relevant and consistent with jods development. New concepts may require new emoji associations, which should be added to this guide.
