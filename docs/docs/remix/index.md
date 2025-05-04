@@ -169,34 +169,34 @@ function FormStatus() {
 
 ## 📚 API Reference
 
-### 📦 defineStore
+### 📦 `defineStore`
 
 Creates a jods store with server-side handlers and loaders. [Read more](/jods/remix/api-reference#definestoreoptions)
 
-### 🏪 useJodsStore
+### 🏪 `useJodsStore`
 
 React hook to access the current state of a jods store. [Read more](/jods/remix/api-reference#usejodsstorestore)
 
-### 📋 useJodsForm
+### 📋 `useJodsForm`
 
 React hook to create form bindings for a jods store action. [Read more](/jods/remix/api-reference#usejodsformactionhandler)
 
-### 🔍 useJodsFetchers
+### 🔍 `useJodsFetchers`
 
 React hook to track the state of all fetchers for a specific jods store action. [Read more](/jods/remix/api-reference#usejodsfetchersactionid)
 
-### 🚦 useJodsTransition
+### 🚦 `useJodsTransition`
 
 React hook to track transition state for jods action submissions. [Read more](/jods/remix/api-reference#usejodstransitionactionid)
 
-### 🚀 useOptimisticUpdate
+### 🚀 `useOptimisticUpdate`
 
 React hook for implementing optimistic UI updates with jods stores. [Read more](/jods/remix/api-reference#useoptimisticupdatestore-actionname-optimisticdatafn)
 
-### 🔗 withJods
+### 🔗 `withJods`
 
 Higher-order function to integrate jods with Remix 💿 loaders and actions. [Read more](/jods/remix/api-reference#withjodsstores-loaderfn)
 
-### 💧 rehydrateClient
+### 💧 `rehydrateClient`
 
 Component to rehydrate jods stores on the client from server state. [Read more](/jods/remix/api-reference#rehydrateclientoptions)

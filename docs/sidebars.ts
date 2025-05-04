@@ -48,6 +48,7 @@ const sidebars: SidebarsConfig = {
     {
       type: "category",
       label: "💿 Remix Integration",
+      collapsed: false,
       items: [
         {
           type: "doc",
