@@ -345,27 +345,86 @@ table .red-x {
   color: white;
   padding-top: 3rem;
   padding-bottom: 2rem;
-  /* Add animated gradient background */
+  /* Enhanced animated gradient background */
   background-size: 400% 400%;
   animation: footer-gradient-shift 15s ease infinite;
 }
 
-/* Animated gradient background */
+/* Enhanced gradient animation with more movement */
 @keyframes footer-gradient-shift {
   0% {
     background-position: 0% 50%;
+    background-size: 100% 100%;
+  }
+  25% {
+    background-position: 50% 100%;
+    background-size: 150% 150%;
   }
   50% {
     background-position: 100% 50%;
+    background-size: 200% 200%;
+  }
+  75% {
+    background-position: 50% 0%;
+    background-size: 150% 150%;
   }
   100% {
     background-position: 0% 50%;
+    background-size: 100% 100%;
   }
 }
 
-/* Add subtle fireflies to footer */
+/* Add a diagonal gradient overlay to make it more pronounced */
+.footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(51, 41, 84, 0.8) 0%,
+    rgba(107, 51, 105, 0.6) 50%,
+    rgba(138, 52, 88, 0.7) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.8;
+}
+
+/* Add smooth flowing line at the top (replacing the previous one) */
 .footer::after {
   content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--jods-purple-light) 25%,
+    var(--jods-orange) 50%,
+    var(--jods-purple-light) 75%,
+    transparent 100%
+  );
+  z-index: 3;
+  animation: line-flow 8s ease-in-out infinite alternate;
+  box-shadow: 0 0 8px var(--jods-orange-light);
+}
+
+@keyframes line-flow {
+  0% {
+    transform: translateX(-25%);
+  }
+  100% {
+    transform: translateX(25%);
+  }
+}
+
+/* Firefly effect (keep it, but adjust z-index due to new ::before overlay) */
+.footer-fireflies {
   position: absolute;
   top: 0;
   left: 0;
@@ -394,45 +453,22 @@ table .red-x {
     );
   background-size: 150px 150px;
   opacity: 0.6;
-  z-index: 1;
-  animation: firefly-twinkle 10s ease-in-out infinite;
+  z-index: 2;
+  animation: firefly-float 10s ease-in-out infinite;
 }
 
-@keyframes firefly-twinkle {
-  0%,
-  100% {
+@keyframes firefly-float {
+  0% {
     opacity: 0.3;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
   50% {
     opacity: 0.7;
-    transform: translateY(-5px);
-  }
-}
-
-.footer:before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--jods-orange-light),
-    transparent
-  );
-  z-index: 2;
-  animation: shimmer 4s infinite linear;
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -300px 0;
+    transform: translateY(-5px) scale(1.05);
   }
   100% {
-    background-position: 300px 0;
+    opacity: 0.3;
+    transform: translateY(0) scale(1);
   }
 }
 
