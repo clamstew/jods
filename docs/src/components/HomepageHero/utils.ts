@@ -47,6 +47,7 @@ export const jsonSnippets = [
 // Themed emojis for the animation background
 export const themeEmojis = [
   "⚛️", // atom/reactive
+  "💿", // initial remix support
   "🔄", // refresh/update
   "✨", // sparkles/magic
   "🧩", // puzzle piece/composable
