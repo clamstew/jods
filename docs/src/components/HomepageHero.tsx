@@ -9,6 +9,7 @@ export default function HomepageHero(): React.ReactElement {
   const isBrowser = useIsBrowser();
   const elementsRef = useRef<HTMLDivElement[]>([]);
   const firefliesRef = useRef<HTMLDivElement[]>([]);
+  const emojisRef = useRef<HTMLDivElement[]>([]);
   const [colorMode, setColorMode] = useState<"dark" | "light">("light");
   const [mascotsInteracting, setMascotsInteracting] = useState(false);
 
@@ -113,13 +114,29 @@ export default function HomepageHero(): React.ReactElement {
       '{ "zod": "schema", "validation": "✅" }',
     ];
 
+    // Themed emojis related to reactive state
+    const themeEmojis = [
+      "⚛️", // atom/reactive
+      "🔄", // refresh/update
+      "✨", // sparkles/magic
+      "🧩", // puzzle piece/composable
+      "🔍", // search/computed values
+      "⏱️", // timer/time-travel
+      "🧠", // brain/state
+      "⚡", // lightning/speed
+      "📦", // package/store
+      "💾", // disk/persistence
+    ];
+
     // Create JSON floating elements
     const elements: HTMLDivElement[] = [];
     const fireflies: HTMLDivElement[] = [];
+    const emojis: HTMLDivElement[] = [];
 
     // Number of elements to create
     const numElements = 16;
     const numFireflies = 24;
+    const numEmojis = 10; // Fewer emojis to avoid making it too busy
 
     // Create a virtual grid for initial positioning
     const gridRows = 4;
@@ -149,6 +166,45 @@ export default function HomepageHero(): React.ReactElement {
 
     // Choose color palette based on current theme
     const colors = colorMode === "dark" ? darkModeColors : lightModeColors;
+
+    // Create faded emojis
+    for (let i = 0; i < numEmojis; i++) {
+      const emoji = document.createElement("div");
+      emoji.className = "faded-emoji";
+
+      // Random position throughout the container
+      emoji.style.top = `${Math.random() * 100}%`;
+      emoji.style.left = `${Math.random() * 100}%`;
+
+      // Select a random emoji from the theme set
+      const emojiIndex = Math.floor(Math.random() * themeEmojis.length);
+      emoji.textContent = themeEmojis[emojiIndex];
+
+      // Set a larger font size for the emojis
+      emoji.style.fontSize = `${Math.random() * 2 + 2}rem`;
+
+      // Very low opacity to keep them subtle
+      emoji.style.opacity = (0.1 + Math.random() * 0.2).toString(); // 0.1 to 0.3 opacity
+
+      // Add a blur effect to make them more ethereal
+      emoji.style.filter = `blur(${Math.random() * 2 + 1}px)`;
+
+      // Animation parameters for very slow, dreamlike movement
+      const duration = Math.random() * 60 + 60; // 60-120s for ultra slow movement
+      const delay = Math.random() * 15;
+
+      emoji.style.animationDuration = `${duration}s, ${
+        Math.random() * 30 + 20
+      }s`;
+      emoji.style.animationDelay = `${delay}s, ${delay}s`;
+      emoji.style.animationName = "emoji-float, emoji-fade";
+      emoji.style.animationTimingFunction = "ease-in-out, ease-in-out";
+      emoji.style.animationIterationCount = "infinite, infinite";
+      emoji.style.animationDirection = "alternate, alternate";
+
+      container.appendChild(emoji);
+      emojis.push(emoji);
+    }
 
     // Create fireflies first
     for (let i = 0; i < numFireflies; i++) {
@@ -347,6 +403,37 @@ export default function HomepageHero(): React.ReactElement {
           100% { opacity: 0.2; }
         }
         
+        /* Emoji animations */
+        @keyframes emoji-float {
+          0% { transform: translate(0, 0) rotate(0deg); }
+          25% { transform: translate(${Math.random() * 8 - 4}vw, ${
+        Math.random() * 8 - 4
+      }vh) rotate(${Math.random() * 10 - 5}deg); }
+          50% { transform: translate(${Math.random() * 8 - 4}vw, ${
+        Math.random() * 8 - 4
+      }vh) rotate(${Math.random() * 10 - 5}deg); }
+          75% { transform: translate(${Math.random() * 8 - 4}vw, ${
+        Math.random() * 8 - 4
+      }vh) rotate(${Math.random() * 10 - 5}deg); }
+          100% { transform: translate(0, 0) rotate(0deg); }
+        }
+        
+        @keyframes emoji-fade {
+          0% { opacity: 0.1; }
+          50% { opacity: 0.25; }
+          100% { opacity: 0.1; }
+        }
+        
+        .faded-emoji {
+          position: absolute;
+          pointer-events: none;
+          z-index: 4; /* Below JSON animations, above background */
+          transition: all 0.5s ease;
+          filter: blur(1px);
+          animation-timing-function: ease-in-out;
+          animation-iteration-count: infinite;
+        }
+        
         .firefly {
           position: absolute;
           border-radius: 50%;
@@ -420,6 +507,7 @@ export default function HomepageHero(): React.ReactElement {
 
     elementsRef.current = elements;
     firefliesRef.current = fireflies;
+    emojisRef.current = emojis;
 
     // Additional dreamscape effect with subtle movement
     animationRef.current = setInterval(() => {
@@ -434,6 +522,17 @@ export default function HomepageHero(): React.ReactElement {
           Math.min(0.5, currentOpacity + opacityChange)
         );
         element.style.opacity = newOpacity.toString();
+      });
+
+      // Very subtle changes for emojis
+      emojis.forEach((emoji) => {
+        const currentOpacity = parseFloat(emoji.style.opacity || "0.2");
+        const opacityChange = Math.random() * 0.05 - 0.025; // -0.025 to 0.025
+        const newOpacity = Math.max(
+          0.1,
+          Math.min(0.3, currentOpacity + opacityChange)
+        );
+        emoji.style.opacity = newOpacity.toString();
       });
 
       // More dynamic changes for fireflies
@@ -462,7 +561,7 @@ export default function HomepageHero(): React.ReactElement {
         clearInterval(animationRef.current);
       }
 
-      [...elements, ...fireflies].forEach((element) => {
+      [...elements, ...fireflies, ...emojis].forEach((element) => {
         if (element.parentNode) {
           element.parentNode.removeChild(element);
         }
