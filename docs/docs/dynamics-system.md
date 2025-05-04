@@ -46,28 +46,62 @@ Let's compare jods with some other popular approaches:
 
 Let's see how a Dynamics System makes development more intuitive:
 
-```js
-import { store, computed, onUpdate, json } from "jods";
+```typescript
+import { store, computed, onUpdate, json, diff } from "jods";
 
 // Create a reactive store
 const user = store({
   firstName: "Burt",
   lastName: "Macklin",
   age: 36,
+  department: "FBI",
 });
 
 // Add a computed property - recalculates only when dependencies change
 user.fullName = computed(() => `${user.firstName} ${user.lastName}`);
 
-// Subscribe to changes
-onUpdate(user, (newState) => {
-  console.log("User updated:", json(newState));
-});
+// Subscribe to changes with both new and old state
+onUpdate(user, (newState, oldState) => {
+  console.log("Previous state:", json(oldState));
+  console.log("Current state:", json(newState));
 
+  // Agent Macklin investigates the changes with diff()
+  const changes = diff(oldState, newState);
+  console.log("Agent Macklin's case file:", changes);
+  console.log(
+    "Macklin: 'I've identified all the changes. Just as I suspected!'"
+  );
+});
 // Make changes directly - feels like regular JavaScript!
 user.firstName = "FBI Agent";
-user.lastName = "Macklin";
-// Logs: "User updated: { firstName: 'FBI Agent', lastName: 'Macklin', age: 36, fullName: 'FBI Agent Macklin' }"
+// Logs:
+// Previous state: {
+//   firstName: 'Burt',
+//   lastName: 'Macklin',
+//   age: 36,
+//   department: 'FBI',
+//   fullName: 'Burt Macklin'
+// }
+// Current state: {
+//   firstName: 'FBI Agent',
+//   lastName: 'Macklin',
+//   age: 36,
+//   department: 'FBI',
+//   fullName: 'FBI Agent Macklin'
+// }
+// Agent Macklin's case file: {
+//   firstName: { from: 'Burt', to: 'FBI Agent' },
+//   fullName: { from: 'Burt Macklin', to: 'FBI Agent Macklin' }
+// }
+// Macklin: 'I've identified all the changes. Just as I suspected!'
+
+// Multiple properties can be changed in a single update
+Object.assign(user, {
+  lastName: "Macklin Jr.",
+  age: 37,
+  department: "Special Agent Division",
+});
+// The diff() will show all changes at once, and computed properties update automatically
 ```
 
 ## 🦋 Dynamic Adaptability
