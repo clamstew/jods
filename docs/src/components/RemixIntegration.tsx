@@ -6,11 +6,49 @@ interface FeatureProps {
   icon: React.ReactNode;
   title: string;
   description: string;
+  onFeatureClick: () => void;
+  isActive: boolean;
 }
 
-function Feature({ icon, title, description }: FeatureProps) {
+// Define highlight ranges for each feature in each tab
+const highlightRanges = {
+  traditional: {
+    sync: [3, 7], // loader section in traditional code
+    reactivity: [10, 19], // action section in traditional code
+    zod: [0, 0], // no validation in traditional
+    backend: [5, 5], // db.getTodos() line
+    model: [0, 0], // no model pattern in traditional
+  },
+  model: {
+    sync: [15, 18], // loader section
+    reactivity: [20, 29], // handlers section for reactive updates
+    zod: [4, 12], // zod schema definition
+    backend: [16, 16], // db.getTodos() line
+    model: [1, 30], // the entire model definition
+  },
+  component: {
+    sync: [5, 8], // useJodsStore hook
+    reactivity: [11, 11], // form handling for optimistic updates
+    zod: [0, 0], // no zod schema here (it's in the model)
+    backend: [0, 0], // no backend calls here (it's in the model)
+    model: [3, 5], // import and using model
+  },
+};
+
+function Feature({
+  icon,
+  title,
+  description,
+  onFeatureClick,
+  isActive,
+}: FeatureProps) {
   return (
-    <div className={styles.featureItem}>
+    <div
+      className={`${styles.featureItem} ${
+        isActive ? styles.activeFeature : ""
+      }`}
+      onClick={onFeatureClick}
+    >
       <div className={styles.featureIcon}>{icon}</div>
       <div className={styles.featureContent}>
         <h3>{title}</h3>
@@ -24,6 +62,27 @@ export default function RemixIntegration(): React.ReactElement {
   const [activeTab, setActiveTab] = useState<
     "traditional" | "model" | "component"
   >("model");
+
+  // Add state for active feature
+  const [activeFeature, setActiveFeature] = useState<string | null>(null);
+
+  // Function to handle feature click
+  const handleFeatureClick = (feature: string) => {
+    setActiveFeature(activeFeature === feature ? null : feature);
+  };
+
+  // Function to get the line highlight string for Docusaurus
+  const getLineHighlightString = () => {
+    if (!activeFeature) return "";
+
+    const range = highlightRanges[activeTab][activeFeature];
+    if (!range || range[0] === 0) return "";
+
+    // Format for Docusaurus metastring
+    return range[0] === range[1]
+      ? `{${range[0]}}`
+      : `{${range[0]}-${range[1]}}`;
+  };
 
   const traditionalCode = `// Traditional Remix Approach (without jods)
 
@@ -137,6 +196,9 @@ export default function TodosPage() {
   );
 }`;
 
+  // Get the line highlight string
+  const lineHighlight = getLineHighlightString();
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -161,6 +223,8 @@ export default function TodosPage() {
             }
             title="Automatically syncs"
             description="Server and client state without manual hydration"
+            onFeatureClick={() => handleFeatureClick("sync")}
+            isActive={activeFeature === "sync"}
           />
           <Feature
             icon={
@@ -170,6 +234,8 @@ export default function TodosPage() {
             }
             title="Provides true reactivity"
             description="For optimistic UI updates"
+            onFeatureClick={() => handleFeatureClick("reactivity")}
+            isActive={activeFeature === "reactivity"}
           />
           <Feature
             icon={
@@ -179,6 +245,8 @@ export default function TodosPage() {
             }
             title="Uses Zod schemas"
             description="For runtime type validation and great DX"
+            onFeatureClick={() => handleFeatureClick("zod")}
+            isActive={activeFeature === "zod"}
           />
           <Feature
             icon={
@@ -188,6 +256,8 @@ export default function TodosPage() {
             }
             title="Works with any backend"
             description="(Prisma, MongoDB, SQLite, etc.)"
+            onFeatureClick={() => handleFeatureClick("backend")}
+            isActive={activeFeature === "backend"}
           />
           <Feature
             icon={
@@ -197,6 +267,8 @@ export default function TodosPage() {
             }
             title="Offers a consistent model"
             description="Based pattern across your entire application"
+            onFeatureClick={() => handleFeatureClick("model")}
+            isActive={activeFeature === "model"}
           />
         </div>
 
@@ -206,7 +278,10 @@ export default function TodosPage() {
               className={`${styles.tab} ${
                 activeTab === "traditional" ? styles.activeTab : ""
               }`}
-              onClick={() => setActiveTab("traditional")}
+              onClick={() => {
+                setActiveTab("traditional");
+                setActiveFeature(null);
+              }}
             >
               <span className={styles.tabIcon}>💿</span> Traditional Remix
             </button>
@@ -214,7 +289,10 @@ export default function TodosPage() {
               className={`${styles.tab} ${
                 activeTab === "model" ? styles.activeTab : ""
               }`}
-              onClick={() => setActiveTab("model")}
+              onClick={() => {
+                setActiveTab("model");
+                setActiveFeature(null);
+              }}
             >
               <span className={styles.tabIcon}>🐿️</span> 1. jods: Define Model
             </button>
@@ -222,7 +300,10 @@ export default function TodosPage() {
               className={`${styles.tab} ${
                 activeTab === "component" ? styles.activeTab : ""
               }`}
-              onClick={() => setActiveTab("component")}
+              onClick={() => {
+                setActiveTab("component");
+                setActiveFeature(null);
+              }}
             >
               <span className={styles.tabIcon}>🦆</span> 2. jods: Use Component
             </button>
@@ -234,7 +315,11 @@ export default function TodosPage() {
                 activeTab === "traditional" ? styles.active : styles.inactive
               }`}
             >
-              <CodeBlock language="typescript" className="language-typescript">
+              <CodeBlock
+                language="typescript"
+                className="language-typescript"
+                metastring={lineHighlight}
+              >
                 {traditionalCode}
               </CodeBlock>
             </div>
@@ -243,7 +328,11 @@ export default function TodosPage() {
                 activeTab === "model" ? styles.active : styles.inactive
               }`}
             >
-              <CodeBlock language="typescript" className="language-typescript">
+              <CodeBlock
+                language="typescript"
+                className="language-typescript"
+                metastring={lineHighlight}
+              >
                 {modelCode}
               </CodeBlock>
             </div>
@@ -252,7 +341,11 @@ export default function TodosPage() {
                 activeTab === "component" ? styles.active : styles.inactive
               }`}
             >
-              <CodeBlock language="typescript" className="language-typescript">
+              <CodeBlock
+                language="typescript"
+                className="language-typescript"
+                metastring={lineHighlight}
+              >
                 {componentCode}
               </CodeBlock>
             </div>
