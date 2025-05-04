@@ -155,7 +155,10 @@
 }
 
 .hero__mascot--duck {
-  animation: mascot-roam-2 22s 1s infinite alternate-reverse ease-in-out,
+  /* Add initial positioning to prevent appearing at left edge */
+  right: 15%;
+  bottom: 25px;
+  animation: mascot-roam-2 22s infinite alternate-reverse ease-in-out,
     mascot-bounce 9s infinite alternate-reverse ease-in-out,
     mascot-glow 3s infinite alternate ease-in-out;
 }
