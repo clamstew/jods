@@ -34,6 +34,7 @@ When adding a new feature to jods, make sure to update all of these components:
   - Add a dedicated documentation page for significant features
   - Update the API reference page
   - Add examples showing the feature in action
+  - Follow the [Emoji Standards Guide](./emoji-standards) for consistent emoji usage
 
 ### 💡 4. Examples
 
