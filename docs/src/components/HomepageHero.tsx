@@ -956,7 +956,7 @@ export default function HomepageHero(): React.ReactElement {
           Intuitive reactive state brings JS objects to life
         </p>
         <p className="hero-sub-description">
-          Zero boilerplate. TypeScript-first. Blazing fast.
+          🧩 Minimal • 📐 Typesafe • ⚡ Fast
         </p>
         <div className="hero-buttons">
           <Link className="button button--primary button--lg" to="/intro">
