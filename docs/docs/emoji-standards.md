@@ -12,11 +12,12 @@ This document outlines the standardized emoji usage across jods documentation an
 | Emoji | Concept             | Usage                                                   |
 | ----- | ------------------- | ------------------------------------------------------- |
 | 📦    | **Store/State**     | Core state containers and storage-related functionality |
-| 🧮    | **Computed Values** | All references to computed values and derived state     |
+| 🧠    | **Computed Values** | All references to computed values and derived state     |
 | 🔄    | **Reactivity**      | Reactive updates, subscriptions, and state changes      |
-| 📸    | **Snapshots**       | For `json()` and serialization functionality            |
+| 🪞    | **Snapshots**       | For `json()` and serialization functionality            |
 | 🔍    | **Diff Detection**  | Diffing and comparison functionality                    |
-| ⏳    | **Time-Travel**     | History and time-travel debugging features              |
+| 🕰️    | **Time-Travel**     | History and time-travel debugging features              |
+| 👂    | **Subscriptions**   | Listeners and subscription mechanisms like `onUpdate`   |
 
 ## Framework Integrations
 
@@ -34,8 +35,18 @@ This document outlines the standardized emoji usage across jods documentation an
 | 🧪    | **API Reference**      | Function documentation and technical details |
 | 🚀    | **Getting Started**    | Introductory material and quick starts       |
 | 🔧    | **Configuration**      | Setup instructions and configuration options |
-| 🧩    | **Features**           | Feature highlights and capabilities          |
+| ✨    | **Features**           | Feature highlights and capabilities          |
 | 🛠️    | **Maintainer's Guide** | Development and maintenance instructions     |
+
+## Product Qualities
+
+| Emoji | Quality       | Usage                                  |
+| ----- | ------------- | -------------------------------------- |
+| ☁️    | **Zero Deps** | Highlighting zero dependencies         |
+| 🧩    | **Minimal**   | Emphasizing minimal API and simplicity |
+| 📐    | **Typesafe**  | TypeScript support and type safety     |
+| ⚡    | **Fast**      | Performance benefits and optimizations |
+| 🧬    | **Simple**    | Simple mental model and ease of use    |
 
 ## Mascots/Branding
 
@@ -43,6 +54,13 @@ The squirrel and duck mascots 🐿️ 🦆 should be used consistently to repres
 
 - 🐿️ - Often used for data modeling and structure
 - 🦆 - Often used for components and UI integration
+
+## Project Identity
+
+| Emoji | Usage                                     |
+| ----- | ----------------------------------------- |
+| 💫    | Main jods logo/brand marker               |
+| ✨    | Feature highlights and magic capabilities |
 
 ## Best Practices
 
@@ -57,7 +75,7 @@ The squirrel and duck mascots 🐿️ 🦆 should be used consistently to repres
 // 📦 Store creation
 const myStore = store({ count: 0 });
 
-// 🧮 Computed value
+// 🧠 Computed value
 myStore.doubled = computed(() => myStore.count * 2);
 
 // 🔄 Reactivity handling
@@ -65,14 +83,17 @@ onUpdate(myStore, (newState) => {
   console.log("State updated!");
 });
 
-// 📸 Snapshot
+// 🪞 Snapshot
 const snapshot = json(myStore);
 
 // 🔍 Diff detection
 const changes = diff(oldState, newState);
 
-// ⏳ Time-travel
+// 🕰️ Time-travel
 const history = history(myStore);
+
+// 👂 Subscription
+onUpdate(myStore, (state) => console.log("Store updated"));
 ```
 
 ## Review and Updates

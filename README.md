@@ -20,7 +20,7 @@ A fun, intuitive reactive state library that makes JavaScript objects come alive
 - ⚡ Works with React/Preact via useSyncExternalStore
 - 🪞 Built-in deep cloning with json()
 - 🧬 Minimal API, no boilerplate actions or reducers
-- 🧪 Diff detection baked in
+- 🔍 Diff detection baked in
 - 🧩 Framework agnostic, but integrates well with React/Preact
 
 ## ✨ Features
@@ -183,7 +183,7 @@ Returns a deep-cloned plain JSON snapshot of the store.
 
 Calls `callback(newState)` whenever any key is updated.
 
-### 🧮 `computed(fn)`
+### 🧠 `computed(fn)`
 
 Returns a reactive getter. Automatically re-runs when deps change.
 

@@ -67,7 +67,7 @@ export default function FeatureHighlights(): React.ReactElement {
             link="/intro"
           />
           <Feature
-            icon="🧩"
+            icon="🔄"
             title="Fine-grained Reactivity"
             description="Signal-based tracking for optimal performance, updating only what changed."
             link="/dynamics-system"

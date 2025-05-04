@@ -120,11 +120,11 @@ export default function HomepageHero(): React.ReactElement {
       "🔄", // refresh/update
       "✨", // sparkles/magic
       "🧩", // puzzle piece/composable
-      "🔍", // search/computed values
-      "⏱️", // timer/time-travel
-      "🧠", // brain/state
-      "⚡", // lightning/speed
+      "🧠", // brain/computed values
+      "🕰️", // time-travel
       "📦", // package/store
+      "⚡", // lightning/speed
+      "🪞", // snapshot/json
       "💾", // disk/persistence
     ];
 
