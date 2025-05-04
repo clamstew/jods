@@ -10,6 +10,7 @@ export default function HomepageHero(): React.ReactElement {
   const elementsRef = useRef<HTMLDivElement[]>([]);
   const firefliesRef = useRef<HTMLDivElement[]>([]);
   const [colorMode, setColorMode] = useState<"dark" | "light">("light");
+  const [mascotsInteracting, setMascotsInteracting] = useState(false);
 
   // Detect color mode on client side
   useEffect(() => {
@@ -43,7 +44,7 @@ export default function HomepageHero(): React.ReactElement {
 
       if (containerRef.current) {
         const elements = containerRef.current.querySelectorAll<HTMLDivElement>(
-          ".json-animation, .firefly"
+          ".json-animation, .firefly, .hero__mascot"
         );
         elements.forEach((el) => {
           if (newState) {
@@ -54,6 +55,11 @@ export default function HomepageHero(): React.ReactElement {
             el.style.animationPlayState = "running";
           }
         });
+
+        // Reset mascot interaction when pausing
+        if (newState) {
+          setMascotsInteracting(false);
+        }
       }
 
       return newState;
@@ -466,6 +472,26 @@ export default function HomepageHero(): React.ReactElement {
           <Link className="button button--secondary button--lg" to="/examples">
             See Examples
           </Link>
+        </div>
+      </div>
+
+      {/* Animated Mascots - Easter Egg */}
+      <div
+        className={`hero__mascots ${mascotsInteracting ? "interacting" : ""}`}
+      >
+        <div
+          className="hero__mascot hero__mascot--squirrel"
+          onClick={() => setMascotsInteracting(!mascotsInteracting)}
+          title="Click to make friends with the duck!"
+        >
+          🐿️
+        </div>
+        <div
+          className="hero__mascot hero__mascot--duck"
+          onClick={() => setMascotsInteracting(!mascotsInteracting)}
+          title="Click to make friends with the squirrel!"
+        >
+          🦆
         </div>
       </div>
 

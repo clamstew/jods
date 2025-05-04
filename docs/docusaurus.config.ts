@@ -143,7 +143,7 @@ const config: Config = {
         },
       ],
       copyright: `<div class="footer__signature">
-        <div class="footer__mascots">🐿️ 🦆</div>
+        <div class="footer__mascots"><span>🐿️</span><span>🦆</span></div>
         <div class="footer__copyright">
           Built with <span class="footer__heart">♥</span> by <a href="https://github.com/clamstew">clamstew</a><br />
           Copyright © ${new Date().getFullYear()} jods contributors
