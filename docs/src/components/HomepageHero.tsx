@@ -364,6 +364,44 @@ export default function HomepageHero(): React.ReactElement {
           100% { transform: rotate(1deg); }
         }
         
+        /* Hero title glow effect */
+        @keyframes title-glow {
+          0% { text-shadow: 0 0 10px ${
+            colorMode === "dark"
+              ? "rgba(255, 163, 26, 0.5), 0 0 20px rgba(255, 163, 26, 0.3)"
+              : "rgba(56, 189, 248, 0.5), 0 0 20px rgba(56, 189, 248, 0.3)"
+          }; }
+          50% { text-shadow: 0 0 20px ${
+            colorMode === "dark"
+              ? "rgba(255, 163, 26, 0.8), 0 0 30px rgba(255, 163, 26, 0.5)"
+              : "rgba(56, 189, 248, 0.8), 0 0 30px rgba(56, 189, 248, 0.5)"
+          }; }
+          100% { text-shadow: 0 0 10px ${
+            colorMode === "dark"
+              ? "rgba(255, 163, 26, 0.5), 0 0 20px rgba(255, 163, 26, 0.3)"
+              : "rgba(56, 189, 248, 0.5), 0 0 20px rgba(56, 189, 248, 0.3)"
+          }; }
+        }
+        
+        /* Button hover glow */
+        @keyframes button-glow {
+          0% { box-shadow: 0 0 5px ${
+            colorMode === "dark"
+              ? "rgba(255, 163, 26, 0.5)"
+              : "rgba(56, 189, 248, 0.5)"
+          }; }
+          50% { box-shadow: 0 0 15px ${
+            colorMode === "dark"
+              ? "rgba(255, 163, 26, 0.8), 0 0 20px rgba(255, 163, 26, 0.4)"
+              : "rgba(56, 189, 248, 0.8), 0 0 20px rgba(56, 189, 248, 0.4)"
+          }; }
+          100% { box-shadow: 0 0 5px ${
+            colorMode === "dark"
+              ? "rgba(255, 163, 26, 0.5)"
+              : "rgba(56, 189, 248, 0.5)"
+          }; }
+        }
+        
         /* Firefly animations */
         @keyframes firefly-path {
           0% { transform: translate(0, 0) scale(1); }
@@ -422,6 +460,161 @@ export default function HomepageHero(): React.ReactElement {
           0% { opacity: 0.1; }
           50% { opacity: 0.25; }
           100% { opacity: 0.1; }
+        }
+        
+        /* Enhanced hero content styling */
+        .hero-content {
+          position: relative;
+          z-index: 50;
+          padding: 2rem;
+          background: ${
+            colorMode === "dark"
+              ? "rgba(30, 30, 60, 0.3)"
+              : "rgba(240, 249, 255, 0.3)"
+          };
+          backdrop-filter: blur(8px);
+          border-radius: 16px;
+          border: 1px solid ${
+            colorMode === "dark"
+              ? "rgba(255, 255, 255, 0.1)"
+              : "rgba(56, 189, 248, 0.2)"
+          };
+          box-shadow: 0 10px 30px ${
+            colorMode === "dark"
+              ? "rgba(0, 0, 0, 0.3)"
+              : "rgba(14, 165, 233, 0.15)"
+          };
+          margin: 2rem auto;
+          max-width: 800px;
+          text-align: center;
+          transform: translateZ(0);
+        }
+        
+        .hero-title {
+          margin-bottom: 0.5rem;
+          font-size: 3.5rem;
+          font-weight: 800;
+          letter-spacing: -0.025em;
+          animation: title-glow 3s infinite alternate ease-in-out;
+        }
+        
+        .hero-title .gradient-text {
+          background-image: linear-gradient(135deg, 
+            ${colorMode === "dark" ? "#ff9d00, #ffbf30" : "#0ea5e9, #38bdf8"});
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+          display: inline-block;
+          filter: drop-shadow(0 2px 5px ${
+            colorMode === "dark"
+              ? "rgba(255, 163, 26, 0.4)"
+              : "rgba(56, 189, 248, 0.4)"
+          });
+        }
+        
+        .hero-subtitle {
+          font-size: 1.5rem;
+          margin-bottom: 1rem;
+          font-weight: 600;
+          letter-spacing: -0.015em;
+          opacity: 0.95;
+          text-shadow: 0 2px 4px ${
+            colorMode === "dark" ? "rgba(0, 0, 0, 0.5)" : "rgba(0, 0, 0, 0.2)"
+          };
+        }
+        
+        .hero-description {
+          font-size: 1.25rem;
+          max-width: 600px;
+          margin: 0 auto 2rem;
+          line-height: 1.6;
+          font-weight: 500;
+          text-shadow: 0 1px 2px ${
+            colorMode === "dark" ? "rgba(0, 0, 0, 0.5)" : "rgba(0, 0, 0, 0.1)"
+          };
+        }
+        
+        .hero-buttons {
+          display: flex;
+          gap: 1rem;
+          justify-content: center;
+          margin-top: 1.5rem;
+        }
+        
+        .hero-buttons .button {
+          padding: 0.75rem 1.5rem;
+          font-size: 1.1rem;
+          font-weight: 600;
+          border-radius: 8px;
+          transition: all 0.3s ease;
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .hero-buttons .button--primary {
+          background: linear-gradient(135deg, 
+            ${colorMode === "dark" ? "#ff9d00, #ff8500" : "#0ea5e9, #0284c7"});
+          border: none;
+          color: #fff;
+          box-shadow: 0 4px 12px ${
+            colorMode === "dark"
+              ? "rgba(255, 137, 0, 0.4)"
+              : "rgba(14, 165, 233, 0.4)"
+          };
+        }
+        
+        .hero-buttons .button--primary:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 20px ${
+            colorMode === "dark"
+              ? "rgba(255, 137, 0, 0.6)"
+              : "rgba(14, 165, 233, 0.6)"
+          };
+          animation: button-glow 2s infinite alternate ease-in-out;
+        }
+        
+        .hero-buttons .button--secondary {
+          background: ${
+            colorMode === "dark"
+              ? "rgba(255, 255, 255, 0.1)"
+              : "rgba(240, 249, 255, 0.7)"
+          };
+          border: 1px solid ${
+            colorMode === "dark"
+              ? "rgba(255, 255, 255, 0.2)"
+              : "rgba(56, 189, 248, 0.3)"
+          };
+          color: ${colorMode === "dark" ? "#ffffff" : "#0284c7"};
+          backdrop-filter: blur(5px);
+          box-shadow: 0 4px 12px ${
+            colorMode === "dark"
+              ? "rgba(0, 0, 0, 0.4)"
+              : "rgba(14, 165, 233, 0.2)"
+          };
+        }
+        
+        .hero-buttons .button--secondary:hover {
+          transform: translateY(-3px);
+          background: ${
+            colorMode === "dark"
+              ? "rgba(255, 255, 255, 0.15)"
+              : "rgba(240, 249, 255, 0.9)"
+          };
+          box-shadow: 0 8px 16px ${
+            colorMode === "dark"
+              ? "rgba(0, 0, 0, 0.5)"
+              : "rgba(14, 165, 233, 0.3)"
+          };
+        }
+        
+        /* Fix speech bubbles to appear above hero content */
+        .speech-bubble {
+          z-index: 100 !important;
+          position: relative;
+        }
+        
+        .hero__mascot {
+          z-index: 60;
         }
         
         .faded-emoji {
@@ -497,9 +690,145 @@ export default function HomepageHero(): React.ReactElement {
           margin-right: 6px;
         }
         
+        /* Hero container with more space for mascots */
         .hero-container {
           position: relative;
           overflow: hidden;
+          padding-bottom: 100px; /* Add more space at the bottom for mascots */
+          min-height: 520px; /* Ensure minimum height for content plus mascot space */
+        }
+        
+        /* Improved speech bubbles with more room */
+        .speech-bubble {
+          position: absolute;
+          min-width: 120px;
+          min-height: 40px;
+          background: ${
+            colorMode === "dark"
+              ? "rgba(30, 30, 60, 0.6)"
+              : "rgba(240, 249, 255, 0.8)"
+          };
+          border: 1px solid ${
+            colorMode === "dark"
+              ? "rgba(255, 255, 255, 0.2)"
+              : "rgba(56, 189, 248, 0.4)"
+          };
+          border-radius: 12px;
+          padding: 8px 12px;
+          font-size: 0.9rem;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+          backdrop-filter: blur(5px);
+          top: -45px;
+          z-index: 100;
+          color: ${colorMode === "dark" ? "#ffffff" : "#0284c7"};
+        }
+
+        .hero__mascot--squirrel .speech-bubble {
+          left: -30px;
+          transform-origin: bottom left;
+        }
+
+        .hero__mascot--duck .speech-bubble {
+          right: -30px;
+          transform-origin: bottom right;
+        }
+
+        .speech-bubble::before {
+          content: attr(data-message);
+          display: block;
+          text-align: center;
+        }
+
+        .speech-bubble::after {
+          content: '';
+          position: absolute;
+          bottom: -10px;
+          width: 20px;
+          height: 20px;
+          background: inherit;
+          border-right: inherit;
+          border-bottom: inherit;
+          transform: rotate(45deg);
+        }
+
+        .hero__mascot--squirrel .speech-bubble::after {
+          left: 20px;
+        }
+
+        .hero__mascot--duck .speech-bubble::after {
+          right: 20px;
+        }
+        
+        /* Mascot animations and positioning */
+        .hero__mascots {
+          position: absolute;
+          bottom: 0;
+          width: 100%;
+          height: 120px; /* Increased height for mascot playground */
+          z-index: 55;
+        }
+
+        .hero__mascot {
+          position: absolute;
+          font-size: 2.5rem;
+          transition: transform 0.3s ease;
+          cursor: pointer;
+          filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+        }
+        
+        .hero__mascot--squirrel {
+          animation: mascot-roam-1 20s infinite alternate ease-in-out, 
+                     mascot-bounce 8s infinite alternate ease-in-out;
+        }
+        
+        .hero__mascot--duck {
+          animation: mascot-roam-2 22s 1s infinite alternate-reverse ease-in-out,
+                     mascot-bounce 9s infinite alternate-reverse ease-in-out;
+        }
+        
+        @keyframes mascot-roam-1 {
+          0% { left: 15%; bottom: 20px; }
+          20% { left: 25%; bottom: 30px; }
+          40% { left: 40%; bottom: 15px; }
+          60% { left: 30%; bottom: 25px; }
+          80% { left: 20%; bottom: 35px; }
+          100% { left: 35%; bottom: 20px; }
+        }
+        
+        @keyframes mascot-roam-2 {
+          0% { right: 15%; bottom: 25px; }
+          20% { right: 30%; bottom: 15px; }
+          40% { right: 20%; bottom: 30px; }
+          60% { right: 35%; bottom: 20px; }
+          80% { right: 25%; bottom: 35px; }
+          100% { right: 30%; bottom: 15px; }
+        }
+        
+        @keyframes mascot-bounce {
+          0% { transform: translateY(0) rotate(0deg); }
+          20% { transform: translateY(-8px) rotate(-5deg); }
+          40% { transform: translateY(0) rotate(5deg); }
+          60% { transform: translateY(-5px) rotate(-2deg); }
+          80% { transform: translateY(3px) rotate(3deg); }
+          100% { transform: translateY(-3px) rotate(0deg); }
+        }
+        
+        .hero__mascots.interacting .hero__mascot--squirrel {
+          animation-play-state: paused;
+          left: 40%;
+          bottom: 40px;
+          transform: rotate(15deg) scale(1.1);
+        }
+        
+        .hero__mascots.interacting .hero__mascot--duck {
+          animation-play-state: paused;
+          right: 40%;
+          bottom: 40px;
+          transform: rotate(-15deg) scale(1.1);
+        }
+        
+        .hero__mascots.interacting .speech-bubble::before {
+          content: "I love reactive state!";
         }
       `;
       document.head.appendChild(styleSheet);
@@ -578,7 +907,7 @@ export default function HomepageHero(): React.ReactElement {
     <div className="hero-container" ref={containerRef}>
       <div className="hero-content">
         <h1 className="hero-title">
-          <span className="gradient-text">💫 jods {}</span>
+          <span className="gradient-text">💫 jods &#123;&#125; </span>
         </h1>
         <p className="hero-subtitle">
           <span className="gradient-text">✨</span> JavaScript Object Dynamics
