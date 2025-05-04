@@ -52,8 +52,60 @@ jods is open to contributions! Check out our [contribution guidelines](https://g
 
 ## 👨‍💻 Creator
 
-**clamstew** is a software developer with a passion for creating intuitive developer experiences. You can find him on:
+**clamstew** is a software developer with a passion for creating intuitive developer experiences.
 
-- [GitHub](https://github.com/clamstew)
-- [X](https://x.com/clay_stewart)
-- [LinkedIn](https://www.linkedin.com/in/claystewart/)
+<div className="social-links">
+  <a href="https://github.com/clamstew" target="_blank" rel="noopener noreferrer" className="social-link">
+    <span className="social-icon">🐙</span>
+    <span>GitHub</span>
+  </a>
+  
+  <a href="https://x.com/clay_stewart" target="_blank" rel="noopener noreferrer" className="social-link">
+    <span className="social-icon">𝕏</span>
+    <span>X / Twitter</span>
+  </a>
+  
+  <a href="https://www.linkedin.com/in/claystewart/" target="_blank" rel="noopener noreferrer" className="social-link">
+    <span className="social-icon">🔗</span>
+    <span>LinkedIn</span>
+  </a>
+</div>
+
+<style jsx>{`
+  .social-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 20px;
+  }
+  
+  .social-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none !important;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    color: var(--ifm-font-color-base);
+    background-color: var(--ifm-color-emphasis-100);
+  }
+  
+  .social-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  html[data-theme='dark'] .social-link {
+    background-color: var(--ifm-color-emphasis-200);
+  }
+  
+  html[data-theme='dark'] .social-link:hover {
+    background-color: var(--ifm-color-emphasis-300);
+  }
+  
+  .social-icon {
+    font-size: 1.5rem;
+  }
+`}</style>
