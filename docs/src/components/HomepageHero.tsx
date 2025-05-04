@@ -368,18 +368,18 @@ export default function HomepageHero(): React.ReactElement {
         @keyframes title-glow {
           0% { text-shadow: 0 0 10px ${
             colorMode === "dark"
-              ? "rgba(255, 163, 26, 0.5), 0 0 20px rgba(255, 163, 26, 0.3)"
-              : "rgba(56, 189, 248, 0.5), 0 0 20px rgba(56, 189, 248, 0.3)"
+              ? "rgba(245, 158, 11, 0.4), 0 0 20px rgba(245, 158, 11, 0.2)"
+              : "rgba(56, 189, 248, 0.4), 0 0 20px rgba(56, 189, 248, 0.2)"
           }; }
-          50% { text-shadow: 0 0 20px ${
+          50% { text-shadow: 0 0 15px ${
             colorMode === "dark"
-              ? "rgba(255, 163, 26, 0.8), 0 0 30px rgba(255, 163, 26, 0.5)"
-              : "rgba(56, 189, 248, 0.8), 0 0 30px rgba(56, 189, 248, 0.5)"
+              ? "rgba(245, 158, 11, 0.6), 0 0 25px rgba(245, 158, 11, 0.3)"
+              : "rgba(56, 189, 248, 0.6), 0 0 25px rgba(56, 189, 248, 0.3)"
           }; }
           100% { text-shadow: 0 0 10px ${
             colorMode === "dark"
-              ? "rgba(255, 163, 26, 0.5), 0 0 20px rgba(255, 163, 26, 0.3)"
-              : "rgba(56, 189, 248, 0.5), 0 0 20px rgba(56, 189, 248, 0.3)"
+              ? "rgba(245, 158, 11, 0.4), 0 0 20px rgba(245, 158, 11, 0.2)"
+              : "rgba(56, 189, 248, 0.4), 0 0 20px rgba(56, 189, 248, 0.2)"
           }; }
         }
         
@@ -495,25 +495,43 @@ export default function HomepageHero(): React.ReactElement {
           font-size: 3.5rem;
           font-weight: 800;
           letter-spacing: -0.025em;
-          animation: title-glow 3s infinite alternate ease-in-out;
+          animation: title-glow 4s infinite alternate ease-in-out;
         }
         
         .hero-title .gradient-text {
           background-image: linear-gradient(135deg, 
             ${
               colorMode === "dark"
-                ? "#f59e0b, #d97706" // Toned down amber/orange that matches "minimal API"
-                : "#0ea5e9, #38bdf8"
+                ? "#f59e0b, #d97706" // Amber/orange gradient matching "minimal API"
+                : "#0ea5e9, #38bdf8" // Sky blue gradient in light mode
             });
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
           display: inline-block;
-          filter: drop-shadow(0 2px 5px ${
+          filter: drop-shadow(0 2px 4px ${
             colorMode === "dark"
-              ? "rgba(217, 119, 6, 0.4)" // Adjusted shadow to match new color
-              : "rgba(56, 189, 248, 0.4)"
+              ? "rgba(245, 158, 11, 0.3)"
+              : "rgba(56, 189, 248, 0.3)"
           });
+          position: relative;
+        }
+        
+        /* Add a subtle backdrop to the text */
+        .hero-title .gradient-text::after {
+          content: "";
+          position: absolute;
+          top: -10%;
+          left: -5%;
+          right: -5%;
+          bottom: -10%;
+          background: ${
+            colorMode === "dark"
+              ? "radial-gradient(circle, rgba(245, 158, 11, 0.08) 0%, rgba(245, 158, 11, 0) 70%)"
+              : "radial-gradient(circle, rgba(56, 189, 248, 0.08) 0%, rgba(56, 189, 248, 0) 70%)"
+          };
+          z-index: -1;
+          border-radius: 50%;
         }
         
         .hero-subtitle {
@@ -528,11 +546,23 @@ export default function HomepageHero(): React.ReactElement {
         }
         
         .hero-description {
-          font-size: 1.25rem;
+          font-size: 1.35rem;
+          max-width: 600px;
+          margin: 0 auto 0.5rem;
+          line-height: 1.5;
+          font-weight: 600;
+          text-shadow: 0 1px 2px ${
+            colorMode === "dark" ? "rgba(0, 0, 0, 0.5)" : "rgba(0, 0, 0, 0.1)"
+          };
+        }
+        
+        .hero-sub-description {
+          font-size: 1.1rem;
           max-width: 600px;
           margin: 0 auto 2rem;
-          line-height: 1.6;
+          line-height: 1.5;
           font-weight: 500;
+          opacity: 0.85;
           text-shadow: 0 1px 2px ${
             colorMode === "dark" ? "rgba(0, 0, 0, 0.5)" : "rgba(0, 0, 0, 0.1)"
           };
@@ -923,8 +953,10 @@ export default function HomepageHero(): React.ReactElement {
           System 🔄
         </p>
         <p className="hero-description">
-          A fun, intuitive reactive state library that makes JavaScript objects
-          come alive
+          Intuitive reactive state brings JS objects to life
+        </p>
+        <p className="hero-sub-description">
+          Zero boilerplate. TypeScript-first. Blazing fast.
         </p>
         <div className="hero-buttons">
           <Link className="button button--primary button--lg" to="/intro">
