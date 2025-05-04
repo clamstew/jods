@@ -17,6 +17,14 @@ export default function HomepageHero(): React.ReactElement {
       '{ "computed": () => {} }',
       '{ "frameworks"?: ["remix", "react", "preact", "vanilla"] }',
       '{ "🐿️": "🦆" }',
+      '{ "agent": "Burt Macklin, FBI" }',
+      '{ "threat_level": "Midnight" }',
+      '{ "agent": "Michael Scarn" }',
+      '{ "time_travel": true }',
+      '{ "history": ["past", "present", "future"] }',
+      '{ "state": "reactive", "mood": "happy" }',
+      '{ "debug": { "enabled": true, "level": "over 9000" } }',
+      '{ "zod": "schema", "validation": "✅" }',
     ];
 
     // Create JSON floating elements
