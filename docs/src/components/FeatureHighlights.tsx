@@ -40,37 +40,37 @@ export default function FeatureHighlights(): React.ReactElement {
             icon="☁️"
             title="Zero Dependencies"
             description="No bloat, no overhead, just pure performance with a tiny footprint."
-            link="/docs/intro#lightweight-and-zero-dependencies"
+            link="/intro"
           />
           <Feature
             icon="🧠"
             title="Computed Values"
             description="Create reactive derived state that updates automatically when dependencies change."
-            link="/docs/api-reference#-computedfn"
+            link="/api-reference#-computedfn"
           />
           <Feature
             icon="⚡"
             title="Framework Integration"
             description="First-class support for React, Preact, and Remix with dedicated hooks and adapters."
-            link="/docs/remix"
+            link="/remix"
           />
           <Feature
             icon="🪞"
             title="JSON Snapshots"
             description="Get serializable state snapshots on demand with json() - perfect for APIs and persistence."
-            link="/docs/api-reference#-jsonstore"
+            link="/api-reference#-jsonstore"
           />
           <Feature
             icon="🧬"
             title="Simple Mental Model"
             description="Just use objects directly - no actions, reducers, or boilerplate to manage your state."
-            link="/docs/intro#intuitive-api"
+            link="/intro"
           />
           <Feature
             icon="🧩"
             title="Fine-grained Reactivity"
             description="Signal-based tracking for optimal performance, updating only what changed."
-            link="/docs/dynamics-system"
+            link="/dynamics-system"
           />
         </div>
       </div>
