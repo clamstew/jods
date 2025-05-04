@@ -334,35 +334,106 @@ export default function MyComponent() {
 
 ## 🖥️ Server Components
 
-### 🔁 `rehydrateClient(options?)`
+### 🔁 `rehydrateClient(jodsSnapshot, stores)`
 
-Component to rehydrate jods stores on the client from server state.
+A crucial client-side function to rehydrate jods stores from server-generated snapshots. This function should be called in your app's entry client file to ensure that server-rendered state is properly synchronized with client-side jods stores.
+
+**Why is this needed?**
+**You must use this function in every Remix app that uses jods stores.** During the Remix SSR lifecycle, data is loaded on the server through loaders, then sent to the client as part of the initial HTML. Without explicit hydration, your client-side jods stores would start empty, regardless of what was loaded on the server. The `rehydrateClient` function establishes this critical server-to-client data bridge.
+
+**When do you need this?**
+
+- ✅ **Always required** when using any jods stores with Remix, even with a single store
+- ✅ Add it to your `entry.client.tsx` file as shown in the example below
+- ✅ Include all your jods stores in the stores array parameter
+- ❌ There is no "batteries-included" version that does this automatically
+
+**Alternative approaches:**
+
+- For simpler projects, you could create a custom wrapper function in your app that imports all stores and calls `rehydrateClient` automatically
+- A future version of jods may provide a simplified API like `setupJodsRemix()` that handles this automatically
 
 **Parameters:**
 
-| Name              | Type            | Description                     |
-| ----------------- | --------------- | ------------------------------- |
-| `options`         | `Object`        | Optional configuration options  |
-| `options.hydrate` | `Array<string>` | Array of store names to hydrate |
+| Name           | Type                  | Description                                               |
+| -------------- | --------------------- | --------------------------------------------------------- |
+| `jodsSnapshot` | `Record<string, any>` | An object mapping store names to their initial state data |
+| `stores`       | `Array<Store>`        | Array of jods store instances to be hydrated              |
 
-**Example:**
+**When to use:**
+
+- In your app's entry client file (`entry.client.tsx`)
+- After the initial render, to hydrate jods stores with server data
+- Before user interactions that might depend on reactive store data
+
+**Implementation Example:**
 
 ```tsx
-import { rehydrateClient as RehydrateJodsStores } from "jods/remix";
+// app/entry.client.tsx
+import { hydrateRoot } from "react-dom/client";
+import { RemixBrowser } from "@remix-run/react";
+import { rehydrateClient } from "jods/remix";
+import { user } from "./jods/user.jods";
+import { cart } from "./jods/cart.jods";
+
+// Get the server snapshot from window.__JODS_DATA__
+// This is typically injected by the server renderer
+const jodsSnapshot = window.__JODS_DATA__ || {};
+
+// Rehydrate all jods stores with their initial server data
+rehydrateClient(jodsSnapshot, [user, cart]);
+
+// Then proceed with standard Remix hydration
+hydrateRoot(document, <RemixBrowser />);
+```
+
+**Root Layout Component Example:**
+
+To make the server snapshot available on the client, include it in your root layout:
+
+```tsx
+// app/root.tsx
+import { json } from "@remix-run/node";
+import { Links, Meta, Outlet, Scripts, useLoaderData } from "@remix-run/react";
+import { withJods } from "jods/remix";
+import { user } from "./jods/user.jods";
+import { cart } from "./jods/cart.jods";
+
+// Integrate jods with your root loader
+export const loader = withJods([user, cart]);
 
 export default function App() {
+  const data = useLoaderData();
+
   return (
-    <html>
-      <head>{/* ... */}</head>
+    <html lang="en">
+      <head>
+        <Meta />
+        <Links />
+      </head>
       <body>
-        <RehydrateJodsStores hydrate={["user", "cart"]} />
         <Outlet />
+
+        {/* This makes the jods data available to the client */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.__JODS_DATA__ = ${JSON.stringify(
+              data.__jods || {}
+            )};`,
+          }}
+        />
         <Scripts />
       </body>
     </html>
   );
 }
 ```
+
+**Technical Details:**
+
+- The `rehydrateClient` function uses `Object.assign` to update store properties, which properly triggers signals in the reactive system
+- It handles missing or partial snapshots gracefully, only updating stores that have matching data
+- This is essential for the "hydration" phase of a Remix application, where server-rendered HTML becomes interactive
 
 ## 🛠️ Utility Functions
 
