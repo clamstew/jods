@@ -15,7 +15,7 @@ The jods Remix 💿 integration provides a seamless way to manage your applicati
 ### 📦 Installation
 
 ```bash
-npm install jods zod
+pnpm install jods zod
 ```
 
 ### 🔌 Basic Setup
