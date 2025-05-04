@@ -32,7 +32,7 @@ This document outlines the standardized emoji usage across jods documentation an
 | Emoji | Section                | Usage                                        |
 | ----- | ---------------------- | -------------------------------------------- |
 | 📋    | **Examples**           | Code samples and usage examples              |
-| 🧪    | **API Reference**      | Function documentation and technical details |
+| 📚    | **API Reference**      | Function documentation and technical details |
 | 🚀    | **Getting Started**    | Introductory material and quick starts       |
 | 🔧    | **Configuration**      | Setup instructions and configuration options |
 | ✨    | **Features**           | Feature highlights and capabilities          |
