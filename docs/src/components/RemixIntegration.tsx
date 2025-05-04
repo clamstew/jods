@@ -139,7 +139,10 @@ export default function TodosPage() {
           <span className={styles.remix}>💿 Remix</span> State, Reimagined
         </h2>
         <p className={styles.subtitle}>
-          Simple, reactive, type-safe state management for your Remix apps
+          <span className={styles.highlight}>Active Record pattern</span> for
+          Remix:
+          <br />
+          simple, reactive, type-safe state management
         </p>
       </div>
 
