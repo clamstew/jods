@@ -472,6 +472,14 @@ table .red-x {
   }
 }
 
+/* Add helper classes to fix text orientation during rotation */
+.text-always-forward::after {
+  /* Counter the parent's rotation to keep text readable */
+  backface-visibility: hidden;
+  transform: rotateY(0deg);
+  transform-style: flat;
+}
+
 .footer__copyright {
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.7);
@@ -548,7 +556,8 @@ table .red-x {
   transition: all 0.3s ease;
 }
 
-.hero__mascot::after {
+/* Speech bubble styling */
+.speech-bubble {
   position: absolute;
   top: -40px;
   opacity: 0;
@@ -561,35 +570,57 @@ table .red-x {
   border-radius: 15px;
   white-space: nowrap;
   pointer-events: none;
+  transform: rotateY(0deg); /* Always face forward */
+  transform-style: preserve-3d;
+  backface-visibility: visible;
+  z-index: 100; /* Ensure it's above everything */
 }
 
-.hero__mascot:hover::after {
-  opacity: 1;
-  transform: translateY(-5px);
-}
-
-.hero__mascot--squirrel::after {
+/* Add content to speech bubbles */
+.hero__mascot--squirrel .speech-bubble::before {
   content: "I love storing reactive state! 🌰";
-  left: 0;
+  white-space: nowrap;
 }
 
-.hero__mascot--duck::after {
+.hero__mascot--duck .speech-bubble::before {
   content: "Quack! JSON on demand! 📦";
+  white-space: nowrap;
+}
+
+/* Position the bubbles */
+.hero__mascot--squirrel .speech-bubble {
+  left: 0;
+  transform-origin: bottom left;
+}
+
+.hero__mascot--duck .speech-bubble {
   right: 0;
+  transform-origin: bottom right;
+}
+
+/* Hover effect for mascots */
+.hero__mascot:hover {
+  transform: scale(1.5);
+  filter: drop-shadow(0 0 20px rgba(255, 154, 92, 0.8));
+}
+
+.hero__mascot:hover .speech-bubble {
+  opacity: 1;
+  transform: translateY(-5px) rotateY(0deg);
 }
 
 /* When interacting, show a different message */
-.hero__mascots.interacting .hero__mascot--squirrel::after,
-.hero__mascots.interacting .hero__mascot--duck::after {
+.hero__mascots.interacting .hero__mascot--squirrel .speech-bubble,
+.hero__mascots.interacting .hero__mascot--duck .speech-bubble {
   opacity: 1;
-  transform: translateY(-5px);
+  transform: translateY(-5px) rotateY(0deg);
 }
 
-.hero__mascots.interacting .hero__mascot--squirrel::after {
+.hero__mascots.interacting .hero__mascot--squirrel .speech-bubble::before {
   content: "We make a great team! 🤝";
 }
 
-.hero__mascots.interacting .hero__mascot--duck::after {
+.hero__mascots.interacting .hero__mascot--duck .speech-bubble::before {
   content: "Dynamic duo! 💪";
 }
 
@@ -601,11 +632,6 @@ table .red-x {
 .hero__mascot--duck {
   animation: mascot-swim 18s infinite alternate-reverse;
   font-size: 2rem;
-}
-
-.hero__mascot:hover {
-  transform: scale(1.5);
-  filter: drop-shadow(0 0 20px rgba(255, 154, 92, 0.8));
 }
 
 /* Squirrel runs across the screen */

@@ -66,6 +66,30 @@ export default function HomepageHero(): React.ReactElement {
     });
   };
 
+  // Function to correctly handle speech bubble orientations
+  const handleMascotHover = (e: React.MouseEvent<HTMLDivElement>) => {
+    const element = e.currentTarget;
+    const transform = window.getComputedStyle(element).transform;
+
+    // If mascot is flipped, make sure speech bubble faces the right direction
+    const speechBubble = element.querySelector(
+      ".speech-bubble"
+    ) as HTMLDivElement;
+    if (speechBubble) {
+      // Check if the mascot is flipped (rotateY around 180deg)
+      if (
+        transform.includes("matrix") &&
+        transform.split(",")[0].includes("-")
+      ) {
+        // If mascot is flipped, counter-rotate the speech bubble
+        speechBubble.style.transform = "rotateY(180deg)";
+      } else {
+        // If mascot is normal, keep speech bubble normal
+        speechBubble.style.transform = "rotateY(0deg)";
+      }
+    }
+  };
+
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -482,16 +506,20 @@ export default function HomepageHero(): React.ReactElement {
         <div
           className="hero__mascot hero__mascot--squirrel"
           onClick={() => setMascotsInteracting(!mascotsInteracting)}
+          onMouseEnter={handleMascotHover}
           title="Click to make friends with the duck!"
         >
           🐿️
+          <div className="speech-bubble"></div>
         </div>
         <div
           className="hero__mascot hero__mascot--duck"
           onClick={() => setMascotsInteracting(!mascotsInteracting)}
+          onMouseEnter={handleMascotHover}
           title="Click to make friends with the squirrel!"
         >
           🦆
+          <div className="speech-bubble"></div>
         </div>
       </div>
 
