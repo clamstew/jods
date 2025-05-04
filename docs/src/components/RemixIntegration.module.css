@@ -2,6 +2,7 @@
   padding: 4rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  margin-top: 2rem;
   background: var(--ifm-color-emphasis-100);
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
