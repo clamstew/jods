@@ -106,10 +106,14 @@ export const action = todos.action;`;
   const componentCode = `// todos.tsx
 import { useLoaderData, Form } from "@remix-run/react";
 import { todos } from "~/todos.jods";
+import { useJodsStore, useJodsForm } from "jods/remix";
 
 export default function TodosPage() {
   // Type-safe access to your state
-  const { items } = todos.useStore();
+  const { items } = useJodsStore(todos);
+  
+  // Automatic form handling with action integration
+  const form = useJodsForm(todos.handlers.addTodo);
   
   return (
     <div>
@@ -124,10 +128,11 @@ export default function TodosPage() {
         ))}
       </ul>
       
-      <Form method="post">
+      {/* Form with automatic action integration */}
+      <form {...form.props}>
         <input name="title" placeholder="New todo..." />
         <button type="submit">Add</button>
-      </Form>
+      </form>
     </div>
   );
 }`;
