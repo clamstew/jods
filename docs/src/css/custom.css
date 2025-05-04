@@ -236,10 +236,56 @@
 /* Custom styling for the comparison table */
 table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   border-radius: 8px;
-  overflow: hidden;
+  margin-bottom: 1.5rem;
+  /* Remove global box-shadow and let containers handle it */
+  box-shadow: none;
+}
+
+/* Wrap all tables in markdown with proper container */
+.markdown table,
+article table {
+  /* Use relative positioning for the table */
+  position: relative;
+  /* Remove any margins that might cause overflow */
+  margin: 0;
+  width: 100%;
+  /* Ensure proper overflow handling */
+  max-width: 100%;
+}
+
+/* Create a proper container for all tables */
+.markdown table,
+article table {
+  /* Add a wrapper container style */
+  display: block;
+  overflow-x: auto;
+  padding: 0;
+  /* Add proper border radius */
+  border-radius: 8px;
+  /* Use box-shadow on container instead of table */
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  /* Ensure no overflow issues */
+  max-width: 100%;
+}
+
+/* Fix border-radius for table corners */
+table thead tr:first-child th:first-child {
+  border-top-left-radius: 8px;
+}
+
+table thead tr:first-child th:last-child {
+  border-top-right-radius: 8px;
+}
+
+table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 8px;
+}
+
+table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 8px;
 }
 
 table thead {
@@ -255,6 +301,7 @@ table th {
   padding: 1rem;
   text-align: left;
   border: none;
+  white-space: nowrap;
 }
 
 table tbody tr:nth-child(odd) {
@@ -265,6 +312,60 @@ table td {
   padding: 1rem;
   border: none;
   border-bottom: 1px solid var(--ifm-table-border-color);
+}
+
+/* Remove last row's bottom border for cleaner look */
+table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Special handling for API reference tables */
+.api-reference table,
+.api-method table,
+[class*="apiDocs"] table,
+[class*="DocSearch"] table,
+.docusaurus-highlight-code-line table,
+[class*="docMainContainer"] table,
+[class*="docItemContainer"] table,
+.markdown-body table {
+  /* Reset border-radius to prevent clipping */
+  border-radius: 8px;
+  /* Force contained box-shadow */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  /* Fix overflow issues */
+  overflow: hidden;
+  /* Ensure the table doesn't cause layout issues */
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 1.5rem;
+  /* Prevent shadow from extending beyond container */
+  isolation: isolate;
+  /* Clip shadow to avoid overflow */
+  transform: translateZ(0);
+  /* Fix for Safari */
+  -webkit-transform: translateZ(0);
+  /* Force hardware acceleration */
+  will-change: transform;
+  /* Prevent content overflow */
+  table-layout: auto;
+}
+
+/* Styles for the table container we added to ComparisonTable */
+.table-container {
+  overflow-x: auto;
+  border-radius: 8px;
+  /* Let the container handle the shadow */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+  /* Ensure it stays within bounds */
+  max-width: 100%;
+  /* Prevent shadow overflow */
+  isolation: isolate;
+}
+
+.table-container table {
+  margin: 0;
+  box-shadow: none;
 }
 
 /* Custom checkmark and x styling */
@@ -346,4 +447,200 @@ html.animations-paused .footer__item a:hover,
     transition-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
   }
+}
+
+/* Override Docusaurus default table styles */
+article > div > div table,
+[class*="docPage"] table,
+[class*="tableOfContents"] + div table,
+main > div > div > article table {
+  display: block !important;
+  table-layout: fixed !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 8px !important;
+  margin-bottom: 1.5rem !important;
+  border: none !important;
+  /* Fix the shadow bleeding */
+  position: relative !important;
+  z-index: 1 !important;
+  isolation: isolate !important;
+}
+
+/* Ensure tables don't have double shadows */
+article > div > div table table,
+[class*="docPage"] table table,
+[class*="tableOfContents"] + div table table,
+main > div > div > article table table {
+  box-shadow: none !important;
+  margin-bottom: 0 !important;
+}
+
+/* Custom fix for the API references - they often use a different structure */
+[data-footnote-ref] ~ table,
+[id^="parameters"] ~ table,
+[id^="returns"] ~ table,
+[id^="example"] ~ table {
+  display: block !important;
+  width: auto !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+  border: none !important;
+  /* Force contained shadow */
+  position: relative !important;
+  z-index: 1 !important;
+  isolation: isolate !important;
+  transform: translateZ(0) !important;
+  /* Fix weird margins causing overflow */
+  margin: 1rem 0 1.5rem 0 !important;
+  /* Align to the left instead of stretching full width */
+  margin-right: auto !important;
+  align-self: flex-start !important;
+}
+
+/* Target API doc tables specifically to make them float left */
+article > div > div table:not(.table-container table),
+[class*="docPage"] table:not(.table-container table),
+[class*="tableOfContents"] + div table:not(.table-container table),
+main > div > div > article table:not(.table-container table) {
+  width: auto !important;
+  margin-right: auto !important;
+  align-self: flex-start !important;
+}
+
+/* Keep the homepage Comparison table full width */
+.features-container .table-container table,
+#compare .table-container table {
+  width: 100% !important;
+  margin: 0 auto !important;
+  align-self: center !important;
+}
+
+/* Keep other table styling for the Comparison table */
+.features-container .table-container,
+#compare .table-container {
+  width: 100% !important;
+  max-width: 900px !important;
+  margin: 0 auto !important;
+}
+
+/* Disable box-shadow if the table is in a scrollable container */
+.table-container table,
+.markdown table table {
+  box-shadow: none !important;
+  margin-bottom: 0 !important;
+}
+
+/* Override Docusaurus default table styles for API docs */
+article > div > div table:not(.features-container table):not(#compare table),
+[class*="docPage"] table:not(.features-container table):not(#compare table),
+[class*="tableOfContents"]
+  + div
+  table:not(.features-container table):not(#compare table),
+main
+  > div
+  > div
+  > article
+  table:not(.features-container table):not(#compare table) {
+  display: inline-block !important;
+  width: auto !important;
+  min-width: 50% !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 8px !important;
+  margin: 1rem 0 1.5rem 0 !important;
+  border: none !important;
+  /* Fix the shadow bleeding */
+  position: relative !important;
+  z-index: 1 !important;
+  isolation: isolate !important;
+  /* Left align */
+  float: left !important;
+  clear: left !important;
+}
+
+/* Reset alignment inside table structure */
+article > div > div table:not(.features-container table):not(#compare table) *,
+[class*="docPage"] table:not(.features-container table):not(#compare table) *,
+[class*="tableOfContents"]
+  + div
+  table:not(.features-container table):not(#compare table)
+  *,
+main
+  > div
+  > div
+  > article
+  table:not(.features-container table):not(#compare table)
+  * {
+  float: none !important;
+  clear: none !important;
+}
+
+/* Extra-specific selector for API reference tables */
+[class*="docPage"] [id^="parameters"] ~ table,
+[class*="docPage"] [id^="returns"] ~ table,
+[class*="docPage"] [id^="example"] ~ table,
+[class*="docItemContainer"] [id^="parameters"] ~ table,
+[class*="docItemContainer"] [id^="returns"] ~ table,
+[class*="docItemContainer"] [id^="example"] ~ table {
+  display: inline-block !important;
+  width: auto !important;
+  min-width: 50% !important;
+  max-width: 100% !important;
+  float: left !important;
+  clear: left !important;
+}
+
+/* Highly specific API reference table styling */
+article table,
+main article table,
+[class*="docItemContainer"] table,
+section[class*="docItemContainer"] table,
+div[class*="docItemContainer"] table,
+[class*="docMainContainer"] [class*="docItemContainer"] table,
+body [class*="docPage"] table {
+  width: auto !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  display: table !important;
+  table-layout: auto !important;
+}
+
+/* Target specifically tables in Parameter sections of API docs */
+article h3:has(+ table),
+article h2:has(+ table),
+article p:has(+ table),
+[id="parameters"]:has(+ table),
+[id="returns"]:has(+ table),
+[id="example"]:has(+ table) {
+  clear: both !important;
+}
+
+/* Retain full width for comparison table */
+section#compare table,
+.features-container table,
+#compare table,
+.table-container table {
+  width: 100% !important;
+  display: table !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Disable float for comparison table specifically */
+#compare table,
+section#compare table,
+.table-container#compare table,
+table#compare,
+.features-container #compare table {
+  float: none !important;
+  clear: none !important;
+  width: 100% !important;
+  display: table !important;
+  min-width: unset !important;
 }

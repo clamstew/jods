@@ -19,13 +19,16 @@ export default function ComparisonTable(): React.ReactElement {
         </p>
 
         <div
+          className="table-container"
           style={{
             overflowX: "auto",
             maxWidth: "900px",
             margin: "0 auto",
+            borderRadius: "8px",
+            boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
           }}
         >
-          <table>
+          <table style={{ margin: 0, boxShadow: "none" }}>
             <thead>
               <tr>
                 <th>Feature</th>
