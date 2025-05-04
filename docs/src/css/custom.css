@@ -43,6 +43,29 @@
 
 /* Add your custom styles here */
 
+/* Global gradient text styling */
+.gradient-text {
+  background-image: linear-gradient(
+    135deg,
+    var(--jods-purple-mid),
+    var(--jods-orange)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+  filter: drop-shadow(0 2px 4px rgba(255, 154, 92, 0.3));
+}
+
+[data-theme="dark"] .gradient-text {
+  background-image: linear-gradient(
+    135deg,
+    var(--jods-orange),
+    var(--jods-orange-light)
+  );
+  filter: drop-shadow(0 2px 4px rgba(255, 154, 92, 0.5));
+}
+
 /* Logo styling */
 .navbar__logo {
   display: flex;
