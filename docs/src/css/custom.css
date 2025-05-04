@@ -345,6 +345,69 @@ table .red-x {
   color: white;
   padding-top: 3rem;
   padding-bottom: 2rem;
+  /* Add animated gradient background */
+  background-size: 400% 400%;
+  animation: footer-gradient-shift 15s ease infinite;
+}
+
+/* Animated gradient background */
+@keyframes footer-gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Add subtle fireflies to footer */
+.footer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background-image: radial-gradient(
+      circle at 20% 30%,
+      rgba(255, 255, 255, 0.15) 0.5px,
+      transparent 8px
+    ),
+    radial-gradient(
+      circle at 75% 20%,
+      rgba(255, 255, 255, 0.1) 0.5px,
+      transparent 5px
+    ),
+    radial-gradient(
+      circle at 40% 80%,
+      rgba(255, 255, 255, 0.2) 0.5px,
+      transparent 6px
+    ),
+    radial-gradient(
+      circle at 85% 70%,
+      rgba(255, 255, 255, 0.15) 0.5px,
+      transparent 7px
+    );
+  background-size: 150px 150px;
+  opacity: 0.6;
+  z-index: 1;
+  animation: firefly-twinkle 10s ease-in-out infinite;
+}
+
+@keyframes firefly-twinkle {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateY(-5px);
+  }
 }
 
 .footer:before {
@@ -360,10 +423,23 @@ table .red-x {
     var(--jods-orange-light),
     transparent
   );
+  z-index: 2;
+  animation: shimmer 4s infinite linear;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -300px 0;
+  }
+  100% {
+    background-position: 300px 0;
+  }
 }
 
 .footer__links {
   margin-bottom: 3rem;
+  position: relative;
+  z-index: 3;
 }
 
 .footer__title {
@@ -385,10 +461,22 @@ table .red-x {
   width: 30px;
   height: 2px;
   background: var(--jods-orange);
+  animation: footer-title-underline 3s ease-in-out infinite alternate;
+}
+
+@keyframes footer-title-underline {
+  from {
+    width: 30px;
+  }
+  to {
+    width: 50px;
+  }
 }
 
 .footer__item {
   margin-bottom: 0.75rem;
+  position: relative;
+  z-index: 3;
 }
 
 .footer__item a {
@@ -404,6 +492,7 @@ table .red-x {
   color: var(--jods-orange-light);
   text-decoration: none;
   transform: translateX(3px);
+  text-shadow: 0 0 8px rgba(255, 163, 26, 0.5);
 }
 
 /* Signature section */
