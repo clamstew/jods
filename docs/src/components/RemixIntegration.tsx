@@ -136,9 +136,11 @@ export default function TodosPage() {
     <div className={styles.container}>
       <div className={styles.header}>
         <h2 className={styles.title}>
-          Unlike other <span className={styles.remix}>💿 Remix</span> state
-          libraries, jods:
+          <span className={styles.remix}>💿 Remix</span> State, Reimagined
         </h2>
+        <p className={styles.subtitle}>
+          Simple, reactive, type-safe state management for your Remix apps
+        </p>
       </div>
 
       <div className={styles.content}>
