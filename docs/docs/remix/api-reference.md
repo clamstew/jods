@@ -351,7 +351,7 @@ A crucial client-side function to rehydrate jods stores from server-generated sn
 **Alternative approaches:**
 
 - For simpler projects, you could create a custom wrapper function in your app that imports all stores and calls `rehydrateClient` automatically
-- A future version of jods may provide a simplified API like `setupJodsRemix()` that handles this automatically
+- A future version of jods may provide a simplified API like `setupJodsRemix()` that handles this automatically. (see [issue jods#28](https://github.com/clamstew/jods/issues/28))
 
 **Parameters:**
 
