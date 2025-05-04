@@ -3,7 +3,13 @@
   position: relative;
   overflow: hidden;
   padding-bottom: 100px; /* Add more space at the bottom for mascots */
-  min-height: 520px; /* Ensure minimum height for content plus mascot space */
+  min-height: 580px; /* Increased minimum height for content plus mascot space */
+  background: linear-gradient(135deg, #332954 0%, #6b3369 50%, #8a3458 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 /* Enhanced hero content styling */
@@ -144,38 +150,56 @@
 
 .hero__mascot--squirrel {
   animation: mascot-roam-1 20s infinite alternate ease-in-out,
-    mascot-bounce 8s infinite alternate ease-in-out;
+    mascot-bounce 8s infinite alternate ease-in-out,
+    mascot-glow 3s infinite alternate ease-in-out;
 }
 
 .hero__mascot--duck {
   animation: mascot-roam-2 22s 1s infinite alternate-reverse ease-in-out,
-    mascot-bounce 9s infinite alternate-reverse ease-in-out;
+    mascot-bounce 9s infinite alternate-reverse ease-in-out,
+    mascot-glow 3s infinite alternate ease-in-out;
 }
 
 /* Speech bubble styling */
 .speech-bubble {
   position: absolute;
-  min-width: 120px;
+  min-width: 200px; /* Increased width */
   min-height: 40px;
   background: var(--speech-bubble-bg, rgba(240, 249, 255, 0.8));
   border: 1px solid var(--speech-bubble-border, rgba(56, 189, 248, 0.4));
   border-radius: 12px;
   padding: 8px 12px;
   font-size: 0.9rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2),
+    0 0 15px var(--hero-gradient-shadow, rgba(255, 154, 0, 0.3));
   backdrop-filter: blur(5px);
-  top: -45px;
+  top: -60px; /* Moved higher up from -45px */
   z-index: 100;
   color: var(--speech-bubble-color, #0284c7);
+  opacity: 0; /* Start hidden */
+  transition: all 0.4s ease;
 }
 
+/* Show speech bubble on hover */
+.hero__mascot:hover .speech-bubble {
+  opacity: 1;
+  transform: translateY(-5px);
+}
+
+/* Ensure speech bubbles are visible when mascots are interacting */
+.hero__mascots.interacting .hero__mascot .speech-bubble {
+  opacity: 1;
+  transform: translateY(-5px);
+}
+
+/* Position speech bubbles */
 .hero__mascot--squirrel .speech-bubble {
-  left: -30px;
+  left: -60px; /* Move it more to the left to center it */
   transform-origin: bottom left;
 }
 
 .hero__mascot--duck .speech-bubble {
-  right: -30px;
+  right: -60px; /* Move it more to the right to center it */
   transform-origin: bottom right;
 }
 
@@ -188,9 +212,9 @@
 .speech-bubble::after {
   content: "";
   position: absolute;
-  bottom: -8px;
-  width: 16px;
-  height: 16px;
+  bottom: -10px; /* Fine-tuned position */
+  width: 20px;
+  height: 20px;
   background: inherit;
   border-right: inherit;
   border-bottom: inherit;
@@ -198,16 +222,25 @@
   border-left: 0;
   transform: rotate(45deg);
   backdrop-filter: blur(5px);
-  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
-  z-index: -1;
+  box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.15),
+    0 0 12px var(--hero-gradient-shadow, rgba(255, 154, 0, 0.3));
+  /* Better clip path for smooth appearance */
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  z-index: -1; /* Keep it behind the bubble but still visible */
+}
+
+/* In dark mode, slightly adjust the appearance */
+:root[data-theme="dark"] .speech-bubble::after {
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3),
+    0 0 12px var(--hero-gradient-shadow, rgba(255, 154, 0, 0.3));
 }
 
 .hero__mascot--squirrel .speech-bubble::after {
-  left: 20px;
+  left: 60px; /* Adjusted to align with new bubble position */
 }
 
 .hero__mascot--duck .speech-bubble::after {
-  right: 20px;
+  right: 60px; /* Adjusted to align with new bubble position */
 }
 
 /* Animation element styling */
@@ -344,6 +377,36 @@
   }
 }
 
+@keyframes mascot-glow {
+  0% {
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+  }
+  100% {
+    filter: drop-shadow(
+      0 2px 8px var(--hero-gradient-start, rgba(255, 154, 0, 0.8))
+    );
+  }
+}
+
+@keyframes title-glow {
+  0% {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  }
+  100% {
+    text-shadow: 0 0 20px var(--hero-gradient-shadow, rgba(255, 154, 0, 0.5));
+  }
+}
+
+@keyframes button-glow {
+  0% {
+    box-shadow: 0 4px 12px var(--button-primary-shadow, rgba(14, 165, 233, 0.4));
+  }
+  100% {
+    box-shadow: 0 4px 20px
+      var(--button-primary-shadow-hover, rgba(14, 165, 233, 0.8));
+  }
+}
+
 /* Interaction state styling */
 .hero__mascots.interacting .hero__mascot--squirrel {
   animation-play-state: paused;
@@ -357,10 +420,6 @@
   right: 40%;
   bottom: 40px;
   transform: rotate(-15deg) scale(1.1);
-}
-
-.hero__mascots.interacting .speech-bubble::before {
-  content: "I love reactive state!";
 }
 
 /* CSS Variable theme overrides for dark mode */
@@ -389,4 +448,27 @@
   --control-button-border: rgba(255, 255, 255, 0.2);
   --control-button-color: rgba(255, 255, 255, 0.8);
   --control-button-bg-hover: rgba(40, 40, 40, 0.8);
+}
+
+/* Add styles for the sparkle emoji */
+.hero__mascots-sparkle {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.5rem;
+  z-index: 60;
+  animation: friendship-sparkle 1s infinite;
+}
+
+@keyframes friendship-sparkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(0) scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-10px) scale(1.2);
+  }
 }

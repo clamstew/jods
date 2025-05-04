@@ -20,7 +20,14 @@ export default function Mascots({
         title="Click to make friends with the duck!"
       >
         🐿️
-        <div className="speech-bubble"></div>
+        <div
+          className="speech-bubble"
+          data-message={
+            mascotsInteracting
+              ? "We make a great team! 🤝"
+              : "I love storing reactive state! 🌰"
+          }
+        />
       </div>
       <div
         className="hero__mascot hero__mascot--duck"
@@ -29,8 +36,20 @@ export default function Mascots({
         title="Click to make friends with the squirrel!"
       >
         🦆
-        <div className="speech-bubble"></div>
+        <div
+          className="speech-bubble"
+          data-message={
+            mascotsInteracting ? "Dynamic duo! 💪" : "Quack! JSON on demand! 📦"
+          }
+        />
       </div>
+
+      {/* Add sparkle when interacting */}
+      {mascotsInteracting && (
+        <div className="hero__mascots-sparkle" aria-hidden="true">
+          ✨
+        </div>
+      )}
     </div>
   );
 }
