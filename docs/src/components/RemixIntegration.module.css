@@ -120,7 +120,7 @@
 
 .tab {
   flex: 1;
-  padding: 1rem 0.8rem;
+  padding: 0.8rem 0.5rem;
   background: none;
   border: none;
   cursor: pointer;
@@ -131,6 +131,16 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tabIcon {
+  font-size: 1.1rem;
+  margin-right: 6px;
+  display: inline-flex;
+  align-items: center;
 }
 
 .tab:hover {

@@ -208,7 +208,7 @@ export default function TodosPage() {
               }`}
               onClick={() => setActiveTab("traditional")}
             >
-              Traditional Remix
+              <span className={styles.tabIcon}>💿</span> Traditional Remix
             </button>
             <button
               className={`${styles.tab} ${
@@ -216,7 +216,7 @@ export default function TodosPage() {
               }`}
               onClick={() => setActiveTab("model")}
             >
-              1. jods: Define Model
+              <span className={styles.tabIcon}>🐿️</span> 1. jods: Define Model
             </button>
             <button
               className={`${styles.tab} ${
@@ -224,7 +224,7 @@ export default function TodosPage() {
               }`}
               onClick={() => setActiveTab("component")}
             >
-              2. jods: Use Component
+              <span className={styles.tabIcon}>🦆</span> 2. jods: Use Component
             </button>
           </div>
 
