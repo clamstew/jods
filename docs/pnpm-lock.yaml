@@ -20,6 +20,9 @@ importers:
       clsx:
         specifier: ^2.0.0
         version: 2.1.1
+      jods:
+        specifier: 0.1.2
+        version: 0.1.2(react@19.1.0)
       prism-react-renderer:
         specifier: ^2.3.0
         version: 2.4.1(react@19.1.0)
@@ -2976,6 +2979,17 @@ packages:
   jiti@1.21.7:
     resolution: {integrity: sha512-/imKNG4EbWNrVjoNC/1H5/9GFy+tqjGBHCaSsN+P2RnPqjsLmv6UD3Ej+Kj8nBWaRAwyk7kK5ZUc+OEatnTR3A==}
     hasBin: true
+
+  jods@0.1.2:
+    resolution: {integrity: sha512-PcuiznCYAX8lImjIfxoEU3Tr+7R3Gqjdx8myyQP7uQxNBmi8WDrn/f+0f5INFUu013jxUXo/GK9uEfwtI/EjmA==}
+    peerDependencies:
+      preact: '>=10.0.0'
+      react: '>=16.8.0'
+    peerDependenciesMeta:
+      preact:
+        optional: true
+      react:
+        optional: true
 
   joi@17.13.3:
     resolution: {integrity: sha512-otDA4ldcIx+ZXsKHWmp0YizCweVRZG96J10b0FevjfuncLO1oX59THoAmHkNubYJ+9gWsYsp5k8v4ib6oDv1fA==}
@@ -8917,6 +8931,10 @@ snapshots:
       supports-color: 8.1.1
 
   jiti@1.21.7: {}
+
+  jods@0.1.2(react@19.1.0):
+    optionalDependencies:
+      react: 19.1.0
 
   joi@17.13.3:
     dependencies:
