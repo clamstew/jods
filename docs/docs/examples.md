@@ -45,19 +45,20 @@ user.fullName = computed(() => `${user.firstName} ${user.lastName}`);
 console.log("Initial state:", json(user));
 
 // Create a reference to previous state
-let oldState = json(user);
+let lastState = json(user);
 
 // Track update count to demonstrate granular updates
 let updateCount = 0;
 
 // Subscribe to changes - onUpdate fires ONCE for EACH property change
-onUpdate(user, (newState) => {
+onUpdate(user, (newState, oldState) => {
   updateCount++;
   console.log(`User updated! (Update #${updateCount})`);
   console.log("Changes:", diff(oldState, newState));
   console.log("New state:", json(newState));
 
-  oldState = json(newState); // Update oldState for next change
+  lastState = json(user);
+  console.log("Last state:", lastState);
 });
 
 // Make some changes - each one triggers a separate onUpdate callback
