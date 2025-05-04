@@ -280,123 +280,315 @@ function Todos() {
         <div
           className="key-benefits"
           style={{
-            background: "var(--ifm-background-surface-color)",
-            padding: "2rem",
-            borderRadius: "8px",
-            boxShadow: "var(--ifm-global-shadow-lw)",
-            maxWidth: "800px",
-            margin: "0 auto 3rem",
+            padding: "0",
+            maxWidth: "500px",
+            margin: "0 auto 4rem",
+            borderRadius: "12px",
+            overflow: "hidden",
+            background: "var(--ifm-color-primary-darkest)",
+            boxShadow: "0 15px 30px rgba(0, 0, 0, 0.25)",
           }}
         >
-          <h3 style={{ textAlign: "center", marginBottom: "1rem" }}>
-            Unlike other Remix state libraries, jods:
+          <h3
+            style={{
+              textAlign: "center",
+              margin: "0",
+              padding: "1.5rem",
+              color: "white",
+              fontSize: "1.8rem",
+              fontWeight: "800",
+              textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
+              background: "rgba(0, 0, 0, 0.2)",
+              borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+            }}
+          >
+            Unlike other 💿 Remix state libraries, jods:
           </h3>
           <ul
             style={{
               textAlign: "left",
-              fontSize: "1.1rem",
               listStyleType: "none",
-              padding: 0,
-              marginBottom: 0,
+              padding: "1rem",
+              margin: "0",
+              display: "grid",
+              gap: "0.75rem",
+              background: "rgba(0, 0, 0, 0.1)",
             }}
           >
             <li
               style={{
-                padding: "0.5rem 0",
+                padding: "1.25rem",
                 display: "flex",
                 alignItems: "center",
+                background: "rgba(15, 15, 20, 0.7)",
+                borderRadius: "10px",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+                transition: "all 0.3s ease",
+                cursor: "default",
+                border: "1px solid rgba(100, 100, 255, 0.1)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform =
+                  "translateY(-5px) scale(1.01)";
+                e.currentTarget.style.boxShadow =
+                  "0 8px 20px rgba(0, 0, 0, 0.25)";
+                e.currentTarget.style.borderColor = "rgba(120, 120, 255, 0.3)";
+                e.currentTarget.style.background = "rgba(20, 20, 35, 0.8)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0) scale(1)";
+                e.currentTarget.style.boxShadow =
+                  "0 4px 12px rgba(0, 0, 0, 0.2)";
+                e.currentTarget.style.borderColor = "rgba(100, 100, 255, 0.1)";
+                e.currentTarget.style.background = "rgba(15, 15, 20, 0.7)";
               }}
             >
-              <span
+              <div
                 style={{
-                  fontWeight: "bold",
-                  marginRight: "1rem",
-                  fontSize: "1.2rem",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "50px",
+                  height: "50px",
+                  minWidth: "50px",
+                  background: "linear-gradient(135deg, #da4bfc, #9d4edd)",
+                  borderRadius: "12px",
+                  marginRight: "1.25rem",
+                  boxShadow: "0 0 20px rgba(218, 75, 252, 0.5)",
                 }}
               >
-                🔮
-              </span>
-              <span>
+                <span style={{ fontSize: "1.5rem" }}>🔮</span>
+              </div>
+              <span
+                style={{
+                  fontSize: "1.1rem",
+                  fontWeight: "500",
+                  lineHeight: "1.4",
+                  color: "rgba(255, 255, 255, 0.95)",
+                }}
+              >
                 Automatically syncs server and client state without manual
                 hydration
               </span>
             </li>
             <li
               style={{
-                padding: "0.5rem 0",
+                padding: "1.25rem",
                 display: "flex",
                 alignItems: "center",
+                background: "rgba(15, 15, 20, 0.7)",
+                borderRadius: "10px",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+                transition: "all 0.3s ease",
+                cursor: "default",
+                border: "1px solid rgba(100, 100, 255, 0.1)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform =
+                  "translateY(-5px) scale(1.01)";
+                e.currentTarget.style.boxShadow =
+                  "0 8px 20px rgba(0, 0, 0, 0.25)";
+                e.currentTarget.style.borderColor = "rgba(120, 120, 255, 0.3)";
+                e.currentTarget.style.background = "rgba(20, 20, 35, 0.8)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0) scale(1)";
+                e.currentTarget.style.boxShadow =
+                  "0 4px 12px rgba(0, 0, 0, 0.2)";
+                e.currentTarget.style.borderColor = "rgba(100, 100, 255, 0.1)";
+                e.currentTarget.style.background = "rgba(15, 15, 20, 0.7)";
               }}
             >
-              <span
+              <div
                 style={{
-                  fontWeight: "bold",
-                  marginRight: "1rem",
-                  fontSize: "1.2rem",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "50px",
+                  height: "50px",
+                  minWidth: "50px",
+                  background: "linear-gradient(135deg, #4cc9f0, #4361ee)",
+                  borderRadius: "12px",
+                  marginRight: "1.25rem",
+                  boxShadow: "0 0 20px rgba(76, 201, 240, 0.5)",
                 }}
               >
-                🔄
+                <span style={{ fontSize: "1.5rem" }}>🔄</span>
+              </div>
+              <span
+                style={{
+                  fontSize: "1.1rem",
+                  fontWeight: "500",
+                  lineHeight: "1.4",
+                  color: "rgba(255, 255, 255, 0.95)",
+                }}
+              >
+                Provides true reactivity for optimistic UI updates
               </span>
-              <span>Provides true reactivity for optimistic UI updates</span>
             </li>
             <li
               style={{
-                padding: "0.5rem 0",
+                padding: "1.25rem",
                 display: "flex",
                 alignItems: "center",
+                background: "rgba(15, 15, 20, 0.7)",
+                borderRadius: "10px",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+                transition: "all 0.3s ease",
+                cursor: "default",
+                border: "1px solid rgba(100, 100, 255, 0.1)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform =
+                  "translateY(-5px) scale(1.01)";
+                e.currentTarget.style.boxShadow =
+                  "0 8px 20px rgba(0, 0, 0, 0.25)";
+                e.currentTarget.style.borderColor = "rgba(120, 120, 255, 0.3)";
+                e.currentTarget.style.background = "rgba(20, 20, 35, 0.8)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0) scale(1)";
+                e.currentTarget.style.boxShadow =
+                  "0 4px 12px rgba(0, 0, 0, 0.2)";
+                e.currentTarget.style.borderColor = "rgba(100, 100, 255, 0.1)";
+                e.currentTarget.style.background = "rgba(15, 15, 20, 0.7)";
               }}
             >
-              <span
+              <div
                 style={{
-                  fontWeight: "bold",
-                  marginRight: "1rem",
-                  fontSize: "1.2rem",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "50px",
+                  height: "50px",
+                  minWidth: "50px",
+                  background: "linear-gradient(135deg, #f9c846, #f77f00)",
+                  borderRadius: "12px",
+                  marginRight: "1.25rem",
+                  boxShadow: "0 0 20px rgba(249, 200, 70, 0.5)",
                 }}
               >
-                📝
-              </span>
-              <span>
+                <span style={{ fontSize: "1.5rem" }}>📝</span>
+              </div>
+              <span
+                style={{
+                  fontSize: "1.1rem",
+                  fontWeight: "500",
+                  lineHeight: "1.4",
+                  color: "rgba(255, 255, 255, 0.95)",
+                }}
+              >
                 Uses Zod schemas for runtime type validation and great DX
               </span>
             </li>
             <li
               style={{
-                padding: "0.5rem 0",
+                padding: "1.25rem",
                 display: "flex",
                 alignItems: "center",
+                background: "rgba(15, 15, 20, 0.7)",
+                borderRadius: "10px",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+                transition: "all 0.3s ease",
+                cursor: "default",
+                border: "1px solid rgba(100, 100, 255, 0.1)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform =
+                  "translateY(-5px) scale(1.01)";
+                e.currentTarget.style.boxShadow =
+                  "0 8px 20px rgba(0, 0, 0, 0.25)";
+                e.currentTarget.style.borderColor = "rgba(120, 120, 255, 0.3)";
+                e.currentTarget.style.background = "rgba(20, 20, 35, 0.8)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0) scale(1)";
+                e.currentTarget.style.boxShadow =
+                  "0 4px 12px rgba(0, 0, 0, 0.2)";
+                e.currentTarget.style.borderColor = "rgba(100, 100, 255, 0.1)";
+                e.currentTarget.style.background = "rgba(15, 15, 20, 0.7)";
               }}
             >
-              <span
+              <div
                 style={{
-                  fontWeight: "bold",
-                  marginRight: "1rem",
-                  fontSize: "1.2rem",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "50px",
+                  height: "50px",
+                  minWidth: "50px",
+                  background: "linear-gradient(135deg, #52b788, #2d6a4f)",
+                  borderRadius: "12px",
+                  marginRight: "1.25rem",
+                  boxShadow: "0 0 20px rgba(82, 183, 136, 0.5)",
                 }}
               >
-                🔧
-              </span>
-              <span>
+                <span style={{ fontSize: "1.5rem" }}>🔧</span>
+              </div>
+              <span
+                style={{
+                  fontSize: "1.1rem",
+                  fontWeight: "500",
+                  lineHeight: "1.4",
+                  color: "rgba(255, 255, 255, 0.95)",
+                }}
+              >
                 Works with any backend or database (Prisma, MongoDB, SQLite,
                 etc.)
               </span>
             </li>
             <li
               style={{
-                padding: "0.5rem 0",
+                padding: "1.25rem",
                 display: "flex",
                 alignItems: "center",
+                background: "rgba(15, 15, 20, 0.7)",
+                borderRadius: "10px",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+                transition: "all 0.3s ease",
+                cursor: "default",
+                border: "1px solid rgba(100, 100, 255, 0.1)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform =
+                  "translateY(-5px) scale(1.01)";
+                e.currentTarget.style.boxShadow =
+                  "0 8px 20px rgba(0, 0, 0, 0.25)";
+                e.currentTarget.style.borderColor = "rgba(120, 120, 255, 0.3)";
+                e.currentTarget.style.background = "rgba(20, 20, 35, 0.8)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0) scale(1)";
+                e.currentTarget.style.boxShadow =
+                  "0 4px 12px rgba(0, 0, 0, 0.2)";
+                e.currentTarget.style.borderColor = "rgba(100, 100, 255, 0.1)";
+                e.currentTarget.style.background = "rgba(15, 15, 20, 0.7)";
               }}
             >
-              <span
+              <div
                 style={{
-                  fontWeight: "bold",
-                  marginRight: "1rem",
-                  fontSize: "1.2rem",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "50px",
+                  height: "50px",
+                  minWidth: "50px",
+                  background: "linear-gradient(135deg, #c77dff, #7b2cbf)",
+                  borderRadius: "12px",
+                  marginRight: "1.25rem",
+                  boxShadow: "0 0 20px rgba(199, 125, 255, 0.5)",
                 }}
               >
-                🧩
-              </span>
-              <span>
+                <span style={{ fontSize: "1.5rem" }}>🧩</span>
+              </div>
+              <span
+                style={{
+                  fontSize: "1.1rem",
+                  fontWeight: "500",
+                  lineHeight: "1.4",
+                  color: "rgba(255, 255, 255, 0.95)",
+                }}
+              >
                 Offers a consistent model-based pattern across your entire
                 application
               </span>
@@ -410,9 +602,27 @@ function Todos() {
             to="/remix"
             style={{
               fontWeight: "bold",
-              padding: "0.8rem 1.5rem",
-              borderRadius: "8px",
-              boxShadow: "var(--ifm-global-shadow-md)",
+              padding: "1.2rem 2.5rem",
+              borderRadius: "12px",
+              fontSize: "1.1rem",
+              background: "var(--ifm-color-primary)",
+              boxShadow:
+                "0 8px 20px rgba(0, 0, 0, 0.2), 0 0 0 2px rgba(var(--ifm-color-primary-rgb), 0.1)",
+              border: "none",
+              color: "white",
+              transition: "all 0.3s ease",
+              position: "relative",
+              overflow: "hidden",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-2px)";
+              e.currentTarget.style.boxShadow =
+                "0 12px 25px rgba(0, 0, 0, 0.25), 0 0 0 3px rgba(var(--ifm-color-primary-rgb), 0.15)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow =
+                "0 8px 20px rgba(0, 0, 0, 0.2), 0 0 0 2px rgba(var(--ifm-color-primary-rgb), 0.1)";
             }}
           >
             Explore Remix Integration →
