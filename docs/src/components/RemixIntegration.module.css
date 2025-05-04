@@ -1,0 +1,230 @@
+.container {
+  padding: 4rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: var(--ifm-color-emphasis-100);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--ifm-font-color-base);
+}
+
+.remix {
+  font-weight: 800;
+}
+
+.content {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  align-items: flex-start;
+}
+
+.featuresColumn {
+  flex: 0 0 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.featureItem {
+  display: flex;
+  align-items: center;
+  background: var(--ifm-color-emphasis-0);
+  padding: 1.25rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.featureItem:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.featureIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  border-radius: 12px;
+  margin-right: 1rem;
+  font-size: 1.5rem;
+  background: var(--ifm-color-emphasis-200);
+}
+
+.featureContent h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.featureContent p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.codeContainer {
+  flex: 1;
+  min-width: 0;
+  background: var(--ifm-color-emphasis-0);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.tabsContainer {
+  display: flex;
+  background: var(--ifm-color-emphasis-200);
+  border-bottom: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.tab {
+  flex: 1;
+  padding: 1rem 0.8rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-700);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tab:hover {
+  background: var(--ifm-color-emphasis-300);
+}
+
+.activeTab {
+  background: var(--ifm-color-emphasis-0);
+  color: var(--ifm-color-primary);
+  font-weight: 600;
+}
+
+.codeSections {
+  position: relative;
+  padding: 1rem;
+  overflow: hidden;
+}
+
+.codeSection {
+  transition: all 0.3s ease;
+}
+
+.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.inactive {
+  position: absolute;
+  opacity: 0;
+  transform: translateX(20px);
+  pointer-events: none;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.button {
+  display: inline-block;
+  background: var(--ifm-color-primary);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  text-decoration: none;
+  color: white;
+}
+
+/* Responsive design */
+@media (max-width: 996px) {
+  .content {
+    flex-direction: column;
+  }
+
+  .featuresColumn {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+
+  .codeContainer {
+    width: 100%;
+  }
+
+  .featureItem {
+    padding: 1rem;
+  }
+
+  .featureIcon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .tab {
+    padding: 0.8rem 0.5rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Dark mode adjustments */
+html[data-theme="dark"] .featureItem {
+  background: rgba(30, 30, 60, 0.4);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+html[data-theme="dark"] .featureIcon {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+html[data-theme="dark"] .codeContainer {
+  background: rgba(30, 30, 60, 0.4);
+}
+
+html[data-theme="dark"] .tabsContainer {
+  background: rgba(20, 20, 40, 0.5);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+html[data-theme="dark"] .activeTab {
+  background: rgba(30, 30, 60, 0.4);
+}
+
+html[data-theme="dark"] .tab:hover {
+  background: rgba(40, 40, 80, 0.4);
+}
