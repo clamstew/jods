@@ -24,7 +24,7 @@ This is particularly valuable for:
 
 ## 🛠️ Basic Usage
 
-### Creating a History Tracker
+### 📝 Creating a History Tracker
 
 ```js
 import { store, history } from "jods";
@@ -45,7 +45,7 @@ console.log(counterHistory.currentIndex); // 3 (after three changes)
 console.log(counterHistory.states.length); // 4 (initial + 3 changes)
 ```
 
-### Traveling Through Time
+### ⏳ Traveling Through Time
 
 ```js
 // Jump back to initial state
@@ -67,11 +67,13 @@ console.log(counter.count); // 2
 
 ## 🌐 API Reference
 
-### `history(store, options?)`
+For the complete jods API documentation, see the [📚 API Reference](/api/overview).
+
+### 🔄 `history(store, options?)`
 
 Creates a history tracker for the given store.
 
-#### Options
+#### ⚙️ Options
 
 ```typescript
 interface HistoryOptions {
@@ -80,7 +82,7 @@ interface HistoryOptions {
 }
 ```
 
-#### Return Value
+#### 📊 Return Value
 
 ```typescript
 interface HistoryTracker<T> {
@@ -98,7 +100,7 @@ interface HistoryTracker<T> {
 
 ## 💡 Advanced Examples
 
-### Limiting History Size
+### 📏 Limiting History Size
 
 For performance reasons, you might want to limit the number of states stored:
 
@@ -113,7 +115,7 @@ const limitedHistory = history(bigStore, { maxSize: 50 });
 // Only the last 50 states will be kept
 ```
 
-### Manual Recording
+### 🖊️ Manual Recording
 
 By default, all changes are recorded automatically. For more control, you can disable auto-recording:
 
@@ -133,7 +135,7 @@ userStore.email = "final@email.com";
 userHistory.record(); // Now this state is recorded
 ```
 
-### Creating an Undo/Redo Feature
+### ↩️ Creating an Undo/Redo Feature
 
 ```js
 import { store, history } from "jods";
@@ -196,7 +198,7 @@ This approach ensures that you always have accurate snapshots without modifying 
 
 ## 🧠 Best Practices
 
-### Memory Considerations
+### 💾 Memory Considerations
 
 Because history keeps a complete copy of the store for each state, it can consume significant memory for large stores or many changes. Consider:
 
@@ -205,7 +207,7 @@ Because history keeps a complete copy of the store for each state, it can consum
 - Using manual recording for precise control
 - Clearing history when no longer needed with `historyTracker.clear()`
 
-### Complex State
+### 🧩 Complex State
 
 For stores with computed values or nested structures, time-travel works seamlessly:
 
@@ -235,7 +237,7 @@ console.log(json(userData));
 // { firstName: "Ada", lastName: "Lovelace", visits: 0, fullName: "Ada Lovelace" }
 ```
 
-### Framework Integration
+### 🧰 Framework Integration
 
 Time-travel debugging works with any framework integration:
 
