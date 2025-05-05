@@ -115,26 +115,18 @@ async function takeScreenshots() {
         await page.waitForTimeout(500); // Wait for theme transition
       }
 
-      // Take full page screenshot with timestamp in filename
+      // Take only timestamped screenshot (don't overwrite baseline)
       const screenshotPath = path.join(
         screenshotsDir,
         `${name}-${theme}-${timestamp}.png`
       );
-
-      // Also save a copy with the standard filename (for easy reference)
-      const standardPath = path.join(screenshotsDir, `${name}-${theme}.png`);
 
       await page.screenshot({
         path: screenshotPath,
         fullPage: true,
       });
 
-      // Make a copy with the standard filename
-      fs.copyFileSync(screenshotPath, standardPath);
-
-      console.log(`Screenshots saved to:`);
-      console.log(`  - ${screenshotPath} (timestamped version)`);
-      console.log(`  - ${standardPath} (standard version)`);
+      console.log(`Screenshot saved to: ${screenshotPath}`);
     }
   }
 

@@ -12,9 +12,9 @@ The documentation site includes a Playwright-based screenshot system that:
 
 1. Captures full-page screenshots of key pages
 2. Automatically captures both light and dark themes
-3. Organizes screenshots in a standardized format
+3. Organizes screenshots with timestamped filenames
 4. Works with both local development and production environments
-5. Preserves historical screenshots with timestamps for design comparison
+5. Preserves baseline images for comparison during design iterations
 
 ## 📊 Available Commands
 
@@ -46,15 +46,7 @@ Screenshots are saved to:
 docs/static/screenshots/
 ```
 
-With two naming formats:
-
-1. Standard format (overwrites previous versions):
-
-```
-[page-name]-[theme].png
-```
-
-2. Timestamped format (preserves version history):
+With the following naming format for new screenshots:
 
 ```
 [page-name]-[theme]-[YYYYMMDD-HHMMSS].png
@@ -62,20 +54,19 @@ With two naming formats:
 
 For example:
 
-- Standard files:
+- `homepage-light-20240615-134527.png`
+- `homepage-dark-20240615-134527.png`
+- `api-reference-light-20240615-134527.png`
+- `api-reference-dark-20240615-134527.png`
 
-  - `homepage-light.png`
-  - `homepage-dark.png`
-  - `api-reference-light.png`
-  - `api-reference-dark.png`
+The original baseline images (without timestamps) are preserved for reference:
 
-- Timestamped files:
-  - `homepage-light-20240615-134527.png`
-  - `homepage-dark-20240615-134527.png`
-  - `api-reference-light-20240615-134527.png`
-  - `api-reference-dark-20240615-134527.png`
+- `homepage-light.png`
+- `homepage-dark.png`
+- `api-reference-light.png`
+- `api-reference-dark.png`
 
-The timestamped files allow you to track design changes over time and compare different versions without overwriting previous screenshots.
+This approach allows you to track design changes over time and compare new versions with the original baseline without overwriting important reference images.
 
 ## 🔧 How It Works
 
@@ -85,9 +76,7 @@ The screenshot system uses Playwright, a browser automation library, to:
 2. Navigate to each configured page
 3. Toggle between light and dark themes using the site's theme toggle button
 4. Take full-page screenshots in both themes
-5. Save two copies of each image:
-   - One with a timestamp in the filename (for design history)
-   - One with the standard name (for current reference)
+5. Save images with timestamped filenames to preserve version history
 
 ## ⚙️ Configuration
 
@@ -127,15 +116,16 @@ The system automatically detects and toggles between light and dark themes by:
 The timestamped screenshots enable several workflows for design management:
 
 1. **Design History**: Track how the site's design evolves over time
-2. **A/B Comparison**: Compare before/after images when making design changes
+2. **A/B Comparison**: Compare new iterations with baseline images
 3. **Regression Testing**: Identify unintended visual changes
 4. **Design Reviews**: Share specific timestamped versions for feedback
 
-To compare screenshots from different timestamps:
+To compare design changes with the baselines:
 
-1. Identify the timestamp tags of the versions you want to compare
-2. Use an image comparison tool or simply place the images side by side
+1. Take new screenshots with the updated design (they'll automatically get timestamped)
+2. Place the baseline image and new timestamped image side by side
 3. Look for differences in layout, colors, typography, spacing, etc.
+4. Make further design adjustments as needed and repeat
 
 ## 🤔 Troubleshooting
 
@@ -168,7 +158,7 @@ Currently, screenshots are taken at a fixed desktop viewport (1280×800). To add
 2. Include screenshots in PR descriptions for visual reviews
 3. Use screenshots for marketing materials and documentation updates
 4. Store screenshot sets for each major release for reference
-5. When comparing design changes, use the timestamped versions
+5. When comparing design changes, always use timestamped versions against baselines
 6. Clean up older timestamped screenshots periodically to save space
 
 ## 🔗 Related Resources
