@@ -100,12 +100,12 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    var(--jods-purple-light) 25%,
-    var(--jods-orange) 50%,
-    var(--jods-purple-light) 75%,
+    #ffc559 25%,
+    #ff9a5c 50%,
+    #ffc559 75%,
     transparent 100%
   );
-  box-shadow: 0 0 8px var(--jods-orange-light);
+  box-shadow: 0 0 8px #ffc559;
 }
 
 @keyframes line-flow {
@@ -164,7 +164,9 @@
 
 /* Dark mode title underline */
 [data-theme="dark"] .footer__title:after {
-  background: var(--jods-orange);
+  background: linear-gradient(90deg, #ffc559 0%, #ff9a5c 100%);
+  box-shadow: 0 0 8px #ffc559;
+  animation: footer-title-underline 3s ease-in-out infinite alternate;
 }
 
 /* Footer item hover effect for light mode */
