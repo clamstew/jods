@@ -29,9 +29,24 @@ const PAGES = [
 // Theme modes to capture
 const THEMES = ["light", "dark"];
 
+// Generate a timestamp in the format YYYYMMDD-HHMMSS
+function getTimestamp() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  const seconds = String(now.getSeconds()).padStart(2, "0");
+
+  return `${year}${month}${day}-${hours}${minutes}${seconds}`;
+}
+
 async function takeScreenshots() {
+  // Generate a timestamp for this batch of screenshots
+  const timestamp = getTimestamp();
   console.log(`Taking screenshots from ${BASE_URL}${PATH_PREFIX}`);
-  console.log(`Saving to ${screenshotsDir}`);
+  console.log(`Saving to ${screenshotsDir} with timestamp ${timestamp}`);
   console.log(`Capturing themes: ${THEMES.join(", ")}`);
 
   const browser = await chromium.launch();
@@ -100,19 +115,32 @@ async function takeScreenshots() {
         await page.waitForTimeout(500); // Wait for theme transition
       }
 
-      // Take full page screenshot
-      const screenshotPath = path.join(screenshotsDir, `${name}-${theme}.png`);
+      // Take full page screenshot with timestamp in filename
+      const screenshotPath = path.join(
+        screenshotsDir,
+        `${name}-${theme}-${timestamp}.png`
+      );
+
+      // Also save a copy with the standard filename (for easy reference)
+      const standardPath = path.join(screenshotsDir, `${name}-${theme}.png`);
+
       await page.screenshot({
         path: screenshotPath,
         fullPage: true,
       });
 
-      console.log(`Screenshot saved to ${screenshotPath}`);
+      // Make a copy with the standard filename
+      fs.copyFileSync(screenshotPath, standardPath);
+
+      console.log(`Screenshots saved to:`);
+      console.log(`  - ${screenshotPath} (timestamped version)`);
+      console.log(`  - ${standardPath} (standard version)`);
     }
   }
 
   await browser.close();
   console.log("All screenshots completed!");
+  console.log(`Timestamp for this batch: ${timestamp}`);
 }
 
 // Run the screenshot function
