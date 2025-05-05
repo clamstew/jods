@@ -19,6 +19,8 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   position: relative;
   overflow: hidden;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 /* Light mode specific styling */
@@ -45,6 +47,7 @@ html[data-theme="light"] .header {
   );
   pointer-events: none;
   z-index: 1;
+  opacity: 0.7;
 }
 
 /* Add subtle shine animation */
@@ -62,7 +65,7 @@ html[data-theme="light"] .header {
     rgba(255, 255, 255, 0) 100%
   );
   transform: rotate(45deg);
-  animation: shine 6s infinite;
+  animation: shine 8s infinite;
   z-index: 2;
 }
 
@@ -84,6 +87,7 @@ html[data-theme="light"] .header {
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   position: relative;
   z-index: 3;
+  will-change: opacity;
 }
 
 .subtitle {
@@ -96,6 +100,7 @@ html[data-theme="light"] .header {
   position: relative;
   z-index: 3;
   line-height: 1.5;
+  will-change: opacity;
 }
 
 .highlight {
@@ -148,13 +153,15 @@ html[data-theme="light"] .highlight {
   z-index: -1;
 }
 
+/* Use a better performing ruby styling that still looks great */
 .rubyGem {
   display: inline-block;
   margin-right: 0.5rem;
   font-size: 1.2em;
   transform-origin: center;
   animation: pulse 3s infinite alternate ease-in-out;
-  /* Color filters to transform the diamond into a ruby */
+
+  /* Optimized but beautiful gradient approach */
   color: transparent;
   background-color: #e11d48;
   background-image: linear-gradient(
@@ -169,12 +176,19 @@ html[data-theme="light"] .highlight {
   -moz-background-clip: text;
   -webkit-text-fill-color: transparent;
   -moz-text-fill-color: transparent;
-  text-shadow: 0 0 6px rgba(220, 38, 38, 0.4);
-  filter: drop-shadow(0 0 3px rgba(220, 38, 38, 0.5));
+
+  /* Reduced intensity shadows for better performance */
+  text-shadow: 0 0 4px rgba(220, 38, 38, 0.3);
+  filter: drop-shadow(0 0 2px rgba(220, 38, 38, 0.4));
+
+  /* Add GPU acceleration hint */
+  will-change: transform, opacity;
+  transform: translateZ(0);
 }
 
 /* Enhanced ruby styling for light mode */
 html[data-theme="light"] .rubyGem {
+  /* Optimized gradient for light mode */
   background-image: linear-gradient(
     135deg,
     #b91c1c 10%,
@@ -186,17 +200,10 @@ html[data-theme="light"] .rubyGem {
   -moz-background-clip: text;
   -webkit-text-fill-color: transparent;
   -moz-text-fill-color: transparent;
-  text-shadow: 0 0 7px rgba(220, 38, 38, 0.4);
-  filter: drop-shadow(0 0 4px rgba(185, 28, 28, 0.4));
-}
 
-/* Light mode specific styling for ruby icon */
-html[data-theme="light"] .rubyIcon::before {
-  background: radial-gradient(
-    circle,
-    rgba(220, 38, 38, 0.25) 0%,
-    rgba(220, 38, 38, 0) 70%
-  );
+  /* Reduced intensity shadows for better performance */
+  text-shadow: 0 0 4px rgba(220, 38, 38, 0.3);
+  filter: drop-shadow(0 0 3px rgba(185, 28, 28, 0.3));
 }
 
 @keyframes pulse {
