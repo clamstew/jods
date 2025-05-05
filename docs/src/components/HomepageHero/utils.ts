@@ -58,6 +58,7 @@ export const themeEmojis = [
   "🪞", // snapshot/json
   "💾", // disk/persistence
   "🏝️", // tanstack reference
+  "🐻", // bear/zustand reference
 ];
 
 // Helper to generate a random number between min and max
