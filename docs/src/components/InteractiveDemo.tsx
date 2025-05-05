@@ -197,57 +197,37 @@ ${JSON.stringify(snapshot, null, 2)}
             <div
               className="instruction-box"
               style={{
-                marginTop: "2rem",
-                padding: "24px 30px",
+                borderRadius: "22px",
+                padding: "2.2rem 1.5rem 1.5rem 1.5rem",
+                margin: "0 0 2rem 0",
                 background:
-                  "linear-gradient(125deg, rgba(90, 24, 154, 0.25) 0%, rgba(166, 66, 110, 0.25) 100%)",
-                borderRadius: "14px",
+                  "linear-gradient(135deg, #e0f7fa 0%, #b2f7ef 60%, #d9f99d 100%)",
+                border: "1.5px solid #84cc16",
                 boxShadow:
-                  "0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05), 0 0 15px rgba(255, 154, 92, 0.15)",
+                  "0 8px 32px 0 rgba(6, 182, 212, 0.12), 0 1.5px 8px 0 #84cc16",
+                minHeight: "210px",
+                maxWidth: "340px",
+                width: "100%",
                 position: "relative",
-                overflow: "hidden",
-                border: "1px solid rgba(255, 255, 255, 0.1)",
+                zIndex: 2,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "flex-start",
+                backdropFilter: "blur(6px)",
+                transition: "background 0.4s, border 0.4s",
               }}
             >
-              {/* Add glowing orbs for visual interest */}
-              <div
-                style={{
-                  position: "absolute",
-                  top: "-30px",
-                  right: "-30px",
-                  width: "100px",
-                  height: "100px",
-                  background:
-                    "radial-gradient(circle, rgba(255, 154, 92, 0.3) 0%, rgba(255, 154, 92, 0) 70%)",
-                  borderRadius: "50%",
-                  zIndex: 0,
-                }}
-              ></div>
-
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: "-20px",
-                  left: "-20px",
-                  width: "80px",
-                  height: "80px",
-                  background:
-                    "radial-gradient(circle, rgba(90, 24, 154, 0.3) 0%, rgba(90, 24, 154, 0) 70%)",
-                  borderRadius: "50%",
-                  zIndex: 0,
-                }}
-              ></div>
-
               <p
                 className="instruction-text"
                 style={{
                   margin: 0,
                   fontSize: "1.2rem",
-                  fontWeight: "500",
-                  lineHeight: "1.8",
+                  fontWeight: 500,
+                  lineHeight: 1.8,
                   position: "relative",
                   zIndex: 1,
-                  textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
+                  textShadow: "0 2px 8px rgba(0, 87, 183, 0.10)",
                 }}
               >
                 <span
@@ -255,7 +235,9 @@ ${JSON.stringify(snapshot, null, 2)}
                     display: "flex",
                     alignItems: "center",
                     marginBottom: "12px",
-                    color: "#ffcc80",
+                    color: "#f59e0b",
+                    fontWeight: 700,
+                    textShadow: "0 2px 8px #fef08a, 0 0 12px #f59e0b55",
                   }}
                 >
                   <span style={{ marginRight: "10px", fontSize: "1.4rem" }}>
@@ -263,13 +245,14 @@ ${JSON.stringify(snapshot, null, 2)}
                   </span>
                   <span>Go ahead and change these values!</span>
                 </span>
-
                 <span
                   style={{
                     display: "flex",
                     alignItems: "center",
                     marginBottom: "12px",
-                    color: "#80cbc4",
+                    color: "#06b6d4",
+                    fontWeight: 700,
+                    textShadow: "0 2px 8px #a7e22e, 0 0 12px #06b6d455",
                   }}
                 >
                   <span style={{ marginRight: "10px", fontSize: "1.4rem" }}>
@@ -277,12 +260,13 @@ ${JSON.stringify(snapshot, null, 2)}
                   </span>
                   <span>Then explore the rest of the docs...</span>
                 </span>
-
                 <span
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    color: "#ce93d8",
+                    color: "#8b5cf6",
+                    fontWeight: 700,
+                    textShadow: "0 2px 8px #a7e22e, 0 0 12px #8b5cf655",
                   }}
                 >
                   <span style={{ marginRight: "10px", fontSize: "1.4rem" }}>
