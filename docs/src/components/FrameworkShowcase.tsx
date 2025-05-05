@@ -129,7 +129,11 @@ function Counter() {
                   borderRadius: "12px",
                   background:
                     activeFramework === key
-                      ? `linear-gradient(145deg, var(--jods-blue-dark), var(--jods-cyan))`
+                      ? key === "react"
+                        ? "linear-gradient(145deg, var(--jods-blue-dark), var(--jods-cyan))"
+                        : key === "preact"
+                        ? "linear-gradient(145deg, #4a347f, #673ab8)"
+                        : "linear-gradient(145deg, #b81d5b, #e91e63)"
                       : "var(--ifm-card-background-color)",
                   color:
                     activeFramework === key
@@ -137,7 +141,11 @@ function Counter() {
                       : "var(--ifm-color-emphasis-900)",
                   boxShadow:
                     activeFramework === key
-                      ? "0 8px 16px rgba(8, 145, 178, 0.25)"
+                      ? key === "react"
+                        ? "0 8px 16px rgba(8, 145, 178, 0.25)"
+                        : key === "preact"
+                        ? "0 8px 16px rgba(103, 58, 184, 0.25)"
+                        : "0 8px 16px rgba(233, 30, 99, 0.25)"
                       : "0 4px 8px rgba(0, 0, 0, 0.05)",
                   border:
                     activeFramework === key

@@ -138,7 +138,6 @@ ${JSON.stringify(snapshot, null, 2)}
                   fontSize: "1.1rem",
                   fontWeight: 500,
                   lineHeight: 1.7,
-                  color: "white",
                   textAlign: "left",
                 }}
               >
@@ -150,9 +149,7 @@ ${JSON.stringify(snapshot, null, 2)}
                     fontWeight: 700,
                   }}
                 >
-                  <span style={{ marginRight: "10px", fontSize: "1.3rem" }}>
-                    ✨
-                  </span>
+                  <span className="instruction-icon">✨</span>
                   <span>Go ahead and change these values!</span>
                 </span>
                 <span
@@ -163,9 +160,7 @@ ${JSON.stringify(snapshot, null, 2)}
                     fontWeight: 700,
                   }}
                 >
-                  <span style={{ marginRight: "10px", fontSize: "1.3rem" }}>
-                    🔍
-                  </span>
+                  <span className="instruction-icon">🔍</span>
                   <span>Then explore the rest of the docs...</span>
                 </span>
                 <span
@@ -175,9 +170,7 @@ ${JSON.stringify(snapshot, null, 2)}
                     fontWeight: 700,
                   }}
                 >
-                  <span style={{ marginRight: "10px", fontSize: "1.3rem" }}>
-                    🪄
-                  </span>
+                  <span className="instruction-icon">🪄</span>
                   <span>Your changes will be here when you return!</span>
                 </span>
               </p>
