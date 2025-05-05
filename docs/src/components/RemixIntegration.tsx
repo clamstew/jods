@@ -200,7 +200,7 @@ export default function TodosPage() {
   const lineHighlight = getLineHighlightString();
 
   return (
-    <div className={styles.container}>
+    <section id="remix-integration" className={styles.container}>
       <div className={styles.header}>
         <h2 className={styles.title}>
           <span className={styles.remix}>
@@ -379,6 +379,6 @@ export default function TodosPage() {
           Learn About Active Record
         </a>
       </div>
-    </div>
+    </section>
   );
 }

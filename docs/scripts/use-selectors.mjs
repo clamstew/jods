@@ -146,32 +146,128 @@ async function takeScreenshotsWithSelectors(
           if (boundingBox) {
             // Add padding and handle viewport boundaries
             const padding = section.padding || 40;
+
+            // Get viewport dimensions
+            const viewportSize = page.viewportSize();
+
+            // Create clip with proper boundaries
             const clip = {
               x: Math.max(0, boundingBox.x - padding),
               y: Math.max(0, boundingBox.y - padding),
               width: Math.min(
-                page.viewportSize().width -
-                  Math.max(0, boundingBox.x - padding),
+                viewportSize.width - Math.max(0, boundingBox.x - padding),
                 boundingBox.width + padding * 2
               ),
-              height: boundingBox.height + padding * 2,
+              height: Math.min(
+                viewportSize.height - Math.max(0, boundingBox.y - padding),
+                boundingBox.height + padding * 2
+              ),
             };
 
-            // Take screenshot with clip area
-            await page.screenshot({
-              path: screenshotPath,
-              clip,
-            });
+            // Ensure minimum dimensions
+            if (clip.width < 10 || clip.height < 10) {
+              console.log(
+                `  Error: Clip area too small (${clip.width}x${clip.height})`
+              );
+              // Take a viewport screenshot as fallback
+              await page.screenshot({
+                path: screenshotPath,
+                fullPage: false,
+              });
+              console.log(
+                `  Fallback viewport screenshot saved: ${screenshotPath}`
+              );
+            } else {
+              // Take screenshot with clip area
+              try {
+                await page.screenshot({
+                  path: screenshotPath,
+                  clip,
+                });
+                console.log(`  Screenshot saved: ${screenshotPath}`);
 
-            console.log(`  Screenshot saved: ${screenshotPath}`);
+                // Print debug info
+                if (section.debug) {
+                  console.log(
+                    `  Debug info: ${section.debug.elementTagName} element, ${section.debug.width}px wide`
+                  );
+                  if (section.debug.textSummary) {
+                    console.log(
+                      `  Content: ${section.debug.textSummary.substring(
+                        0,
+                        50
+                      )}...`
+                    );
+                  }
+                }
+              } catch (screenshotError) {
+                console.log(
+                  `  Error taking screenshot: ${screenshotError.message}`
+                );
+                // Try with a smaller clip area if there was an error
+                const safeClip = {
+                  x: clip.x + 5,
+                  y: clip.y + 5,
+                  width: clip.width - 10,
+                  height: clip.height - 10,
+                };
+
+                if (safeClip.width > 10 && safeClip.height > 10) {
+                  try {
+                    await page.screenshot({
+                      path: screenshotPath,
+                      clip: safeClip,
+                    });
+                    console.log(
+                      `  Screenshot saved with reduced clip area: ${screenshotPath}`
+                    );
+                  } catch (retryError) {
+                    console.log(
+                      `  Fallback to viewport screenshot after retry failed`
+                    );
+                    await page.screenshot({
+                      path: screenshotPath,
+                      fullPage: false,
+                    });
+                    console.log(
+                      `  Viewport screenshot saved: ${screenshotPath}`
+                    );
+                  }
+                } else {
+                  // Take a viewport screenshot as last resort
+                  await page.screenshot({
+                    path: screenshotPath,
+                    fullPage: false,
+                  });
+                  console.log(`  Viewport screenshot saved: ${screenshotPath}`);
+                }
+              }
+            }
           } else {
             console.log(`  Could not get bounding box for ${name}`);
+
+            // Take a viewport screenshot as fallback
+            const fallbackPath = path.join(
+              screenshotsDir,
+              `${name}-${theme}-fallback${
+                saveBaseline ? "" : "-" + timestamp
+              }.png`
+            );
+
+            await page.screenshot({
+              path: fallbackPath,
+              fullPage: false,
+            });
+
+            console.log(
+              `  Fallback viewport screenshot saved: ${fallbackPath}`
+            );
           }
         } else {
           console.log(`  Could not find ${name} section`);
 
           // Take a viewport screenshot as last resort
-          const screenshotPath = path.join(
+          const fallbackPath = path.join(
             screenshotsDir,
             `${name}-${theme}-fallback${
               saveBaseline ? "" : "-" + timestamp
@@ -179,13 +275,11 @@ async function takeScreenshotsWithSelectors(
           );
 
           await page.screenshot({
-            path: screenshotPath,
+            path: fallbackPath,
             fullPage: false,
           });
 
-          console.log(
-            `  Fallback viewport screenshot saved: ${screenshotPath}`
-          );
+          console.log(`  Fallback viewport screenshot saved: ${fallbackPath}`);
         }
       } catch (error) {
         console.error(`  Error capturing ${name}:`, error);

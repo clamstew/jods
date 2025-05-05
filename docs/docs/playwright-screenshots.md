@@ -53,6 +53,15 @@ pnpm docs:screenshot:cleanup
 # Clean up old screenshots but keep the 3 most recent batches
 pnpm docs:screenshot:cleanup:keep-latest
 
+# Clean up only section screenshots (keeping the most recent one for each section/theme)
+pnpm docs:screenshot:cleanup:sections
+
+# Clean up section screenshots but keep the 3 most recent for each section/theme
+pnpm docs:screenshot:cleanup:sections:keep
+
+# Do a dry run to see what would be deleted without actually deleting
+pnpm docs:screenshot:cleanup:sections:dry-run
+
 # Take screenshots of the production site
 pnpm docs:screenshot:production
 ```
@@ -341,6 +350,15 @@ pnpm screenshot:cleanup
 
 # Keep the 3 most recent batches of screenshots
 pnpm screenshot:cleanup:keep-latest
+
+# Only clean up section screenshots (keeping the most recent one for each section/theme)
+pnpm screenshot:cleanup:sections
+
+# Keep the 3 most recent section screenshots for each section/theme
+pnpm screenshot:cleanup:sections:keep
+
+# Test section cleanup without actually deleting (dry run)
+pnpm screenshot:cleanup:sections:dry-run
 
 # Only clean up component screenshots
 node scripts/screenshot-manager.mjs --cleanup --components-only

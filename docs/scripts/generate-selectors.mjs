@@ -23,9 +23,8 @@ const HOMEPAGE_SECTIONS = [
   {
     name: "hero",
     locator: {
-      strategy: "text",
-      value: "Zero dependency JSON store",
-      contextSelector: 'section, div.hero, [class*="hero"]',
+      strategy: "element",
+      value: "div.hero-container",
       fallback: "h1",
     },
     testId: "jods-hero-section",
@@ -34,9 +33,9 @@ const HOMEPAGE_SECTIONS = [
   {
     name: "features",
     locator: {
-      strategy: "heading",
-      value: "Features",
-      contextSelector: 'section, div.features, [class*="features"]',
+      strategy: "element",
+      value: "section#features",
+      contextSelector: null,
     },
     testId: "jods-features-section",
     padding: 40,
@@ -44,9 +43,9 @@ const HOMEPAGE_SECTIONS = [
   {
     name: "try-jods-live",
     locator: {
-      strategy: "heading",
-      value: "Try jods live",
-      contextSelector: "section, div.container",
+      strategy: "element",
+      value: "section#try-jods-live",
+      contextSelector: null,
     },
     testId: "jods-try-live-section",
     padding: 40,
@@ -54,9 +53,9 @@ const HOMEPAGE_SECTIONS = [
   {
     name: "framework-integration",
     locator: {
-      strategy: "heading",
-      value: "Framework Integration",
-      contextSelector: "section, div.container",
+      strategy: "element",
+      value: "section#framework-showcase.features-container",
+      contextSelector: null,
     },
     testId: "jods-framework-section",
     padding: 40,
@@ -64,9 +63,9 @@ const HOMEPAGE_SECTIONS = [
   {
     name: "compare",
     locator: {
-      strategy: "heading",
-      value: "Compare",
-      contextSelector: "section, div.container",
+      strategy: "element",
+      value: "section#compare",
+      contextSelector: null,
     },
     testId: "jods-compare-section",
     padding: 40,
@@ -74,9 +73,9 @@ const HOMEPAGE_SECTIONS = [
   {
     name: "remix-integration",
     locator: {
-      strategy: "text",
-      value: "Remix Integration",
-      contextSelector: "div.container, section",
+      strategy: "element",
+      value: "section#remix-integration",
+      contextSelector: null,
     },
     testId: "jods-remix-section",
     padding: 40,
@@ -85,7 +84,8 @@ const HOMEPAGE_SECTIONS = [
     name: "footer",
     locator: {
       strategy: "element",
-      value: "footer",
+      value: "footer.footer",
+      contextSelector: null,
     },
     testId: "jods-footer",
     padding: 20,
@@ -179,10 +179,93 @@ async function findSelectors() {
         const element = document.querySelector(`[data-testid="${testId}"]`);
         if (!element) return null;
 
+        // Function to find a full-width parent container
+        function findFullWidthParent(el) {
+          // Don't go beyond these container elements
+          if (
+            el.tagName === "BODY" ||
+            el.tagName === "MAIN" ||
+            el.tagName === "HTML"
+          ) {
+            return null;
+          }
+
+          // Check if this is a full-width container by comparing width
+          const rect = el.getBoundingClientRect();
+          const parentRect = el.parentElement?.getBoundingClientRect();
+          const viewportWidth = window.innerWidth;
+
+          // Consider an element "full width" if it's at least 90% of viewport width
+          // or at least 95% of its parent's width (when parent is a significant portion of viewport)
+          const isFullWidth =
+            rect.width >= viewportWidth * 0.9 ||
+            (parentRect &&
+              parentRect.width >= viewportWidth * 0.6 &&
+              rect.width >= parentRect.width * 0.95);
+
+          // If this is a full-width container with semantic meaning, use it
+          if (
+            isFullWidth &&
+            (el.tagName === "SECTION" ||
+              el.tagName === "FOOTER" ||
+              el.tagName === "HEADER" ||
+              el.tagName === "ARTICLE" ||
+              (el.tagName === "DIV" &&
+                (el.classList.length > 0 ||
+                  el.id ||
+                  Array.from(el.children).some(
+                    (c) =>
+                      c.tagName === "H1" ||
+                      c.tagName === "H2" ||
+                      c.tagName === "H3"
+                  ))))
+          ) {
+            return el;
+          }
+
+          // If we have a parent, check if it's a better candidate
+          if (el.parentElement && el.parentElement !== document.body) {
+            const parent = findFullWidthParent(el.parentElement);
+            if (parent) return parent;
+          }
+
+          // If we didn't find a better container, but this is full width, use it anyway
+          if (isFullWidth) {
+            return el;
+          }
+
+          return el; // Fallback to the original element
+        }
+
+        // Try to find a better full-width container parent
+        const containerElement = findFullWidthParent(element);
+        const targetElement = containerElement || element;
+
         // Function to generate a unique CSS selector
         function getUniqueSelector(el) {
           // If element has an ID, use it
           if (el.id) return `#${el.id}`;
+
+          // Check for container class patterns
+          if (el.classList.length) {
+            const containerClasses = Array.from(el.classList).filter(
+              (c) =>
+                c.toLowerCase().includes("container") ||
+                c.toLowerCase().includes("section") ||
+                c.toLowerCase().includes("hero") ||
+                c.toLowerCase().includes("wrapper") ||
+                c.toLowerCase().includes("block")
+            );
+
+            if (containerClasses.length) {
+              const containerSelector = `${el.tagName.toLowerCase()}.${
+                containerClasses[0]
+              }`;
+              if (document.querySelectorAll(containerSelector).length === 1) {
+                return containerSelector;
+              }
+            }
+          }
 
           // If element has a class, try using the first few classes
           if (el.classList.length) {
@@ -226,32 +309,67 @@ async function findSelectors() {
           return attributeSelector;
         }
 
-        const cssSelector = getUniqueSelector(element);
+        const cssSelector = getUniqueSelector(targetElement);
 
         // Make sure the selector actually works and is unique
         if (
           cssSelector &&
           document.querySelectorAll(cssSelector).length === 1
         ) {
-          return cssSelector;
+          // Store the inner HTML summary for debugging
+          const elementSummary =
+            targetElement.innerText.substring(0, 100) +
+            (targetElement.innerText.length > 100 ? "..." : "");
+
+          // Return selector and debug info
+          return {
+            selector: cssSelector,
+            elementTagName: targetElement.tagName,
+            elementWidth: targetElement.getBoundingClientRect().width,
+            viewportWidth: window.innerWidth,
+            isSameAsOriginal: targetElement === element,
+            textSummary: elementSummary,
+          };
         }
 
         // If we couldn't generate a useful selector, return data-testid as fallback
-        return `[data-testid="${testId}"]`;
+        return {
+          selector: `[data-testid="${testId}"]`,
+          elementTagName: element.tagName,
+          elementWidth: element.getBoundingClientRect().width,
+          viewportWidth: window.innerWidth,
+          isSameAsOriginal: true,
+          textSummary:
+            element.innerText.substring(0, 100) +
+            (element.innerText.length > 100 ? "..." : ""),
+        };
       }, section.testId);
 
-      console.log(
-        `  Found selector for ${section.name}: ${selector || "Not found"}`
-      );
-
-      // Store the selector with metadata
+      // Display more info about what we found
       if (selector) {
+        console.log(
+          `  Found selector for ${section.name}: ${selector.selector}`
+        );
+        console.log(
+          `    Element: ${selector.elementTagName}, Width: ${selector.elementWidth}px/${selector.viewportWidth}px`
+        );
+        console.log(`    Text: ${selector.textSummary}`);
+
+        // Store the selector and its metadata
         selectors[section.name] = {
-          selector: selector,
+          selector: selector.selector,
           testId: section.testId,
           padding: section.padding,
           originalLocator: section.locator,
+          debug: {
+            elementTagName: selector.elementTagName,
+            width: selector.elementWidth,
+            isSameAsOriginal: selector.isSameAsOriginal,
+            textSummary: selector.textSummary,
+          },
         };
+      } else {
+        console.log(`  No selector found for ${section.name}`);
       }
     } catch (error) {
       console.error(`  Error finding selector for ${section.name}:`, error);

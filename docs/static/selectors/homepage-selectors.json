@@ -1,0 +1,114 @@
+{
+  "hero": {
+    "selector": "div.hero-container",
+    "testId": "jods-hero-section",
+    "padding": 40,
+    "originalLocator": {
+      "strategy": "element",
+      "value": "div.hero-container",
+      "fallback": "h1"
+    },
+    "debug": {
+      "elementTagName": "DIV",
+      "width": 1280,
+      "isSameAsOriginal": true,
+      "textSummary": "{ jods }\n\n✨JSON Dynamics System🔄\n\nBrings JSON to life\n\n🌱 Minimal\n•\n🔍 Typesafe\n•\n⚡ Fast\nGet Starte..."
+    }
+  },
+  "features": {
+    "selector": "#features",
+    "testId": "jods-features-section",
+    "padding": 40,
+    "originalLocator": {
+      "strategy": "element",
+      "value": "section#features",
+      "contextSelector": null
+    },
+    "debug": {
+      "elementTagName": "SECTION",
+      "width": 1280,
+      "isSameAsOriginal": true,
+      "textSummary": "⚡️Powerful features, minimal API 🪶\n☁️\nZero Dependencies\n\nNo bloat, no overhead, just pure performan..."
+    }
+  },
+  "try-jods-live": {
+    "selector": "#try-jods-live",
+    "testId": "jods-try-live-section",
+    "padding": 40,
+    "originalLocator": {
+      "strategy": "element",
+      "value": "section#try-jods-live",
+      "contextSelector": null
+    },
+    "debug": {
+      "elementTagName": "SECTION",
+      "width": 1280,
+      "isSameAsOriginal": true,
+      "textSummary": "🚀 Try jods live 🧑‍💻\n\nEdit the values below and see how jods reactively updates with the built-in ..."
+    }
+  },
+  "framework-integration": {
+    "selector": "#framework-showcase",
+    "testId": "jods-framework-section",
+    "padding": 40,
+    "originalLocator": {
+      "strategy": "element",
+      "value": "section#framework-showcase.features-container",
+      "contextSelector": null
+    },
+    "debug": {
+      "elementTagName": "SECTION",
+      "width": 1280,
+      "isSameAsOriginal": true,
+      "textSummary": "🔌 Works with your favorite frameworks 🧩\n\nSeamlessly integrate jods with React, Preact, and Remix u..."
+    }
+  },
+  "compare": {
+    "selector": "#compare",
+    "testId": "jods-compare-section",
+    "padding": 40,
+    "originalLocator": {
+      "strategy": "element",
+      "value": "section#compare",
+      "contextSelector": null
+    },
+    "debug": {
+      "elementTagName": "SECTION",
+      "width": 1280,
+      "isSameAsOriginal": true,
+      "textSummary": "How jods compares 📊\n\nSee how jods stacks up against other popular state management libraries\n\nFEATU..."
+    }
+  },
+  "remix-integration": {
+    "selector": "#__docusaurus_skipToContent_fallback",
+    "testId": "jods-remix-section",
+    "padding": 40,
+    "originalLocator": {
+      "strategy": "element",
+      "value": "section#remix-integration",
+      "contextSelector": null
+    },
+    "debug": {
+      "elementTagName": "DIV",
+      "width": 1280,
+      "isSameAsOriginal": false,
+      "textSummary": "{ jods }\n\n✨JSON Dynamics System🔄\n\nBrings JSON to life\n\n🌱 Minimal\n•\n🔍 Typesafe\n•\n⚡ Fast\nGet Starte..."
+    }
+  },
+  "footer": {
+    "selector": ".footer",
+    "testId": "jods-footer",
+    "padding": 20,
+    "originalLocator": {
+      "strategy": "element",
+      "value": "footer.footer",
+      "contextSelector": null
+    },
+    "debug": {
+      "elementTagName": "FOOTER",
+      "width": 1280,
+      "isSameAsOriginal": true,
+      "textSummary": "DOCUMENTATION\n📚 Getting Started\nℹ️ About jods\n🧰 API Reference\nCOMMUNITY\n💬 Discussions\n🐛 Issues\n\ud83d..."
+    }
+  }
+}

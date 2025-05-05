@@ -33,9 +33,9 @@ const HOMEPAGE_SECTIONS = [
   {
     name: "features",
     locator: {
-      strategy: "heading",
-      value: "Features",
-      contextSelector: 'section, div.features, [class*="features"]',
+      strategy: "element",
+      value: "section#features",
+      contextSelector: null,
     },
     testId: "jods-features-section",
     padding: 40,
@@ -43,9 +43,9 @@ const HOMEPAGE_SECTIONS = [
   {
     name: "try-jods-live",
     locator: {
-      strategy: "heading",
-      value: "Try jods live",
-      contextSelector: "section, div.container",
+      strategy: "element",
+      value: 'section#try-jods-live, section[class*="try"]',
+      contextSelector: null,
     },
     testId: "jods-try-live-section",
     padding: 40,
@@ -53,9 +53,9 @@ const HOMEPAGE_SECTIONS = [
   {
     name: "framework-integration",
     locator: {
-      strategy: "heading",
-      value: "Framework Integration",
-      contextSelector: "section, div.container",
+      strategy: "element",
+      value: "section#framework-showcase.features-container",
+      contextSelector: null,
     },
     testId: "jods-framework-section",
     padding: 40,
@@ -63,9 +63,9 @@ const HOMEPAGE_SECTIONS = [
   {
     name: "compare",
     locator: {
-      strategy: "heading",
-      value: "Compare",
-      contextSelector: "section, div.container",
+      strategy: "element",
+      value: "section#compare",
+      contextSelector: null,
     },
     testId: "jods-compare-section",
     padding: 40,
@@ -73,9 +73,9 @@ const HOMEPAGE_SECTIONS = [
   {
     name: "remix-integration",
     locator: {
-      strategy: "text",
-      value: "Remix Integration",
-      contextSelector: "div.container, section",
+      strategy: "element",
+      value: "section#remix-integration",
+      contextSelector: null,
     },
     testId: "jods-remix-section",
     padding: 40,
@@ -84,7 +84,8 @@ const HOMEPAGE_SECTIONS = [
     name: "footer",
     locator: {
       strategy: "element",
-      value: "footer",
+      value: "footer.footer",
+      contextSelector: null,
     },
     testId: "jods-footer",
     padding: 20,
