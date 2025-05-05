@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import CodeBlock from "@theme/CodeBlock";
+import styles from "./FrameworkShowcase.module.css";
 
 export default function FrameworkShowcase(): React.ReactElement {
   const [activeFramework, setActiveFramework] = useState("react");
@@ -50,7 +51,10 @@ function Counter() {
     remix: {
       title: (
         <>
-          <span style={{ fontSize: "1.8rem" }}>💿</span> Remix
+          <span className={styles.spinningEmoji} style={{ fontSize: "1.8rem" }}>
+            💿
+          </span>{" "}
+          Remix
         </>
       ),
       code: `import { defineStore, withJods, useJodsStore } from 'jods/remix';
