@@ -14,8 +14,14 @@
     "write-heading-ids": "docusaurus write-heading-ids",
     "typecheck": "tsc",
     "screenshot": "node scripts/screenshot.mjs",
+    "screenshot:component": "node scripts/screenshot-component.mjs",
+    "screenshot:baseline": "node scripts/screenshot-manager.mjs --create-baselines",
+    "screenshot:cleanup": "node scripts/screenshot-manager.mjs --cleanup",
+    "screenshot:cleanup:keep-latest": "node scripts/screenshot-manager.mjs --cleanup --keep=3",
     "homepage:screenshot": "BASE_URL=http://localhost:3000 node scripts/screenshot.mjs",
-    "production:screenshot": "BASE_URL=https://jods.dev node scripts/screenshot.mjs"
+    "homepage:component": "BASE_URL=http://localhost:3000 node scripts/screenshot-component.mjs",
+    "production:screenshot": "BASE_URL=https://jods.dev node scripts/screenshot.mjs",
+    "production:component": "BASE_URL=https://jods.dev node scripts/screenshot-component.mjs"
   },
   "dependencies": {
     "@docusaurus/core": "3.7.0",

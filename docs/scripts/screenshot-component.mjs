@@ -1,13 +1,13 @@
-// Screenshot automation script using Playwright
+// Component-focused screenshot script using Playwright
 import { chromium } from "@playwright/test";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const screenshotsDir = path.join(__dirname, "../static/screenshots");
+const screenshotsDir = path.join(__dirname, "../static/screenshots/components");
 
-// Create screenshots directory if it doesn't exist
+// Create component screenshots directory if it doesn't exist
 if (!fs.existsSync(screenshotsDir)) {
   fs.mkdirSync(screenshotsDir, { recursive: true });
 }
@@ -18,12 +18,22 @@ const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
 // Path prefix - include /jods/ if needed
 const PATH_PREFIX = BASE_URL.includes("localhost") ? "/jods" : "";
 
-// Pages to screenshot
-const PAGES = [
-  { path: "/", name: "homepage" },
-  { path: "/intro", name: "intro" },
-  { path: "/api-reference", name: "api-reference" },
-  // Add more pages as needed
+// Component selectors to screenshot
+// Format: { page, name, selector, padding }
+const COMPONENTS = [
+  {
+    page: "/",
+    name: "hero-section",
+    selector: ".hero__title",
+    padding: 100, // Extra padding around element in pixels
+  },
+  {
+    page: "/",
+    name: "features-section",
+    selector: ".features",
+    padding: 50,
+  },
+  // Add more components as needed
 ];
 
 // Theme modes to capture
@@ -42,19 +52,12 @@ function getTimestamp() {
   return `${year}${month}${day}-${hours}${minutes}${seconds}`;
 }
 
-async function takeScreenshots(
+async function takeComponentScreenshots(
   timestamp = getTimestamp(),
   saveBaseline = false
 ) {
-  // Only generate timestamp if we're not creating baselines
-  timestamp = saveBaseline ? null : timestamp;
-
-  console.log(`Taking screenshots from ${BASE_URL}${PATH_PREFIX}`);
-  console.log(
-    `Saving to ${screenshotsDir}${
-      saveBaseline ? " (baseline)" : " (timestamped)"
-    }`
-  );
+  console.log(`Taking component screenshots from ${BASE_URL}${PATH_PREFIX}`);
+  console.log(`Saving to ${screenshotsDir}`);
   console.log(`Capturing themes: ${THEMES.join(", ")}`);
 
   const browser = await chromium.launch();
@@ -64,9 +67,9 @@ async function takeScreenshots(
 
   const page = await context.newPage();
 
-  for (const { path: pagePath, name } of PAGES) {
+  for (const { page: pagePath, name, selector, padding } of COMPONENTS) {
     const url = `${BASE_URL}${PATH_PREFIX}${pagePath}`;
-    console.log(`Navigating to ${url}`);
+    console.log(`Navigating to ${url} to capture component: ${name}`);
 
     await page.goto(url, { waitUntil: "networkidle" });
 
@@ -75,7 +78,7 @@ async function takeScreenshots(
 
     // Take screenshots in both themes
     for (const theme of THEMES) {
-      console.log(`Capturing ${theme} theme`);
+      console.log(`Capturing ${theme} theme for component: ${name}`);
 
       // If we need dark theme and current theme is light, toggle it
       const isDarkMode = await page.evaluate(() => {
@@ -88,18 +91,14 @@ async function takeScreenshots(
       ) {
         // Try multiple selectors for the theme toggle button
         try {
-          // Try the selector from the HTML snippet
           await page.click("button.toggleButton_e_pL");
         } catch (e) {
           try {
-            // Try the selector from the script
             await page.click(".colorModeToggle_AEMF button");
           } catch (e2) {
             try {
-              // Try a more general selector
               await page.click("[data-theme-toggle]");
             } catch (e3) {
-              // Last resort - get any button with the word "theme" in its attributes
               await page.evaluate(() => {
                 const buttons = Array.from(document.querySelectorAll("button"));
                 const themeButton = buttons.find((button) => {
@@ -123,23 +122,48 @@ async function takeScreenshots(
         await page.waitForTimeout(500); // Wait for theme transition
       }
 
-      // Create the filename based on whether we're saving a baseline or timestamped screenshot
-      const screenshotPath = path.join(
-        screenshotsDir,
-        `${name}-${theme}${saveBaseline ? "" : "-" + timestamp}.png`
-      );
+      try {
+        // Find the element and get its bounding box
+        const elementHandle = await page.$(selector);
+        if (!elementHandle) {
+          console.error(`Element not found: ${selector}`);
+          continue;
+        }
 
-      await page.screenshot({
-        path: screenshotPath,
-        fullPage: true,
-      });
+        const boundingBox = await elementHandle.boundingBox();
+        if (!boundingBox) {
+          console.error(`Could not get bounding box for element: ${selector}`);
+          continue;
+        }
 
-      console.log(`Screenshot saved to: ${screenshotPath}`);
+        // Add padding around the element
+        const clip = {
+          x: Math.max(0, boundingBox.x - padding),
+          y: Math.max(0, boundingBox.y - padding),
+          width: boundingBox.width + padding * 2,
+          height: boundingBox.height + padding * 2,
+        };
+
+        // Create timestamped screenshot
+        const screenshotPath = path.join(
+          screenshotsDir,
+          `${name}-${theme}${saveBaseline ? "" : "-" + timestamp}.png`
+        );
+
+        await page.screenshot({
+          path: screenshotPath,
+          clip,
+        });
+
+        console.log(`Component screenshot saved to: ${screenshotPath}`);
+      } catch (error) {
+        console.error(`Error capturing component ${name}:`, error);
+      }
     }
   }
 
   await browser.close();
-  console.log("All screenshots completed!");
+  console.log("All component screenshots completed!");
   if (!saveBaseline) {
     console.log(`Timestamp for this batch: ${timestamp}`);
   }
@@ -152,9 +176,9 @@ const args = process.argv.slice(2);
 const saveBaseline = args.includes("--baseline");
 
 // Run the screenshot function
-takeScreenshots(getTimestamp(), saveBaseline).catch((error) => {
-  console.error("Error taking screenshots:", error);
+takeComponentScreenshots(getTimestamp(), saveBaseline).catch((error) => {
+  console.error("Error taking component screenshots:", error);
   process.exit(1);
 });
 
-export { takeScreenshots };
+export { takeComponentScreenshots };
