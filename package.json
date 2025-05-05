@@ -42,7 +42,10 @@
     "prepublishOnly": "npm run build",
     "docs:dev": "cd docs && pnpm start",
     "docs:build": "cd docs && pnpm build",
-    "docs:deploy": "cd docs && GIT_USER=clamstew pnpm deploy"
+    "docs:deploy": "cd docs && GIT_USER=clamstew pnpm deploy",
+    "docs:screenshot": "cd docs && pnpm screenshot",
+    "docs:screenshot:homepage": "cd docs && pnpm homepage:screenshot",
+    "docs:screenshot:production": "cd docs && pnpm production:screenshot"
   },
   "keywords": [
     "state",
