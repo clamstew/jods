@@ -104,7 +104,7 @@
 /* Hero title with enhanced gradient */
 .hero-title {
   margin-bottom: 0.5rem;
-  font-size: 3.5rem;
+  font-size: 4rem;
   font-weight: 800;
   letter-spacing: -0.025em;
   animation: title-glow 4s infinite alternate ease-in-out;
@@ -127,22 +127,108 @@
   position: relative;
 }
 
-.hero-subtitle {
-  font-size: 1.5rem;
+/* Enhanced subtitle styling for light mode */
+:root:not([data-theme="dark"]) .hero-subtitle {
+  font-size: 1.6rem;
   margin-bottom: 1rem;
-  font-weight: 600;
-  letter-spacing: -0.015em;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   opacity: 0.95;
-  text-shadow: 0 2px 4px var(--hero-text-shadow, rgba(0, 0, 0, 0.2));
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 57, 183, 0.8), 0 0 8px rgba(0, 57, 183, 0.5);
+  line-height: 1.3;
+}
+
+/* Dark mode subtitle styling */
+[data-theme="dark"] .hero-subtitle {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  opacity: 0.95;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  line-height: 1.3;
+}
+
+/* Light mode emoji styling */
+:root:not([data-theme="dark"]) .hero-subtitle .emoji {
+  display: inline-block;
+  font-size: 1.2em;
+  vertical-align: middle;
+  margin: 0 0.15em;
+  filter: drop-shadow(0 2px 4px rgba(0, 57, 183, 0.6));
+  animation: emoji-float 4s infinite alternate ease-in-out;
+  transform-origin: center;
+}
+
+/* Dark mode emoji styling */
+[data-theme="dark"] .hero-subtitle .emoji {
+  display: inline-block;
+  font-size: 1.2em;
+  vertical-align: middle;
+  margin: 0 0.15em;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+  animation: emoji-float 4s infinite alternate ease-in-out;
+  transform-origin: center;
+}
+
+@keyframes emoji-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.1);
+  }
+}
+
+/* Features list styling */
+.hero-features {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  gap: 0.7rem;
+}
+
+.hero-features span {
+  display: flex;
+  align-items: center;
+}
+
+.hero-features .separator {
+  opacity: 0.6;
+  font-weight: bold;
 }
 
 .hero-description {
-  font-size: 1.35rem;
+  font-size: 1.8rem;
   max-width: 600px;
-  margin: 0 auto 0.5rem;
-  line-height: 1.5;
-  font-weight: 600;
-  text-shadow: 0 1px 2px var(--hero-text-shadow, rgba(0, 0, 0, 0.1));
+  margin: 0 auto 1rem;
+  line-height: 1.4;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.6), 0 0 5px rgba(0, 0, 0, 0.4);
+  position: relative;
+  z-index: 5;
+  letter-spacing: 0.01em;
+}
+
+/* Light mode specific styles for hero description */
+:root:not([data-theme="dark"]) .hero-description {
+  color: #0057b7; /* Strong blue for better contrast on light backgrounds */
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8),
+    0 0 2px rgba(255, 255, 255, 0.9);
+  font-weight: 800;
+}
+
+/* Dark mode specific styles for hero description */
+[data-theme="dark"] .hero-description {
+  color: #ffc559; /* Bright orange-yellow for better contrast on dark backgrounds */
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.8), 0 0 8px rgba(0, 0, 0, 0.6);
+  font-weight: 800;
 }
 
 .hero-sub-description {

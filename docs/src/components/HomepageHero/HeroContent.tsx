@@ -5,19 +5,34 @@ export default function HeroContent(): React.ReactElement {
   return (
     <div className="hero-content">
       <h1 className="hero-title">
-        <span className="jods-logo">jods</span>
-        <span className="jods-logo-braces">&#123;&#125;</span>
+        <span className="jods-logo">
+          <span className="jods-logo-braces">{"{"}</span>
+          jods
+          <span className="jods-logo-braces">{"}"}</span>
+        </span>
       </h1>
+
       <p className="hero-subtitle">
-        <span className="gradient-text">✨</span> JSON Dynamics System 🔄
+        <span className="emoji">✨</span>
+        JSON Dynamics System
+        <span className="emoji">🔄</span>
       </p>
+
       <p className="hero-description">Brings JSON to life</p>
-      <p className="hero-sub-description">🧩 Minimal • 📐 Typesafe • ⚡ Fast</p>
+
+      <div className="hero-features">
+        <span>🌱 Minimal</span>
+        <span className="separator">•</span>
+        <span>🔍 Typesafe</span>
+        <span className="separator">•</span>
+        <span>⚡ Fast</span>
+      </div>
+
       <div className="hero-buttons">
-        <Link className="button button--primary button--lg" to="/intro">
+        <Link to="/docs/intro" className="button button--primary">
           Get Started
         </Link>
-        <Link className="button button--secondary button--lg" to="/examples">
+        <Link to="/examples" className="button button--secondary">
           See Examples
         </Link>
       </div>
