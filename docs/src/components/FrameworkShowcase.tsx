@@ -157,14 +157,14 @@ function Counter() {
                     activeFramework === key
                       ? key === "react"
                         ? theme === "dark"
-                          ? "linear-gradient(145deg, #a75a6b, #c26a5a)"
+                          ? "linear-gradient(145deg, #f97316, #fb923c)"
                           : "linear-gradient(145deg, var(--jods-blue-dark), var(--jods-cyan))"
                         : key === "preact"
                         ? theme === "dark"
-                          ? "linear-gradient(145deg, #a75a6b, #c26a5a)"
+                          ? "linear-gradient(145deg, #8b5cf6, #6366f1)"
                           : "linear-gradient(145deg, #4a347f, #673ab8)"
                         : theme === "dark"
-                        ? "linear-gradient(145deg, #a75a6b, #c26a5a)"
+                        ? "linear-gradient(145deg, #f43f5e, #ec4899)"
                         : "linear-gradient(145deg, #b81d5b, #e91e63)"
                       : "var(--ifm-card-background-color)",
                   color:
@@ -175,14 +175,14 @@ function Counter() {
                     activeFramework === key
                       ? key === "react"
                         ? theme === "dark"
-                          ? "0 8px 16px rgba(194, 106, 90, 0.25)"
+                          ? "0 8px 16px rgba(249, 115, 22, 0.25)"
                           : "0 8px 16px rgba(8, 145, 178, 0.25)"
                         : key === "preact"
                         ? theme === "dark"
-                          ? "0 8px 16px rgba(194, 106, 90, 0.25)"
+                          ? "0 8px 16px rgba(99, 102, 241, 0.25)"
                           : "0 8px 16px rgba(103, 58, 184, 0.25)"
                         : theme === "dark"
-                        ? "0 8px 16px rgba(194, 106, 90, 0.25)"
+                        ? "0 8px 16px rgba(236, 72, 153, 0.25)"
                         : "0 8px 16px rgba(233, 30, 99, 0.25)"
                       : "0 4px 8px rgba(0, 0, 0, 0.05)",
                   border:
