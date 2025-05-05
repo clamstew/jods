@@ -156,8 +156,10 @@ body {
   font-weight: 600;
 }
 
-.markdown h1::after,
-.markdown h2::after {
+/* Only show underlines in homepage and section titles */
+.section-title:after,
+.homepage .markdown h1::after,
+.homepage .markdown h2::after {
   content: "";
   position: absolute;
   bottom: 0;
@@ -173,13 +175,32 @@ body {
   border-radius: 2px;
 }
 
-[data-theme="dark"] .markdown h1::after,
-[data-theme="dark"] .markdown h2::after {
+/* Dark mode underlines for homepage only */
+[data-theme="dark"] .section-title:after,
+[data-theme="dark"] .homepage .markdown h1::after,
+[data-theme="dark"] .homepage .markdown h2::after {
   background: linear-gradient(
     90deg,
     var(--jods-orange-desaturated) 0%,
     var(--ifm-color-primary) 100%
   );
+}
+
+/* Adjust spacing for docs pages (no underline) */
+.markdown-doc-page .markdown h1,
+.markdown-doc-page .markdown h2,
+.docs-wrapper .markdown h1,
+.docs-wrapper .markdown h2,
+article .markdown h1,
+article .markdown h2 {
+  padding-bottom: 0.25rem;
+}
+
+/* Fix excessive spacing above docs headers */
+.markdown-doc-page .markdown h1,
+.docs-wrapper .markdown h1,
+article .markdown h1 {
+  margin-top: 0;
 }
 
 /* Global gradient text styling - enhanced with improved readability */
