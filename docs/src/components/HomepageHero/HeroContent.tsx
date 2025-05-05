@@ -29,7 +29,7 @@ export default function HeroContent(): React.ReactElement {
       </div>
 
       <div className="hero-buttons">
-        <Link to="/docs/intro" className="button button--primary">
+        <Link to="/intro" className="button button--primary">
           Get Started
         </Link>
         <Link to="/examples" className="button button--secondary">
