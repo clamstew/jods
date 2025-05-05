@@ -229,6 +229,8 @@ function Counter() {
             boxShadow: "0 8px 30px rgba(0, 0, 0, 0.1)",
             borderRadius: "12px",
             overflow: "hidden",
+            display: "flex",
+            justifyContent: "center",
           }}
         >
           <div

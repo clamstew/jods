@@ -243,10 +243,10 @@ body {
   filter: drop-shadow(0 2px 5px rgba(255, 197, 89, 0.55));
 }
 
-/* Ensure emoji is present at the end of gradient headers in dark mode */
+/* Remove extra star emoji from headers in dark mode */
 [data-theme="dark"] h1 .gradient-text:after,
 [data-theme="dark"] h2 .gradient-text:after {
-  content: " ✨";
+  content: "";
   font-size: 1.1em;
   vertical-align: middle;
   margin-left: 0.1em;
@@ -1079,20 +1079,10 @@ table tbody tr:last-child td:last-child {
   );
 }
 
-/* Basic code block styling */
-.prism-code {
-  border-radius: var(--code-block-border-radius) !important;
-  box-shadow: var(--code-block-shadow) !important;
-  margin: 1.5rem 0 !important;
-  padding: 1.2rem !important;
-  font-size: 0.9rem !important;
-  line-height: 1.6 !important;
-}
-
 /* Code block container with title bar */
 div[class^="codeBlockContainer"] {
   position: relative;
-  margin-bottom: 2rem;
+  margin-bottom: 0;
   border-radius: var(--code-block-border-radius);
   overflow: hidden;
 }
@@ -1121,6 +1111,51 @@ div[class^="codeBlockContainer"]:before {
     var(--jods-orange-desaturated) 0%,
     var(--ifm-color-primary) 100%
   );
+}
+
+/* Specific overrides for Try jods live section */
+#try-jods-live .prism-code {
+  margin: 0 !important;
+  border-radius: 0 !important;
+}
+
+#try-jods-live div[class^="codeBlockContainer"] {
+  margin: 0 !important;
+}
+
+/* Specific overrides for Framework showcase section */
+#framework-showcase .prism-code {
+  margin: 0 !important;
+  border-radius: 0 !important;
+}
+
+#framework-showcase div[class^="codeBlockContainer"] {
+  margin: 0 !important;
+}
+
+/* Framework showcase code block - remove padding and margin */
+#framework-showcase .code-container {
+  position: relative;
+  overflow: hidden;
+  padding: 0 !important;
+  margin: 0 auto !important;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+
+#framework-showcase .code-container .prism-code {
+  margin: 0 !important;
+  border-radius: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+#framework-showcase .code-container div[class^="codeBlockContainer"] {
+  margin: 0 !important;
+}
+
+#framework-showcase .code-container div[class*="codeBlockContent"] {
+  padding-bottom: 0 !important;
 }
 
 /* Style code block titles */
@@ -1243,7 +1278,7 @@ div[class^="codeBlockTitle"] {
 
 /* Add additional section spacing to restore proper layout */
 .features-container {
-  margin: 3rem 0;
+  margin: 2rem 0;
   padding: 2rem 0;
   position: relative;
 }
@@ -1251,7 +1286,7 @@ div[class^="codeBlockTitle"] {
 .features-container:not(:last-child)::after {
   content: "";
   position: absolute;
-  bottom: -1.5rem;
+  bottom: -1rem;
   left: 50%;
   transform: translateX(-50%);
   width: 120px;
@@ -1328,11 +1363,76 @@ div[class^="codeBlockTitle"] {
   padding-right: 2.5rem;
 }
 
+/* InteractiveDemo code block - remove padding and margin */
+#try-jods-live .code-preview {
+  height: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+#try-jods-live .code-preview .prism-code {
+  margin: 0 !important;
+  border-radius: 0 !important;
+}
+
+#try-jods-live .code-preview div[class^="codeBlockContainer"] {
+  margin: 0 !important;
+}
+
+/* Default code-preview for other sections */
 .code-preview {
   height: 100%;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  padding: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Default code-container for Remix and other sections */
+.code-container {
+  position: relative;
+  overflow: hidden;
+  padding: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Code container styling refinements - don't duplicate */
+.code-container pre {
+  margin: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Override prism-react-renderer defaults for pre element */
+div[class*="codeBlockContent"] pre {
+  margin: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Code block content should have no extra space */
+.code-container div[class*="codeBlockContent"] {
+  padding-bottom: 0 !important;
+}
+
+.code-container div[class*="codeBlockContent"] > div {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Remove any unexpected elements that might appear in code blocks */
+.code-container div[class*="codeBlockContent"] > div:first-child {
+  margin-top: 0 !important;
+}
+
+.code-container div[class*="codeBlockContent"] > div:last-child {
+  margin-bottom: 0 !important;
+}
+
+.code-container > div:not([class*="codeBlock"]) {
+  display: none;
 }
 
 /* Enhanced instruction box styling */
@@ -1460,34 +1560,13 @@ div[class^="codeBlockTitle"] {
   box-shadow: 0 4px 12px rgba(194, 106, 90, 0.25);
 }
 
-/* Code container styling fixes */
-.code-container {
-  position: relative;
-  overflow: hidden;
-  padding: 0 !important;
-  margin-bottom: 2rem;
-}
-
-.code-container pre {
-  margin: 0 !important;
+/* Basic code block styling */
+.prism-code {
+  border-radius: var(--code-block-border-radius) !important;
+  box-shadow: var(--code-block-shadow) !important;
+  margin: 1.5rem 0 !important;
+  padding: 1.2rem !important;
   padding-bottom: 0 !important;
-}
-
-/* Code block content should have no extra space */
-.code-container div[class*="codeBlockContent"] {
-  padding-bottom: 0 !important;
-}
-
-.code-container div[class*="codeBlockContent"] > div {
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-}
-
-/* Remove any unexpected elements that might appear in code blocks */
-.code-container div[class*="codeBlockContent"] > div:first-child {
-  margin-top: 0 !important;
-}
-
-.code-container > div:not([class*="codeBlock"]) {
-  display: none;
+  font-size: 0.9rem !important;
+  line-height: 1.6 !important;
 }
