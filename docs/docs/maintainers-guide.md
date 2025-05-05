@@ -35,6 +35,7 @@ When adding a new feature to jods, make sure to update all of these components:
   - Update the API reference page
   - Add examples showing the feature in action
   - Follow the [Emoji Standards Guide](./emoji-standards) for consistent emoji usage
+  - Take [screenshots](./playwright-screenshots) of updated pages for visual review
 
 ### 💡 4. Examples
 
@@ -142,7 +143,15 @@ After making local changes to the documentation:
    pnpm run docs:dev
    ```
 
-2. The GitHub Action will automatically deploy the updated docs when changes are pushed to the main branch.
+2. Take screenshots of key pages for visual review:
+
+   ```bash
+   pnpm docs:screenshot:homepage
+   ```
+
+   See the [Documentation Screenshots Guide](./playwright-screenshots) for details.
+
+3. The GitHub Action will automatically deploy the updated docs when changes are pushed to the main branch.
 
 ## 🔢 Version Bumping
 
