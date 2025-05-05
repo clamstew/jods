@@ -34,13 +34,17 @@ At its core, a Dynamics System:
 
 Let's compare jods with some other popular approaches:
 
-| Feature               | Traditional Object    | Redux                       | Zustand                    | jods (Dynamics System)                                 |
+<div className="table-container" id="compare" style={{width: '100%', maxWidth: '900px', margin: '0 auto', overflowX: 'auto', borderRadius: '8px', boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)'}}>
+
+| FEATURE               | TRADITIONAL OBJECT    | REDUX                       | ZUSTAND                    | JODS (DYNAMICS SYSTEM)                                 |
 | --------------------- | --------------------- | --------------------------- | -------------------------- | ------------------------------------------------------ |
 | Updating state        | `obj.name = "Burt"`   | `dispatch(setName("Burt"))` | `setState({name: "Burt"})` | `user.name = "Burt"`                                   |
 | Reactivity            | None                  | Manual subscriptions        | Selector functions         | Automatic + granular                                   |
 | Computed values       | Manual functions      | Selector functions          | Selector functions         | `computed(() => user.firstName + " " + user.lastName)` |
 | Serialization         | `JSON.stringify(obj)` | Need custom serializers     | Need custom serializers    | `json(user)`                                           |
 | Framework integration | None                  | Requires connectors         | Hooks                      | Lightweight direct hooks                               |
+
+</div>
 
 ## ⚡ The Power of Dynamics: Code Examples
 
