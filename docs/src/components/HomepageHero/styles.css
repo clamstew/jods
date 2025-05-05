@@ -6,10 +6,10 @@
   min-height: 580px; /* Increased minimum height for content plus mascot space */
   background: linear-gradient(
     135deg,
-    #0057b7 0%,
-    #06b6d4 50%,
-    #84cc16 100%
-  ); /* Original gradient for light mode */
+    #0f172a 0%,
+    #0c4a6e 40%,
+    #0891b2 100%
+  ); /* Bold blue to teal gradient like TanStack */
   color: white;
   display: flex;
   align-items: center;
@@ -639,33 +639,33 @@
 /* CSS Variable theme overrides for light mode - updated */
 :root {
   --hero-content-bg: rgba(255, 255, 255, 0.15);
-  --hero-content-border: rgba(132, 204, 22, 0.3);
-  --hero-content-shadow: rgba(6, 182, 212, 0.2);
-  --hero-gradient-start: #0057b7;
-  --hero-gradient-end: #84cc16;
-  --hero-gradient-shadow: rgba(132, 204, 22, 0.3);
-  --hero-text-shadow: rgba(0, 0, 0, 0.3);
-  --button-primary-gradient-start: #0057b7;
-  --button-primary-gradient-end: #84cc16;
-  --button-primary-shadow: rgba(132, 204, 22, 0.4);
-  --button-primary-shadow-hover: rgba(132, 204, 22, 0.6);
+  --hero-content-border: rgba(8, 145, 178, 0.4);
+  --hero-content-shadow: rgba(8, 145, 178, 0.4);
+  --hero-gradient-start: #0c4a6e;
+  --hero-gradient-end: #0891b2;
+  --hero-gradient-shadow: rgba(8, 145, 178, 0.5);
+  --hero-text-shadow: rgba(0, 0, 0, 0.4);
+  --button-primary-gradient-start: #0f172a;
+  --button-primary-gradient-end: #0891b2;
+  --button-primary-shadow: rgba(8, 145, 178, 0.5);
+  --button-primary-shadow-hover: rgba(8, 145, 178, 0.7);
   --button-secondary-bg: rgba(255, 255, 255, 0.2);
-  --button-secondary-border: rgba(132, 204, 22, 0.3);
-  --button-secondary-color: #0057b7;
-  --button-secondary-shadow: rgba(6, 182, 212, 0.2);
+  --button-secondary-border: rgba(8, 145, 178, 0.4);
+  --button-secondary-color: #0f172a;
+  --button-secondary-shadow: rgba(8, 145, 178, 0.3);
   --button-secondary-bg-hover: rgba(255, 255, 255, 0.3);
-  --button-secondary-shadow-hover: rgba(6, 182, 212, 0.4);
+  --button-secondary-shadow-hover: rgba(8, 145, 178, 0.5);
   --speech-bubble-bg: rgba(255, 255, 255, 0.8);
-  --speech-bubble-border: rgba(132, 204, 22, 0.4);
-  --speech-bubble-color: #0057b7;
+  --speech-bubble-border: rgba(8, 145, 178, 0.5);
+  --speech-bubble-color: #0c4a6e;
 
   /* Demo box styles for light mode */
-  --demo-box-bg: linear-gradient(135deg, #0057b7 0%, #06b6d4 50%, #84cc16 100%);
-  --demo-box-border: rgba(6, 182, 212, 0.3);
-  --demo-box-shadow: 0 8px 32px 0 rgba(6, 182, 212, 0.15),
-    0 2px 16px 0 rgba(132, 204, 22, 0.15);
-  --demo-text-shadow: 0 2px 8px rgba(255, 255, 255, 0.7),
-    0 0 8px rgba(6, 182, 212, 0.3);
+  --demo-box-bg: linear-gradient(135deg, #0f172a 0%, #0c4a6e 50%, #0891b2 100%);
+  --demo-box-border: rgba(8, 145, 178, 0.4);
+  --demo-box-shadow: 0 8px 32px 0 rgba(8, 145, 178, 0.3),
+    0 2px 16px 0 rgba(8, 145, 178, 0.2);
+  --demo-text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5),
+    0 0 8px rgba(8, 145, 178, 0.4);
   --demo-text-1-color: white;
   --demo-text-2-color: white;
   --demo-text-3-color: white;
@@ -903,7 +903,7 @@
 [data-theme="dark"] .hero-container::after {
   background: radial-gradient(
     circle at 30% 60%,
-    rgba(255, 154, 92, 0.08) 0%,
-    rgba(255, 154, 92, 0) 50%
+    rgba(8, 145, 178, 0.12) 0%,
+    rgba(8, 145, 178, 0) 50%
   );
 }

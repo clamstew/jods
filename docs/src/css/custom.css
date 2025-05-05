@@ -10,56 +10,57 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #0284c7;
-  --ifm-color-primary-dark: #0272b0;
-  --ifm-color-primary-darker: #016ba6;
-  --ifm-color-primary-darkest: #015889;
-  --ifm-color-primary-light: #0297de;
-  --ifm-color-primary-lighter: #02a1ea;
-  --ifm-color-primary-lightest: #0eaefa;
+  --ifm-color-primary: #0891b2;
+  --ifm-color-primary-dark: #0284a0;
+  --ifm-color-primary-darker: #027a94;
+  --ifm-color-primary-darkest: #026478;
+  --ifm-color-primary-light: #079ec4;
+  --ifm-color-primary-lighter: #08a8cf;
+  --ifm-color-primary-lightest: #0bb0da;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 
   /* Custom colors for the gradient vibe */
-  --jods-blue: #0057b7;
-  --jods-cyan: #06b6d4;
-  --jods-green: #84cc16;
-  --jods-green-light: #a7e22e;
-  --jods-blue-dark: #004095;
-  --jods-neon-glow: rgba(132, 204, 22, 0.6);
+  --jods-blue-darkest: #0f172a;
+  --jods-blue-dark: #0c4a6e;
+  --jods-blue: #0369a1;
+  --jods-cyan: #0891b2;
+  --jods-cyan-light: #22d3ee;
+  --jods-teal: #14b8a6;
+  --jods-blue-glow: rgba(8, 145, 178, 0.6);
 
   /* CSS Variable theme overrides for light mode - updated */
   --hero-content-bg: rgba(255, 255, 255, 0.15);
-  --hero-content-border: rgba(132, 204, 22, 0.3);
-  --hero-content-shadow: rgba(6, 182, 212, 0.2);
-  --hero-gradient-start: #0057b7;
-  --hero-gradient-end: #84cc16;
-  --hero-gradient-shadow: rgba(132, 204, 22, 0.3);
-  --hero-text-shadow: rgba(0, 0, 0, 0.3);
-  --button-primary-gradient-start: #0057b7;
-  --button-primary-gradient-end: #84cc16;
-  --button-primary-shadow: rgba(132, 204, 22, 0.4);
-  --button-primary-shadow-hover: rgba(132, 204, 22, 0.6);
+  --hero-content-border: rgba(8, 145, 178, 0.4);
+  --hero-content-shadow: rgba(8, 145, 178, 0.4);
+  --hero-gradient-start: #0c4a6e;
+  --hero-gradient-end: #0891b2;
+  --hero-gradient-shadow: rgba(8, 145, 178, 0.5);
+  --hero-text-shadow: rgba(0, 0, 0, 0.4);
+  --button-primary-gradient-start: #0f172a;
+  --button-primary-gradient-end: #0891b2;
+  --button-primary-shadow: rgba(8, 145, 178, 0.5);
+  --button-primary-shadow-hover: rgba(8, 145, 178, 0.7);
   --button-secondary-bg: rgba(255, 255, 255, 0.2);
-  --button-secondary-border: rgba(132, 204, 22, 0.3);
-  --button-secondary-color: #0057b7;
-  --button-secondary-shadow: rgba(6, 182, 212, 0.2);
+  --button-secondary-border: rgba(8, 145, 178, 0.4);
+  --button-secondary-color: #0f172a;
+  --button-secondary-shadow: rgba(8, 145, 178, 0.3);
   --button-secondary-bg-hover: rgba(255, 255, 255, 0.3);
-  --button-secondary-shadow-hover: rgba(6, 182, 212, 0.4);
+  --button-secondary-shadow-hover: rgba(8, 145, 178, 0.5);
   --speech-bubble-bg: rgba(255, 255, 255, 0.8);
-  --speech-bubble-border: rgba(132, 204, 22, 0.4);
-  --speech-bubble-color: #0057b7;
+  --speech-bubble-border: rgba(8, 145, 178, 0.5);
+  --speech-bubble-color: #0c4a6e;
 
   /* Demo box styles for light mode */
   --demo-box-bg: linear-gradient(
     135deg,
-    rgba(0, 57, 183, 0.85) 0%,
-    rgba(6, 182, 212, 0.85) 50%,
-    rgba(132, 204, 22, 0.85) 100%
+    rgba(15, 23, 42, 0.9) 0%,
+    rgba(12, 74, 110, 0.9) 50%,
+    rgba(8, 145, 178, 0.9) 100%
   );
   --demo-box-border: rgba(255, 255, 255, 0.3);
-  --demo-box-shadow: 0 8px 32px 0 rgba(6, 182, 212, 0.15),
-    0 2px 16px 0 rgba(132, 204, 22, 0.15);
+  --demo-box-shadow: 0 8px 32px 0 rgba(8, 145, 178, 0.3),
+    0 2px 16px 0 rgba(8, 145, 178, 0.2);
   --demo-text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5), 0 0 5px rgba(0, 0, 0, 0.3);
   --demo-text-1-color: white;
   --demo-text-2-color: white;
@@ -84,16 +85,16 @@
 .gradient-text {
   background-image: linear-gradient(
     135deg,
-    var(--jods-blue),
-    var(--jods-cyan) 45%,
-    var(--jods-green) 75%,
-    var(--jods-green-light)
+    var(--jods-blue-dark),
+    var(--jods-blue) 45%,
+    var(--jods-cyan) 75%,
+    var(--jods-cyan-light)
   );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   display: inline-block;
-  filter: drop-shadow(0 2px 4px rgba(72, 255, 168, 0.3));
+  filter: drop-shadow(0 2px 4px rgba(8, 145, 178, 0.3));
   position: relative;
 }
 
@@ -159,8 +160,8 @@
 /* LIGHT MODE - refined styling with subtle animation */
 :root:not([data-theme="dark"]) .jods-logo {
   color: white;
-  text-shadow: 0 2px 4px rgba(0, 57, 183, 0.8), 0 0 15px rgba(0, 57, 183, 0.5);
-  filter: drop-shadow(0 2px 10px rgba(0, 57, 183, 0.6));
+  text-shadow: 0 2px 4px rgba(15, 23, 42, 0.8), 0 0 15px rgba(12, 74, 110, 0.5);
+  filter: drop-shadow(0 2px 10px rgba(12, 74, 110, 0.6));
   animation: light-mode-logo-pulse 3s infinite alternate ease-in-out;
   transform-origin: center;
   letter-spacing: -0.01em;
@@ -170,11 +171,11 @@
 /* Add subtle pulsing animation only for light mode */
 @keyframes light-mode-logo-pulse {
   0% {
-    filter: drop-shadow(0 2px 10px rgba(6, 182, 212, 0.4));
+    filter: drop-shadow(0 2px 10px rgba(8, 145, 178, 0.4));
     transform: scale(1);
   }
   100% {
-    filter: drop-shadow(0 2px 15px rgba(6, 182, 212, 0.8));
+    filter: drop-shadow(0 2px 15px rgba(8, 145, 178, 0.8));
     transform: scale(1.02);
   }
 }
@@ -182,7 +183,7 @@
 /* Light mode braces with enhanced styling */
 :root:not([data-theme="dark"]) .jods-logo-braces {
   color: white;
-  text-shadow: 0 2px 4px rgba(0, 57, 183, 0.8), 0 0 8px rgba(0, 57, 183, 0.5);
+  text-shadow: 0 2px 4px rgba(15, 23, 42, 0.8), 0 0 8px rgba(12, 74, 110, 0.5);
   font-weight: 800;
   font-size: 1.05em;
 }
@@ -194,22 +195,22 @@
   letter-spacing: 0.01em;
   background-image: linear-gradient(
     135deg,
-    #0057b7 0%,
-    #06b6d4 50%,
-    #84cc16 100%
+    #0f172a 0%,
+    #0c4a6e 50%,
+    #0891b2 100%
   );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  filter: drop-shadow(0 3px 4px rgba(6, 182, 212, 0.3));
+  filter: drop-shadow(0 3px 4px rgba(8, 145, 178, 0.3));
   margin-bottom: 1.2rem;
   line-height: 1.3;
 }
 
 /* Add emoji enhancements for light mode */
 :root:not([data-theme="dark"]) .hero-subtitle .emoji {
-  filter: drop-shadow(0 2px 5px rgba(6, 182, 212, 0.4));
+  filter: drop-shadow(0 2px 5px rgba(8, 145, 178, 0.4));
   font-size: 1.2em;
   vertical-align: middle;
   margin: 0 0.2em;
@@ -241,7 +242,7 @@
 
 /* Light mode braces with simple styling */
 :root:not([data-theme="dark"]) .jods-logo-braces {
-  color: #0284c7; /* Slightly lighter blue for contrast */
+  color: #0891b2; /* Slightly lighter blue for contrast */
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -258,9 +259,9 @@
 /* Table header gradients - decoupled for light and dark mode */
 /* Light mode gradient table headers */
 :root:not([data-theme="dark"]) table thead {
-  background: linear-gradient(135deg, #0057b7 0%, #06b6d4 50%, #84cc16 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #0c4a6e 50%, #0891b2 100%);
   color: white;
-  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.2);
+  box-shadow: 0 2px 8px rgba(8, 145, 178, 0.3);
 }
 
 /* Dark mode gradient table headers - unchanged */
@@ -277,7 +278,7 @@
 
 /* Add subtle hover effect for light mode table rows */
 :root:not([data-theme="dark"]) table tbody tr:hover {
-  background-color: rgba(6, 182, 212, 0.05);
+  background-color: rgba(8, 145, 178, 0.05);
   transition: background-color 0.2s ease;
 }
 
@@ -285,7 +286,7 @@
 h1 .gradient-text,
 h2 .gradient-text {
   font-weight: 700;
-  filter: drop-shadow(0 2px 6px rgba(72, 255, 168, 0.4));
+  filter: drop-shadow(0 2px 6px rgba(8, 145, 178, 0.4));
 }
 
 [data-theme="dark"] h1 .gradient-text,
@@ -296,7 +297,7 @@ h2 .gradient-text {
 /* Enhance framework tabs in docs - apply gradient style */
 .react-tabs__tab--selected {
   border-bottom-color: var(--jods-cyan) !important;
-  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
+  box-shadow: 0 2px 8px rgba(8, 145, 178, 0.3);
 }
 
 [data-theme="dark"] .react-tabs__tab--selected {
@@ -310,13 +311,70 @@ h2 .gradient-text {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
 }
 
+/* Make light mode code text use gradient-inspired colors */
+:root:not([data-theme="dark"]) .token {
+  font-weight: 600 !important;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3) !important;
+}
+
+:root:not([data-theme="dark"]) .token.comment {
+  color: #7c8495 !important;
+  font-style: italic !important;
+  font-weight: normal !important;
+}
+
+:root:not([data-theme="dark"]) .token.string,
+:root:not([data-theme="dark"]) .token.attr-value {
+  color: #14b8a6 !important; /* teal from new gradient */
+}
+
+:root:not([data-theme="dark"]) .token.keyword,
+:root:not([data-theme="dark"]) .token.tag {
+  color: #0c4a6e !important; /* blue-dark from new gradient */
+  font-weight: 700 !important;
+}
+
+:root:not([data-theme="dark"]) .token.class-name,
+:root:not([data-theme="dark"]) .token.selector {
+  color: #0891b2 !important; /* cyan from new gradient */
+}
+
+:root:not([data-theme="dark"]) .token.function,
+:root:not([data-theme="dark"]) .token.function-variable {
+  color: #0ea5e9 !important; /* sky blue */
+  font-weight: 700 !important;
+}
+
+:root:not([data-theme="dark"]) .token.operator {
+  color: #0f172a !important; /* darkest blue from gradient */
+}
+
+:root:not([data-theme="dark"]) .token.punctuation {
+  color: #64748b !important;
+}
+
+:root:not([data-theme="dark"]) .token.number,
+:root:not([data-theme="dark"]) .token.boolean {
+  color: #0ea5e9 !important; /* sky blue */
+}
+
+:root:not([data-theme="dark"]) .token.property,
+:root:not([data-theme="dark"]) .token.attr-name {
+  color: #0369a1 !important; /* darker blue */
+}
+
+:root:not([data-theme="dark"]) .token.important,
+:root:not([data-theme="dark"]) .token.variable {
+  color: #0c4a6e !important; /* blue-dark from gradient */
+}
+
 /* Add subtle glow to inline code */
 :not(pre) > code {
   border-radius: 4px;
   padding: 2px 6px !important;
-  background-color: rgba(6, 182, 212, 0.1) !important;
+  background-color: rgba(8, 145, 178, 0.1) !important;
   color: var(--jods-blue) !important;
-  box-shadow: 0 0 8px rgba(6, 182, 212, 0.1);
+  box-shadow: 0 0 8px rgba(8, 145, 178, 0.1);
   transition: all 0.2s ease;
 }
 
@@ -328,7 +386,7 @@ h2 .gradient-text {
 
 /* Footer styling with gradient background for light mode */
 footer.footer {
-  background: linear-gradient(135deg, #0057b7 0%, #06b6d4 50%, #84cc16 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #0c4a6e 50%, #0891b2 100%);
   color: white;
   position: relative;
   overflow: hidden;
@@ -1012,10 +1070,9 @@ table#compare,
 
 /* Enhanced button glow effect for light mode */
 :root:not([data-theme="dark"]) .hero-buttons .button--primary {
-  background: linear-gradient(135deg, #0057b7 0%, #06b6d4 50%, #84cc16 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #0c4a6e 50%, #0891b2 100%);
   border: none;
-  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4),
-    0 0 20px rgba(132, 204, 22, 0.2);
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.4), 0 0 20px rgba(8, 145, 178, 0.2);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -1023,8 +1080,7 @@ table#compare,
 
 :root:not([data-theme="dark"]) .hero-buttons .button--primary:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(6, 182, 212, 0.6),
-    0 0 30px rgba(132, 204, 22, 0.4);
+  box-shadow: 0 8px 20px rgba(8, 145, 178, 0.6), 0 0 30px rgba(8, 145, 178, 0.4);
 }
 
 /* Add shimmer effect to primary button in light mode */
@@ -1071,7 +1127,7 @@ table#compare,
   inset: 0;
   border-radius: 16px;
   padding: 2px;
-  background: linear-gradient(135deg, #0057b7 0%, #06b6d4 50%, #84cc16 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #0c4a6e 50%, #0891b2 100%);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
@@ -1084,9 +1140,9 @@ table#compare,
 :root:not([data-theme="dark"]) .hero-subtitle {
   background-image: linear-gradient(
     135deg,
-    #0057b7 0%,
-    #06b6d4 50%,
-    #84cc16 100%
+    #0f172a 0%,
+    #0c4a6e 50%,
+    #0891b2 100%
   );
   -webkit-background-clip: text;
   background-clip: text;
