@@ -100,92 +100,28 @@ ${JSON.stringify(snapshot, null, 2)}
         <div className="demo-container">
           <div className="controls">
             <div className="control-group">
-              <label
-                style={{
-                  fontSize: "1.2rem",
-                  marginBottom: "8px",
-                  fontWeight: "600",
-                  display: "block",
-                }}
-              >
-                👤 First Name
-              </label>
+              <label>👤 First Name</label>
               <input
                 type="text"
                 value={user.firstName}
                 onChange={(e) => handleInputChange("firstName", e.target.value)}
-                style={{
-                  borderRadius: "12px",
-                  padding: "16px 18px",
-                  border: "2px solid var(--ifm-color-primary-lightest)",
-                  background: "rgba(var(--ifm-color-primary-rgb), 0.05)",
-                  transition: "all 0.2s ease",
-                  fontSize: "1.2rem",
-                  width: "100%",
-                  marginBottom: "20px",
-                }}
               />
             </div>
 
             <div className="control-group">
-              <label
-                style={{
-                  fontSize: "1.2rem",
-                  marginBottom: "8px",
-                  fontWeight: "600",
-                  display: "block",
-                }}
-              >
-                👪 Last Name
-              </label>
+              <label>👪 Last Name</label>
               <input
                 type="text"
                 value={user.lastName}
                 onChange={(e) => handleInputChange("lastName", e.target.value)}
-                style={{
-                  borderRadius: "12px",
-                  padding: "16px 18px",
-                  border: "2px solid var(--ifm-color-primary-lightest)",
-                  background: "rgba(var(--ifm-color-primary-rgb), 0.05)",
-                  transition: "all 0.2s ease",
-                  fontSize: "1.2rem",
-                  width: "100%",
-                  marginBottom: "20px",
-                }}
               />
             </div>
 
             <div className="control-group">
-              <label
-                style={{
-                  fontSize: "1.2rem",
-                  marginBottom: "8px",
-                  fontWeight: "600",
-                  display: "block",
-                }}
-              >
-                🎭 Mood
-              </label>
+              <label>🎭 Mood</label>
               <select
                 value={user.mood}
                 onChange={(e) => handleInputChange("mood", e.target.value)}
-                style={{
-                  borderRadius: "12px",
-                  padding: "16px 18px",
-                  border: "2px solid var(--ifm-color-primary-lightest)",
-                  background: "rgba(var(--ifm-color-primary-rgb), 0.05)",
-                  transition: "all 0.2s ease",
-                  appearance: "none",
-                  backgroundImage:
-                    'url(\'data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="292.4" height="292.4"><path fill="%236b3369" d="M287 69.4a17.6 17.6 0 0 0-13-5.4H18.4c-5 0-9.3 1.8-12.9 5.4A17.6 17.6 0 0 0 0 82.2c0 5 1.8 9.3 5.4 12.9l128 127.9c3.6 3.6 7.8 5.4 12.8 5.4s9.2-1.8 12.8-5.4L287 95c3.5-3.6 5.4-7.9 5.4-12.9 0-5-1.9-9.2-5.5-12.7z"/></svg>\')',
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "right 18px center",
-                  backgroundSize: "16px",
-                  paddingRight: "42px",
-                  fontSize: "1.2rem",
-                  width: "100%",
-                  marginBottom: "20px",
-                }}
               >
                 <option value="curious">😮 Curious</option>
                 <option value="sneaky">😏 Sneaky</option>
@@ -194,38 +130,16 @@ ${JSON.stringify(snapshot, null, 2)}
               </select>
             </div>
 
-            <div
-              className="instruction-box"
-              style={{
-                borderRadius: "22px",
-                padding: "2.2rem 1.5rem 1.5rem 1.5rem",
-                margin: "0 0 2rem 0",
-                background: "var(--demo-box-bg)",
-                border: `2px solid var(--demo-box-border)`,
-                boxShadow: "var(--demo-box-shadow)",
-                minHeight: "210px",
-                maxWidth: "340px",
-                width: "100%",
-                position: "relative",
-                zIndex: 2,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "flex-start",
-                backdropFilter: "blur(8px)",
-                transition: "background 0.4s, border 0.4s",
-              }}
-            >
+            <div className="instruction-box">
               <p
                 className="instruction-text"
                 style={{
                   margin: 0,
-                  fontSize: "1.2rem",
+                  fontSize: "1.1rem",
                   fontWeight: 500,
-                  lineHeight: 1.8,
-                  position: "relative",
-                  zIndex: 1,
-                  textShadow: "var(--demo-text-shadow)",
+                  lineHeight: 1.7,
+                  color: "white",
+                  textAlign: "left",
                 }}
               >
                 <span
@@ -233,12 +147,10 @@ ${JSON.stringify(snapshot, null, 2)}
                     display: "flex",
                     alignItems: "center",
                     marginBottom: "12px",
-                    color: "var(--demo-text-1-color)",
-                    fontWeight: 800,
-                    textShadow: "var(--demo-text-shadow)",
+                    fontWeight: 700,
                   }}
                 >
-                  <span style={{ marginRight: "10px", fontSize: "1.4rem" }}>
+                  <span style={{ marginRight: "10px", fontSize: "1.3rem" }}>
                     ✨
                   </span>
                   <span>Go ahead and change these values!</span>
@@ -248,12 +160,10 @@ ${JSON.stringify(snapshot, null, 2)}
                     display: "flex",
                     alignItems: "center",
                     marginBottom: "12px",
-                    color: "var(--demo-text-2-color)",
-                    fontWeight: 800,
-                    textShadow: "var(--demo-text-shadow)",
+                    fontWeight: 700,
                   }}
                 >
-                  <span style={{ marginRight: "10px", fontSize: "1.4rem" }}>
+                  <span style={{ marginRight: "10px", fontSize: "1.3rem" }}>
                     🔍
                   </span>
                   <span>Then explore the rest of the docs...</span>
@@ -262,12 +172,10 @@ ${JSON.stringify(snapshot, null, 2)}
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    color: "var(--demo-text-3-color)",
-                    fontWeight: 800,
-                    textShadow: "var(--demo-text-shadow)",
+                    fontWeight: 700,
                   }}
                 >
-                  <span style={{ marginRight: "10px", fontSize: "1.4rem" }}>
+                  <span style={{ marginRight: "10px", fontSize: "1.3rem" }}>
                     🪄
                   </span>
                   <span>Your changes will be here when you return!</span>
