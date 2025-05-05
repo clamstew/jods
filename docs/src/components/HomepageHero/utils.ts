@@ -51,7 +51,7 @@ export const themeEmojis = [
   "🔄", // refresh/update
   "✨", // sparkles/magic
   "🧩", // puzzle piece/composable
-  "🧠", // brain/computed values
+  "🔮", // crystal ball/computed values
   "🕰️", // time-travel
   "📦", // package/store
   "⚡", // lightning/speed
