@@ -22,7 +22,10 @@
     "screenshot:unified:localhost": "BASE_URL=http://localhost:3000 node scripts/screenshot-unified.mjs",
     "screenshot:unified:components": "node scripts/screenshot-unified.mjs --mode=components",
     "screenshot:unified:sections": "node scripts/screenshot-unified.mjs --mode=sections",
-    "screenshot:unified:remix": "node scripts/screenshot-unified.mjs --mode=remix"
+    "screenshot:unified:remix": "node scripts/screenshot-unified.mjs --mode=remix",
+    "screenshot:cleanup": "node scripts/screenshot-cleanup.mjs",
+    "screenshot:cleanup:dry-run": "node scripts/screenshot-cleanup.mjs --dry-run",
+    "screenshot:cleanup:keep-latest": "node scripts/screenshot-cleanup.mjs --keep-latest --keep=3"
   },
   "dependencies": {
     "@docusaurus/core": "3.7.0",

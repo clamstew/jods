@@ -228,20 +228,29 @@ pnpm docs:screenshot:unified:baseline
 To prevent accumulating too many screenshots, you can clean up old ones:
 
 ```bash
-# Remove all timestamped screenshots
-pnpm docs:screenshot:cleanup
+# From root directory
+pnpm docs:screenshot:cleanup              # Keep only the most recent batch
+pnpm docs:screenshot:cleanup:dry-run      # Preview what would be deleted (no actual deletion)
+pnpm docs:screenshot:cleanup:keep-latest  # Keep the 3 most recent batches
 
-# Keep the 3 most recent batches of screenshots
-pnpm docs:screenshot:cleanup:keep-latest
+# From docs directory
+pnpm screenshot:cleanup
+pnpm screenshot:cleanup:dry-run
+pnpm screenshot:cleanup:keep-latest
+```
 
-# Only clean up section screenshots (keeping the most recent one for each section/theme)
-pnpm docs:screenshot:cleanup:sections
+The cleanup script automatically:
 
-# Keep the 3 most recent section screenshots for each section/theme
-pnpm docs:screenshot:cleanup:sections:keep
+1. Identifies timestamped vs. baseline screenshots
+2. Preserves all baseline (non-timestamped) screenshots
+3. Keeps only the most recent batch(es) of timestamped screenshots
+4. Provides detailed reporting about what was deleted
 
-# Test section cleanup without actually deleting (dry run)
-pnpm docs:screenshot:cleanup:sections:dry-run
+You can customize the number of batches to keep with the `--keep=N` parameter:
+
+```bash
+# Keep the 5 most recent batches
+pnpm docs:screenshot:cleanup:keep-latest -- --keep=5
 ```
 
 ## 🤔 Troubleshooting
