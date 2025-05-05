@@ -87,7 +87,7 @@ export default function ComparisonTable(): React.ReactElement {
             <tbody>
               {[
                 {
-                  feature: "Bundle Size",
+                  feature: "📦 Bundle Size",
                   jods: "1 KB",
                   zustand: "3.4 KB",
                   redux: "16.4 KB + Redux Toolkit",
@@ -95,15 +95,27 @@ export default function ComparisonTable(): React.ReactElement {
                   signals: "4.2 KB",
                 },
                 {
-                  feature: "Framework Dependency",
-                  jods: <span className="green-check">None</span>,
-                  zustand: "React-only",
-                  redux: "Framework-agnostic",
-                  mobx: "Framework-agnostic",
-                  signals: "Preact-only",
+                  feature: "🔗 Framework Dependency",
+                  jods: <span className="green-check">🌱 None</span>,
+                  zustand: (
+                    <span className="feature-missing">⚛️ React-only</span>
+                  ),
+                  redux: (
+                    <span className="feature-missing">
+                      🔌 Framework-agnostic
+                    </span>
+                  ),
+                  mobx: (
+                    <span className="feature-missing">
+                      🔌 Framework-agnostic
+                    </span>
+                  ),
+                  signals: (
+                    <span className="feature-missing">⚡ Preact-only</span>
+                  ),
                 },
                 {
-                  feature: "State Access",
+                  feature: "🔑 State Access",
                   jods: "Proxied object (store.foo)",
                   zustand: "Hook (useStore)",
                   redux: "Via selectors",
@@ -111,7 +123,7 @@ export default function ComparisonTable(): React.ReactElement {
                   signals: "Signal.value or JSX unwrap",
                 },
                 {
-                  feature: "Direct Mutations",
+                  feature: "✏️ Direct Mutations",
                   jods: <span className="green-check">✅</span>,
                   zustand: <span className="green-check">✅</span>,
                   redux: (
@@ -123,8 +135,8 @@ export default function ComparisonTable(): React.ReactElement {
                   signals: "signal.value = x",
                 },
                 {
-                  feature: "Computed Values",
-                  jods: <span className="green-check">✅ via computed()</span>,
+                  feature: "🧮 Computed Values",
+                  jods: <span className="green-check">🧠 via computed()</span>,
                   zustand: (
                     <span className="feature-missing">
                       🔧 with selector functions
@@ -135,13 +147,15 @@ export default function ComparisonTable(): React.ReactElement {
                       🔧 (requires selectors)
                     </span>
                   ),
-                  mobx: <span className="green-check">✅</span>,
+                  mobx: (
+                    <span className="green-check">🧮 computed decorators</span>
+                  ),
                   signals: (
-                    <span className="green-check">✅ via computed()</span>
+                    <span className="green-check">✨ via computed()</span>
                   ),
                 },
                 {
-                  feature: "JSON Snapshots",
+                  feature: "📸 JSON Snapshots",
                   jods: <span className="green-check">✅ (built-in)</span>,
                   zustand: <span className="feature-missing">📝 (manual)</span>,
                   redux: <span className="green-check">✅ (manual)</span>,
@@ -149,7 +163,7 @@ export default function ComparisonTable(): React.ReactElement {
                   signals: <span className="feature-missing">📝 (manual)</span>,
                 },
                 {
-                  feature: "Built-in diff",
+                  feature: "🔄 Built-in diff",
                   jods: <span className="green-check">✅</span>,
                   zustand: <span className="feature-missing">🤷</span>,
                   redux: <span className="feature-missing">🤷</span>,
@@ -157,7 +171,7 @@ export default function ComparisonTable(): React.ReactElement {
                   signals: <span className="feature-missing">🤷</span>,
                 },
                 {
-                  feature: "Time-travel Debugging",
+                  feature: "⏮️ Time-travel Debugging",
                   jods: <span className="green-check">✅</span>,
                   zustand: <span className="green-check">✅</span>,
                   redux: <span className="green-check">✅</span>,
@@ -165,7 +179,7 @@ export default function ComparisonTable(): React.ReactElement {
                   signals: <span className="feature-missing">⏱️</span>,
                 },
                 {
-                  feature: "Conceptual Simplicity",
+                  feature: "🧠 Conceptual Simplicity",
                   jods: (
                     <span className="green-check">✅ small mental model</span>
                   ),
@@ -187,7 +201,7 @@ export default function ComparisonTable(): React.ReactElement {
                   ),
                 },
                 {
-                  feature: "Server Integration",
+                  feature: "🖥️ Server Integration",
                   jods: <span className="green-check">✅ (Remix)</span>,
                   zustand: <span className="feature-missing">🖥️</span>,
                   redux: <span className="green-check">✅ (manual)</span>,
@@ -196,7 +210,9 @@ export default function ComparisonTable(): React.ReactElement {
                 },
               ].map((row, i) => (
                 <tr key={i}>
-                  <td>{row.feature}</td>
+                  <td>
+                    <strong>{row.feature}</strong>
+                  </td>
                   <td>{row.jods}</td>
                   <td>{row.zustand}</td>
                   <td>{row.redux}</td>
