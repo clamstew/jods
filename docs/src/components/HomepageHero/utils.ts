@@ -42,6 +42,7 @@ export const jsonSnippets = [
   '{ "state": "reactive", "mood": "happy" }',
   '{ "debug": { "level": "over 9000" } }',
   '{ "zod": "schema", "validation": "✅" }',
+  '{ "socketConnect": true, "syncing": "bidirectional" }',
 ];
 
 // Themed emojis for the animation background
