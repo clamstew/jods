@@ -43,6 +43,12 @@ export const jsonSnippets = [
   '{ "debug": { "level": "over 9000" } }',
   '{ "zod": "schema", "validation": "✅" }',
   '{ "socketConnect": true, "syncing": "bidirectional" }',
+  '{ "persist": { "storage": "localStorage", "key": "cart", "version": "1.0.2" } }',
+  '{ "sync": { "mode": "peer", "allowKeys": ["items", "note"] } }',
+  '{ "stream": { "validate": true, "batch": true } }',
+  '{ "hydrate": true, "persist": true, "stream": true }',
+  '{ "timestamp": "2025-05-05T12:34:56Z", "patches": [{"op": "replace", "path": "/name", "value": "jods"}] }',
+  '{ "schema": { "items": "z.array(z.object({}))", "filter": "all" } }',
 ];
 
 // Themed emojis for the animation background
