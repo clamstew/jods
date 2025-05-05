@@ -1070,17 +1070,20 @@ table#compare,
 
 /* Enhanced button glow effect for light mode */
 :root:not([data-theme="dark"]) .hero-buttons .button--primary {
-  background: linear-gradient(135deg, #0f172a 0%, #0c4a6e 50%, #0891b2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 50%, #7dd3fc 100%);
   border: none;
-  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.4), 0 0 20px rgba(8, 145, 178, 0.2);
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3),
+    0 0 12px rgba(56, 189, 248, 0.1);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  color: white;
 }
 
 :root:not([data-theme="dark"]) .hero-buttons .button--primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(8, 145, 178, 0.6), 0 0 30px rgba(8, 145, 178, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4),
+    0 0 16px rgba(56, 189, 248, 0.2);
 }
 
 /* Add shimmer effect to primary button in light mode */
@@ -1094,9 +1097,9 @@ table#compare,
   background: linear-gradient(
     45deg,
     rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.1) 40%,
-    rgba(255, 255, 255, 0.3) 50%,
-    rgba(255, 255, 255, 0.1) 60%,
+    rgba(255, 255, 255, 0.05) 40%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.05) 60%,
     rgba(255, 255, 255, 0) 100%
   );
   transform: rotate(45deg);
