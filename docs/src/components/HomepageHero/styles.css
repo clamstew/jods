@@ -203,6 +203,18 @@
   font-weight: bold;
 }
 
+/* Light mode specific styles for features list */
+:root:not([data-theme="dark"]) .hero-features {
+  color: white;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 57, 183, 0.9);
+  font-weight: 700;
+}
+
+/* Light mode specific styles for emoji in features */
+:root:not([data-theme="dark"]) .hero-features span {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+}
+
 .hero-description {
   font-size: 1.8rem;
   max-width: 600px;
