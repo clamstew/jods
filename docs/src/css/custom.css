@@ -1243,20 +1243,19 @@ div[class^="codeBlockTitle"] {
 
 /* Add additional section spacing to restore proper layout */
 .features-container {
-  margin: 6rem 0;
+  margin: 3rem 0;
   padding: 2rem 0;
   position: relative;
 }
 
-/* Add divider between sections */
 .features-container:not(:last-child)::after {
   content: "";
   position: absolute;
-  bottom: -3rem;
+  bottom: -1.5rem;
   left: 50%;
   transform: translateX(-50%);
-  width: 150px;
-  height: 2px;
+  width: 120px;
+  height: 1.5px;
   background: linear-gradient(
     90deg,
     transparent,
