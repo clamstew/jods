@@ -49,6 +49,8 @@
     "docs:screenshot:component": "cd docs && pnpm screenshot:component",
     "docs:screenshot:component:localhost": "cd docs && pnpm screenshot:component:localhost",
     "docs:screenshot:component:production": "cd docs && pnpm screenshot:component:production",
+    "docs:screenshot:fix": "node docs/scripts/screenshot-fix.mjs",
+    "docs:screenshot:fix:baseline": "node docs/scripts/screenshot-fix.mjs --baseline",
     "docs:screenshot:baseline": "cd docs && pnpm screenshot:baseline",
     "docs:screenshot:cleanup": "cd docs && pnpm screenshot:cleanup",
     "docs:screenshot:cleanup:keep-latest": "cd docs && pnpm screenshot:cleanup:keep-latest",

@@ -36,6 +36,12 @@ pnpm docs:screenshot:sections:homepage
 # Take section screenshots with consistent selectors
 pnpm docs:screenshot:sections:use-selectors
 
+# Fix all screenshot issues at once (component heights, selectors, etc)
+pnpm docs:screenshot:fix
+
+# Fix all screenshots and save as baselines (no timestamps)
+pnpm docs:screenshot:fix:baseline
+
 # Create baseline screenshots (without timestamps)
 pnpm docs:screenshot:baseline
 pnpm docs:screenshot:sections:homepage:baseline
@@ -80,6 +86,11 @@ pnpm screenshot:production
 pnpm screenshot:component
 pnpm screenshot:component:localhost
 pnpm screenshot:component:production
+
+# Fix all screenshot issues at once (component heights, selectors, etc)
+pnpm screenshot:fix
+pnpm screenshot:fix:baseline
+pnpm screenshot:fix:localhost
 
 # Take section screenshots with direct content selection
 pnpm screenshot:sections:homepage
@@ -218,6 +229,27 @@ Section screenshots focus on capturing specific sections of the homepage for mar
    - Generates and saves CSS selectors to a JSON file
    - Reuses selectors for consistent screenshots
    - Falls back to testIds if selectors change
+
+### Consolidated Fix Script
+
+The `screenshot-fix.mjs` script provides a consolidated approach to fix common screenshot issues:
+
+1. **Multiple Screenshot Types in One Run**
+
+   - Runs both component screenshots and dedicated section screenshots (like Remix integration)
+   - Uses a shared timestamp for all screenshots to keep them in sync
+   - Handles both standard timestamped screenshots and baselines
+
+2. **Enhanced Section Finding**
+
+   - Uses specialized finder functions for complex sections like Remix integration
+   - Implements minimum height requirements for tall sections
+   - Better targeting for sections with similar content
+
+3. **Simplified Usage**
+   - Single command to fix all screenshot issues: `pnpm docs:screenshot:fix` or `pnpm screenshot:fix`
+   - Creates baseline versions with `--baseline` flag
+   - Works with localhost environment via `screenshot:fix:localhost`
 
 ## ⚙️ Configuration
 

@@ -22,6 +22,8 @@ For complete documentation on the screenshot system, please refer to the [Playwr
 - `generate-selectors.mjs` - Generates selectors for homepage sections and saves to JSON
 - `use-selectors.mjs` - Takes section screenshots using saved selectors
 - `screenshot-manager.mjs` - Utilities for managing screenshots (cleanup, baselines)
+- `remix-section.mjs` - Dedicated script for capturing Remix integration section
+- `screenshot-fix.mjs` - Consolidated script to fix all screenshot issues at once
 
 ## Adding New Screenshot Features
 
@@ -47,6 +49,21 @@ We have two approaches for capturing homepage sections:
    - Generates and saves CSS selectors to a JSON file
    - Reuses selectors for consistent screenshots
    - Falls back to testIds if selectors change
+
+### Consolidated Screenshot Fixing
+
+The `screenshot-fix.mjs` script addresses common screenshot issues:
+
+1. **Unified Approach**
+
+   - Runs both component and dedicated section screenshots with a single command
+   - Ensures consistent timestamps across all screenshots
+   - Handles both standard and baseline screenshots
+
+2. **Special Case Handling**
+   - Uses specialized finders for complex sections like Remix integration
+   - Ensures proper sizing with minimum height requirements
+   - Better targeting for sections with similar content
 
 ## How It Works
 
@@ -87,6 +104,12 @@ npm run docs:screenshot:sections:regenerate
 
 # Clean up section screenshots
 npm run docs:screenshot:cleanup:sections
+
+# Fix all screenshot issues at once
+npm run docs:screenshot:fix
+
+# Create baseline versions of fixed screenshots
+npm run docs:screenshot:fix:baseline
 ```
 
 From the docs directory:
@@ -107,6 +130,15 @@ pnpm screenshot:sections:regenerate
 
 # Clean up section screenshots
 pnpm screenshot:cleanup:sections
+
+# Fix all screenshot issues at once
+pnpm screenshot:fix
+
+# Create baseline versions of fixed screenshots
+pnpm screenshot:fix:baseline
+
+# Fix screenshots using localhost environment
+pnpm screenshot:fix:localhost
 ```
 
 ### Screenshot Locations
