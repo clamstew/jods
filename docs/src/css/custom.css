@@ -242,7 +242,7 @@
 
 /* Light mode braces with simple styling */
 :root:not([data-theme="dark"]) .jods-logo-braces {
-  color: #0891b2; /* Slightly lighter blue for contrast */
+  color: #7dd3fc; /* Slightly lighter blue for contrast */
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
