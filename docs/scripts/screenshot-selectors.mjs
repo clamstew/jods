@@ -52,11 +52,11 @@ export const COMPONENTS = [
     padding: 100,
     waitForSelector:
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
-    minHeight: 900,
+    minHeight: 1200,
     captureFrameworkTabs: true,
-    frameworkTabs: ["💿 Traditional Remix"],
+    frameworkTabs: ["💿 Traditional Remix", "⚛️ React", "⚛️ Preact"],
     testId: "jods-framework-section",
-    extraScroll: 100,
+    extraScroll: 150,
   },
 
   // Compare section
@@ -69,9 +69,9 @@ export const COMPONENTS = [
     sectionIndex: 4,
     padding: 120,
     waitForSelector: "h2:has-text('Compare'), h2:has-text('How jods compares')",
-    minHeight: 700,
+    minHeight: 900,
     testId: "jods-compare-section",
-    extraScroll: 100,
+    extraScroll: 300,
   },
 
   // Remix section
@@ -84,7 +84,7 @@ export const COMPONENTS = [
     keywords: ["Remix", "Integration"],
     padding: 200,
     waitForSelector: "h2:has-text('Remix Integration')",
-    minHeight: 1200,
+    minHeight: 1600,
     testId: "jods-remix-section",
     extraScroll: 100,
   },

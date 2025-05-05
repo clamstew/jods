@@ -143,7 +143,7 @@ async function takeUnifiedScreenshots(
   // Launch browser
   const browser = await chromium.launch();
   const context = await browser.newContext({
-    viewport: { width: 1280, height: 1600 }, // Increased height for taller sections
+    viewport: { width: 1280, height: 2000 }, // Increased height from 1600 to 2000
   });
 
   const page = await context.newPage();
@@ -214,6 +214,97 @@ async function takeUnifiedScreenshots(
               );
               continue; // Skip normal screenshot handling
             }
+          }
+
+          // Special treatment for compare section to ensure bottom rows are visible
+          if (component.name === "compare-section") {
+            // First scroll to the top of the section
+            await page.evaluate(() => {
+              // Find the compare section using standard DOM methods
+              const compareHeadings = Array.from(
+                document.querySelectorAll("h2")
+              ).filter(
+                (h) =>
+                  h.textContent.includes("Compare") ||
+                  h.textContent.includes("How jods compares")
+              );
+
+              let section = null;
+              if (compareHeadings.length > 0) {
+                // Find parent section
+                let current = compareHeadings[0];
+                while (
+                  current &&
+                  current.tagName !== "SECTION" &&
+                  current !== document.body
+                ) {
+                  current = current.parentElement;
+                }
+                if (current && current.tagName === "SECTION") {
+                  section = current;
+                }
+              }
+
+              // Fallback to data-testid
+              if (!section) {
+                section = document.querySelector(
+                  '[data-testid="jods-compare-section"]'
+                );
+              }
+
+              if (section) {
+                // Scroll to the section first
+                section.scrollIntoView({ block: "start" });
+              }
+            });
+
+            // Wait for the first scroll to complete
+            await page.waitForTimeout(500);
+
+            // Then scroll down to see the bottom content
+            await page.evaluate(() => {
+              window.scrollBy(0, 300); // Scroll down 300px to reveal bottom content
+            });
+
+            await page.waitForTimeout(500); // Wait for second scroll
+          }
+
+          // Special treatment for remix-section in light mode to ensure proper positioning
+          if (component.name === "remix-section" && theme === "light") {
+            // For light mode, we need to ensure the section is properly positioned
+            await page.evaluate(() => {
+              // Scroll to top first to ensure consistent positioning
+              window.scrollTo(0, 0);
+
+              // Find the remix section
+              const section = document.querySelector(
+                "section#remix-integration"
+              );
+              if (section) {
+                // Calculate a good scroll position to see the header and some content above
+                const rect = section.getBoundingClientRect();
+                const targetY = Math.max(0, rect.top - 300); // Show 300px above the section (increased from 200)
+                window.scrollTo(0, targetY);
+              }
+            });
+            await page.waitForTimeout(800); // Wait longer for scroll and rendering
+          }
+
+          // Special handling for remix-section in dark mode
+          if (component.name === "remix-section" && theme === "dark") {
+            await page.evaluate(() => {
+              // Find the remix section
+              const section = document.querySelector(
+                "section#remix-integration"
+              );
+              if (section) {
+                // Calculate a good scroll position for dark mode
+                const rect = section.getBoundingClientRect();
+                const targetY = Math.max(0, rect.top - 300);
+                window.scrollTo(0, targetY);
+              }
+            });
+            await page.waitForTimeout(800);
           }
 
           // Find the element using the selector or fallback strategies
@@ -513,25 +604,6 @@ async function captureSpecificElement(
     await page.waitForTimeout(500);
   }
 
-  // Special treatment for remix-section in light mode to ensure proper positioning
-  if (component.name === "remix-section" && theme === "light") {
-    // For light mode, we need to ensure the section is properly positioned
-    await page.evaluate(() => {
-      // Scroll to top first to ensure consistent positioning
-      window.scrollTo(0, 0);
-
-      // Find the remix section
-      const section = document.querySelector("section#remix-integration");
-      if (section) {
-        // Calculate a good scroll position to see the header and some content above
-        const rect = section.getBoundingClientRect();
-        const targetY = Math.max(0, rect.top - 200); // Show 200px above the section
-        window.scrollTo(0, targetY);
-      }
-    });
-    await page.waitForTimeout(800); // Wait longer for scroll and rendering
-  }
-
   // Get updated position after scrolling
   const updatedBoundingBox = await elementHandle.boundingBox();
 
@@ -613,7 +685,66 @@ async function captureFrameworkTabs(
     const emojiTabButtons = await page.$$(emojiTabButtonsSelector);
 
     if (!emojiTabButtons || emojiTabButtons.length === 0) {
-      console.log("Could not find framework tabs with emoji either");
+      console.log(
+        "Could not find framework tabs with emoji either, trying general button search"
+      );
+
+      // Last resort - try to find buttons by their text content more broadly
+      const allButtons = await page.$$("button");
+      const frameworkButtons = [];
+
+      for (const button of allButtons) {
+        const buttonText = await button.evaluate((el) => el.textContent.trim());
+        if (
+          buttonText.includes("React") ||
+          buttonText.includes("Preact") ||
+          buttonText.includes("Remix") ||
+          buttonText.includes("⚛️") ||
+          buttonText.includes("💿")
+        ) {
+          frameworkButtons.push(button);
+        }
+      }
+
+      if (frameworkButtons.length > 0) {
+        console.log(
+          `Found ${frameworkButtons.length} framework buttons through text content analysis`
+        );
+
+        for (const button of frameworkButtons) {
+          const buttonText = await button.evaluate((el) =>
+            el.textContent.trim()
+          );
+          let framework = "unknown";
+
+          if (buttonText.includes("React") && !buttonText.includes("Preact")) {
+            framework = "react";
+          } else if (buttonText.includes("Preact")) {
+            framework = "preact";
+          } else if (
+            buttonText.includes("Remix") ||
+            buttonText.includes("💿")
+          ) {
+            framework = "remix";
+          }
+
+          if (framework !== "unknown") {
+            await captureTabScreenshot(
+              page,
+              frameworkSection,
+              button,
+              framework,
+              component,
+              theme,
+              timestamp,
+              saveBaseline
+            );
+          }
+        }
+      } else {
+        console.log("Could not find any framework buttons");
+      }
+
       return;
     }
 
