@@ -198,26 +198,98 @@ ${JSON.stringify(snapshot, null, 2)}
               className="instruction-box"
               style={{
                 marginTop: "2rem",
-                padding: "20px 24px",
+                padding: "24px 30px",
                 background:
-                  "linear-gradient(135deg, rgba(var(--ifm-color-primary-rgb), 0.1), rgba(var(--ifm-color-primary-rgb), 0.2))",
+                  "linear-gradient(125deg, rgba(90, 24, 154, 0.25) 0%, rgba(166, 66, 110, 0.25) 100%)",
                 borderRadius: "14px",
-                borderLeft: "4px solid var(--ifm-color-primary)",
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.12)",
+                boxShadow:
+                  "0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05), 0 0 15px rgba(255, 154, 92, 0.15)",
+                position: "relative",
+                overflow: "hidden",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
               }}
             >
+              {/* Add glowing orbs for visual interest */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: "-30px",
+                  right: "-30px",
+                  width: "100px",
+                  height: "100px",
+                  background:
+                    "radial-gradient(circle, rgba(255, 154, 92, 0.3) 0%, rgba(255, 154, 92, 0) 70%)",
+                  borderRadius: "50%",
+                  zIndex: 0,
+                }}
+              ></div>
+
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: "-20px",
+                  left: "-20px",
+                  width: "80px",
+                  height: "80px",
+                  background:
+                    "radial-gradient(circle, rgba(90, 24, 154, 0.3) 0%, rgba(90, 24, 154, 0) 70%)",
+                  borderRadius: "50%",
+                  zIndex: 0,
+                }}
+              ></div>
+
               <p
                 className="instruction-text"
                 style={{
                   margin: 0,
-                  fontSize: "1.1rem",
-                  color: "var(--ifm-color-primary-darker)",
+                  fontSize: "1.2rem",
+                  fontWeight: "500",
                   lineHeight: "1.8",
+                  position: "relative",
+                  zIndex: 1,
+                  textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
                 }}
               >
-                ✨ Go ahead and change these values! <br />
-                🔍 Then explore the rest of the docs... <br />
-                🪄 Your changes will be here when you return!
+                <span
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginBottom: "12px",
+                    color: "#ffcc80",
+                  }}
+                >
+                  <span style={{ marginRight: "10px", fontSize: "1.4rem" }}>
+                    ✨
+                  </span>
+                  <span>Go ahead and change these values!</span>
+                </span>
+
+                <span
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginBottom: "12px",
+                    color: "#80cbc4",
+                  }}
+                >
+                  <span style={{ marginRight: "10px", fontSize: "1.4rem" }}>
+                    🔍
+                  </span>
+                  <span>Then explore the rest of the docs...</span>
+                </span>
+
+                <span
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    color: "#ce93d8",
+                  }}
+                >
+                  <span style={{ marginRight: "10px", fontSize: "1.4rem" }}>
+                    🪄
+                  </span>
+                  <span>Your changes will be here when you return!</span>
+                </span>
               </p>
             </div>
           </div>
