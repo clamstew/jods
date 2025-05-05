@@ -6,7 +6,7 @@ export function FooterCopyright(): React.ReactElement {
   return (
     <div className="footer__copyright">
       <div>
-        Built with <span className="footer__heart">❤</span> by{" "}
+        Built with <span className="footer__heart">💚</span> by{" "}
         <a
           href="https://github.com/clamstew"
           target="_blank"
