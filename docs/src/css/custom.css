@@ -45,16 +45,12 @@
 
 /* Global gradient text styling */
 .gradient-text {
-  background-image: linear-gradient(
-    135deg,
-    var(--jods-purple-mid),
-    var(--jods-orange)
-  );
+  background-image: linear-gradient(135deg, #0057b7, #84cc16);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   display: inline-block;
-  filter: drop-shadow(0 2px 4px rgba(255, 154, 92, 0.3));
+  filter: drop-shadow(0 2px 4px rgba(72, 255, 168, 0.3));
 }
 
 [data-theme="dark"] .gradient-text {
@@ -64,6 +60,37 @@
     var(--jods-orange-light)
   );
   filter: drop-shadow(0 2px 4px rgba(255, 154, 92, 0.5));
+}
+
+/* Footer styling with gradient background for light mode */
+footer.footer {
+  background: linear-gradient(135deg, #0057b7 0%, #06b6d4 50%, #84cc16 100%);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Dark mode footer background */
+[data-theme="dark"] footer.footer {
+  background: linear-gradient(135deg, #332954 0%, #6b3369 50%, #8a3458 100%);
+}
+
+/* Update footer title color for better visibility on gradient background */
+.footer__title {
+  color: white;
+  font-weight: 600;
+}
+
+/* Add some glow to the footer items for the rave vibe */
+.footer__item a {
+  color: rgba(255, 255, 255, 0.9);
+  transition: all 0.3s ease;
+}
+
+.footer__item a:hover {
+  color: white;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+  transform: translateY(-2px);
 }
 
 /* Logo styling */

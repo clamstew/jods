@@ -1,11 +1,6 @@
-/* Footer styling with purple gradient */
+/* Footer styling with blue-cyan-green gradient for light mode */
 .footer {
-  background: linear-gradient(
-    135deg,
-    var(--jods-purple-dark) 0%,
-    var(--jods-purple-mid) 50%,
-    var(--jods-purple-light) 100%
-  );
+  background: linear-gradient(135deg, #0057b7 0%, #06b6d4 50%, #84cc16 100%);
   position: relative;
   overflow: hidden;
   color: white;
@@ -14,6 +9,16 @@
   /* Enhanced animated gradient background */
   background-size: 400% 400%;
   animation: footer-gradient-shift 15s ease infinite;
+}
+
+/* Dark mode keeps the purple gradient */
+[data-theme="dark"] .footer {
+  background: linear-gradient(
+    135deg,
+    var(--jods-purple-dark) 0%,
+    var(--jods-purple-mid) 50%,
+    var(--jods-purple-light) 100%
+  );
 }
 
 /* Enhanced gradient animation with more movement */
@@ -50,16 +55,26 @@
   bottom: 0;
   background: linear-gradient(
     135deg,
-    rgba(51, 41, 84, 0.8) 0%,
-    rgba(107, 51, 105, 0.6) 50%,
-    rgba(138, 52, 88, 0.7) 100%
+    rgba(0, 87, 183, 0.3) 0%,
+    rgba(6, 182, 212, 0.2) 50%,
+    rgba(132, 204, 22, 0.3) 100%
   );
   pointer-events: none;
   z-index: 1;
   opacity: 0.8;
 }
 
-/* Add smooth flowing line at the top */
+/* Dark mode overlay */
+[data-theme="dark"] .footer::before {
+  background: linear-gradient(
+    135deg,
+    rgba(51, 41, 84, 0.8) 0%,
+    rgba(107, 51, 105, 0.6) 50%,
+    rgba(138, 52, 88, 0.7) 100%
+  );
+}
+
+/* Add smooth flowing line at the top - updated for light mode */
 .footer::after {
   content: "";
   position: absolute;
@@ -70,13 +85,26 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
+    #06b6d4 25%,
+    #84cc16 50%,
+    #06b6d4 75%,
+    transparent 100%
+  );
+  z-index: 3;
+  animation: line-flow 8s ease-in-out infinite alternate;
+  box-shadow: 0 0 8px rgba(132, 204, 22, 0.6);
+}
+
+/* Dark mode flowing line */
+[data-theme="dark"] .footer::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
     var(--jods-purple-light) 25%,
     var(--jods-orange) 50%,
     var(--jods-purple-light) 75%,
     transparent 100%
   );
-  z-index: 3;
-  animation: line-flow 8s ease-in-out infinite alternate;
   box-shadow: 0 0 8px var(--jods-orange-light);
 }
 
@@ -89,27 +117,111 @@
   }
 }
 
-/* Footer background and fireflies */
-.footer-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: hidden;
-  z-index: 2;
-  pointer-events: none;
-}
-
+/* Footer firefly colors for light mode */
 .footer-firefly {
   position: absolute;
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.8);
   filter: blur(1px);
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 154, 92, 0.6);
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(132, 204, 22, 0.6);
   z-index: 2;
   animation: footer-firefly-pulse 3s infinite alternate ease-in-out;
   pointer-events: none;
+}
+
+/* Dark mode fireflies */
+[data-theme="dark"] .footer-firefly {
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 154, 92, 0.6);
+}
+
+/* Footer title - updated for light mode */
+.footer__title {
+  color: white;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  display: inline-block;
+}
+
+/* Dark mode title */
+[data-theme="dark"] .footer__title {
+  color: var(--jods-orange-light);
+}
+
+.footer__title:after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 30px;
+  height: 2px;
+  background: #84cc16;
+  animation: footer-title-underline 3s ease-in-out infinite alternate;
+}
+
+/* Dark mode title underline */
+[data-theme="dark"] .footer__title:after {
+  background: var(--jods-orange);
+}
+
+/* Footer item hover effect for light mode */
+.footer__item a:hover {
+  color: #84cc16;
+  text-decoration: none;
+  transform: translateX(3px);
+  text-shadow: 0 0 8px rgba(132, 204, 22, 0.5);
+}
+
+/* Dark mode hover effect */
+[data-theme="dark"] .footer__item a:hover {
+  color: var(--jods-orange-light);
+  text-shadow: 0 0 8px rgba(255, 163, 26, 0.5);
+}
+
+/* Copyright link colors for light mode */
+.footer__copyright a {
+  color: #84cc16;
+  text-decoration: none;
+  font-weight: 500;
+  position: relative;
+}
+
+/* Dark mode copyright links */
+[data-theme="dark"] .footer__copyright a {
+  color: var(--jods-orange-light);
+}
+
+.footer__copyright a:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: -1px;
+  left: 0;
+  background: #84cc16;
+  transition: width 0.3s ease;
+}
+
+/* Dark mode copyright link underline */
+[data-theme="dark"] .footer__copyright a:after {
+  background: var(--jods-orange-light);
+}
+
+/* Footer copyright link hover effect */
+.footer__copyright a:hover:after {
+  width: 100%;
+}
+
+@keyframes footer-title-underline {
+  from {
+    width: 30px;
+  }
+  to {
+    width: 50px;
+  }
 }
 
 @keyframes footer-firefly-pulse {
@@ -127,70 +239,22 @@
   }
 }
 
-/* Footer animation control button */
-.footer-animation-control {
+/* Footer background and fireflies */
+.footer-background {
   position: absolute;
-  bottom: 10px;
-  right: 10px;
-  z-index: 10;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(2px);
-  padding: 6px;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  opacity: 0.6;
-  pointer-events: auto;
-}
-
-.footer-animation-control:hover {
-  opacity: 1;
-  transform: scale(1.1);
-  background: rgba(255, 255, 255, 0.25);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: 2;
+  pointer-events: none;
 }
 
 .footer__links {
   margin-bottom: 3rem;
   position: relative;
   z-index: 3;
-}
-
-.footer__title {
-  color: var(--jods-orange-light);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 1rem;
-  margin-bottom: 1.5rem;
-  position: relative;
-  display: inline-block;
-}
-
-.footer__title:after {
-  content: "";
-  position: absolute;
-  bottom: -8px;
-  left: 0;
-  width: 30px;
-  height: 2px;
-  background: var(--jods-orange);
-  animation: footer-title-underline 3s ease-in-out infinite alternate;
-}
-
-@keyframes footer-title-underline {
-  from {
-    width: 30px;
-  }
-  to {
-    width: 50px;
-  }
 }
 
 .footer__item {
@@ -206,13 +270,6 @@
   padding: 0.2rem 0;
   font-weight: 500;
   letter-spacing: 0.5px;
-}
-
-.footer__item a:hover {
-  color: var(--jods-orange-light);
-  text-decoration: none;
-  transform: translateX(3px);
-  text-shadow: 0 0 8px rgba(255, 163, 26, 0.5);
 }
 
 /* Signature section */
@@ -337,28 +394,6 @@
   line-height: 1.6;
 }
 
-.footer__copyright a {
-  color: var(--jods-orange-light);
-  text-decoration: none;
-  font-weight: 500;
-  position: relative;
-}
-
-.footer__copyright a:after {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 1px;
-  bottom: -1px;
-  left: 0;
-  background: var(--jods-orange-light);
-  transition: width 0.3s ease;
-}
-
-.footer__copyright a:hover:after {
-  width: 100%;
-}
-
 .footer__heart {
   color: #ff5757;
   display: inline-block;
@@ -380,4 +415,33 @@
   20% {
     transform: scale(0.9);
   }
+}
+
+/* Footer animation control button */
+.footer-animation-control {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(2px);
+  padding: 6px;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+  pointer-events: auto;
+}
+
+.footer-animation-control:hover {
+  opacity: 1;
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.25);
 }
