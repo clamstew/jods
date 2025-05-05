@@ -308,6 +308,8 @@
   justify-content: center;
   gap: 2rem;
   user-select: none;
+  position: relative;
+  height: 50px; /* Fixed height for the container */
 }
 
 .footer__mascots span {
@@ -390,6 +392,8 @@
   transform: translateX(-50%) !important;
   font-size: 1.2rem;
   animation: sparkle-pulse 1s infinite alternate ease-in-out !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 @keyframes sparkle-pulse {
