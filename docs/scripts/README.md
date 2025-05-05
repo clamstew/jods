@@ -69,15 +69,44 @@ The selector-based approach works in two phases:
 
 ### npm Scripts
 
-```bash
-# Generate selectors and take screenshots with timestamps
-npm run screenshots:homepage
+From the root directory:
 
-# Take screenshots with baseline names (no timestamps)
-npm run screenshots:homepage:baseline
+```bash
+# Take section screenshots with direct content selection
+npm run docs:screenshot:sections:homepage
+
+# Take section screenshots with saved selectors
+npm run docs:screenshot:sections:use-selectors
+
+# Take section screenshots with baseline names (no timestamps)
+npm run docs:screenshot:sections:homepage:baseline
+npm run docs:screenshot:sections:use-selectors:baseline
 
 # Regenerate selectors and take screenshots
-node docs/scripts/use-selectors.mjs --regenerate
+npm run docs:screenshot:sections:regenerate
+
+# Clean up section screenshots
+npm run docs:screenshot:cleanup:sections
+```
+
+From the docs directory:
+
+```bash
+# Take section screenshots with direct content selection
+pnpm screenshot:sections:homepage
+
+# Take section screenshots with saved selectors
+pnpm screenshot:sections:use-selectors
+
+# Take section screenshots with baseline names (no timestamps)
+pnpm screenshot:sections:homepage:baseline
+pnpm screenshot:sections:use-selectors:baseline
+
+# Regenerate selectors and take screenshots
+pnpm screenshot:sections:regenerate
+
+# Clean up section screenshots
+pnpm screenshot:cleanup:sections
 ```
 
 ### Screenshot Locations

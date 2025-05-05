@@ -31,21 +31,21 @@ pnpm docs:screenshot:homepage
 pnpm docs:screenshot:component
 
 # Take screenshots of specific homepage sections
-pnpm screenshots:homepage
+pnpm docs:screenshot:sections:homepage
 
 # Take section screenshots with consistent selectors
-pnpm screenshots:use-selectors
+pnpm docs:screenshot:sections:use-selectors
 
 # Create baseline screenshots (without timestamps)
 pnpm docs:screenshot:baseline
-pnpm screenshots:homepage:baseline
-pnpm screenshots:use-selectors:baseline
+pnpm docs:screenshot:sections:homepage:baseline
+pnpm docs:screenshot:sections:use-selectors:baseline
 
 # Generate selectors for sections to reuse later
-pnpm screenshots:generate-selectors
+pnpm docs:screenshot:sections:generate-selectors
 
 # Force regenerate selectors and take screenshots
-pnpm screenshots:regenerate
+pnpm docs:screenshot:sections:regenerate
 
 # Clean up all timestamped screenshots
 pnpm docs:screenshot:cleanup
@@ -70,16 +70,40 @@ From the docs directory:
 
 ```bash
 # Take full-page screenshots of the local development site
-pnpm homepage:screenshot
+pnpm screenshot
+
+# Take full-page screenshots with specific environment
+pnpm screenshot:localhost
+pnpm screenshot:production
 
 # Take component-focused screenshots
 pnpm screenshot:component
+pnpm screenshot:component:localhost
+pnpm screenshot:component:production
+
+# Take section screenshots with direct content selection
+pnpm screenshot:sections:homepage
+pnpm screenshot:sections:homepage:baseline
+
+# Take section screenshots with saved selectors
+pnpm screenshot:sections:use-selectors
+pnpm screenshot:sections:use-selectors:baseline
+
+# Generate selectors for sections to reuse later
+pnpm screenshot:sections:generate-selectors
+
+# Force regenerate selectors and take screenshots
+pnpm screenshot:sections:regenerate
 
 # Create baseline screenshots (without timestamps)
 pnpm screenshot:baseline
 
-# Take screenshots of the production site
-pnpm production:screenshot
+# Clean up screenshots
+pnpm screenshot:cleanup
+pnpm screenshot:cleanup:keep-latest
+pnpm screenshot:cleanup:sections
+pnpm screenshot:cleanup:sections:keep
+pnpm screenshot:cleanup:sections:dry-run
 ```
 
 ## 📁 Screenshot Output
@@ -327,11 +351,17 @@ Baseline screenshots are the reference images without timestamps used for compar
 
 ```bash
 # Create all baselines (full-page and component)
-pnpm screenshot:baseline
+pnpm docs:screenshot:baseline
 
-# Create section baselines
-pnpm screenshots:homepage:baseline
-pnpm screenshots:use-selectors:baseline
+# From root directory - Create section baselines
+pnpm docs:screenshot:sections:homepage:baseline
+pnpm docs:screenshot:sections:use-selectors:baseline
+pnpm docs:screenshot:sections:remix:baseline
+
+# From docs directory - Create section baselines
+pnpm sections:homepage:baseline
+pnpm sections:use-selectors:baseline
+pnpm sections:remix:baseline
 
 # Create only component baselines
 node scripts/screenshot-manager.mjs --create-baselines --components-only
@@ -346,19 +376,19 @@ To prevent accumulating too many screenshots, you can clean up old ones:
 
 ```bash
 # Remove all timestamped screenshots
-pnpm screenshot:cleanup
+pnpm docs:screenshot:cleanup
 
 # Keep the 3 most recent batches of screenshots
-pnpm screenshot:cleanup:keep-latest
+pnpm docs:screenshot:cleanup:keep-latest
 
 # Only clean up section screenshots (keeping the most recent one for each section/theme)
-pnpm screenshot:cleanup:sections
+pnpm docs:screenshot:cleanup:sections
 
 # Keep the 3 most recent section screenshots for each section/theme
-pnpm screenshot:cleanup:sections:keep
+pnpm docs:screenshot:cleanup:sections:keep
 
 # Test section cleanup without actually deleting (dry run)
-pnpm screenshot:cleanup:sections:dry-run
+pnpm docs:screenshot:cleanup:sections:dry-run
 
 # Only clean up component screenshots
 node scripts/screenshot-manager.mjs --cleanup --components-only
@@ -374,7 +404,7 @@ If the screenshot system encounters issues:
 1. **Connection Issues**: Make sure the documentation site is running locally before taking screenshots
 2. **Theme Toggle Issues**: The system uses multiple selectors to find the theme toggle button, but if the site structure changes, you may need to update the selectors in the screenshot scripts
 3. **Missing Pages/Components**: Verify that the URLs and selectors match the actual site structure
-4. **Disk Space**: If you have many timestamped screenshots, use `pnpm screenshot:cleanup` to free up space
+4. **Disk Space**: If you have many timestamped screenshots, use `pnpm docs:screenshot:cleanup` to free up space
 
 ### Section Screenshot Issues
 
