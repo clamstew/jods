@@ -1,67 +1,119 @@
-# Website Screenshot Tools
+# Playwright Screenshot Scripts
 
-This directory contains tools for generating full-page screenshots of the jods documentation website.
+This directory contains various scripts for automated screenshots of the jods documentation site.
+
+## Quick Overview
+
+These scripts handle:
+
+- Full page screenshots
+- Component screenshots
+- Section screenshots using content-based selection and CSS selectors
+
+## 📚 Documentation
+
+For complete documentation on the screenshot system, please refer to the [Playwright Screenshots](../docs/playwright-screenshots.md) guide in the docs directory.
 
 ## Available Scripts
 
-- `pnpm screenshot` - Takes screenshots using the default localhost:3000 URL
-- `pnpm homepage:screenshot` - Explicitly takes screenshots from localhost:3000
-- `pnpm production:screenshot` - Takes screenshots from the production site (jods.dev)
+- `screenshot.mjs` - Full page screenshots
+- `screenshot-component.mjs` - Component-focused screenshots
+- `homepage-sections.mjs` - Direct content-based section screenshots
+- `generate-selectors.mjs` - Generates selectors for homepage sections and saves to JSON
+- `use-selectors.mjs` - Takes section screenshots using saved selectors
+- `screenshot-manager.mjs` - Utilities for managing screenshots (cleanup, baselines)
 
-## How Screenshots Work
+## Adding New Screenshot Features
 
-The script uses Playwright to:
+When adding new screenshot capabilities:
 
-1. Open a headless Chromium browser
-2. Navigate to each configured page
-3. Wait for the page to fully load (network idle)
-4. Capture screenshots in both light and dark themes
-5. Save the images to `/static/screenshots/[page-name]-[theme].png`
+1. Update the implementation in the appropriate script
+2. Add npm scripts to package.json
+3. Update the documentation in `docs/docs/playwright-screenshots.md`
 
-## Theme Toggling
+## Scripts Overview
 
-The script automatically captures each page in both light and dark themes by:
+### Homepage Section Screenshots
 
-1. Detecting the current theme
-2. Clicking the theme toggle button when needed
-3. Taking separate screenshots for each theme
+We have two approaches for capturing homepage sections:
 
-## Customizing
+1. **Direct Section Location** (`homepage-sections.mjs`)
 
-To add additional pages to screenshot, edit the `PAGES` array in `scripts/screenshot.mjs`:
+   - Uses text content and headings to find sections
+   - Adds data-testid attributes to elements
+   - Works well for initial screenshots
 
-```js
-const PAGES = [
-  { path: "/", name: "homepage" },
-  { path: "/intro", name: "intro" },
-  { path: "/api-reference", name: "api-reference" },
-  // Add your new page here
-  { path: "/your-page", name: "your-page-name" },
-];
-```
+2. **Selector-based Screenshots** (`use-selectors.mjs` + `generate-selectors.mjs`)
+   - Generates and saves CSS selectors to a JSON file
+   - Reuses selectors for consistent screenshots
+   - Falls back to testIds if selectors change
 
-## Path Handling
+## How It Works
 
-The script automatically detects whether to use `/jods` in the URL path:
+The selector-based approach works in two phases:
 
-- For localhost environments, it adds `/jods` to the path
-- For production environments, it uses the base path
+1. **Generating Selectors**
 
-## Requirements
+   - Script analyzes the homepage to find each section
+   - Uses text content, headings, and other semantic hints
+   - Generates unique CSS selectors for each section
+   - Saves selectors to `static/selectors/homepage-selectors.json`
 
-- Node.js (v16+)
-- Playwright with Chromium installed
+2. **Taking Screenshots**
+   - Loads selectors from the JSON file
+   - Uses them to locate sections consistently
+   - Adds padding and captures each section in light/dark mode
+   - Falls back to data-testid attributes when selectors change
 
-## Usage Example
+## Usage
 
-To take screenshots of the locally running site:
+### npm Scripts
 
 ```bash
-# Start the dev server
-pnpm start
+# Generate selectors and take screenshots with timestamps
+npm run screenshots:homepage
 
-# Open another terminal and run
-pnpm homepage:screenshot
+# Take screenshots with baseline names (no timestamps)
+npm run screenshots:homepage:baseline
+
+# Regenerate selectors and take screenshots
+node docs/scripts/use-selectors.mjs --regenerate
 ```
 
-The screenshots will be saved to the `/static/screenshots` directory with naming pattern `[page-name]-[theme].png`.
+### Screenshot Locations
+
+Screenshots are saved to:
+
+- `docs/static/screenshots/sections/` - For section screenshots
+
+## Selector File
+
+The selector file (`homepage-selectors.json`) contains:
+
+```json
+{
+  "section-name": {
+    "selector": "unique.css .selector",
+    "testId": "jods-section-id",
+    "padding": 40,
+    "originalLocator": {
+      /* original locator data */
+    }
+  }
+}
+```
+
+## Adding New Sections
+
+To add new sections:
+
+1. Update the `HOMEPAGE_SECTIONS` array in `generate-selectors.mjs`
+2. Run `node docs/scripts/use-selectors.mjs --regenerate`
+
+## Troubleshooting
+
+If screenshots aren't capturing the right sections:
+
+1. Delete the selectors file to force regeneration: `rm docs/static/selectors/homepage-selectors.json`
+2. Verify the section locator definitions in `generate-selectors.mjs`
+3. Run with regeneration: `node docs/scripts/use-selectors.mjs --regenerate`

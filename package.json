@@ -45,7 +45,13 @@
     "docs:deploy": "cd docs && GIT_USER=clamstew pnpm deploy",
     "docs:screenshot": "cd docs && pnpm screenshot",
     "docs:screenshot:homepage": "cd docs && pnpm homepage:screenshot",
-    "docs:screenshot:production": "cd docs && pnpm production:screenshot"
+    "docs:screenshot:production": "cd docs && pnpm production:screenshot",
+    "screenshots:homepage": "node docs/scripts/homepage-sections.mjs",
+    "screenshots:homepage:baseline": "node docs/scripts/homepage-sections.mjs --baseline",
+    "screenshots:generate-selectors": "node docs/scripts/generate-selectors.mjs",
+    "screenshots:use-selectors": "node docs/scripts/use-selectors.mjs",
+    "screenshots:use-selectors:baseline": "node docs/scripts/use-selectors.mjs --baseline",
+    "screenshots:regenerate": "node docs/scripts/use-selectors.mjs --regenerate"
   },
   "keywords": [
     "state",

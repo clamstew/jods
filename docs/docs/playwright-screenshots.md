@@ -12,11 +12,12 @@ The documentation site includes a Playwright-based screenshot system that:
 
 1. Captures full-page screenshots of key pages
 2. Captures targeted component screenshots for focused UI testing
-3. Automatically captures both light and dark themes
-4. Organizes screenshots with timestamped filenames
-5. Works with both local development and production environments
-6. Preserves baseline images for comparison during design iterations
-7. Provides tools to manage and clean up screenshot history
+3. Captures specific homepage sections for design reviews and marketing
+4. Automatically captures both light and dark themes
+5. Organizes screenshots with timestamped filenames
+6. Works with both local development and production environments
+7. Preserves baseline images for comparison during design iterations
+8. Provides tools to manage and clean up screenshot history
 
 ## 📊 Available Commands
 
@@ -29,8 +30,22 @@ pnpm docs:screenshot:homepage
 # Take component-focused screenshots of the local development site
 pnpm docs:screenshot:component
 
+# Take screenshots of specific homepage sections
+pnpm screenshots:homepage
+
+# Take section screenshots with consistent selectors
+pnpm screenshots:use-selectors
+
 # Create baseline screenshots (without timestamps)
 pnpm docs:screenshot:baseline
+pnpm screenshots:homepage:baseline
+pnpm screenshots:use-selectors:baseline
+
+# Generate selectors for sections to reuse later
+pnpm screenshots:generate-selectors
+
+# Force regenerate selectors and take screenshots
+pnpm screenshots:regenerate
 
 # Clean up all timestamped screenshots
 pnpm docs:screenshot:cleanup
@@ -72,6 +87,12 @@ Component screenshots are saved to:
 docs/static/screenshots/components/
 ```
 
+Section screenshots are saved to:
+
+```
+docs/static/screenshots/sections/
+```
+
 With the following naming format for new screenshots:
 
 ```
@@ -80,6 +101,9 @@ With the following naming format for new screenshots:
 
 # Component screenshots
 [component-name]-[theme]-[YYYYMMDD-HHMMSS].png
+
+# Section screenshots
+[section-name]-[theme]-[YYYYMMDD-HHMMSS].png
 ```
 
 For example:
@@ -88,6 +112,8 @@ For example:
 - `homepage-dark-20240615-134527.png`
 - `hero-section-light-20240615-134527.png`
 - `hero-section-dark-20240615-134527.png`
+- `hero-light-20240615-134527.png`
+- `features-dark-20240615-134527.png`
 
 The baseline images (without timestamps) are:
 
@@ -95,6 +121,8 @@ The baseline images (without timestamps) are:
 - `homepage-dark.png`
 - `hero-section-light.png`
 - `hero-section-dark.png`
+- `hero-light.png`
+- `features-dark.png`
 
 This approach allows you to track design changes over time and compare new versions with the original baseline without overwriting important reference images.
 
@@ -105,10 +133,16 @@ The screenshot system uses Playwright, a browser automation library, to:
 1. Launch a headless Chromium browser
 2. Navigate to each configured page
 3. Toggle between light and dark themes using the site's theme toggle button
-4. Take full-page or component-specific screenshots in both themes
+4. Take full-page, component-specific, or section-specific screenshots in both themes
 5. Save images with timestamped filenames to preserve version history
 
-## 🔍 Component Screenshots
+## 📋 Screenshot Approaches
+
+### Full-page Screenshots
+
+Full-page screenshots capture entire pages, useful for overall design review.
+
+### Component Screenshots
 
 Component screenshots capture specific UI elements rather than entire pages, which is helpful for:
 
@@ -136,6 +170,21 @@ const COMPONENTS = [
   // Add more components as needed
 ];
 ```
+
+### Section Screenshots
+
+Section screenshots focus on capturing specific sections of the homepage for marketing and design review. We have two approaches:
+
+1. **Direct Section Location** (`homepage-sections.mjs`)
+
+   - Uses text content and headings to find sections
+   - Adds data-testid attributes to elements
+   - Works well for initial screenshots
+
+2. **Selector-based Screenshots** (`use-selectors.mjs` + `generate-selectors.mjs`)
+   - Generates and saves CSS selectors to a JSON file
+   - Reuses selectors for consistent screenshots
+   - Falls back to testIds if selectors change
 
 ## ⚙️ Configuration
 
@@ -179,6 +228,71 @@ const COMPONENTS = [
 ];
 ```
 
+### Section Screenshots
+
+Section screenshots are configured in `docs/scripts/generate-selectors.mjs`.
+
+To add a new section, edit the `HOMEPAGE_SECTIONS` array:
+
+```js
+const HOMEPAGE_SECTIONS = [
+  {
+    name: "hero",
+    locator: {
+      strategy: "text",
+      value: "Zero dependency JSON store",
+      contextSelector: 'section, div.hero, [class*="hero"]',
+      fallback: "h1",
+    },
+    testId: "jods-hero-section",
+    padding: 40,
+  },
+  // Add your new section here
+  {
+    name: "your-section",
+    locator: {
+      strategy: "heading", // Can be "text", "heading", or "element"
+      value: "Your Section Title",
+      contextSelector: "section, div.container",
+    },
+    testId: "jods-your-section",
+    padding: 40,
+  },
+];
+```
+
+### Selector-based Screenshots
+
+The selector-based approach works in two phases:
+
+1. **Generating Selectors**
+
+   - Script analyzes the homepage to find each section
+   - Uses text content, headings, and other semantic hints
+   - Generates unique CSS selectors for each section
+   - Saves selectors to `static/selectors/homepage-selectors.json`
+
+2. **Taking Screenshots**
+   - Loads selectors from the JSON file
+   - Uses them to locate sections consistently
+   - Adds padding and captures each section in light/dark mode
+   - Falls back to data-testid attributes when selectors change
+
+The selector file format is:
+
+```json
+{
+  "section-name": {
+    "selector": "unique.css .selector",
+    "testId": "jods-section-id",
+    "padding": 40,
+    "originalLocator": {
+      /* original locator data */
+    }
+  }
+}
+```
+
 ### Path Handling
 
 The system automatically handles path prefixes:
@@ -206,6 +320,10 @@ Baseline screenshots are the reference images without timestamps used for compar
 # Create all baselines (full-page and component)
 pnpm screenshot:baseline
 
+# Create section baselines
+pnpm screenshots:homepage:baseline
+pnpm screenshots:use-selectors:baseline
+
 # Create only component baselines
 node scripts/screenshot-manager.mjs --create-baselines --components-only
 
@@ -231,6 +349,24 @@ node scripts/screenshot-manager.mjs --cleanup --components-only
 node scripts/screenshot-manager.mjs --cleanup --full-pages-only --keep=5
 ```
 
+## 🤔 Troubleshooting
+
+If the screenshot system encounters issues:
+
+1. **Connection Issues**: Make sure the documentation site is running locally before taking screenshots
+2. **Theme Toggle Issues**: The system uses multiple selectors to find the theme toggle button, but if the site structure changes, you may need to update the selectors in the screenshot scripts
+3. **Missing Pages/Components**: Verify that the URLs and selectors match the actual site structure
+4. **Disk Space**: If you have many timestamped screenshots, use `pnpm screenshot:cleanup` to free up space
+
+### Section Screenshot Issues
+
+If section screenshots aren't capturing the right elements:
+
+1. **Delete the selectors file** to force regeneration: `rm docs/static/selectors/homepage-selectors.json`
+2. **Verify the section locator definitions** in `generate-selectors.mjs`
+3. **Run with regeneration**: `node docs/scripts/use-selectors.mjs --regenerate`
+4. **Check the DOM structure** to ensure text content and headings match your locator strategies
+
 ## 🔄 Design Versioning and Comparison
 
 The timestamped screenshots enable several workflows for design management:
@@ -248,41 +384,17 @@ To compare design changes with the baselines:
 3. Look for differences in layout, colors, typography, spacing, etc.
 4. Make further design adjustments as needed and repeat
 
-## 🤔 Troubleshooting
-
-If the screenshot system encounters issues:
-
-1. **Connection Issues**: Make sure the documentation site is running locally before taking screenshots
-2. **Theme Toggle Issues**: The system uses multiple selectors to find the theme toggle button, but if the site structure changes, you may need to update the selectors in the screenshot scripts
-3. **Missing Pages/Components**: Verify that the URLs and selectors match the actual site structure
-4. **Disk Space**: If you have many timestamped screenshots, use `pnpm screenshot:cleanup` to free up space
-
-## 🔄 CI/CD Integration
-
-Currently, screenshots must be taken manually. For future CI/CD integration:
-
-1. Add a GitHub Action that generates screenshots on PR
-2. Compare screenshots to detect visual regressions
-3. Store screenshot history for reference
-
-## 📱 Responsive Screenshots
-
-Currently, screenshots are taken at a fixed desktop viewport (1280×800). To add responsive screenshots:
-
-1. Add a viewport configuration to the `PAGES` and `COMPONENTS` arrays
-2. Create separate screenshot functions for each viewport size
-3. Add a naming convention that includes the viewport size
-
 ## 🧠 Best Practices
 
 1. Take screenshots after significant UI changes
 2. Use component screenshots for focused testing of specific UI elements
-3. Create baseline screenshots before major redesigns for reference
-4. Include screenshots in PR descriptions for visual reviews
-5. Use screenshots for marketing materials and documentation updates
-6. Store screenshot sets for each major release for reference
-7. When comparing design changes, always use timestamped versions against baselines
-8. Clean up older timestamped screenshots periodically to save space
+3. Use section screenshots for marketing and documentation materials
+4. Create baseline screenshots before major redesigns for reference
+5. Include screenshots in PR descriptions for visual reviews
+6. Use screenshots for marketing materials and documentation updates
+7. Store screenshot sets for each major release for reference
+8. When comparing design changes, always use timestamped versions against baselines
+9. Clean up older timestamped screenshots periodically to save space
 
 ## 🔗 Related Resources
 
