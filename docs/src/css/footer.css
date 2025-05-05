@@ -55,13 +55,13 @@
   bottom: 0;
   background: linear-gradient(
     135deg,
-    rgba(0, 87, 183, 0.3) 0%,
-    rgba(6, 182, 212, 0.2) 50%,
-    rgba(132, 204, 22, 0.3) 100%
+    rgba(0, 57, 133, 0.4) 0%,
+    rgba(6, 142, 172, 0.3) 50%,
+    rgba(102, 164, 22, 0.4) 100%
   );
   pointer-events: none;
   z-index: 1;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 /* Dark mode overlay */
@@ -144,6 +144,7 @@
   margin-bottom: 1.5rem;
   position: relative;
   display: inline-block;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 /* Dark mode title */
@@ -169,12 +170,31 @@
   animation: footer-title-underline 3s ease-in-out infinite alternate;
 }
 
+/* Emoji links styling with better visibility */
+.footer__item a {
+  color: rgba(255, 255, 255, 0.95);
+  transition: all 0.2s ease;
+  display: inline-block;
+  padding: 0.2rem 0;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+/* Add better contrast for emoji icons */
+.footer__item a span[role="img"],
+.footer__item a span.emoji {
+  display: inline-block;
+  margin-right: 0.4rem;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.8));
+}
+
 /* Footer item hover effect for light mode */
 .footer__item a:hover {
-  color: #84cc16;
+  color: white;
   text-decoration: none;
   transform: translateX(3px);
-  text-shadow: 0 0 8px rgba(132, 204, 22, 0.5);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.7), 0 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 /* Dark mode hover effect */
@@ -265,21 +285,12 @@
   z-index: 3;
 }
 
-.footer__item a {
-  color: rgba(255, 255, 255, 0.8);
-  transition: all 0.2s ease;
-  display: inline-block;
-  padding: 0.2rem 0;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
-
-/* Signature section */
+/* Enhance signature area text */
 .footer__signature {
   text-align: center;
   margin-top: 3rem;
   padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.2); /* Increased opacity from 0.1 */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -390,10 +401,22 @@
   }
 }
 
+/* Built with and copyright sections */
 .footer__copyright {
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.9);
   line-height: 1.6;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  font-weight: 500;
+}
+
+/* Enhance contributor link */
+.footer__copyright a {
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  position: relative;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
 .footer__heart {
