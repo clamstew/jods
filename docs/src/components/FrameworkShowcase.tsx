@@ -1,9 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CodeBlock from "@theme/CodeBlock";
 import styles from "./FrameworkShowcase.module.css";
 
 export default function FrameworkShowcase(): React.ReactElement {
   const [activeFramework, setActiveFramework] = useState("react");
+  const [theme, setTheme] = useState(
+    document.documentElement.getAttribute("data-theme") || "light"
+  );
+
+  // Listen for theme changes
+  useEffect(() => {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (
+          mutation.type === "attributes" &&
+          mutation.attributeName === "data-theme"
+        ) {
+          setTheme(
+            document.documentElement.getAttribute("data-theme") || "light"
+          );
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   const frameworks = {
     react: {
@@ -130,9 +156,15 @@ function Counter() {
                   background:
                     activeFramework === key
                       ? key === "react"
-                        ? "linear-gradient(145deg, var(--jods-blue-dark), var(--jods-cyan))"
+                        ? theme === "dark"
+                          ? "linear-gradient(145deg, #a75a6b, #c26a5a)"
+                          : "linear-gradient(145deg, var(--jods-blue-dark), var(--jods-cyan))"
                         : key === "preact"
-                        ? "linear-gradient(145deg, #4a347f, #673ab8)"
+                        ? theme === "dark"
+                          ? "linear-gradient(145deg, #a75a6b, #c26a5a)"
+                          : "linear-gradient(145deg, #4a347f, #673ab8)"
+                        : theme === "dark"
+                        ? "linear-gradient(145deg, #a75a6b, #c26a5a)"
                         : "linear-gradient(145deg, #b81d5b, #e91e63)"
                       : "var(--ifm-card-background-color)",
                   color:
@@ -142,9 +174,15 @@ function Counter() {
                   boxShadow:
                     activeFramework === key
                       ? key === "react"
-                        ? "0 8px 16px rgba(8, 145, 178, 0.25)"
+                        ? theme === "dark"
+                          ? "0 8px 16px rgba(194, 106, 90, 0.25)"
+                          : "0 8px 16px rgba(8, 145, 178, 0.25)"
                         : key === "preact"
-                        ? "0 8px 16px rgba(103, 58, 184, 0.25)"
+                        ? theme === "dark"
+                          ? "0 8px 16px rgba(194, 106, 90, 0.25)"
+                          : "0 8px 16px rgba(103, 58, 184, 0.25)"
+                        : theme === "dark"
+                        ? "0 8px 16px rgba(194, 106, 90, 0.25)"
                         : "0 8px 16px rgba(233, 30, 99, 0.25)"
                       : "0 4px 8px rgba(0, 0, 0, 0.05)",
                   border:

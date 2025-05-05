@@ -1348,8 +1348,8 @@ div[class^="codeBlockTitle"] {
 
 /* Dark mode instruction box styling */
 [data-theme="dark"] .instruction-box {
-  background: linear-gradient(145deg, #4a347f, #7e57c2) !important;
-  box-shadow: 0 8px 30px rgba(126, 87, 194, 0.2) !important;
+  background: linear-gradient(145deg, #a75a6b, #c26a5a) !important;
+  box-shadow: 0 8px 30px rgba(194, 106, 90, 0.2) !important;
 }
 
 /* Instruction box content styling */
