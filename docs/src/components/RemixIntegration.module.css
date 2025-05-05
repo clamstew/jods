@@ -154,17 +154,40 @@ html[data-theme="light"] .highlight {
   font-size: 1.2em;
   transform-origin: center;
   animation: pulse 3s infinite alternate ease-in-out;
-  /* Add red filter to make it look more like a ruby */
-  color: #e11d48;
-  text-shadow: 0 0 10px rgba(225, 29, 72, 0.5);
-  filter: drop-shadow(0 0 5px rgba(220, 38, 38, 0.7));
+  /* Color filters to transform the diamond into a ruby */
+  color: transparent;
+  background-color: #e11d48;
+  background-image: linear-gradient(
+    135deg,
+    #dc2626 10%,
+    #ef4444 50%,
+    #fecdd3 85%,
+    #ef4444 100%
+  );
+  background-size: 100%;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-text-fill-color: transparent;
+  text-shadow: 0 0 6px rgba(220, 38, 38, 0.4);
+  filter: drop-shadow(0 0 3px rgba(220, 38, 38, 0.5));
 }
 
 /* Enhanced ruby styling for light mode */
 html[data-theme="light"] .rubyGem {
-  color: #dc2626;
-  text-shadow: 0 0 12px rgba(220, 38, 38, 0.7);
-  filter: drop-shadow(0 0 8px rgba(185, 28, 28, 0.6)) brightness(1.2);
+  background-image: linear-gradient(
+    135deg,
+    #b91c1c 10%,
+    #dc2626 50%,
+    #fecaca 85%,
+    #ef4444 100%
+  );
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-text-fill-color: transparent;
+  text-shadow: 0 0 7px rgba(220, 38, 38, 0.4);
+  filter: drop-shadow(0 0 4px rgba(185, 28, 28, 0.4));
 }
 
 /* Light mode specific styling for ruby icon */
@@ -179,11 +202,13 @@ html[data-theme="light"] .rubyIcon::before {
 @keyframes pulse {
   0% {
     transform: scale(1);
-    filter: drop-shadow(0 0 2px rgba(220, 38, 38, 0.5));
+    filter: drop-shadow(0 0 1px rgba(220, 38, 38, 0.4));
+    opacity: 0.9;
   }
   100% {
     transform: scale(1.2);
-    filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.7));
+    filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.5));
+    opacity: 1;
   }
 }
 
@@ -501,13 +526,12 @@ html[data-theme="dark"] .remixButton:hover {
     0 0 0 3px rgba(255, 154, 92, 0.2);
 }
 
-/* Rails button styling */
+/* Rails button styling with ruby-like effect */
 .railsButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, #b91c1c 0%, #dc2626 50%, #ef4444 100%);
   color: white;
   padding: 1rem 2rem;
   border-radius: 12px;
@@ -515,13 +539,21 @@ html[data-theme="dark"] .remixButton:hover {
   font-size: 1.1rem;
   text-decoration: none;
   transition: all 0.3s ease;
-  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4),
-    0 0 0 2px rgba(220, 38, 38, 0.2);
   position: relative;
   overflow: hidden;
   letter-spacing: 0.02em;
   min-width: 220px;
   text-align: center;
+
+  /* Enhanced ruby-like gradient */
+  background: linear-gradient(
+    135deg,
+    #991b1b 0%,
+    #b91c1c 40%,
+    #dc2626 60%,
+    #ef4444 100%
+  );
+  box-shadow: 0 6px 16px rgba(204, 0, 0, 0.25), 0 0 0 2px rgba(204, 0, 0, 0.1);
   border-bottom: 3px solid rgba(153, 27, 27, 0.8);
 }
 
@@ -543,10 +575,16 @@ html[data-theme="dark"] .remixButton:hover {
 
 .railsButton:hover {
   transform: translateY(-5px) scale(1.03);
-  box-shadow: 0 14px 28px rgba(220, 38, 38, 0.5),
-    0 0 0 3px rgba(220, 38, 38, 0.3);
+  box-shadow: 0 12px 24px rgba(204, 0, 0, 0.3), 0 0 0 3px rgba(204, 0, 0, 0.15);
   text-decoration: none;
   color: white;
+  background: linear-gradient(
+    135deg,
+    #7f1d1d 0%,
+    #991b1b 40%,
+    #b91c1c 60%,
+    #dc2626 100%
+  );
 }
 
 .railsButton:hover .railsButtonIcon {
@@ -557,6 +595,20 @@ html[data-theme="dark"] .remixButton:hover {
   display: inline-block;
   font-size: 1.4em;
   transition: all 0.3s ease;
+  /* Apply ruby effect to the diamond icon in the button */
+  color: transparent;
+  background-image: linear-gradient(
+    135deg,
+    #fecaca 10%,
+    #fef2f2 60%,
+    #fee2e2 100%
+  );
+  background-size: 100%;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-text-fill-color: transparent;
+  filter: drop-shadow(0 0 3px rgba(254, 242, 242, 0.6));
 }
 
 /* Dark mode rails button */
@@ -631,10 +683,12 @@ html[data-theme="dark"] .rubyGem {
   0% {
     transform: scale(1);
     filter: drop-shadow(0 0 3px rgba(244, 63, 94, 0.5));
+    opacity: 0.9;
   }
   100% {
     transform: scale(1.2);
     filter: drop-shadow(0 0 12px rgba(251, 113, 133, 0.8));
+    opacity: 1;
   }
 }
 
