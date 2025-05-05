@@ -1138,24 +1138,35 @@ div[class^="codeBlockContainer"]:before {
   position: relative;
   overflow: hidden;
   padding: 0 !important;
-  margin: 0 auto !important;
-  text-align: center;
-  display: flex;
-  justify-content: center;
+  margin: 0 !important;
+  text-align: left;
+  display: block;
+  width: 100%;
+  max-width: 100%;
 }
 
 #framework-showcase .code-container .prism-code {
   margin: 0 !important;
   border-radius: 0 !important;
   padding-bottom: 0 !important;
+  text-align: left;
+  width: 100%;
 }
 
 #framework-showcase .code-container div[class^="codeBlockContainer"] {
   margin: 0 !important;
+  width: 100%;
+  max-width: 100%;
 }
 
 #framework-showcase .code-container div[class*="codeBlockContent"] {
   padding-bottom: 0 !important;
+  width: 100%;
+}
+
+#framework-showcase pre {
+  text-align: left;
+  width: 100%;
 }
 
 /* Style code block titles */
@@ -1376,10 +1387,25 @@ div[class^="codeBlockTitle"] {
 #try-jods-live .code-preview .prism-code {
   margin: 0 !important;
   border-radius: 0 !important;
+  text-align: left;
+  width: 100%;
 }
 
 #try-jods-live .code-preview div[class^="codeBlockContainer"] {
   margin: 0 !important;
+  width: 100%;
+}
+
+#try-jods-live .code-preview div[class*="codeBlockContent"] {
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+  width: 100%;
+}
+
+#try-jods-live pre {
+  text-align: left;
+  width: 100%;
+  margin-bottom: 0 !important;
 }
 
 /* Default code-preview for other sections */
@@ -1389,7 +1415,7 @@ div[class^="codeBlockTitle"] {
   overflow: hidden;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
   padding: 1.2rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
 }
 
 /* Default code-container for Remix and other sections */
@@ -1397,7 +1423,8 @@ div[class^="codeBlockTitle"] {
   position: relative;
   overflow: hidden;
   padding: 1.2rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
+  text-align: left;
 }
 
 /* Code container styling refinements - don't duplicate */
@@ -1569,4 +1596,40 @@ div[class*="codeBlockContent"] pre {
   padding-bottom: 0 !important;
   font-size: 0.9rem !important;
   line-height: 1.6 !important;
+  text-align: left !important;
+}
+
+/* Global code block alignment fixes */
+pre,
+code {
+  text-align: left !important;
+}
+
+div[class^="codeBlockContainer"],
+div[class*="codeBlockContent"] {
+  text-align: left !important;
+  width: 100%;
+}
+
+.code-container,
+.code-preview {
+  text-align: left !important;
+}
+
+/* Prevent any unwanted margins in code blocks */
+.code-container div[class*="codeBlockContent"] pre,
+.code-preview div[class*="codeBlockContent"] pre {
+  margin-bottom: 0 !important;
+}
+
+/* Specific overrides for Framework showcase section */
+#framework-showcase .prism-code {
+  margin: 0 !important;
+  border-radius: 0 !important;
+  text-align: left !important;
+}
+
+#framework-showcase div[class^="codeBlockContainer"] {
+  margin: 0 !important;
+  text-align: left !important;
 }
