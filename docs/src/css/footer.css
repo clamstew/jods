@@ -1,6 +1,6 @@
 /* Footer styling with blue-cyan-green gradient for light mode */
 .footer {
-  background: linear-gradient(135deg, #0057b7 0%, #06b6d4 50%, #84cc16 100%);
+  background: linear-gradient(135deg, #0057b7 0%, #06b6d4 70%, #4b8b15 100%);
   position: relative;
   overflow: hidden;
   color: white;
@@ -57,7 +57,7 @@
     135deg,
     rgba(0, 57, 133, 0.4) 0%,
     rgba(6, 142, 172, 0.3) 50%,
-    rgba(102, 164, 22, 0.4) 100%
+    rgba(75, 139, 21, 0.4) 100%
   );
   pointer-events: none;
   z-index: 1;
@@ -86,13 +86,13 @@
     90deg,
     transparent 0%,
     #06b6d4 25%,
-    #84cc16 50%,
+    #4b8b15 50%,
     #06b6d4 75%,
     transparent 100%
   );
   z-index: 3;
   animation: line-flow 8s ease-in-out infinite alternate;
-  box-shadow: 0 0 8px rgba(132, 204, 22, 0.6);
+  box-shadow: 0 0 8px rgba(75, 139, 21, 0.6);
 }
 
 /* Dark mode flowing line */
@@ -123,7 +123,7 @@
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.8);
   filter: blur(1px);
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(132, 204, 22, 0.6);
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(75, 139, 21, 0.6);
   z-index: 2;
   animation: footer-firefly-pulse 3s infinite alternate ease-in-out;
   pointer-events: none;
@@ -159,7 +159,7 @@
   left: 0;
   width: 30px;
   height: 2px;
-  background: #84cc16;
+  background: #4b8b15;
   animation: footer-title-underline 3s ease-in-out infinite alternate;
 }
 
@@ -205,10 +205,11 @@
 
 /* Copyright link colors for light mode */
 .footer__copyright a {
-  color: #84cc16;
+  color: white;
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
   position: relative;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
 /* Dark mode copyright links */
@@ -223,7 +224,7 @@
   height: 1px;
   bottom: -1px;
   left: 0;
-  background: #84cc16;
+  background: #4b8b15;
   transition: width 0.3s ease;
 }
 
