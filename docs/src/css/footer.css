@@ -81,18 +81,18 @@
   top: 0;
   left: -100%;
   width: 200%;
-  height: 2px;
+  height: 3px;
   background: linear-gradient(
     90deg,
     transparent 0%,
-    #0c4a6e 25%,
-    #0891b2 50%,
-    #0c4a6e 75%,
+    #84cc16 25%,
+    #65a30d 50%,
+    #84cc16 75%,
     transparent 100%
   );
   z-index: 3;
   animation: line-flow 8s ease-in-out infinite alternate;
-  box-shadow: 0 0 8px rgba(8, 145, 178, 0.6);
+  box-shadow: 0 0 10px rgba(132, 204, 22, 0.9);
 }
 
 /* Dark mode flowing line */
