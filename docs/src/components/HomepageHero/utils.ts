@@ -14,12 +14,12 @@ export const getThemeColors = (colorMode: "dark" | "light") => {
   ];
 
   const lightModeColors = [
-    "rgba(6, 182, 212, 0.9)", // cyan
-    "rgba(16, 185, 129, 0.9)", // green
-    "rgba(236, 72, 153, 0.9)", // pink
-    "rgba(79, 70, 229, 0.9)", // indigo
-    "rgba(245, 158, 11, 0.9)", // amber
-    "rgba(139, 92, 246, 0.9)", // purple
+    "rgba(240, 249, 255, 0.9)", // almost white with blue tint
+    "rgba(245, 243, 255, 0.9)", // almost white with lavender tint
+    "rgba(255, 250, 230, 0.9)", // soft warm yellow/cream
+    "rgba(254, 240, 138, 0.8)", // soft yellow
+    "rgba(0, 58, 117, 0.7)", // deep navy blue
+    "rgba(3, 105, 161, 0.7)", // dark blue
   ];
 
   return colorMode === "dark" ? darkModeColors : lightModeColors;
