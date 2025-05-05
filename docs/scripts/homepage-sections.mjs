@@ -53,12 +53,13 @@ const HOMEPAGE_SECTIONS = [
   {
     name: "framework-integration",
     locator: {
-      strategy: "element",
-      value: "section#framework-showcase.features-container",
-      contextSelector: null,
+      strategy: "text",
+      value: "Works with your favorite frameworks",
+      contextSelector: "section, div.container, [class*='container_']",
+      fallback: "section#framework-showcase.features-container",
     },
     testId: "jods-framework-section",
-    padding: 40,
+    padding: 60,
   },
   {
     name: "compare",
@@ -68,7 +69,7 @@ const HOMEPAGE_SECTIONS = [
       contextSelector: null,
     },
     testId: "jods-compare-section",
-    padding: 40,
+    padding: 70,
   },
   {
     name: "remix-integration",
@@ -78,7 +79,7 @@ const HOMEPAGE_SECTIONS = [
       contextSelector: null,
     },
     testId: "jods-remix-section",
-    padding: 40,
+    padding: 70,
   },
   {
     name: "footer",

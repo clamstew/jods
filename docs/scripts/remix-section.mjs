@@ -45,14 +45,14 @@ async function takeRemixSectionScreenshot(
 
   const browser = await chromium.launch();
   const context = await browser.newContext({
-    viewport: { width: 1280, height: 900 },
+    viewport: { width: 1280, height: 1200 }, // Increased height for taller sections
   });
 
   const page = await context.newPage();
 
   // Navigate to homepage
   await page.goto(`${BASE_URL}${PATH_PREFIX}/`, { waitUntil: "networkidle" });
-  await page.waitForTimeout(1000); // Give extra time for animations to complete
+  await page.waitForTimeout(1500); // Extra time for animations to complete
 
   // Take screenshots for each theme
   for (const theme of THEMES) {
@@ -92,7 +92,7 @@ async function takeRemixSectionScreenshot(
           });
         }
       }
-      await page.waitForTimeout(500); // Wait for theme transition
+      await page.waitForTimeout(800); // Wait longer for theme transition
     }
 
     try {
@@ -136,22 +136,53 @@ async function takeRemixSectionScreenshot(
             continue;
           }
 
-          const padding = 40; // Padding around the section
+          const padding = 70; // Increased padding around the section
 
           // Get viewport dimensions
           const viewportSize = page.viewportSize();
 
+          // Account for possible fixed header by adding extra padding at the top
+          const headerOffset = await page.evaluate(() => {
+            const header = document.querySelector(
+              'header, .navbar, [class*="navbar_"]'
+            );
+            return header ? header.offsetHeight : 0;
+          });
+
+          const topPadding = padding + headerOffset;
+
+          // Ensure the element is properly in view by scrolling a bit above it
+          await page.evaluate(
+            (sectionEl, offset) => {
+              const rect = sectionEl.getBoundingClientRect();
+              window.scrollTo({
+                top: window.scrollY + rect.top - offset,
+                behavior: "instant",
+              });
+            },
+            remixSection,
+            topPadding
+          );
+
+          await page.waitForTimeout(500); // Wait for scroll to complete
+
+          // Get updated bounding box after scrolling
+          const updatedBoundingBox = await remixSection.boundingBox();
+
           // Create clip with proper boundaries and checks
           const clip = {
-            x: Math.max(0, boundingBox.x - padding),
-            y: Math.max(0, boundingBox.y - padding),
+            x: Math.max(0, updatedBoundingBox.x - padding),
+            y: Math.max(0, updatedBoundingBox.y - topPadding),
             width: Math.min(
-              viewportSize.width - Math.max(0, boundingBox.x - padding),
-              boundingBox.width + padding * 2
+              viewportSize.width - Math.max(0, updatedBoundingBox.x - padding),
+              updatedBoundingBox.width + padding * 2
             ),
             height: Math.min(
-              viewportSize.height - Math.max(0, boundingBox.y - padding) - 10, // Subtract 10 for safety
-              boundingBox.height + padding * 2
+              Math.max(
+                800,
+                updatedBoundingBox.height + padding * 2 + headerOffset
+              ), // Ensure minimum height of 800px
+              viewportSize.height - 10 // Subtract 10 for safety
             ),
           };
 

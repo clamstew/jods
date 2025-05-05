@@ -19,69 +19,78 @@ const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
 const PATH_PREFIX = BASE_URL.includes("localhost") ? "/jods" : "";
 
 // Component selectors to screenshot
-// Format: { page, name, selector, padding, fallbackStrategy, minHeight }
+// Format: { page, name, selector, padding, fallbackStrategy, minHeight, waitForSelector }
 const COMPONENTS = [
   {
     page: "/",
     name: "hero-section",
-    selector: "div.hero-container, .hero, [class*='hero_']", // Multiple potential selectors
-    fallbackStrategy: "first-heading", // Fallback to screenshot the first heading and surrounding area
+    selector:
+      "div.heroBanner_UJgQ, div.hero-container, .hero, [class*='hero_']",
+    fallbackStrategy: "first-heading",
     padding: 50,
+    waitForSelector: "h1",
   },
   {
     page: "/",
     name: "features-section",
-    selector: "section:has-text('Powerful features, minimal API')",
+    selector: "section:has(h2:has-text('Powerful features'))",
     fallbackStrategy: "section-index",
-    sectionIndex: 1, // If needed, take the 1st section
+    sectionIndex: 1,
     padding: 50,
+    waitForSelector: "h2:has-text('Powerful features')",
   },
   {
     page: "/",
     name: "try-jods-section",
-    selector: "section#try-jods-live, section:has-text('Try jods live')",
+    selector: "section:has(h2:has-text('Try jods live'))",
     fallbackStrategy: "section-index",
-    sectionIndex: 2, // If needed, take the 2nd section
+    sectionIndex: 2,
     padding: 50,
-    minHeight: 600, // Ensure minimum height
+    waitForSelector: "h2:has-text('Try jods live')",
+    minHeight: 600,
   },
   {
     page: "/",
     name: "framework-section",
     selector:
-      "section#framework-showcase, section:has-text('Framework Integration')",
-    fallbackStrategy: "section-index",
-    sectionIndex: 3, // If needed, take the 3rd section
-    padding: 50,
-    minHeight: 600, // Ensure minimum height
+      "section:has(h2:has-text('Works with your favorite frameworks')), section:has(h2:has-text('Framework Integration'))",
+    fallbackStrategy: "keyword-context",
+    keywords: ["favorite frameworks", "Framework Integration"],
+    padding: 60,
+    waitForSelector:
+      "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
+    minHeight: 800,
   },
   {
     page: "/",
     name: "compare-section",
-    selector: "section#compare, section:has-text('Compare')",
+    selector:
+      "section:has(h2:has-text('Compare')), section:has(h2:has-text('How jods compares'))",
     fallbackStrategy: "section-index",
-    sectionIndex: 4, // If needed, take the 4th section
-    padding: 50,
-    minHeight: 600, // Ensure minimum height
+    sectionIndex: 4,
+    padding: 70, // Increased padding to capture the top title
+    waitForSelector: "h2:has-text('Compare'), h2:has-text('How jods compares')",
+    minHeight: 700,
   },
   {
     page: "/",
     name: "remix-section",
     selector:
-      "section#remix-integration, section:has-text('Remix Integration'), div.container:has-text('Remix Integration'):not(:has(h1, h2, h3, h4, h5, h6 ~ :not(:has-text('Remix Integration'))))",
+      "section#remix-integration, section:has(h2:has-text('Remix Integration'))",
     fallbackStrategy: "keyword-context",
     keywords: ["Remix", "Integration"],
-    padding: 50,
-    minHeight: 500,
+    padding: 70, // Increased padding to capture the header and buttons
+    waitForSelector: "h2:has-text('Remix Integration')",
+    minHeight: 700, // Increased to include the full section with buttons
   },
   {
     page: "/",
     name: "footer-section",
     selector: "footer",
-    fallbackStrategy: "last-element", // Simply take the last element on the page
+    fallbackStrategy: "last-element",
     padding: 30,
+    waitForSelector: "footer",
   },
-  // Add more components as needed
 ];
 
 // Theme modes to capture
@@ -124,14 +133,31 @@ async function takeComponentScreenshots(
     sectionIndex,
     keywords,
     minHeight,
+    waitForSelector,
   } of COMPONENTS) {
     const url = `${BASE_URL}${PATH_PREFIX}${pagePath}`;
     console.log(`Navigating to ${url} to capture component: ${name}`);
 
-    await page.goto(url, { waitUntil: "networkidle" });
+    // Go to the page with longer timeout and wait until network is idle
+    await page.goto(url, {
+      waitUntil: "networkidle",
+      timeout: 30000,
+    });
 
-    // Ensure page is fully loaded
-    await page.waitForTimeout(1000);
+    // Wait for specific content to ensure the page is fully loaded
+    if (waitForSelector) {
+      try {
+        console.log(`Waiting for selector: ${waitForSelector}`);
+        await page.waitForSelector(waitForSelector, { timeout: 5000 });
+      } catch (e) {
+        console.log(
+          `Warning: Could not find wait selector for ${name}: ${e.message}`
+        );
+      }
+    }
+
+    // Additional safety wait to ensure all animations and dynamic content are loaded
+    await page.waitForTimeout(2000);
 
     // Take screenshots in both themes
     for (const theme of THEMES) {
@@ -167,7 +193,10 @@ async function takeComponentScreenshots(
                         attr.value.toLowerCase().includes("mode") ||
                         attr.name.toLowerCase().includes("theme") ||
                         attr.name.toLowerCase().includes("mode")
-                    ) || button.textContent.toLowerCase().includes("theme")
+                    ) ||
+                    button.textContent.toLowerCase().includes("theme") ||
+                    button.textContent.includes("🌙") ||
+                    button.textContent.includes("☀️")
                   );
                 });
                 if (themeButton) themeButton.click();
@@ -176,7 +205,7 @@ async function takeComponentScreenshots(
             }
           }
         }
-        await page.waitForTimeout(500); // Wait for theme transition
+        await page.waitForTimeout(1000); // Wait longer for theme transition
       }
 
       try {
@@ -194,7 +223,15 @@ async function takeComponentScreenshots(
           console.log(`Using dedicated Remix section finder for ${name}`);
         } else {
           // Find the element using a comma-separated list of selectors
+          console.log(`Looking for element with selector: ${selector}`);
           elementHandle = await page.$(selector);
+
+          if (elementHandle) {
+            const boundingBox = await elementHandle.boundingBox();
+            console.log(
+              `Found element with dimensions: ${boundingBox.width}x${boundingBox.height}, at y=${boundingBox.y}`
+            );
+          }
         }
 
         let takingFullPage = false;
@@ -321,9 +358,18 @@ async function takeComponentScreenshots(
           continue;
         }
 
+        // Debug log the element's position
+        console.log(
+          `Element ${name} found at y=${boundingBox.y}, height=${boundingBox.height}`
+        );
+
+        // Make sure element is in view
+        await elementHandle.scrollIntoViewIfNeeded();
+        await page.waitForTimeout(500); // Wait for scroll to complete
+
         // Only try to clip if we found a valid element with a bounding box
         if (!takingFullPage && boundingBox) {
-          // Create clip with padding around the element
+          // Create clip with padding around the element, respecting minHeight
           const clip = {
             x: Math.max(0, boundingBox.x - padding),
             y: Math.max(0, boundingBox.y - padding),
@@ -331,19 +377,55 @@ async function takeComponentScreenshots(
               page.viewportSize().width - Math.max(0, boundingBox.x - padding),
               boundingBox.width + padding * 2
             ),
-            height: Math.max(boundingBox.height + padding * 2, minHeight || 0), // Use minHeight if specified
+            height: Math.max(boundingBox.height + padding * 2, minHeight || 0),
           };
+
+          // Check if element is partly offscreen (scrolled out of view)
+          if (boundingBox.y < 0 || boundingBox.y > page.viewportSize().height) {
+            console.log(
+              `Element is offscreen (y=${boundingBox.y}), scrolling to it...`
+            );
+            await elementHandle.scrollIntoViewIfNeeded();
+            await page.waitForTimeout(500); // Wait for scroll to complete
+
+            // Get updated position after scrolling
+            const newBoundingBox = await elementHandle.boundingBox();
+            if (newBoundingBox) {
+              clip.y = Math.max(0, newBoundingBox.y - padding);
+              console.log(`New y position after scroll: ${newBoundingBox.y}`);
+            }
+          }
 
           // Make sure we don't exceed the page dimensions
           if (clip.y + clip.height > page.viewportSize().height) {
+            console.log(
+              `Adjusting clip height to fit viewport - was ${
+                clip.height
+              }, max allowed: ${page.viewportSize().height - clip.y - 10}`
+            );
             clip.height = page.viewportSize().height - clip.y - 10; // leave a small margin
           }
 
-          // Take the screenshot with the calculated clip area
-          await page.screenshot({
-            path: screenshotPath,
-            clip,
-          });
+          // Verify clip dimensions are positive
+          if (clip.width <= 0 || clip.height <= 0) {
+            console.log(
+              `Invalid clip dimensions: width=${clip.width}, height=${clip.height}`
+            );
+            console.log(`Taking full viewport screenshot instead`);
+            await page.screenshot({
+              path: screenshotPath,
+              fullPage: false,
+            });
+          } else {
+            // Take the screenshot with the calculated clip area
+            console.log(
+              `Taking screenshot with clip: x=${clip.x}, y=${clip.y}, width=${clip.width}, height=${clip.height}`
+            );
+            await page.screenshot({
+              path: screenshotPath,
+              clip,
+            });
+          }
 
           console.log(`Component screenshot saved to: ${screenshotPath}`);
         }

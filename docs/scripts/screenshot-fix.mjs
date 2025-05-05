@@ -1,4 +1,7 @@
 // Consolidated script to fix all screenshot issues
+// This script addresses issues with section screenshots, especially
+// ensuring sufficient vertical height to capture content properly
+// including headers and footers of sections that may be cut off
 import { takeComponentScreenshots } from "./screenshot-component.mjs";
 import { takeRemixSectionScreenshot } from "./remix-section.mjs";
 

@@ -60,7 +60,7 @@ const HOMEPAGE_SECTIONS = [
       fallback: "section#framework-showcase",
     },
     testId: "jods-framework-section",
-    padding: 40,
+    padding: 60,
   },
   {
     name: "compare",
@@ -71,7 +71,7 @@ const HOMEPAGE_SECTIONS = [
       fallback: "section#compare",
     },
     testId: "jods-compare-section",
-    padding: 40,
+    padding: 70,
   },
   {
     name: "remix-integration",
@@ -81,7 +81,7 @@ const HOMEPAGE_SECTIONS = [
       contextSelector: "section, div.container, [class*='container_']",
     },
     testId: "jods-remix-section",
-    padding: 40,
+    padding: 70,
   },
   {
     name: "footer",
