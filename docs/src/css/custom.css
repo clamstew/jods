@@ -1394,6 +1394,7 @@ div[class^="codeBlockTitle"] {
 #try-jods-live .code-preview div[class^="codeBlockContainer"] {
   margin: 0 !important;
   width: 100%;
+  margin-bottom: 0px !important;
 }
 
 #try-jods-live .code-preview div[class*="codeBlockContent"] {
@@ -1606,7 +1607,7 @@ code {
 }
 
 div[class^="codeBlockContainer"],
-div[class*="codeBlockContent"] {
+div[class*="codeBlockContainer"] {
   text-align: left !important;
   width: 100%;
 }
@@ -1632,4 +1633,24 @@ div[class*="codeBlockContent"] {
 #framework-showcase div[class^="codeBlockContainer"] {
   margin: 0 !important;
   text-align: left !important;
+}
+
+/* Override for the 20px margin-bottom issue */
+div[class^="codeBlockContainer"],
+div[class*="codeBlockContainer"] {
+  margin-bottom: 0px !important;
+}
+
+/* For extra specificity to handle potential JavaScript overrides */
+html body div[class^="codeBlockContainer"],
+html body div[class*="codeBlockContainer"] {
+  margin-bottom: 0px !important;
+}
+
+/* Style the body using !important to override any higher specificity */
+body div[class^="codeBlockContainer"]::after,
+body div[class*="codeBlockContainer"]::after {
+  content: "";
+  margin-bottom: 0px !important;
+  display: block;
 }
