@@ -5,7 +5,8 @@ export default function HeroContent(): React.ReactElement {
   return (
     <div className="hero-content">
       <h1 className="hero-title">
-        <span className="gradient-text">💫 jods &#123;&#125; </span>
+        <span className="jods-logo">jods</span>
+        <span className="jods-logo-braces">&#123;&#125;</span>
       </h1>
       <p className="hero-subtitle">
         <span className="gradient-text">✨</span> JavaScript Object Dynamics

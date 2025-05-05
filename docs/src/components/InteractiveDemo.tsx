@@ -200,11 +200,9 @@ ${JSON.stringify(snapshot, null, 2)}
                 borderRadius: "22px",
                 padding: "2.2rem 1.5rem 1.5rem 1.5rem",
                 margin: "0 0 2rem 0",
-                background:
-                  "linear-gradient(135deg, #e0f7fa 0%, #b2f7ef 60%, #d9f99d 100%)",
-                border: "1.5px solid #84cc16",
-                boxShadow:
-                  "0 8px 32px 0 rgba(6, 182, 212, 0.12), 0 1.5px 8px 0 #84cc16",
+                background: "var(--demo-box-bg)",
+                border: `2px solid var(--demo-box-border)`,
+                boxShadow: "var(--demo-box-shadow)",
                 minHeight: "210px",
                 maxWidth: "340px",
                 width: "100%",
@@ -214,7 +212,7 @@ ${JSON.stringify(snapshot, null, 2)}
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "flex-start",
-                backdropFilter: "blur(6px)",
+                backdropFilter: "blur(8px)",
                 transition: "background 0.4s, border 0.4s",
               }}
             >
@@ -227,7 +225,7 @@ ${JSON.stringify(snapshot, null, 2)}
                   lineHeight: 1.8,
                   position: "relative",
                   zIndex: 1,
-                  textShadow: "0 2px 8px rgba(0, 87, 183, 0.10)",
+                  textShadow: "var(--demo-text-shadow)",
                 }}
               >
                 <span
@@ -235,9 +233,9 @@ ${JSON.stringify(snapshot, null, 2)}
                     display: "flex",
                     alignItems: "center",
                     marginBottom: "12px",
-                    color: "#f59e0b",
-                    fontWeight: 700,
-                    textShadow: "0 2px 8px #fef08a, 0 0 12px #f59e0b55",
+                    color: "var(--demo-text-1-color)",
+                    fontWeight: 800,
+                    textShadow: "var(--demo-text-shadow)",
                   }}
                 >
                   <span style={{ marginRight: "10px", fontSize: "1.4rem" }}>
@@ -250,9 +248,9 @@ ${JSON.stringify(snapshot, null, 2)}
                     display: "flex",
                     alignItems: "center",
                     marginBottom: "12px",
-                    color: "#06b6d4",
-                    fontWeight: 700,
-                    textShadow: "0 2px 8px #a7e22e, 0 0 12px #06b6d455",
+                    color: "var(--demo-text-2-color)",
+                    fontWeight: 800,
+                    textShadow: "var(--demo-text-shadow)",
                   }}
                 >
                   <span style={{ marginRight: "10px", fontSize: "1.4rem" }}>
@@ -264,9 +262,9 @@ ${JSON.stringify(snapshot, null, 2)}
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    color: "#8b5cf6",
-                    fontWeight: 700,
-                    textShadow: "0 2px 8px #a7e22e, 0 0 12px #8b5cf655",
+                    color: "var(--demo-text-3-color)",
+                    fontWeight: 800,
+                    textShadow: "var(--demo-text-shadow)",
                   }}
                 >
                   <span style={{ marginRight: "10px", fontSize: "1.4rem" }}>

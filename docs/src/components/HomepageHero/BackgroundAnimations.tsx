@@ -100,22 +100,23 @@ export default function BackgroundAnimations({
       // Random color based on our palette
       let color;
       if (colorMode === "light") {
-        // For light mode, use blues, cyans, and greens
+        // For light mode, use blues, greens, and yellows
         const colorChoices = [
-          "rgba(0, 87, 183, 0.7)", // Blue
-          "rgba(6, 182, 212, 0.7)", // Cyan
-          "rgba(132, 204, 22, 0.7)", // Green
-          "rgba(167, 226, 46, 0.7)", // Light green
+          "rgba(14, 165, 233, 0.7)", // Sky blue
+          "rgba(34, 197, 94, 0.7)", // Green
+          "rgba(234, 179, 8, 0.7)", // Yellow
           "rgba(255, 255, 255, 0.9)", // White
         ];
         color = colorChoices[Math.floor(Math.random() * colorChoices.length)];
       } else {
-        // For dark mode, use the original color selection
-        const colorIndex = Math.floor(Math.random() * colors.length);
-        color = colors[colorIndex].replace(
-          /rgba\((\d+), (\d+), (\d+), [\d\.]+\)/,
-          (_, r, g, b) => `rgba(${r}, ${g}, ${b}, 0.7)`
-        );
+        // For dark mode, use purples and pinks
+        const colorChoices = [
+          "rgba(51, 41, 84, 0.7)", // Dark purple
+          "rgba(107, 51, 105, 0.7)", // Mid purple
+          "rgba(138, 52, 88, 0.7)", // Pink purple
+          "rgba(255, 255, 255, 0.7)", // White
+        ];
+        color = colorChoices[Math.floor(Math.random() * colorChoices.length)];
       }
 
       firefly.style.backgroundColor = color;
@@ -157,15 +158,15 @@ export default function BackgroundAnimations({
       if (colorMode === "light") {
         const glowOptions = [
           "rgba(255, 255, 255, 0.9)",
-          "rgba(132, 204, 22, 0.8)",
-          "rgba(6, 182, 212, 0.8)",
+          "rgba(34, 197, 94, 0.8)",
+          "rgba(14, 165, 233, 0.8)",
         ];
         glowColor = glowOptions[Math.floor(Math.random() * glowOptions.length)];
       } else {
         const glowOptions = [
           "rgba(255, 255, 255, 0.9)",
-          "rgba(255, 154, 92, 0.8)",
-          "rgba(255, 197, 89, 0.8)",
+          "rgba(107, 51, 105, 0.8)",
+          "rgba(138, 52, 88, 0.8)",
         ];
         glowColor = glowOptions[Math.floor(Math.random() * glowOptions.length)];
       }
@@ -176,11 +177,11 @@ export default function BackgroundAnimations({
       if (colorMode === "light") {
         glowFirefly.style.boxShadow = `0 0 ${
           glowSize * 2
-        }px ${glowColor}, 0 0 ${glowSize * 3}px rgba(132, 204, 22, 0.6)`;
+        }px ${glowColor}, 0 0 ${glowSize * 3}px rgba(34, 197, 94, 0.6)`;
       } else {
         glowFirefly.style.boxShadow = `0 0 ${
           glowSize * 2
-        }px ${glowColor}, 0 0 ${glowSize * 3}px rgba(255, 154, 92, 0.6)`;
+        }px ${glowColor}, 0 0 ${glowSize * 3}px rgba(138, 52, 88, 0.6)`;
       }
 
       // Animation timing

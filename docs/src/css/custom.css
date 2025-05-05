@@ -109,9 +109,60 @@
   margin-left: 0.1em;
 }
 
+/* Enhanced jods logo styling */
+.jods-logo {
+  font-size: 4rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background-image: linear-gradient(
+    135deg,
+    #0ea5e9 0%,
+    #22c55e 50%,
+    #eab308 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+  filter: drop-shadow(0 2px 6px rgba(14, 165, 233, 0.6));
+  text-shadow: 0 0 30px rgba(14, 165, 233, 0.4);
+}
+
+/* Dark mode jods logo styling */
+[data-theme="dark"] .jods-logo {
+  background-image: linear-gradient(135deg, #ff9a5c 20%, #ffc559 80%);
+  filter: drop-shadow(0 2px 8px rgba(255, 154, 92, 0.6));
+  text-shadow: 0 0 30px rgba(255, 154, 92, 0.5);
+}
+
+/* Add 3D effect to the jods logo to improve readability */
+.jods-logo-braces {
+  color: #ffffff;
+  text-shadow: 0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9,
+    0 5px 0 #aaa, 0 6px 1px rgba(0, 0, 0, 0.1), 0 0 5px rgba(0, 0, 0, 0.1),
+    0 1px 3px rgba(0, 0, 0, 0.3), 0 3px 5px rgba(0, 0, 0, 0.2),
+    0 5px 10px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.2),
+    0 20px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Dark mode jods logo braces styling */
+[data-theme="dark"] .jods-logo-braces {
+  color: #ffffff;
+  text-shadow: 0 1px 0 #666, 0 2px 0 #555, 0 3px 0 #444, 0 4px 0 #333,
+    0 5px 0 #222, 0 6px 1px rgba(0, 0, 0, 0.3), 0 0 5px rgba(0, 0, 0, 0.3),
+    0 1px 3px rgba(0, 0, 0, 0.5), 0 3px 5px rgba(0, 0, 0, 0.4),
+    0 5px 10px rgba(0, 0, 0, 0.35), 0 10px 10px rgba(0, 0, 0, 0.3),
+    0 20px 20px rgba(0, 0, 0, 0.25);
+}
+
 /* Table header gradients */
 table thead {
-  background: linear-gradient(135deg, #0057b7 0%, #06b6d4 50%, #84cc16 100%);
+  background: linear-gradient(
+    135deg,
+    var(--jods-blue) 0%,
+    var(--jods-cyan) 50%,
+    var(--jods-green) 100%
+  );
   color: white;
 }
 [data-theme="dark"] table thead {

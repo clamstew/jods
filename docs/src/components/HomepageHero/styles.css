@@ -6,10 +6,10 @@
   min-height: 580px; /* Increased minimum height for content plus mascot space */
   background: linear-gradient(
     135deg,
-    #0057b7 0%,
-    #06b6d4 50%,
-    #84cc16 100%
-  ); /* New gradient for light mode */
+    #0ea5e9 0%,
+    #22c55e 50%,
+    #eab308 100%
+  ); /* Improved gradient for light mode */
   color: white;
   display: flex;
   align-items: center;
@@ -545,40 +545,51 @@
 /* CSS Variable theme overrides for light mode - updated */
 :root {
   --hero-content-bg: rgba(255, 255, 255, 0.15);
-  --hero-content-border: rgba(72, 255, 168, 0.3);
-  --hero-content-shadow: rgba(0, 255, 255, 0.2);
-  --hero-gradient-start: #06b6d4;
-  --hero-gradient-end: #84cc16;
-  --hero-gradient-shadow: rgba(72, 255, 168, 0.3);
+  --hero-content-border: rgba(34, 197, 94, 0.3);
+  --hero-content-shadow: rgba(14, 165, 233, 0.2);
+  --hero-gradient-start: #0ea5e9;
+  --hero-gradient-end: #22c55e;
+  --hero-gradient-shadow: rgba(34, 197, 94, 0.3);
   --hero-text-shadow: rgba(0, 0, 0, 0.3);
-  --button-primary-gradient-start: #06b6d4;
-  --button-primary-gradient-end: #84cc16;
-  --button-primary-shadow: rgba(72, 255, 168, 0.4);
-  --button-primary-shadow-hover: rgba(72, 255, 168, 0.6);
+  --button-primary-gradient-start: #0ea5e9;
+  --button-primary-gradient-end: #22c55e;
+  --button-primary-shadow: rgba(34, 197, 94, 0.4);
+  --button-primary-shadow-hover: rgba(34, 197, 94, 0.6);
   --button-secondary-bg: rgba(255, 255, 255, 0.2);
-  --button-secondary-border: rgba(72, 255, 168, 0.3);
-  --button-secondary-color: #0284c7;
-  --button-secondary-shadow: rgba(0, 255, 255, 0.2);
+  --button-secondary-border: rgba(34, 197, 94, 0.3);
+  --button-secondary-color: #0ea5e9;
+  --button-secondary-shadow: rgba(14, 165, 233, 0.2);
   --button-secondary-bg-hover: rgba(255, 255, 255, 0.3);
-  --button-secondary-shadow-hover: rgba(0, 255, 255, 0.4);
+  --button-secondary-shadow-hover: rgba(14, 165, 233, 0.4);
   --speech-bubble-bg: rgba(255, 255, 255, 0.8);
-  --speech-bubble-border: rgba(72, 255, 168, 0.4);
-  --speech-bubble-color: #0284c7;
+  --speech-bubble-border: rgba(34, 197, 94, 0.4);
+  --speech-bubble-color: #0ea5e9;
+
+  /* Demo box styles for light mode */
+  --demo-box-bg: linear-gradient(135deg, #0ea5e9 0%, #22c55e 40%, #eab308 100%);
+  --demo-box-border: rgba(14, 165, 233, 0.3);
+  --demo-box-shadow: 0 8px 32px 0 rgba(14, 165, 233, 0.15),
+    0 2px 16px 0 rgba(34, 197, 94, 0.15);
+  --demo-text-shadow: 0 2px 8px rgba(255, 255, 255, 0.7),
+    0 0 8px rgba(14, 165, 233, 0.3);
+  --demo-text-1-color: #f97316;
+  --demo-text-2-color: #0ea5e9;
+  --demo-text-3-color: #8b5cf6;
 }
 
 /* CSS Variable theme overrides for dark mode */
 :root[data-theme="dark"] {
   --hero-content-bg: rgba(30, 30, 60, 0.3);
-  --hero-content-border: rgba(255, 255, 255, 0.1);
+  --hero-content-border: rgba(255, 255, 255, 0.15);
   --hero-content-shadow: rgba(0, 0, 0, 0.3);
-  --hero-gradient-start: #f59e0b;
-  --hero-gradient-end: #d97706;
-  --hero-gradient-shadow: rgba(245, 158, 11, 0.3);
+  --hero-gradient-start: #332954;
+  --hero-gradient-end: #8a3458;
+  --hero-gradient-shadow: rgba(138, 52, 88, 0.3);
   --hero-text-shadow: rgba(0, 0, 0, 0.5);
-  --button-primary-gradient-start: #ff9d00;
-  --button-primary-gradient-end: #ff8500;
-  --button-primary-shadow: rgba(255, 137, 0, 0.4);
-  --button-primary-shadow-hover: rgba(255, 137, 0, 0.6);
+  --button-primary-gradient-start: #6b3369;
+  --button-primary-gradient-end: #8a3458;
+  --button-primary-shadow: rgba(138, 52, 88, 0.4);
+  --button-primary-shadow-hover: rgba(138, 52, 88, 0.6);
   --button-secondary-bg: rgba(255, 255, 255, 0.1);
   --button-secondary-border: rgba(255, 255, 255, 0.2);
   --button-secondary-color: #ffffff;
@@ -592,6 +603,16 @@
   --control-button-border: rgba(255, 255, 255, 0.2);
   --control-button-color: rgba(255, 255, 255, 0.8);
   --control-button-bg-hover: rgba(40, 40, 40, 0.8);
+
+  /* Demo box styles for dark mode */
+  --demo-box-bg: linear-gradient(135deg, #332954 0%, #6b3369 50%, #8a3458 100%);
+  --demo-box-border: rgba(255, 255, 255, 0.15);
+  --demo-box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3),
+    0 2px 16px 0 rgba(255, 255, 255, 0.05);
+  --demo-text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5), 0 0 8px rgba(0, 0, 0, 0.5);
+  --demo-text-1-color: #ffc559;
+  --demo-text-2-color: #6ee7b7;
+  --demo-text-3-color: #d8b4fe;
 }
 
 /* Add styles for the sparkle emoji */
