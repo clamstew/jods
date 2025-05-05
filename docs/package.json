@@ -35,7 +35,13 @@
     "screenshot:cleanup:keep-latest": "node scripts/screenshot-manager.mjs --cleanup --keep=3",
     "screenshot:cleanup:sections": "node scripts/cleanup-section-screenshots.mjs",
     "screenshot:cleanup:sections:keep": "node scripts/cleanup-section-screenshots.mjs --keep 3",
-    "screenshot:cleanup:sections:dry-run": "node scripts/cleanup-section-screenshots.mjs --dry-run"
+    "screenshot:cleanup:sections:dry-run": "node scripts/cleanup-section-screenshots.mjs --dry-run",
+    "screenshot:unified": "node scripts/screenshot-unified.mjs",
+    "screenshot:unified:baseline": "node scripts/screenshot-unified.mjs --baseline",
+    "screenshot:unified:localhost": "BASE_URL=http://localhost:3000 node scripts/screenshot-unified.mjs",
+    "screenshot:unified:components": "node scripts/screenshot-unified.mjs --mode=components",
+    "screenshot:unified:sections": "node scripts/screenshot-unified.mjs --mode=sections",
+    "screenshot:unified:remix": "node scripts/screenshot-unified.mjs --mode=remix"
   },
   "dependencies": {
     "@docusaurus/core": "3.7.0",

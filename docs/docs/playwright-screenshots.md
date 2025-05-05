@@ -70,6 +70,14 @@ pnpm docs:screenshot:cleanup:sections:dry-run
 
 # Take screenshots of the production site
 pnpm docs:screenshot:production
+
+# NEW: Take screenshots using the unified approach (recommended)
+pnpm docs:screenshot:unified
+pnpm docs:screenshot:unified:baseline
+pnpm docs:screenshot:unified:localhost
+pnpm docs:screenshot:unified:components
+pnpm docs:screenshot:unified:sections
+pnpm docs:screenshot:unified:remix
 ```
 
 From the docs directory:
@@ -115,6 +123,14 @@ pnpm screenshot:cleanup:keep-latest
 pnpm screenshot:cleanup:sections
 pnpm screenshot:cleanup:sections:keep
 pnpm screenshot:cleanup:sections:dry-run
+
+# NEW: Take screenshots using the unified approach (recommended)
+pnpm screenshot:unified
+pnpm screenshot:unified:baseline
+pnpm screenshot:unified:localhost
+pnpm screenshot:unified:components
+pnpm screenshot:unified:sections
+pnpm screenshot:unified:remix
 ```
 
 ## 📁 Screenshot Output
@@ -481,3 +497,50 @@ To compare design changes with the baselines:
 - [Playwright Documentation](https://playwright.dev/docs/intro)
 - [Docusaurus Theming System](https://docusaurus.io/docs/styling-layout#theme)
 - [jods Maintainer's Guide](./maintainers-guide)
+
+## Consolidated Unified Screenshot Script
+
+The project now includes a unified screenshot script that replaces the various specialized scripts with a single consistent approach:
+
+### Benefits of the Unified Script
+
+1. **Consistent Output** - All screenshots use the same selectors, padding rules, and filename conventions
+2. **Single Source of Truth** - Component definitions are defined once in `screenshot-selectors.mjs`
+3. **Flexible Modes** - Run the script with different modes:
+   - `--mode=all` - Capture all components (default)
+   - `--mode=components` - Capture only components (legacy mode)
+   - `--mode=sections` - Capture only homepage sections
+   - `--mode=remix` - Capture only the Remix section
+   - `--components=hero-section,footer-section` - Capture specific named components
+
+### Example Usage
+
+```bash
+# Capture all components with a timestamp
+node scripts/screenshot-unified.mjs
+
+# Create baseline screenshots (no timestamp) for all components
+node scripts/screenshot-unified.mjs --baseline
+
+# Capture only the section screenshots
+node scripts/screenshot-unified.mjs --mode=sections
+
+# Capture specific components
+node scripts/screenshot-unified.mjs --components=hero-section,framework-section
+```
+
+### Output Location
+
+Unified screenshots are saved to:
+
+```
+docs/static/screenshots/unified/
+```
+
+### Migration Path
+
+While the legacy scripts are still maintained for backward compatibility, new development should use the unified script. To migrate from the old scripts:
+
+1. Use `screenshot:unified` instead of `screenshot:component`
+2. Use `screenshot:unified:sections` instead of `screenshot:sections:homepage` or `screenshot:sections:use-selectors`
+3. Use `screenshot:unified:remix` instead of `screenshot:sections:remix`

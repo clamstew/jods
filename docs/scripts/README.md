@@ -24,12 +24,14 @@ For complete documentation on the screenshot system, please refer to the [Playwr
 - `screenshot-manager.mjs` - Utilities for managing screenshots (cleanup, baselines)
 - `remix-section.mjs` - Dedicated script for capturing Remix integration section
 - `screenshot-fix.mjs` - Consolidated script to fix all screenshot issues at once
+- `screenshot-selectors.mjs` - Unified selectors registry for all components (NEW)
+- `screenshot-unified.mjs` - Consolidated screenshot script with multiple modes (NEW - RECOMMENDED)
 
 ## Adding New Screenshot Features
 
 When adding new screenshot capabilities:
 
-1. Update the implementation in the appropriate script
+1. Update the component definitions in `screenshot-selectors.mjs`
 2. Add npm scripts to package.json
 3. Update the documentation in `docs/docs/playwright-screenshots.md`
 
@@ -64,6 +66,45 @@ The `screenshot-fix.mjs` script addresses common screenshot issues:
    - Uses specialized finders for complex sections like Remix integration
    - Ensures proper sizing with minimum height requirements
    - Better targeting for sections with similar content
+
+## Consolidated Screenshot Approach
+
+The new recommended approach uses a consolidated architecture:
+
+1. **Unified Selectors Registry** (`screenshot-selectors.mjs`)
+
+   - Contains all component definitions in one place
+   - Includes helper functions for finding specific elements
+   - Exports utility functions for working with component definitions
+
+2. **Unified Screenshot Script** (`screenshot-unified.mjs`)
+
+   - Supports different modes to capture different sets of components
+   - Uses consistent padding, naming, and screenshot logic
+   - Handles special cases like framework tabs and Remix section
+   - Produces more consistent output
+
+3. **Single Output Directory**
+   - All screenshots are saved to `docs/static/screenshots/unified/`
+   - Consistent naming format: `component-name-theme[-timestamp].png`
+
+### Recommended Usage
+
+When running screenshot scripts:
+
+```bash
+# From docs directory
+pnpm screenshot:unified            # All components
+pnpm screenshot:unified:sections   # Just homepage sections
+pnpm screenshot:unified:remix      # Just Remix section
+
+# From root directory
+pnpm docs:screenshot:unified
+pnpm docs:screenshot:unified:sections
+pnpm docs:screenshot:unified:remix
+```
+
+The older scripts are still available for backward compatibility but new development should use the unified approach.
 
 ## How It Works
 
