@@ -12,34 +12,120 @@
 .header {
   margin-bottom: 2rem;
   text-align: center;
+  background: linear-gradient(135deg, #0072ff 0%, #00c6ff 100%);
+  padding: 2.5rem;
+  border-radius: 16px;
+  margin: -4rem -2rem 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Add animated stripes to header background */
+.header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 20px,
+    rgba(255, 255, 255, 0.05) 20px,
+    rgba(255, 255, 255, 0.05) 40px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Add subtle shine animation */
+.header::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(45deg);
+  animation: shine 6s infinite;
+  z-index: 2;
+}
+
+@keyframes shine {
+  0% {
+    transform: rotate(45deg) translateX(-100%);
+  }
+  50%,
+  100% {
+    transform: rotate(45deg) translateX(100%);
+  }
 }
 
 .title {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-  color: var(--ifm-font-color-base);
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 0.8rem;
+  color: white;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 3;
 }
 
 .subtitle {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   margin-bottom: 2rem;
-  color: var(--ifm-color-emphasis-700);
+  color: rgba(255, 255, 255, 0.95);
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
+  position: relative;
+  z-index: 3;
+  line-height: 1.5;
 }
 
 .highlight {
-  background: linear-gradient(
-    135deg,
-    var(--ifm-color-primary),
-    var(--ifm-color-primary-dark)
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  font-weight: 600;
+  background: white;
+  padding: 0.3rem 0.7rem;
+  border-radius: 8px;
+  color: #0072ff;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  margin: 0 0.2rem;
+  transition: all 0.3s ease;
+}
+
+.highlight:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.rubyGem {
+  display: inline-block;
+  margin-right: 0.5rem;
+  font-size: 1.1em;
+  transform-origin: center;
+  animation: pulse 3s infinite alternate ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.3));
+  }
+  100% {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 8px rgba(255, 0, 128, 0.5));
+  }
 }
 
 .remix {
@@ -211,6 +297,9 @@
   display: flex;
   justify-content: center;
   margin-top: 2rem;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding: 0 1rem;
 }
 
 .button {
@@ -251,6 +340,8 @@
   position: relative;
   overflow: hidden;
   letter-spacing: 0.02em;
+  min-width: 220px;
+  text-align: center;
 }
 
 .remixButton::before {
@@ -318,6 +409,73 @@ html[data-theme="dark"] .remixButton:hover {
     0 0 0 3px rgba(255, 154, 92, 0.2);
 }
 
+/* Rails button styling */
+.railsButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #8b0000 0%, #cc0000 50%, #e80012 100%);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 16px rgba(204, 0, 0, 0.4), 0 0 0 2px rgba(204, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.02em;
+  min-width: 220px;
+  text-align: center;
+}
+
+.railsButton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 100%
+  );
+  animation: shimmer 3s infinite;
+}
+
+.railsButton:hover {
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 12px 24px rgba(204, 0, 0, 0.6), 0 0 0 3px rgba(204, 0, 0, 0.2);
+  text-decoration: none;
+  color: white;
+}
+
+.railsButton:hover .railsButtonIcon {
+  animation: spin 1.5s infinite linear;
+}
+
+.railsButtonIcon {
+  display: inline-block;
+  font-size: 1.4em;
+  transition: all 0.3s ease;
+}
+
+/* Dark mode rails button */
+html[data-theme="dark"] .railsButton {
+  background: linear-gradient(135deg, #9c2b2e 0%, #db3a3a 50%, #ff5f5f 100%);
+  box-shadow: 0 6px 16px rgba(255, 95, 95, 0.4),
+    0 0 0 2px rgba(255, 95, 95, 0.1);
+}
+
+html[data-theme="dark"] .railsButton:hover {
+  box-shadow: 0 12px 24px rgba(255, 95, 95, 0.6),
+    0 0 0 3px rgba(255, 95, 95, 0.2);
+}
+
 /* Responsive design */
 @media (max-width: 996px) {
   .content {
@@ -356,6 +514,31 @@ html[data-theme="dark"] .remixButton:hover {
 html[data-theme="dark"] .featureItem {
   background: rgba(30, 30, 60, 0.4);
   border-color: rgba(255, 255, 255, 0.1);
+}
+
+html[data-theme="dark"] .header {
+  background: linear-gradient(135deg, #332954 0%, #6b3369 50%, #c26a5a 100%);
+}
+
+html[data-theme="dark"] .highlight {
+  background: rgba(255, 255, 255, 0.95);
+  color: #6b3369;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme="dark"] .rubyGem {
+  animation: dark-pulse 3s infinite alternate ease-in-out;
+}
+
+@keyframes dark-pulse {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 3px rgba(255, 0, 128, 0.3));
+  }
+  100% {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 12px rgba(255, 0, 128, 0.7));
+  }
 }
 
 html[data-theme="dark"] .featureIcon {

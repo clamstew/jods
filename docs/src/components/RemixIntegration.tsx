@@ -209,8 +209,10 @@ export default function TodosPage() {
           State, Reimagined
         </h2>
         <p className={styles.subtitle}>
-          <span className={styles.highlight}>Active Record pattern</span> for
-          Remix:
+          <span className={styles.highlight}>
+            <span className={styles.rubyGem}>💎</span> Active Record
+          </span>{" "}
+          for Remix:
           <br />
           simple, reactive, type-safe state management
         </p>
@@ -360,6 +362,15 @@ export default function TodosPage() {
         <a href="/jods/remix" className={styles.remixButton}>
           <span className={styles.remixButtonIcon}>💿</span>
           Explore Remix Integration
+        </a>
+        <a
+          href="https://rubyonrails.org/doctrine"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.railsButton}
+        >
+          <span className={styles.railsButtonIcon}>💎</span>
+          Learn About Active Record
         </a>
       </div>
     </div>
