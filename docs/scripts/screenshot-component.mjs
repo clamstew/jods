@@ -24,21 +24,19 @@ const COMPONENTS = [
   {
     page: "/",
     name: "hero-section",
-    selector: ".hero__title",
-    padding: 100, // Extra padding around element in pixels
+    selector: ".hero", // Main hero container
+    padding: 50,
   },
   {
     page: "/",
     name: "features-section",
-    selector: ".features",
+    selector: "[class*='features_']", // Docusaurus often adds unique class suffixes
     padding: 50,
   },
   {
     page: "/",
     name: "remix-section",
-    selector: "h2:contains('Remix Integration') + div", // Targeting the section about Remix
-    selector_type: "xpath", // Using xpath for more flexible selection
-    xpath: "//h2[contains(text(), 'Remix Integration')]/parent::*", // Alternative xpath approach
+    selector: "text=Remix", // Text-based selector - will find element containing "Remix" text
     padding: 70,
   },
   // Add more components as needed
@@ -75,14 +73,7 @@ async function takeComponentScreenshots(
 
   const page = await context.newPage();
 
-  for (const {
-    page: pagePath,
-    name,
-    selector,
-    padding,
-    selector_type,
-    xpath,
-  } of COMPONENTS) {
+  for (const { page: pagePath, name, selector, padding } of COMPONENTS) {
     const url = `${BASE_URL}${PATH_PREFIX}${pagePath}`;
     console.log(`Navigating to ${url} to capture component: ${name}`);
 
@@ -138,32 +129,21 @@ async function takeComponentScreenshots(
       }
 
       try {
-        // Find the element based on selector type
-        let elementHandle;
-        if (selector_type === "xpath" && xpath) {
-          elementHandle = await page.$(`xpath=${xpath}`);
-          if (!elementHandle) {
-            console.error(`Element not found using XPath: ${xpath}`);
-            // Fallback to CSS selector
-            elementHandle = await page.$(selector);
-          }
-        } else {
-          elementHandle = await page.$(selector);
-        }
+        // Find the element
+        let elementHandle = await page.$(selector);
 
         if (!elementHandle) {
           console.error(`Element not found: ${selector}`);
 
-          // Try to find Remix related content with a more general approach
+          // Special handling for certain components
           if (name === "remix-section") {
             console.log("Trying alternative selectors for Remix section...");
             // Try a variety of selectors that might match the Remix section
             for (const trySelector of [
-              "text=Remix Integration",
-              "text=Remix",
+              // Playground-specific selectors for broader matching
+              "h3:has-text('Remix')",
               "h2:has-text('Remix')",
-              ".remix-section",
-              "[data-section='remix']",
+              "div:has-text('Remix Integration')",
               "section:has-text('Remix')",
             ]) {
               console.log(`Trying selector: ${trySelector}`);
@@ -174,6 +154,67 @@ async function takeComponentScreenshots(
                 );
                 break;
               }
+            }
+
+            // If still not found, try capturing part of the page that likely contains it
+            if (!elementHandle) {
+              console.log("Falling back to main content area");
+              elementHandle = await page.$("main");
+              if (elementHandle) {
+                // Adjust padding to focus more on middle section
+                const boundingBox = await elementHandle.boundingBox();
+                if (boundingBox) {
+                  // Get the second third of the main content
+                  const sectionHeight = boundingBox.height / 3;
+                  const secondThirdY = boundingBox.y + sectionHeight;
+
+                  // Create a screenshot of just the middle section
+                  const clip = {
+                    x: boundingBox.x,
+                    y: secondThirdY,
+                    width: boundingBox.width,
+                    height: sectionHeight,
+                  };
+
+                  // Create timestamped screenshot
+                  const screenshotPath = path.join(
+                    screenshotsDir,
+                    `${name}-${theme}${saveBaseline ? "" : "-" + timestamp}.png`
+                  );
+
+                  await page.screenshot({
+                    path: screenshotPath,
+                    clip,
+                  });
+
+                  console.log(
+                    `Component screenshot saved to: ${screenshotPath}`
+                  );
+                  continue; // Skip normal screenshot flow
+                }
+              }
+            }
+          } else if (name === "hero-section") {
+            // Try alternative selectors for hero section
+            for (const trySelector of [
+              ".hero__title",
+              ".hero__subtitle",
+              "header",
+              "[class*='hero_']",
+              "main > div:first-child",
+            ]) {
+              elementHandle = await page.$(trySelector);
+              if (elementHandle) break;
+            }
+          } else if (name === "features-section") {
+            // Try alternative selectors for features section
+            for (const trySelector of [
+              ".features",
+              "[class*='feature_']",
+              "main > div:nth-child(2)",
+            ]) {
+              elementHandle = await page.$(trySelector);
+              if (elementHandle) break;
             }
           }
 
