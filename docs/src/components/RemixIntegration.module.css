@@ -174,6 +174,7 @@ html[data-theme="light"] .highlight {
   background-size: 100%;
   -webkit-background-clip: text;
   -moz-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   -moz-text-fill-color: transparent;
 
@@ -198,6 +199,7 @@ html[data-theme="light"] .rubyGem {
   );
   -webkit-background-clip: text;
   -moz-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   -moz-text-fill-color: transparent;
 
@@ -613,6 +615,7 @@ html[data-theme="dark"] .remixButton:hover {
   background-size: 100%;
   -webkit-background-clip: text;
   -moz-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   -moz-text-fill-color: transparent;
   filter: drop-shadow(0 0 3px rgba(254, 242, 242, 0.6));
