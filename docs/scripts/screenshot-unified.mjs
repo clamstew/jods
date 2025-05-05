@@ -513,6 +513,25 @@ async function captureSpecificElement(
     await page.waitForTimeout(500);
   }
 
+  // Special treatment for remix-section in light mode to ensure proper positioning
+  if (component.name === "remix-section" && theme === "light") {
+    // For light mode, we need to ensure the section is properly positioned
+    await page.evaluate(() => {
+      // Scroll to top first to ensure consistent positioning
+      window.scrollTo(0, 0);
+
+      // Find the remix section
+      const section = document.querySelector("section#remix-integration");
+      if (section) {
+        // Calculate a good scroll position to see the header and some content above
+        const rect = section.getBoundingClientRect();
+        const targetY = Math.max(0, rect.top - 200); // Show 200px above the section
+        window.scrollTo(0, targetY);
+      }
+    });
+    await page.waitForTimeout(800); // Wait longer for scroll and rendering
+  }
+
   // Get updated position after scrolling
   const updatedBoundingBox = await elementHandle.boundingBox();
 
@@ -581,67 +600,213 @@ async function captureFrameworkTabs(
     return;
   }
 
-  // Find tab buttons
-  const tabButtons = await page.$$(
-    "button:has-text('React'), button:has-text('Preact'), button:has-text('Remix')"
-  );
+  // Find all tab buttons
+  const tabButtonsSelector =
+    "button:has-text('React'), button:has-text('Preact'), button:has-text('Remix'), button:has-text('Traditional')";
+  const tabButtons = await page.$$(tabButtonsSelector);
 
   if (!tabButtons || tabButtons.length === 0) {
-    console.log("Could not find framework tabs");
+    console.log("Could not find framework tabs, trying alternative selectors");
+    // Try more specific selectors with emoji
+    const emojiTabButtonsSelector =
+      "button:has-text('⚛️'), button:has-text('💿')";
+    const emojiTabButtons = await page.$$(emojiTabButtonsSelector);
+
+    if (!emojiTabButtons || emojiTabButtons.length === 0) {
+      console.log("Could not find framework tabs with emoji either");
+      return;
+    }
+
+    console.log(`Found ${emojiTabButtons.length} framework tabs with emoji`);
+
+    // Use the emoji buttons instead
+    const allTabButtons = emojiTabButtons;
+
+    // Group buttons by type based on their text content
+    const reactButtons = [];
+    const preactButtons = [];
+    const remixButtons = [];
+
+    for (const tabButton of allTabButtons) {
+      const buttonText = await tabButton.evaluate((el) =>
+        el.textContent.trim()
+      );
+      if (
+        buttonText.includes("⚛️") &&
+        buttonText.toLowerCase().includes("react") &&
+        !buttonText.toLowerCase().includes("preact")
+      ) {
+        reactButtons.push(tabButton);
+      } else if (
+        buttonText.includes("⚛️") &&
+        buttonText.toLowerCase().includes("preact")
+      ) {
+        preactButtons.push(tabButton);
+      } else if (
+        buttonText.includes("💿") ||
+        buttonText.toLowerCase().includes("remix")
+      ) {
+        remixButtons.push(tabButton);
+      }
+    }
+
+    // Capture screenshots for each tab type
+    if (reactButtons.length > 0) {
+      await captureTabScreenshot(
+        page,
+        frameworkSection,
+        reactButtons[0],
+        "react",
+        component,
+        theme,
+        timestamp,
+        saveBaseline
+      );
+    }
+
+    if (preactButtons.length > 0) {
+      await captureTabScreenshot(
+        page,
+        frameworkSection,
+        preactButtons[0],
+        "preact",
+        component,
+        theme,
+        timestamp,
+        saveBaseline
+      );
+    }
+
+    if (remixButtons.length > 0) {
+      await captureTabScreenshot(
+        page,
+        frameworkSection,
+        remixButtons[0],
+        "remix",
+        component,
+        theme,
+        timestamp,
+        saveBaseline
+      );
+    }
+
     return;
   }
 
   console.log(`Found ${tabButtons.length} framework tabs`);
 
-  // Capture each tab
-  for (let i = 0; i < tabButtons.length; i++) {
-    const tabButton = tabButtons[i];
-    const tabName = await tabButton.evaluate((el) => el.textContent.trim());
+  // For each explicitly named tab in component config, try to find and capture it
+  for (const tabName of component.frameworkTabs) {
+    console.log(`Looking for tab: ${tabName}`);
+    let matchingButton = null;
 
-    console.log(`Clicking on ${tabName} tab`);
-
-    // Click the tab
-    await tabButton.click();
-    await page.waitForTimeout(1000);
-
-    // Get bounding box after tab change
-    const boundingBox = await frameworkSection.boundingBox();
-
-    // Calculate clip area
-    const padding = component.padding || 40;
-    const clip = {
-      x: Math.max(0, boundingBox.x - padding),
-      y: Math.max(0, boundingBox.y - padding),
-      width: Math.min(
-        page.viewportSize().width - Math.max(0, boundingBox.x - padding),
-        boundingBox.width + padding * 2
-      ),
-      height: Math.max(
-        boundingBox.height + padding * 2,
-        component.minHeight || 0
-      ),
-    };
-
-    // Make sure we don't exceed the page dimensions
-    if (clip.y + clip.height > page.viewportSize().height) {
-      clip.height = page.viewportSize().height - clip.y - 10;
+    // Try to find a button that contains this tab name
+    for (const button of tabButtons) {
+      const buttonText = await button.evaluate((el) => el.textContent.trim());
+      if (buttonText.includes(tabName) || tabName.includes(buttonText)) {
+        matchingButton = button;
+        break;
+      }
     }
 
-    // Take the screenshot
-    const screenshotPath = path.join(
-      directories.unified,
-      `${component.name}-${tabName.toLowerCase()}-${theme}${
-        saveBaseline ? "" : "-" + timestamp
-      }.png`
-    );
-
-    await page.screenshot({
-      path: screenshotPath,
-      clip,
-    });
-
-    console.log(`Framework tab screenshot saved to: ${screenshotPath}`);
+    if (matchingButton) {
+      await captureTabScreenshot(
+        page,
+        frameworkSection,
+        matchingButton,
+        tabName.toLowerCase().replace(/[^a-z0-9]/g, "-"),
+        component,
+        theme,
+        timestamp,
+        saveBaseline
+      );
+    } else {
+      console.log(`Could not find tab button for: ${tabName}`);
+    }
   }
+}
+
+/**
+ * Helper: Capture a single framework tab screenshot
+ */
+async function captureTabScreenshot(
+  page,
+  frameworkSection,
+  tabButton,
+  tabIdentifier,
+  component,
+  theme,
+  timestamp,
+  saveBaseline
+) {
+  const tabName = await tabButton.evaluate((el) => el.textContent.trim());
+  console.log(`Clicking on ${tabName} tab`);
+
+  // Click the tab
+  await tabButton.click();
+
+  // Wait longer for tab content to fully load and render
+  await page.waitForTimeout(1500);
+
+  // Additional scroll for better positioning
+  await page.evaluate(
+    (params) => {
+      window.scrollBy(0, -params.offset);
+    },
+    { offset: component.extraScroll || 0 }
+  );
+  await page.waitForTimeout(500);
+
+  // Get position after scrolling
+  const updatedBoundingBox = await frameworkSection.boundingBox();
+
+  // Calculate clip area
+  const padding = component.padding || 40;
+  const clip = {
+    x: Math.max(0, updatedBoundingBox.x - padding),
+    y: Math.max(0, updatedBoundingBox.y - padding),
+    width: Math.min(
+      page.viewportSize().width - Math.max(0, updatedBoundingBox.x - padding),
+      updatedBoundingBox.width + padding * 2
+    ),
+    height: Math.max(
+      updatedBoundingBox.height + padding * 2,
+      component.minHeight || 0
+    ),
+  };
+
+  // Make sure we don't exceed the page dimensions
+  if (clip.y + clip.height > page.viewportSize().height) {
+    clip.height = page.viewportSize().height - clip.y - 10;
+  }
+
+  // Clean up the tab identifier for the filename
+  const safeTabId = tabIdentifier.replace(/[^\w-]/g, "").toLowerCase();
+
+  // Simplify the filename for the Traditional Remix tab
+  let finalTabId = safeTabId;
+  if (
+    safeTabId.includes("traditional") ||
+    safeTabId.includes("remix") ||
+    tabName.includes("💿")
+  ) {
+    finalTabId = "remix";
+  }
+
+  // Take the screenshot
+  const screenshotPath = path.join(
+    directories.unified,
+    `${component.name}-${finalTabId}-${theme}${
+      saveBaseline ? "" : "-" + timestamp
+    }.png`
+  );
+
+  await page.screenshot({
+    path: screenshotPath,
+    clip,
+  });
+
+  console.log(`Framework tab screenshot saved to: ${screenshotPath}`);
 }
 
 // Parse command line arguments

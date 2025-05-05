@@ -54,7 +54,7 @@ export const COMPONENTS = [
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
     minHeight: 900,
     captureFrameworkTabs: true,
-    frameworkTabs: ["React", "Preact", "Remix"],
+    frameworkTabs: ["💿 Traditional Remix"],
     testId: "jods-framework-section",
     extraScroll: 100,
   },
