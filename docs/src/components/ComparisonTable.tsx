@@ -22,7 +22,7 @@ export default function ComparisonTable(): React.ReactElement {
           className="table-container"
           style={{
             overflowX: "auto",
-            maxWidth: "900px",
+            maxWidth: "1000px",
             margin: "0 auto",
             borderRadius: "8px",
             boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
@@ -31,7 +31,7 @@ export default function ComparisonTable(): React.ReactElement {
           <table style={{ margin: 0, boxShadow: "none" }}>
             <thead>
               <tr>
-                <th>Feature</th>
+                <th style={{ minWidth: "195px" }}>Feature</th>
                 <th>
                   <a
                     href="https://github.com/clamstew/jods"
@@ -202,15 +202,15 @@ export default function ComparisonTable(): React.ReactElement {
                 },
                 {
                   feature: "🖥️ Server Integration",
-                  jods: <span className="green-check">✅ (Remix)</span>,
-                  zustand: <span className="feature-missing">🖥️</span>,
+                  jods: <span className="green-check">💿 Remix</span>,
+                  zustand: <span className="feature-missing">🔍 None</span>,
                   redux: <span className="green-check">✅ (manual)</span>,
                   mobx: <span className="green-check">✅ (manual)</span>,
-                  signals: <span className="feature-missing">🖥️</span>,
+                  signals: <span className="feature-missing">🔍 None</span>,
                 },
               ].map((row, i) => (
                 <tr key={i}>
-                  <td>
+                  <td style={{ minWidth: "195px" }}>
                     <strong>{row.feature}</strong>
                   </td>
                   <td>{row.jods}</td>
