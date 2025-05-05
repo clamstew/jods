@@ -343,6 +343,76 @@
     0 0 10px rgba(255, 255, 255, 0.3);
 }
 
+/* New Remix button */
+.hero-buttons .button--remix {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #0f172a 0%, #0c4a6e 50%, #0891b2 100%);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.4),
+    0 0 0 2px rgba(8, 145, 178, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-buttons .button--remix:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 8px 20px rgba(8, 145, 178, 0.6),
+    0 0 0 3px rgba(8, 145, 178, 0.2);
+  text-decoration: none;
+  color: white;
+}
+
+.remix-button-icon {
+  font-size: 1.3em;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.hero-buttons .button--remix:hover .remix-button-icon {
+  animation: spin 1.5s infinite linear;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Dark mode remix button */
+:root[data-theme="dark"] .hero-buttons .button--remix {
+  background: linear-gradient(135deg, #332954 0%, #6b3369 50%, #c26a5a 100%);
+  box-shadow: 0 4px 12px rgba(255, 154, 92, 0.4),
+    0 0 0 2px rgba(255, 154, 92, 0.1);
+}
+
+:root[data-theme="dark"] .hero-buttons .button--remix:hover {
+  box-shadow: 0 8px 20px rgba(255, 154, 92, 0.6),
+    0 0 0 3px rgba(255, 154, 92, 0.2);
+}
+
+/* Add shimmer effect to remix button */
+.hero-buttons .button--remix::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 100%
+  );
+  animation: button-shimmer 3s infinite;
+}
+
 /* Mascot animations and positioning */
 .hero__mascots {
   position: absolute;

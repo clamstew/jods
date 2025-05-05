@@ -46,6 +46,16 @@
   font-weight: 800;
 }
 
+.remixIcon {
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.remix:hover .remixIcon {
+  animation: spin 1.5s infinite linear;
+  display: inline-block;
+}
+
 .content {
   display: flex;
   flex-direction: row;
@@ -220,6 +230,92 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   text-decoration: none;
   color: white;
+}
+
+/* Enhanced remix button styling */
+.remixButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #0f172a 0%, #0c4a6e 50%, #0891b2 100%);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 16px rgba(8, 145, 178, 0.4),
+    0 0 0 2px rgba(8, 145, 178, 0.1);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.02em;
+}
+
+.remixButton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 100%
+  );
+  animation: shimmer 3s infinite;
+}
+
+.remixButton:hover {
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 12px 24px rgba(8, 145, 178, 0.6),
+    0 0 0 3px rgba(8, 145, 178, 0.2);
+  text-decoration: none;
+  color: white;
+}
+
+.remixButton:hover .remixButtonIcon {
+  animation: spin 1.5s infinite linear;
+}
+
+.remixButtonIcon {
+  display: inline-block;
+  font-size: 1.4em;
+  transition: all 0.3s ease;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  50%,
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Dark mode remix button */
+html[data-theme="dark"] .remixButton {
+  background: linear-gradient(135deg, #332954 0%, #6b3369 50%, #c26a5a 100%);
+  box-shadow: 0 6px 16px rgba(255, 154, 92, 0.4),
+    0 0 0 2px rgba(255, 154, 92, 0.1);
+}
+
+html[data-theme="dark"] .remixButton:hover {
+  box-shadow: 0 12px 24px rgba(255, 154, 92, 0.6),
+    0 0 0 3px rgba(255, 154, 92, 0.2);
 }
 
 /* Responsive design */

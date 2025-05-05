@@ -29,11 +29,12 @@ export default function HeroContent(): React.ReactElement {
       </div>
 
       <div className="hero-buttons">
-        <Link to="/intro" className="button button--primary">
+        <Link to="/examples" className="button button--primary">
           Get Started
         </Link>
-        <Link to="/examples" className="button button--secondary">
-          See Examples
+
+        <Link to="/remix" className="button button-remix button--secondary">
+          <span className="remix-button-icon">💿</span> Remix
         </Link>
       </div>
     </div>

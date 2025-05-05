@@ -203,7 +203,10 @@ export default function TodosPage() {
     <div className={styles.container}>
       <div className={styles.header}>
         <h2 className={styles.title}>
-          <span className={styles.remix}>💿 Remix</span> State, Reimagined
+          <span className={styles.remix}>
+            <span className={styles.remixIcon}>💿</span> Remix
+          </span>{" "}
+          State, Reimagined
         </h2>
         <p className={styles.subtitle}>
           <span className={styles.highlight}>Active Record pattern</span> for
@@ -354,8 +357,9 @@ export default function TodosPage() {
       </div>
 
       <div className={styles.footer}>
-        <a href="/jods/remix" className={styles.button}>
-          Explore Remix Integration →
+        <a href="/jods/remix" className={styles.remixButton}>
+          <span className={styles.remixButtonIcon}>💿</span>
+          Explore Remix Integration
         </a>
       </div>
     </div>
