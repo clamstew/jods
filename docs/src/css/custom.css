@@ -1138,11 +1138,11 @@ div[class^="codeBlockContainer"]:before {
   position: relative;
   overflow: hidden;
   padding: 0 !important;
-  margin: 0 !important;
+  margin: 0 auto !important;
   text-align: left;
   display: block;
   width: 100%;
-  max-width: 100%;
+  max-width: 680px;
 }
 
 #framework-showcase .code-container .prism-code {
