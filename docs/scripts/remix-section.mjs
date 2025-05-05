@@ -45,7 +45,7 @@ async function takeRemixSectionScreenshot(
 
   const browser = await chromium.launch();
   const context = await browser.newContext({
-    viewport: { width: 1280, height: 1200 }, // Increased height for taller sections
+    viewport: { width: 1280, height: 1600 }, // Increased height for taller sections
   });
 
   const page = await context.newPage();
@@ -92,7 +92,7 @@ async function takeRemixSectionScreenshot(
           });
         }
       }
-      await page.waitForTimeout(800); // Wait longer for theme transition
+      await page.waitForTimeout(1200); // Wait longer for theme transition
     }
 
     try {
@@ -119,7 +119,7 @@ async function takeRemixSectionScreenshot(
 
             // Scroll to the section
             await remixSection.scrollIntoViewIfNeeded();
-            await page.waitForTimeout(500); // Wait for scroll to complete
+            await page.waitForTimeout(600); // Wait for scroll to complete
 
             // Take a full page screenshot instead
             const screenshotPath = path.join(
@@ -136,35 +136,35 @@ async function takeRemixSectionScreenshot(
             continue;
           }
 
-          const padding = 70; // Increased padding around the section
+          const padding = 200; // Increased padding for remix section
 
           // Get viewport dimensions
           const viewportSize = page.viewportSize();
 
-          // Account for possible fixed header by adding extra padding at the top
-          const headerOffset = await page.evaluate(() => {
+          // Account for possible fixed header height
+          const headerHeight = await page.evaluate(() => {
             const header = document.querySelector(
               'header, .navbar, [class*="navbar_"]'
             );
             return header ? header.offsetHeight : 0;
           });
 
-          const topPadding = padding + headerOffset;
+          const topPadding = padding + headerHeight + 50;
+          const bottomPadding = padding + 200; // Extra padding for bottom buttons
 
           // Ensure the element is properly in view by scrolling a bit above it
           await page.evaluate(
-            (sectionEl, offset) => {
-              const rect = sectionEl.getBoundingClientRect();
+            (params) => {
+              const rect = params.sectionEl.getBoundingClientRect();
               window.scrollTo({
-                top: window.scrollY + rect.top - offset,
+                top: window.scrollY + rect.top - params.offset,
                 behavior: "instant",
               });
             },
-            remixSection,
-            topPadding
+            { sectionEl: remixSection, offset: topPadding }
           );
 
-          await page.waitForTimeout(500); // Wait for scroll to complete
+          await page.waitForTimeout(600); // Wait for scroll to complete
 
           // Get updated bounding box after scrolling
           const updatedBoundingBox = await remixSection.boundingBox();
@@ -179,9 +179,9 @@ async function takeRemixSectionScreenshot(
             ),
             height: Math.min(
               Math.max(
-                800,
-                updatedBoundingBox.height + padding * 2 + headerOffset
-              ), // Ensure minimum height of 800px
+                1200,
+                updatedBoundingBox.height + topPadding + bottomPadding
+              ), // Ensure minimum height of 1200px
               viewportSize.height - 10 // Subtract 10 for safety
             ),
           };
@@ -201,7 +201,16 @@ async function takeRemixSectionScreenshot(
 
             // Scroll to make element visible then take a viewport screenshot
             await remixSection.scrollIntoViewIfNeeded();
-            await page.waitForTimeout(500); // Wait for scroll to complete
+            await page.waitForTimeout(600); // Wait for scroll to complete
+
+            // Scroll up a bit to ensure header visibility
+            await page.evaluate(
+              (params) => {
+                window.scrollBy(0, -params.offset);
+              },
+              { offset: topPadding }
+            );
+            await page.waitForTimeout(500);
 
             const screenshotPath = path.join(
               screenshotsDir,

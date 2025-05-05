@@ -45,9 +45,9 @@ const COMPONENTS = [
     selector: "section:has(h2:has-text('Try jods live'))",
     fallbackStrategy: "section-index",
     sectionIndex: 2,
-    padding: 50,
+    padding: 120, // Increased top padding to capture title
     waitForSelector: "h2:has-text('Try jods live')",
-    minHeight: 600,
+    minHeight: 700,
   },
   {
     page: "/",
@@ -56,10 +56,13 @@ const COMPONENTS = [
       "section:has(h2:has-text('Works with your favorite frameworks')), section:has(h2:has-text('Framework Integration'))",
     fallbackStrategy: "keyword-context",
     keywords: ["favorite frameworks", "Framework Integration"],
-    padding: 60,
+    padding: 100, // Increased padding to ensure titles are visible
     waitForSelector:
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
-    minHeight: 800,
+    minHeight: 900,
+    // New: capture each framework tab separately
+    captureFrameworkTabs: true,
+    frameworkTabs: ["React", "Preact", "Remix"],
   },
   {
     page: "/",
@@ -68,7 +71,7 @@ const COMPONENTS = [
       "section:has(h2:has-text('Compare')), section:has(h2:has-text('How jods compares'))",
     fallbackStrategy: "section-index",
     sectionIndex: 4,
-    padding: 70, // Increased padding to capture the top title
+    padding: 120, // Increased padding to capture the top title
     waitForSelector: "h2:has-text('Compare'), h2:has-text('How jods compares')",
     minHeight: 700,
   },
@@ -79,9 +82,9 @@ const COMPONENTS = [
       "section#remix-integration, section:has(h2:has-text('Remix Integration'))",
     fallbackStrategy: "keyword-context",
     keywords: ["Remix", "Integration"],
-    padding: 70, // Increased padding to capture the header and buttons
+    padding: 200, // Significantly increased padding to capture header and buttons
     waitForSelector: "h2:has-text('Remix Integration')",
-    minHeight: 700, // Increased to include the full section with buttons
+    minHeight: 1200, // Increased to include the full section with buttons
   },
   {
     page: "/",
@@ -119,7 +122,7 @@ async function takeComponentScreenshots(
 
   const browser = await chromium.launch();
   const context = await browser.newContext({
-    viewport: { width: 1280, height: 1200 }, // Increase viewport height for taller sections
+    viewport: { width: 1280, height: 1600 }, // Increased viewport height for taller sections
   });
 
   const page = await context.newPage();
@@ -134,6 +137,8 @@ async function takeComponentScreenshots(
     keywords,
     minHeight,
     waitForSelector,
+    captureFrameworkTabs,
+    frameworkTabs,
   } of COMPONENTS) {
     const url = `${BASE_URL}${PATH_PREFIX}${pagePath}`;
     console.log(`Navigating to ${url} to capture component: ${name}`);
@@ -205,7 +210,25 @@ async function takeComponentScreenshots(
             }
           }
         }
-        await page.waitForTimeout(1000); // Wait longer for theme transition
+        await page.waitForTimeout(1200); // Wait longer for theme transition
+      }
+
+      // Special handling for framework-section tabs
+      if (
+        name === "framework-section" &&
+        captureFrameworkTabs &&
+        frameworkTabs
+      ) {
+        // Handle each tab
+        await captureFrameworkTabScreenshots(
+          page,
+          theme,
+          timestamp,
+          saveBaseline,
+          padding,
+          minHeight
+        );
+        continue;
       }
 
       try {
@@ -363,21 +386,75 @@ async function takeComponentScreenshots(
           `Element ${name} found at y=${boundingBox.y}, height=${boundingBox.height}`
         );
 
+        // Account for fixed header height
+        const headerHeight = await page.evaluate(() => {
+          const header = document.querySelector(
+            'header, .navbar, [class*="navbar_"]'
+          );
+          return header ? header.offsetHeight : 0;
+        });
+
+        // Add extra top padding for sections that need it
+        const topPadding =
+          padding +
+          (name === "compare-section" ||
+          name === "try-jods-section" ||
+          name === "remix-section"
+            ? headerHeight + 50
+            : 0);
+
+        // Add extra bottom padding for remix section
+        const bottomPadding =
+          name === "remix-section" ? padding + 200 : padding;
+
         // Make sure element is in view
         await elementHandle.scrollIntoViewIfNeeded();
-        await page.waitForTimeout(500); // Wait for scroll to complete
+        await page.waitForTimeout(600); // Wait for scroll to complete
+
+        // Scroll a bit up to account for headers and ensure title visibility
+        if (
+          name === "compare-section" ||
+          name === "try-jods-section" ||
+          name === "remix-section"
+        ) {
+          await page.evaluate(
+            (params) => {
+              window.scrollTo(0, params.y - params.offset);
+            },
+            { y: boundingBox.y, offset: topPadding }
+          );
+          await page.waitForTimeout(500); // Wait for scroll to complete
+        }
+
+        // Scroll up further to ensure header visibility
+        if (
+          name === "compare-section" ||
+          name === "try-jods-section" ||
+          name === "remix-section"
+        ) {
+          await page.evaluate(
+            (params) => {
+              window.scrollBy(0, -params.offset);
+            },
+            { offset: topPadding }
+          );
+          await page.waitForTimeout(500);
+        }
 
         // Only try to clip if we found a valid element with a bounding box
         if (!takingFullPage && boundingBox) {
           // Create clip with padding around the element, respecting minHeight
           const clip = {
             x: Math.max(0, boundingBox.x - padding),
-            y: Math.max(0, boundingBox.y - padding),
+            y: Math.max(0, boundingBox.y - topPadding),
             width: Math.min(
               page.viewportSize().width - Math.max(0, boundingBox.x - padding),
               boundingBox.width + padding * 2
             ),
-            height: Math.max(boundingBox.height + padding * 2, minHeight || 0),
+            height: Math.max(
+              boundingBox.height + topPadding + bottomPadding,
+              minHeight || 0
+            ),
           };
 
           // Check if element is partly offscreen (scrolled out of view)
@@ -388,10 +465,25 @@ async function takeComponentScreenshots(
             await elementHandle.scrollIntoViewIfNeeded();
             await page.waitForTimeout(500); // Wait for scroll to complete
 
+            // Scroll up further to ensure header visibility
+            if (
+              name === "compare-section" ||
+              name === "try-jods-section" ||
+              name === "remix-section"
+            ) {
+              await page.evaluate(
+                (params) => {
+                  window.scrollBy(0, -params.offset);
+                },
+                { offset: topPadding }
+              );
+              await page.waitForTimeout(500);
+            }
+
             // Get updated position after scrolling
             const newBoundingBox = await elementHandle.boundingBox();
             if (newBoundingBox) {
-              clip.y = Math.max(0, newBoundingBox.y - padding);
+              clip.y = Math.max(0, newBoundingBox.y - topPadding);
               console.log(`New y position after scroll: ${newBoundingBox.y}`);
             }
           }
@@ -590,6 +682,87 @@ async function findRemixSection(page) {
   }
 
   return null;
+}
+
+/**
+ * New helper function to capture framework tab screenshots
+ */
+async function captureFrameworkTabScreenshots(
+  page,
+  theme,
+  timestamp,
+  saveBaseline,
+  padding,
+  minHeight
+) {
+  console.log("Capturing framework tabs screenshots");
+
+  // Find the framework section
+  const frameworkSection = await page.$(
+    "section:has(h2:has-text('Works with your favorite frameworks')), section:has(h2:has-text('Framework Integration'))"
+  );
+
+  if (!frameworkSection) {
+    console.log("Could not find framework section for tab screenshots");
+    return;
+  }
+
+  // Find the tabs
+  const tabs = await page.$$(
+    "button:has-text('React'), button:has-text('Preact'), button:has-text('Remix')"
+  );
+
+  if (!tabs || tabs.length === 0) {
+    console.log("Could not find framework tabs");
+    return;
+  }
+
+  console.log(`Found ${tabs.length} framework tabs`);
+
+  // Capture each tab
+  for (let i = 0; i < tabs.length; i++) {
+    const tab = tabs[i];
+    const tabName = await tab.evaluate((el) => el.textContent.trim());
+    console.log(`Clicking on ${tabName} tab`);
+
+    // Click the tab
+    await tab.click();
+    await page.waitForTimeout(1000); // Wait for tab content to load
+
+    // Get bounding box after tab change
+    const updatedBoundingBox = await frameworkSection.boundingBox();
+
+    // Calculate clip area
+    const clip = {
+      x: Math.max(0, updatedBoundingBox.x - padding),
+      y: Math.max(0, updatedBoundingBox.y - padding),
+      width: Math.min(
+        page.viewportSize().width - Math.max(0, updatedBoundingBox.x - padding),
+        updatedBoundingBox.width + padding * 2
+      ),
+      height: Math.max(updatedBoundingBox.height + padding * 2, minHeight || 0),
+    };
+
+    // Make sure we don't exceed the page dimensions
+    if (clip.y + clip.height > page.viewportSize().height) {
+      clip.height = page.viewportSize().height - clip.y - 10;
+    }
+
+    // Take the screenshot
+    const screenshotPath = path.join(
+      screenshotsDir,
+      `framework-section-${tabName.toLowerCase()}-${theme}${
+        saveBaseline ? "" : "-" + timestamp
+      }.png`
+    );
+
+    await page.screenshot({
+      path: screenshotPath,
+      clip,
+    });
+
+    console.log(`Framework tab screenshot saved to: ${screenshotPath}`);
+  }
 }
 
 // Handle command line arguments
