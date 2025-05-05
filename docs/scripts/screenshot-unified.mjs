@@ -500,11 +500,15 @@ async function captureSpecificElement(
 
   // For tall sections, scroll up a bit to ensure full visibility
   if (component.name.includes("section") || boundingBox.height > 500) {
+    // Apply extra scroll if specified in the component config
+    const extraScroll = component.extraScroll || 0;
+    const totalOffset = topPadding + extraScroll;
+
     await page.evaluate(
       (params) => {
         window.scrollBy(0, -params.offset);
       },
-      { offset: topPadding }
+      { offset: totalOffset }
     );
     await page.waitForTimeout(500);
   }

@@ -34,10 +34,11 @@ export const COMPONENTS = [
     selector: "section:has(h2:has-text('Try jods live'))",
     fallbackStrategy: "section-index",
     sectionIndex: 2,
-    padding: 120,
+    padding: 150,
     waitForSelector: "h2:has-text('Try jods live')",
     minHeight: 700,
     testId: "jods-try-live-section",
+    extraScroll: 100,
   },
 
   // Framework section
@@ -55,6 +56,7 @@ export const COMPONENTS = [
     captureFrameworkTabs: true,
     frameworkTabs: ["React", "Preact", "Remix"],
     testId: "jods-framework-section",
+    extraScroll: 100,
   },
 
   // Compare section
@@ -69,6 +71,7 @@ export const COMPONENTS = [
     waitForSelector: "h2:has-text('Compare'), h2:has-text('How jods compares')",
     minHeight: 700,
     testId: "jods-compare-section",
+    extraScroll: 100,
   },
 
   // Remix section
@@ -83,6 +86,7 @@ export const COMPONENTS = [
     waitForSelector: "h2:has-text('Remix Integration')",
     minHeight: 1200,
     testId: "jods-remix-section",
+    extraScroll: 100,
   },
 
   // Footer section
