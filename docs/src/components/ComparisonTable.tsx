@@ -115,7 +115,9 @@ export default function ComparisonTable(): React.ReactElement {
                   jods: <span className="green-check">✅</span>,
                   zustand: <span className="green-check">✅</span>,
                   redux: (
-                    <span className="red-x">❌ (requires action creators)</span>
+                    <span className="feature-missing">
+                      👨‍💻 (requires action creators)
+                    </span>
                   ),
                   mobx: <span className="green-check">✅</span>,
                   signals: "signal.value = x",
@@ -124,9 +126,15 @@ export default function ComparisonTable(): React.ReactElement {
                   feature: "Computed Values",
                   jods: <span className="green-check">✅ via computed()</span>,
                   zustand: (
-                    <span className="red-x">😬 with selector functions</span>
+                    <span className="feature-missing">
+                      🔧 with selector functions
+                    </span>
                   ),
-                  redux: <span className="red-x">❌ (requires selectors)</span>,
+                  redux: (
+                    <span className="feature-missing">
+                      🔧 (requires selectors)
+                    </span>
+                  ),
                   mobx: <span className="green-check">✅</span>,
                   signals: (
                     <span className="green-check">✅ via computed()</span>
@@ -135,54 +143,56 @@ export default function ComparisonTable(): React.ReactElement {
                 {
                   feature: "JSON Snapshots",
                   jods: <span className="green-check">✅ (built-in)</span>,
-                  zustand: <span className="red-x">❌ (manual)</span>,
+                  zustand: <span className="feature-missing">📝 (manual)</span>,
                   redux: <span className="green-check">✅ (manual)</span>,
-                  mobx: <span className="red-x">❌ (manual)</span>,
-                  signals: <span className="red-x">❌ (manual)</span>,
+                  mobx: <span className="feature-missing">📝 (manual)</span>,
+                  signals: <span className="feature-missing">📝 (manual)</span>,
                 },
                 {
                   feature: "Built-in diff",
                   jods: <span className="green-check">✅</span>,
-                  zustand: <span className="red-x">❌</span>,
-                  redux: <span className="red-x">❌</span>,
-                  mobx: <span className="red-x">❌</span>,
-                  signals: <span className="red-x">❌</span>,
+                  zustand: <span className="feature-missing">🤷</span>,
+                  redux: <span className="feature-missing">🤷</span>,
+                  mobx: <span className="feature-missing">🤷</span>,
+                  signals: <span className="feature-missing">🤷</span>,
                 },
                 {
-                  feature: "Dev Tools",
-                  jods: "🔮 Not yet",
+                  feature: "Time-travel Debugging",
+                  jods: <span className="green-check">✅</span>,
                   zustand: <span className="green-check">✅</span>,
                   redux: <span className="green-check">✅</span>,
                   mobx: <span className="green-check">✅</span>,
-                  signals: <span className="red-x">❌</span>,
+                  signals: <span className="feature-missing">⏱️</span>,
                 },
                 {
                   feature: "Conceptual Simplicity",
                   jods: (
-                    <span className="green-check">
-                      ✅ very small mental model
-                    </span>
+                    <span className="green-check">✅ small mental model</span>
                   ),
                   zustand: (
                     <span className="green-check">
                       ✅ (no actions/selectors)
                     </span>
                   ),
-                  redux: <span className="red-x">❌ (complex patterns)</span>,
+                  redux: (
+                    <span className="feature-missing">
+                      🧠 (complex patterns)
+                    </span>
+                  ),
                   mobx: "Medium",
                   signals: (
-                    <span className="red-x">
-                      ❌ (signals take time to grok)
+                    <span className="feature-missing">
+                      🎓 (steep learning curve)
                     </span>
                   ),
                 },
                 {
                   feature: "Server Integration",
                   jods: <span className="green-check">✅ (Remix)</span>,
-                  zustand: <span className="red-x">❌</span>,
-                  redux: <span className="red-x">❌ (manual)</span>,
-                  mobx: <span className="red-x">❌ (manual)</span>,
-                  signals: <span className="red-x">❌</span>,
+                  zustand: <span className="feature-missing">🖥️</span>,
+                  redux: <span className="green-check">✅ (manual)</span>,
+                  mobx: <span className="green-check">✅ (manual)</span>,
+                  signals: <span className="feature-missing">🖥️</span>,
                 },
               ].map((row, i) => (
                 <tr key={i}>

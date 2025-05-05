@@ -259,14 +259,14 @@
 /* Table header gradients - decoupled for light and dark mode */
 /* Light mode gradient table headers */
 :root:not([data-theme="dark"]) table thead {
-  background: linear-gradient(135deg, #0f172a 0%, #0c4a6e 50%, #0891b2 100%);
+  background: linear-gradient(135deg, #0f4c81 0%, #0373b1 50%, #0891b2 100%);
   color: white;
-  box-shadow: 0 2px 8px rgba(8, 145, 178, 0.3);
+  box-shadow: 0 2px 8px rgba(8, 145, 178, 0.2);
 }
 
-/* Dark mode gradient table headers - unchanged */
+/* Dark mode gradient table headers - improved contrast and warmth */
 [data-theme="dark"] table thead {
-  background: linear-gradient(135deg, #332954 0%, #6b3369 50%, #8a3458 100%);
+  background: linear-gradient(135deg, #523d89 0%, #7b4397 50%, #b06ab3 100%);
   color: white;
 }
 
@@ -274,12 +274,62 @@
 :root:not([data-theme="dark"]) table th {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   border-color: rgba(255, 255, 255, 0.2);
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+}
+
+/* Dark mode table header cells */
+[data-theme="dark"] table th {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.1);
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
 }
 
 /* Add subtle hover effect for light mode table rows */
 :root:not([data-theme="dark"]) table tbody tr:hover {
   background-color: rgba(8, 145, 178, 0.05);
   transition: background-color 0.2s ease;
+}
+
+/* Add subtle hover effect for dark mode table rows */
+[data-theme="dark"] table tbody tr:hover {
+  background-color: rgba(123, 67, 151, 0.1);
+  transition: background-color 0.2s ease;
+}
+
+/* Table row alternate striping for light mode */
+:root:not([data-theme="dark"]) table tbody tr:nth-child(odd) {
+  background-color: rgba(240, 249, 255, 0.7);
+}
+
+/* Table row alternate striping for dark mode */
+[data-theme="dark"] table tbody tr:nth-child(odd) {
+  background-color: rgba(30, 25, 44, 0.5);
+}
+
+/* Custom checkmark and x styling for light mode */
+:root:not([data-theme="dark"]) table .green-check {
+  color: #0891b2;
+  font-weight: bold;
+}
+
+:root:not([data-theme="dark"]) table .feature-missing {
+  color: #6366f1;
+  font-weight: bold;
+  opacity: 0.9;
+}
+
+/* Custom checkmark and x styling for dark mode */
+[data-theme="dark"] table .green-check {
+  color: #a855f7;
+  font-weight: bold;
+}
+
+[data-theme="dark"] table .feature-missing {
+  color: #818cf8;
+  font-weight: bold;
+  opacity: 0.85;
 }
 
 /* Enhanced "minimal API" specific styling */
@@ -710,17 +760,6 @@ table tbody tr:last-child td {
 .table-container table {
   margin: 0;
   box-shadow: none;
-}
-
-/* Custom checkmark and x styling */
-table .green-check {
-  color: var(--jods-orange);
-  font-weight: bold;
-}
-
-table .red-x {
-  color: #ff5757;
-  font-weight: bold;
 }
 
 /* Global animation pause styling */
