@@ -6,9 +6,8 @@ export default function HeroContent(): React.ReactElement {
     <div className="hero-content">
       <h1 className="hero-title">
         <span className="jods-logo">
-          <span className="jods-logo-braces">{"{"}</span>
-          jods
-          <span className="jods-logo-braces">{"}"}</span>
+          <span className="jods-logo-braces">{"{ "}</span> jods{" "}
+          <span className="jods-logo-braces">{" }"}</span>
         </span>
       </h1>
 
