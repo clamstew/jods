@@ -83,14 +83,11 @@ async function takeUnifiedScreenshots(
     componentsToCapture = COMPONENTS.filter((component) =>
       specificComponents.includes(component.name)
     );
-  } else if (mode === "all") {
-    // Capture all components
-    componentsToCapture = COMPONENTS;
-  } else if (mode === "components") {
-    // Legacy component mode - same as all for now
+  } else if (mode === "all" || mode === "components") {
+    // Capture all components (both "all" and "components" modes do the same thing)
     componentsToCapture = COMPONENTS;
   } else if (mode === "sections") {
-    // Legacy sections mode - filter only homepage sections
+    // Sections mode - filter only homepage sections
     componentsToCapture = COMPONENTS.filter(
       (component) =>
         component.page === "/" &&
@@ -101,11 +98,6 @@ async function takeUnifiedScreenshots(
     // Only the Remix section
     componentsToCapture = COMPONENTS.filter(
       (component) => component.name === "remix-section"
-    );
-  } else if (specificComponents && specificComponents.length > 0) {
-    // Specific named components
-    componentsToCapture = COMPONENTS.filter((component) =>
-      specificComponents.includes(component.name)
     );
   } else {
     // Try to interpret mode as a specific component name
