@@ -13,6 +13,11 @@ export const COMPONENTS = [
     padding: 50,
     waitForSelector: "h1",
     testId: "jods-hero-section",
+    alternativeSelectors: [
+      "h1:has-text('jods')",
+      ".hero-subtitle, .hero-description",
+      "div:has(> h1:has-text('jods'))",
+    ],
   },
 
   // Features section
@@ -25,6 +30,11 @@ export const COMPONENTS = [
     padding: 50,
     waitForSelector: "h2:has-text('Powerful features')",
     testId: "jods-features-section",
+    alternativeSelectors: [
+      "h2:has-text('Powerful features')",
+      ".features-container, [class*='features']",
+      "section:nth-of-type(2)",
+    ],
   },
 
   // Try jods section
@@ -39,6 +49,11 @@ export const COMPONENTS = [
     minHeight: 700,
     testId: "jods-try-live-section",
     extraScroll: 100,
+    alternativeSelectors: [
+      "h2:has-text('Try jods live')",
+      ".playground-container, [class*='playground'], [class*='liveEditor']",
+      "iframe.code-editor",
+    ],
   },
 
   // Framework section
@@ -57,6 +72,11 @@ export const COMPONENTS = [
     frameworkTabs: ["💿 Traditional Remix", "⚛️ React", "⚛️ Preact"],
     testId: "jods-framework-section",
     extraScroll: 150,
+    alternativeSelectors: [
+      "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
+      "button:has-text('React'), button:has-text('Preact'), button:has-text('Remix')",
+      ".framework-tabs, [class*='tabs_'], [role='tablist']",
+    ],
   },
 
   // Compare section
@@ -72,6 +92,11 @@ export const COMPONENTS = [
     minHeight: 900,
     testId: "jods-compare-section",
     extraScroll: 300,
+    alternativeSelectors: [
+      "h2:has-text('Compare'), h2:has-text('How jods compares')",
+      "table, .comparison-table, [class*='comparisonTable']",
+      ".feature-comparison, [class*='comparison']",
+    ],
   },
 
   // Remix section
@@ -87,6 +112,12 @@ export const COMPONENTS = [
     minHeight: 1600,
     testId: "jods-remix-section",
     extraScroll: 100,
+    alternativeSelectors: [
+      "h2:has-text('Remix Integration')",
+      "h3:has-text('Remix')",
+      "[id='remix-integration'], #remix-integration",
+      "section:has(code:has-text('createCookieStore'))",
+    ],
   },
 
   // Footer section
@@ -98,6 +129,11 @@ export const COMPONENTS = [
     padding: 30,
     waitForSelector: "footer",
     testId: "jods-footer",
+    alternativeSelectors: [
+      "footer",
+      ".footer, [class*='footer_']",
+      "div:has(a[href*='github']):last-child",
+    ],
   },
 ];
 

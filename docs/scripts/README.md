@@ -21,20 +21,22 @@ For complete documentation on the screenshot system, please refer to the [Playwr
 
 ## Unified Screenshot Approach
 
-The unified approach uses a consolidated architecture:
+The unified screenshot approach consists of:
 
 1. **Unified Selectors Registry** (`screenshot-selectors.mjs`)
 
-   - Contains all component definitions in one place
-   - Includes helper functions for finding specific elements
-   - Exports utility functions for working with component definitions
+   - Central registry of all components and sections
+   - Includes primary selectors and multiple alternative selectors for triangulation
+   - Provides fallback strategies for each component
+   - Includes optional test IDs
 
 2. **Unified Screenshot Script** (`screenshot-unified.mjs`)
 
-   - Supports different modes to capture different sets of components
+   - Supports multiple modes (all, components, sections, remix)
+   - Uses triangulation of multiple elements for more reliable section capture
    - Uses consistent padding, naming, and screenshot logic
-   - Handles special cases like framework tabs and Remix section
-   - Produces more consistent output
+   - Supports both light and dark themes
+   - Handles complex components like tabbed interfaces
 
 3. **Single Output Directory**
    - All screenshots are saved to `docs/static/screenshots/unified/`
@@ -85,5 +87,5 @@ When adding new screenshot capabilities:
 If screenshots aren't capturing the right sections:
 
 1. Check the component definitions in `screenshot-selectors.mjs`
-2. Verify the selectors are still valid for the current page structure
+2. Add more specific alternative selectors to help with triangulation
 3. Run with debug mode for detailed logging: `DEBUG=true pnpm screenshot:unified`

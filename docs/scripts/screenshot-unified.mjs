@@ -308,7 +308,7 @@ async function takeUnifiedScreenshots(
           }
 
           // Find the element using the selector or fallback strategies
-          const elementHandle = await findElement(page, component);
+          const elementHandle = await findElementForComponent(page, component);
 
           if (elementHandle) {
             await captureSpecificElement(
@@ -438,17 +438,168 @@ async function setTheme(page, theme) {
 }
 
 /**
- * Helper: Find element using selector and fallback strategies
+ * Helper: Find the DOM element for a component
  */
-async function findElement(page, component) {
-  // First try the main selector
-  let elementHandle = await page.$(component.selector);
+async function findElementForComponent(page, component) {
+  let elementHandle = null;
 
-  if (elementHandle) {
-    console.log(
-      `Found ${component.name} using selector: ${component.selector}`
-    );
-    return elementHandle;
+  // First try the primary selector
+  try {
+    elementHandle = await page.$(component.selector);
+    if (elementHandle) {
+      console.log(`Found ${component.name} with primary selector`);
+      return elementHandle;
+    }
+  } catch (error) {
+    console.log(`Error using primary selector: ${error.message}`);
+  }
+
+  // If we have alternativeSelectors, try those one by one
+  if (
+    component.alternativeSelectors &&
+    component.alternativeSelectors.length > 0
+  ) {
+    console.log(`Trying alternative selectors for ${component.name}...`);
+
+    // First try each alternative selector individually
+    for (const altSelector of component.alternativeSelectors) {
+      try {
+        elementHandle = await page.$(altSelector);
+        if (elementHandle) {
+          console.log(
+            `Found ${component.name} with alternative selector: ${altSelector}`
+          );
+          return elementHandle;
+        }
+      } catch (error) {
+        console.log(
+          `Error with alternative selector "${altSelector}": ${error.message}`
+        );
+      }
+    }
+
+    // If individual selectors didn't work, try triangulation approach
+    // by finding common parent of multiple matched elements
+    try {
+      const matchedElements = [];
+
+      for (const altSelector of component.alternativeSelectors) {
+        const elements = await page.$$(altSelector);
+        if (elements.length > 0) {
+          matchedElements.push({
+            selector: altSelector,
+            elements,
+          });
+        }
+      }
+
+      if (matchedElements.length >= 2) {
+        console.log(
+          `Found ${matchedElements.length} alternative elements for triangulation`
+        );
+
+        // Try to find common parent for the first two successful matches
+        const el1 = matchedElements[0].elements[0];
+        const el2 = matchedElements[1].elements[0];
+
+        elementHandle = await page.evaluateHandle(
+          (e1, e2) => {
+            // Convert element handles to DOM elements
+            const element1 = e1;
+            const element2 = e2;
+
+            // Find all parents of element1
+            const getParents = (element) => {
+              const parents = [];
+              let current = element;
+              while (current && current !== document.documentElement) {
+                parents.push(current.parentElement);
+                current = current.parentElement;
+              }
+              return parents;
+            };
+
+            const parents1 = getParents(element1);
+
+            // Find common parent (lowest/closest one)
+            for (const parent1 of parents1) {
+              if (!parent1) continue;
+              // Check if this parent contains element2
+              if (parent1.contains(element2)) {
+                // Found common parent
+                // If it's too broad (e.g., body), try to find a more specific container
+                if (parent1.tagName === "BODY" || parent1.tagName === "MAIN") {
+                  // Look for a more specific container like a section
+                  let current = element1;
+                  while (current && current !== parent1) {
+                    if (
+                      current.tagName === "SECTION" ||
+                      current.tagName === "ARTICLE" ||
+                      (current.tagName === "DIV" &&
+                        (current.className.includes("section") ||
+                          current.className.includes("container")))
+                    ) {
+                      if (current.contains(element2)) {
+                        return current;
+                      }
+                    }
+                    current = current.parentElement;
+                  }
+                }
+                return parent1;
+              }
+            }
+
+            // If no common parent found, return the first element's parent
+            return element1.parentElement;
+          },
+          el1,
+          el2
+        );
+
+        if (elementHandle) {
+          console.log(
+            `Found ${component.name} via triangulation of multiple elements`
+          );
+          return elementHandle;
+        }
+      }
+    } catch (error) {
+      console.log(`Error during triangulation: ${error.message}`);
+    }
+  }
+
+  // Wait for the selector if specified
+  if (component.waitForSelector) {
+    try {
+      await page.waitForSelector(component.waitForSelector, {
+        timeout: 5000,
+      });
+      elementHandle = await page.$(
+        component.selector || component.waitForSelector
+      );
+      if (elementHandle) {
+        console.log(`Found ${component.name} after waiting for selector`);
+        return elementHandle;
+      }
+    } catch (e) {
+      console.log(`Timeout waiting for selector: ${component.waitForSelector}`);
+    }
+  }
+
+  // If component has a testId, try that
+  if (component.testId) {
+    try {
+      elementHandle = await page.$(`[data-testid="${component.testId}"]`);
+      if (elementHandle) {
+        console.log(
+          `Found ${component.name} using testId: ${component.testId}`
+        );
+        return elementHandle;
+      }
+    } catch (e) {
+      console.log(`Error finding element by testId: ${e.message}`);
+    }
   }
 
   console.log(`Element not found with selector: ${component.selector}`);
@@ -528,14 +679,6 @@ async function findElement(page, component) {
       if (mainElements.length > 0) {
         elementHandle = mainElements[mainElements.length - 1];
       }
-    }
-  }
-
-  // If component has a testId, try that as a last resort
-  if (!elementHandle && component.testId) {
-    elementHandle = await page.$(`[data-testid="${component.testId}"]`);
-    if (elementHandle) {
-      console.log(`Found ${component.name} using testId: ${component.testId}`);
     }
   }
 
