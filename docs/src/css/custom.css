@@ -313,8 +313,8 @@ h2 .gradient-text {
 
 /* Make light mode code text use gradient-inspired colors */
 :root:not([data-theme="dark"]) .token {
-  font-weight: 600 !important;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3) !important;
+  font-weight: normal !important;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2) !important;
 }
 
 :root:not([data-theme="dark"]) .token.comment {
@@ -331,7 +331,7 @@ h2 .gradient-text {
 :root:not([data-theme="dark"]) .token.keyword,
 :root:not([data-theme="dark"]) .token.tag {
   color: #0c4a6e !important; /* blue-dark from new gradient */
-  font-weight: 700 !important;
+  font-weight: normal !important;
 }
 
 :root:not([data-theme="dark"]) .token.class-name,
@@ -342,7 +342,7 @@ h2 .gradient-text {
 :root:not([data-theme="dark"]) .token.function,
 :root:not([data-theme="dark"]) .token.function-variable {
   color: #0ea5e9 !important; /* sky blue */
-  font-weight: 700 !important;
+  font-weight: normal !important;
 }
 
 :root:not([data-theme="dark"]) .token.operator {
