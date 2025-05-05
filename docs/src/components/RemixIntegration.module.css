@@ -21,6 +21,13 @@
   overflow: hidden;
 }
 
+/* Light mode specific styling */
+html[data-theme="light"] .header {
+  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #93c5fd 100%);
+  box-shadow: 0 8px 30px rgba(59, 130, 246, 0.3);
+  border-bottom: 3px solid rgba(255, 255, 255, 0.5);
+}
+
 /* Add animated stripes to header background */
 .header::before {
   content: "";
@@ -33,8 +40,8 @@
     45deg,
     transparent,
     transparent 20px,
-    rgba(255, 255, 255, 0.05) 20px,
-    rgba(255, 255, 255, 0.05) 40px
+    rgba(255, 255, 255, 0.15) 20px,
+    rgba(255, 255, 255, 0.15) 40px
   );
   pointer-events: none;
   z-index: 1;
@@ -51,7 +58,7 @@
   background: linear-gradient(
     to bottom,
     rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.4) 50%,
     rgba(255, 255, 255, 0) 100%
   );
   transform: rotate(45deg);
@@ -104,27 +111,79 @@
   transition: all 0.3s ease;
 }
 
+/* Light mode specific styling */
+html[data-theme="light"] .highlight {
+  background: #f0f9ff;
+  color: #1e40af;
+  box-shadow: 0 4px 12px rgba(14, 118, 253, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
 .highlight:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(14, 118, 253, 0.3);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.rubyIcon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 4px;
+}
+
+.rubyIcon::before {
+  content: "";
+  position: absolute;
+  width: 140%;
+  height: 140%;
+  background: radial-gradient(
+    circle,
+    rgba(239, 68, 68, 0.3) 0%,
+    rgba(239, 68, 68, 0) 70%
+  );
+  border-radius: 50%;
+  z-index: -1;
 }
 
 .rubyGem {
   display: inline-block;
   margin-right: 0.5rem;
-  font-size: 1.1em;
+  font-size: 1.2em;
   transform-origin: center;
   animation: pulse 3s infinite alternate ease-in-out;
+  /* Add red filter to make it look more like a ruby */
+  color: #e11d48;
+  text-shadow: 0 0 10px rgba(225, 29, 72, 0.5);
+  filter: drop-shadow(0 0 5px rgba(220, 38, 38, 0.7));
+}
+
+/* Enhanced ruby styling for light mode */
+html[data-theme="light"] .rubyGem {
+  color: #dc2626;
+  text-shadow: 0 0 12px rgba(220, 38, 38, 0.7);
+  filter: drop-shadow(0 0 8px rgba(185, 28, 28, 0.6)) brightness(1.2);
+}
+
+/* Light mode specific styling for ruby icon */
+html[data-theme="light"] .rubyIcon::before {
+  background: radial-gradient(
+    circle,
+    rgba(220, 38, 38, 0.25) 0%,
+    rgba(220, 38, 38, 0) 70%
+  );
 }
 
 @keyframes pulse {
   0% {
     transform: scale(1);
-    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.3));
+    filter: drop-shadow(0 0 2px rgba(220, 38, 38, 0.5));
   }
   100% {
     transform: scale(1.2);
-    filter: drop-shadow(0 0 8px rgba(255, 0, 128, 0.5));
+    filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.7));
   }
 }
 
@@ -132,14 +191,46 @@
   font-weight: 800;
 }
 
+.remixIconWrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remixIconWrapper::before {
+  content: "";
+  position: absolute;
+  width: 140%;
+  height: 140%;
+  background: radial-gradient(
+    circle,
+    rgba(8, 145, 178, 0.3) 0%,
+    rgba(8, 145, 178, 0) 70%
+  );
+  border-radius: 50%;
+  z-index: -1;
+}
+
 .remixIcon {
   display: inline-block;
   transition: all 0.3s ease;
+  font-size: 1.2em;
 }
 
-.remix:hover .remixIcon {
-  animation: spin 1.5s infinite linear;
-  display: inline-block;
+/* Light mode specific styling for remix icon */
+html[data-theme="light"] .remixIconWrapper::before {
+  background: radial-gradient(
+    circle,
+    rgba(59, 130, 246, 0.25) 0%,
+    rgba(59, 130, 246, 0) 70%
+  );
+}
+
+html[data-theme="light"] .remixIcon {
+  color: #2563eb;
+  text-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+  filter: drop-shadow(0 0 5px rgba(37, 99, 235, 0.6));
 }
 
 .content {
@@ -327,7 +418,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, #0f172a 0%, #0c4a6e 50%, #0891b2 100%);
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
   color: white;
   padding: 1rem 2rem;
   border-radius: 12px;
@@ -335,13 +426,14 @@
   font-size: 1.1rem;
   text-decoration: none;
   transition: all 0.3s ease;
-  box-shadow: 0 6px 16px rgba(8, 145, 178, 0.4),
-    0 0 0 2px rgba(8, 145, 178, 0.1);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4),
+    0 0 0 2px rgba(59, 130, 246, 0.2);
   position: relative;
   overflow: hidden;
   letter-spacing: 0.02em;
   min-width: 220px;
   text-align: center;
+  border-bottom: 3px solid rgba(29, 78, 216, 0.8);
 }
 
 .remixButton::before {
@@ -362,8 +454,8 @@
 
 .remixButton:hover {
   transform: translateY(-5px) scale(1.03);
-  box-shadow: 0 12px 24px rgba(8, 145, 178, 0.6),
-    0 0 0 3px rgba(8, 145, 178, 0.2);
+  box-shadow: 0 14px 28px rgba(59, 130, 246, 0.5),
+    0 0 0 3px rgba(59, 130, 246, 0.3);
   text-decoration: none;
   color: white;
 }
@@ -415,7 +507,7 @@ html[data-theme="dark"] .remixButton:hover {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, #8b0000 0%, #cc0000 50%, #e80012 100%);
+  background: linear-gradient(135deg, #b91c1c 0%, #dc2626 50%, #ef4444 100%);
   color: white;
   padding: 1rem 2rem;
   border-radius: 12px;
@@ -423,12 +515,14 @@ html[data-theme="dark"] .remixButton:hover {
   font-size: 1.1rem;
   text-decoration: none;
   transition: all 0.3s ease;
-  box-shadow: 0 6px 16px rgba(204, 0, 0, 0.4), 0 0 0 2px rgba(204, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4),
+    0 0 0 2px rgba(220, 38, 38, 0.2);
   position: relative;
   overflow: hidden;
   letter-spacing: 0.02em;
   min-width: 220px;
   text-align: center;
+  border-bottom: 3px solid rgba(153, 27, 27, 0.8);
 }
 
 .railsButton::before {
@@ -449,7 +543,8 @@ html[data-theme="dark"] .remixButton:hover {
 
 .railsButton:hover {
   transform: translateY(-5px) scale(1.03);
-  box-shadow: 0 12px 24px rgba(204, 0, 0, 0.6), 0 0 0 3px rgba(204, 0, 0, 0.2);
+  box-shadow: 0 14px 28px rgba(220, 38, 38, 0.5),
+    0 0 0 3px rgba(220, 38, 38, 0.3);
   text-decoration: none;
   color: white;
 }
@@ -528,16 +623,18 @@ html[data-theme="dark"] .highlight {
 
 html[data-theme="dark"] .rubyGem {
   animation: dark-pulse 3s infinite alternate ease-in-out;
+  color: #fb7185;
+  text-shadow: 0 0 10px rgba(251, 113, 133, 0.8);
 }
 
 @keyframes dark-pulse {
   0% {
     transform: scale(1);
-    filter: drop-shadow(0 0 3px rgba(255, 0, 128, 0.3));
+    filter: drop-shadow(0 0 3px rgba(244, 63, 94, 0.5));
   }
   100% {
     transform: scale(1.2);
-    filter: drop-shadow(0 0 12px rgba(255, 0, 128, 0.7));
+    filter: drop-shadow(0 0 12px rgba(251, 113, 133, 0.8));
   }
 }
 
@@ -560,4 +657,9 @@ html[data-theme="dark"] .activeTab {
 
 html[data-theme="dark"] .tab:hover {
   background: rgba(40, 40, 80, 0.4);
+}
+
+.remix:hover .remixIcon {
+  animation: spin 1.5s infinite linear;
+  display: inline-block;
 }

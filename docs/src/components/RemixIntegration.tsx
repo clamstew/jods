@@ -204,13 +204,19 @@ export default function TodosPage() {
       <div className={styles.header}>
         <h2 className={styles.title}>
           <span className={styles.remix}>
-            <span className={styles.remixIcon}>💿</span> Remix
+            <span className={styles.remixIconWrapper}>
+              <span className={styles.remixIcon}>💿</span>
+            </span>{" "}
+            Remix
           </span>{" "}
           State, Reimagined
         </h2>
         <p className={styles.subtitle}>
           <span className={styles.highlight}>
-            <span className={styles.rubyGem}>💎</span> Active Record
+            <span className={styles.rubyIcon}>
+              <span className={styles.rubyGem}>💎</span>
+            </span>
+            Active Record
           </span>{" "}
           for Remix:
           <br />
