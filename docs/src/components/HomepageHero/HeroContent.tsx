@@ -9,12 +9,9 @@ export default function HeroContent(): React.ReactElement {
         <span className="jods-logo-braces">&#123;&#125;</span>
       </h1>
       <p className="hero-subtitle">
-        <span className="gradient-text">✨</span> JavaScript Object Dynamics
-        System 🔄
+        <span className="gradient-text">✨</span> JSON Dynamics System 🔄
       </p>
-      <p className="hero-description">
-        Intuitive reactive state brings JS objects to life
-      </p>
+      <p className="hero-description">Brings JSON to life</p>
       <p className="hero-sub-description">🧩 Minimal • 📐 Typesafe • ⚡ Fast</p>
       <div className="hero-buttons">
         <Link className="button button--primary button--lg" to="/intro">
