@@ -93,31 +93,113 @@ async function takeScreenshotsWithSelectors(
       (theme === "light" && isDarkMode)
     ) {
       console.log("Toggling theme...");
-      // Try various theme toggle selectors
+      // Try various theme toggle selectors with expanded options
       try {
         await page.click('[data-testid="theme-toggle"]');
       } catch (e) {
         try {
           await page.click(
-            '.colorModeToggle_AEMF button, .toggleButton_e_pL, [class*="toggleButton_"]'
+            '[class*="colorModeToggle"] button, [class*="toggleButton_"], .theme-toggle'
           );
         } catch (e2) {
-          console.log("Using fallback theme toggle method...");
-          await page.evaluate(() => {
-            const buttons = Array.from(document.querySelectorAll("button"));
-            const themeButton = buttons.find((button) => {
-              return (
-                button.textContent.includes("🌙") ||
-                button.textContent.includes("☀️") ||
-                button.ariaLabel?.includes("theme") ||
-                button.title?.includes("theme")
+          try {
+            // Try clicking button with specific icons
+            await page.click('button:has-text("🌙"), button:has-text("☀️")');
+          } catch (e3) {
+            console.log("Using fallback theme toggle method...");
+            await page.evaluate(() => {
+              // Try to find the theme toggle button using various heuristics
+              let themeButton = null;
+
+              // Look for common aria labels or title attributes
+              themeButton = document.querySelector(
+                '[aria-label*="theme" i], [title*="theme" i]'
               );
+
+              if (!themeButton) {
+                // Look for buttons with theme-related text
+                const buttons = Array.from(document.querySelectorAll("button"));
+                themeButton = buttons.find((button) => {
+                  return (
+                    button.textContent.includes("🌙") ||
+                    button.textContent.includes("☀️") ||
+                    button
+                      .getAttribute("aria-label")
+                      ?.toLowerCase()
+                      .includes("theme") ||
+                    button
+                      .getAttribute("title")
+                      ?.toLowerCase()
+                      .includes("theme") ||
+                    button.classList.contains("toggleButton_e_pL") ||
+                    button.parentElement?.classList.contains(
+                      "colorModeToggle_AEMF"
+                    ) ||
+                    Array.from(button.classList).some(
+                      (c) =>
+                        c.toLowerCase().includes("toggle") ||
+                        c.toLowerCase().includes("theme") ||
+                        c.toLowerCase().includes("mode")
+                    )
+                  );
+                });
+              }
+
+              if (!themeButton) {
+                // Last resort: Look for nearby elements that might be the container
+                const navbar = document.querySelector(
+                  '.navbar, header, [class*="navbar"], [class*="header"]'
+                );
+                if (navbar) {
+                  const buttons = Array.from(navbar.querySelectorAll("button"));
+                  if (buttons.length > 0) {
+                    // Look for rightmost button in the navbar
+                    themeButton = buttons[buttons.length - 1];
+                  }
+                }
+              }
+
+              if (themeButton) {
+                console.log("Found theme button:", themeButton);
+                themeButton.click();
+              } else {
+                console.warn("Could not find theme toggle button");
+              }
             });
-            if (themeButton) themeButton.click();
-          });
+          }
         }
       }
-      await page.waitForTimeout(500); // Wait for theme transition
+
+      // Wait longer for theme transition to complete
+      await page.waitForTimeout(1000);
+
+      // Verify the theme changed
+      const themeAfterToggle = await page.evaluate(() => {
+        return document.documentElement.dataset.theme;
+      });
+
+      console.log(`Theme after toggle: ${themeAfterToggle}`);
+
+      // If theme didn't change, try a different approach
+      if (
+        (theme === "dark" && themeAfterToggle !== "dark") ||
+        (theme === "light" && themeAfterToggle !== "light")
+      ) {
+        console.log("Theme didn't change, trying alternative toggle method...");
+
+        await page.evaluate((targetTheme) => {
+          // Force set the theme via data attribute
+          document.documentElement.dataset.theme = targetTheme;
+
+          // Also try to trigger any theme change callbacks
+          const event = new CustomEvent("themeChange", {
+            detail: { theme: targetTheme },
+          });
+          document.dispatchEvent(event);
+        }, theme);
+
+        await page.waitForTimeout(500);
+      }
     }
 
     // Take screenshots of each section
@@ -140,6 +222,26 @@ async function takeScreenshotsWithSelectors(
             screenshotsDir,
             `${name}-${theme}${saveBaseline ? "" : "-" + timestamp}.png`
           );
+
+          // Check if element is in viewport
+          const isInViewport = await elementHandle.evaluate((el) => {
+            const rect = el.getBoundingClientRect();
+            return (
+              rect.top >= 0 &&
+              rect.left >= 0 &&
+              rect.bottom <=
+                (window.innerHeight || document.documentElement.clientHeight) &&
+              rect.right <=
+                (window.innerWidth || document.documentElement.clientWidth)
+            );
+          });
+
+          // If element is not in viewport, scroll to it
+          if (!isInViewport) {
+            console.log(`  Element is outside viewport, scrolling to it...`);
+            await elementHandle.scrollIntoViewIfNeeded();
+            await page.waitForTimeout(500); // Wait for scroll to complete
+          }
 
           const boundingBox = await elementHandle.boundingBox();
 
@@ -165,18 +267,31 @@ async function takeScreenshotsWithSelectors(
             };
 
             // Ensure minimum dimensions
-            if (clip.width < 10 || clip.height < 10) {
+            if (
+              clip.width < 10 ||
+              clip.height < 10 ||
+              clip.width > viewportSize.width ||
+              clip.height > viewportSize.height
+            ) {
               console.log(
-                `  Error: Clip area too small (${clip.width}x${clip.height})`
+                `  Error: Invalid clip area (${clip.width}x${clip.height})`
               );
-              // Take a viewport screenshot as fallback
+
+              // For sections that are too tall or not fully visible in viewport:
+              // Take a screenshot after scrolling to the element
+              console.log(
+                "  Taking a viewport screenshot after scrolling to the element..."
+              );
+
+              // Make sure we're scrolled to the element
+              await elementHandle.scrollIntoViewIfNeeded();
+              await page.waitForTimeout(500);
+
               await page.screenshot({
                 path: screenshotPath,
-                fullPage: false,
+                fullPage: false, // Just capture the viewport
               });
-              console.log(
-                `  Fallback viewport screenshot saved: ${screenshotPath}`
-              );
+              console.log(`  Viewport screenshot saved: ${screenshotPath}`);
             } else {
               // Take screenshot with clip area
               try {
@@ -204,49 +319,27 @@ async function takeScreenshotsWithSelectors(
                 console.log(
                   `  Error taking screenshot: ${screenshotError.message}`
                 );
-                // Try with a smaller clip area if there was an error
-                const safeClip = {
-                  x: clip.x + 5,
-                  y: clip.y + 5,
-                  width: clip.width - 10,
-                  height: clip.height - 10,
-                };
 
-                if (safeClip.width > 10 && safeClip.height > 10) {
-                  try {
-                    await page.screenshot({
-                      path: screenshotPath,
-                      clip: safeClip,
-                    });
-                    console.log(
-                      `  Screenshot saved with reduced clip area: ${screenshotPath}`
-                    );
-                  } catch (retryError) {
-                    console.log(
-                      `  Fallback to viewport screenshot after retry failed`
-                    );
-                    await page.screenshot({
-                      path: screenshotPath,
-                      fullPage: false,
-                    });
-                    console.log(
-                      `  Viewport screenshot saved: ${screenshotPath}`
-                    );
-                  }
-                } else {
-                  // Take a viewport screenshot as last resort
-                  await page.screenshot({
-                    path: screenshotPath,
-                    fullPage: false,
-                  });
-                  console.log(`  Viewport screenshot saved: ${screenshotPath}`);
-                }
+                // Take a viewport screenshot as fallback after scrolling to element
+                await elementHandle.scrollIntoViewIfNeeded();
+                await page.waitForTimeout(500);
+
+                await page.screenshot({
+                  path: screenshotPath,
+                  fullPage: false,
+                });
+                console.log(
+                  `  Viewport screenshot saved after scroll: ${screenshotPath}`
+                );
               }
             }
           } else {
             console.log(`  Could not get bounding box for ${name}`);
 
-            // Take a viewport screenshot as fallback
+            // Take a viewport screenshot as fallback after scrolling to element
+            await elementHandle.scrollIntoViewIfNeeded();
+            await page.waitForTimeout(500);
+
             const fallbackPath = path.join(
               screenshotsDir,
               `${name}-${theme}-fallback${

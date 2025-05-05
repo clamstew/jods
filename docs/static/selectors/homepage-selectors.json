@@ -5,7 +5,7 @@
     "padding": 40,
     "originalLocator": {
       "strategy": "element",
-      "value": "div.hero-container",
+      "value": "div.hero-container, .hero, [class*='hero_']",
       "fallback": "h1"
     },
     "debug": {
@@ -16,19 +16,19 @@
     }
   },
   "features": {
-    "selector": "#features",
+    "selector": "div.hero-container",
     "testId": "jods-features-section",
     "padding": 40,
     "originalLocator": {
       "strategy": "element",
-      "value": "section#features",
+      "value": "section#features, .featuresContainer_bzYo, [class*='features']",
       "contextSelector": null
     },
     "debug": {
-      "elementTagName": "SECTION",
+      "elementTagName": "DIV",
       "width": 1280,
-      "isSameAsOriginal": true,
-      "textSummary": "⚡️Powerful features, minimal API 🪶\n☁️\nZero Dependencies\n\nNo bloat, no overhead, just pure performan..."
+      "isSameAsOriginal": false,
+      "textSummary": "{ jods }\n\n✨JSON Dynamics System🔄\n\nBrings JSON to life\n\n🌱 Minimal\n•\n🔍 Typesafe\n•\n⚡ Fast\nGet Starte..."
     }
   },
   "try-jods-live": {
@@ -36,9 +36,10 @@
     "testId": "jods-try-live-section",
     "padding": 40,
     "originalLocator": {
-      "strategy": "element",
-      "value": "section#try-jods-live",
-      "contextSelector": null
+      "strategy": "text",
+      "value": "Try jods live",
+      "contextSelector": "section, div.container, [class*='container_']",
+      "fallback": "section#try-jods-live"
     },
     "debug": {
       "elementTagName": "SECTION",
@@ -52,9 +53,10 @@
     "testId": "jods-framework-section",
     "padding": 40,
     "originalLocator": {
-      "strategy": "element",
-      "value": "section#framework-showcase.features-container",
-      "contextSelector": null
+      "strategy": "text",
+      "value": "Works with your favorite frameworks",
+      "contextSelector": "section, div.container, [class*='container_']",
+      "fallback": "section#framework-showcase"
     },
     "debug": {
       "elementTagName": "SECTION",
@@ -68,9 +70,10 @@
     "testId": "jods-compare-section",
     "padding": 40,
     "originalLocator": {
-      "strategy": "element",
-      "value": "section#compare",
-      "contextSelector": null
+      "strategy": "text",
+      "value": "How jods compares",
+      "contextSelector": "section, div.container, [class*='container_']",
+      "fallback": "section#compare"
     },
     "debug": {
       "elementTagName": "SECTION",
@@ -79,29 +82,13 @@
       "textSummary": "How jods compares 📊\n\nSee how jods stacks up against other popular state management libraries\n\nFEATU..."
     }
   },
-  "remix-integration": {
-    "selector": "#__docusaurus_skipToContent_fallback",
-    "testId": "jods-remix-section",
-    "padding": 40,
-    "originalLocator": {
-      "strategy": "element",
-      "value": "section#remix-integration",
-      "contextSelector": null
-    },
-    "debug": {
-      "elementTagName": "DIV",
-      "width": 1280,
-      "isSameAsOriginal": false,
-      "textSummary": "{ jods }\n\n✨JSON Dynamics System🔄\n\nBrings JSON to life\n\n🌱 Minimal\n•\n🔍 Typesafe\n•\n⚡ Fast\nGet Starte..."
-    }
-  },
   "footer": {
     "selector": ".footer",
     "testId": "jods-footer",
     "padding": 20,
     "originalLocator": {
       "strategy": "element",
-      "value": "footer.footer",
+      "value": "footer.footer, footer",
       "contextSelector": null
     },
     "debug": {
@@ -109,6 +96,22 @@
       "width": 1280,
       "isSameAsOriginal": true,
       "textSummary": "DOCUMENTATION\n📚 Getting Started\nℹ️ About jods\n🧰 API Reference\nCOMMUNITY\n💬 Discussions\n🐛 Issues\n\ud83d..."
+    }
+  },
+  "remix-integration": {
+    "selector": "[data-testid=\"jods-remix-section\"]",
+    "testId": "jods-remix-section",
+    "padding": 40,
+    "originalLocator": {
+      "strategy": "heading",
+      "value": "Remix Integration",
+      "contextSelector": "section, div.container, [class*='container_']"
+    },
+    "debug": {
+      "elementTagName": "HTML",
+      "width": 1280,
+      "isSameAsOriginal": true,
+      "textSummary": "\n    \n    \n    jods - JavaScript Object Dynamics System | jods\n    \n\n    \n  \n  /* Dreamscape text an..."
     }
   }
 }

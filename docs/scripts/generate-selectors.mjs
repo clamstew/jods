@@ -24,7 +24,7 @@ const HOMEPAGE_SECTIONS = [
     name: "hero",
     locator: {
       strategy: "element",
-      value: "div.hero-container",
+      value: "div.hero-container, .hero, [class*='hero_']",
       fallback: "h1",
     },
     testId: "jods-hero-section",
@@ -34,7 +34,7 @@ const HOMEPAGE_SECTIONS = [
     name: "features",
     locator: {
       strategy: "element",
-      value: "section#features",
+      value: "section#features, .featuresContainer_bzYo, [class*='features']",
       contextSelector: null,
     },
     testId: "jods-features-section",
@@ -43,9 +43,10 @@ const HOMEPAGE_SECTIONS = [
   {
     name: "try-jods-live",
     locator: {
-      strategy: "element",
-      value: "section#try-jods-live",
-      contextSelector: null,
+      strategy: "text",
+      value: "Try jods live",
+      contextSelector: "section, div.container, [class*='container_']",
+      fallback: "section#try-jods-live",
     },
     testId: "jods-try-live-section",
     padding: 40,
@@ -53,9 +54,10 @@ const HOMEPAGE_SECTIONS = [
   {
     name: "framework-integration",
     locator: {
-      strategy: "element",
-      value: "section#framework-showcase.features-container",
-      contextSelector: null,
+      strategy: "text",
+      value: "Works with your favorite frameworks",
+      contextSelector: "section, div.container, [class*='container_']",
+      fallback: "section#framework-showcase",
     },
     testId: "jods-framework-section",
     padding: 40,
@@ -63,9 +65,10 @@ const HOMEPAGE_SECTIONS = [
   {
     name: "compare",
     locator: {
-      strategy: "element",
-      value: "section#compare",
-      contextSelector: null,
+      strategy: "text",
+      value: "How jods compares",
+      contextSelector: "section, div.container, [class*='container_']",
+      fallback: "section#compare",
     },
     testId: "jods-compare-section",
     padding: 40,
@@ -73,9 +76,9 @@ const HOMEPAGE_SECTIONS = [
   {
     name: "remix-integration",
     locator: {
-      strategy: "element",
-      value: "section#remix-integration",
-      contextSelector: null,
+      strategy: "heading",
+      value: "Remix Integration",
+      contextSelector: "section, div.container, [class*='container_']",
     },
     testId: "jods-remix-section",
     padding: 40,
@@ -84,7 +87,7 @@ const HOMEPAGE_SECTIONS = [
     name: "footer",
     locator: {
       strategy: "element",
-      value: "footer.footer",
+      value: "footer.footer, footer",
       contextSelector: null,
     },
     testId: "jods-footer",
@@ -384,6 +387,162 @@ async function findSelectors() {
 async function saveSelectors() {
   try {
     const selectors = await findSelectors();
+
+    // If Remix Integration section wasn't found, add it manually
+    if (!selectors["remix-integration"]) {
+      console.log(
+        "Remix integration section not found, attempting to add it manually..."
+      );
+
+      // Launch a new browser and find it directly
+      const browser = await chromium.launch();
+      const context = await browser.newContext({
+        viewport: { width: 1280, height: 900 },
+      });
+      const page = await context.newPage();
+
+      // Navigate to homepage
+      await page.goto(`${BASE_URL}${PATH_PREFIX}/`, {
+        waitUntil: "networkidle",
+      });
+      await page.waitForTimeout(1000);
+
+      try {
+        // Try to find by text content directly
+        const remixElement = await page.evaluateHandle(() => {
+          // Search for "Remix Integration" heading
+          const headingWithText = Array.from(
+            document.querySelectorAll("h1, h2, h3, h4, h5, h6")
+          ).find((h) => h.textContent.trim() === "Remix Integration");
+
+          if (headingWithText) {
+            // Find containing section or container div
+            let element = headingWithText;
+            let parent = element.parentElement;
+
+            // Look up the DOM tree for a section or substantial container
+            while (parent && parent !== document.body) {
+              if (
+                parent.tagName === "SECTION" ||
+                (parent.tagName === "DIV" &&
+                  (parent.classList.length > 0 ||
+                    parent.id ||
+                    parent.getAttribute("data-testid") ||
+                    parent.style.display === "block"))
+              ) {
+                // Check if this is a substantial container
+                const rect = parent.getBoundingClientRect();
+                if (
+                  rect.width > window.innerWidth * 0.75 &&
+                  rect.height > 100
+                ) {
+                  element = parent;
+                  break;
+                }
+              }
+              parent = parent.parentElement;
+            }
+
+            // Add testId to make it easier to find
+            element.setAttribute("data-testid", "jods-remix-section");
+
+            // Get textContent for verification
+            const textContent =
+              element.textContent.substring(0, 100) +
+              (element.textContent.length > 100 ? "..." : "");
+
+            // Return selector info
+            const id = element.id ? `#${element.id}` : null;
+
+            // If element has classes, create a class selector
+            let classSelector = null;
+            if (element.classList.length > 0) {
+              classSelector =
+                element.tagName.toLowerCase() +
+                "." +
+                Array.from(element.classList)[0];
+            }
+
+            // Create a data-testid selector as fallback
+            const testIdSelector = '[data-testid="jods-remix-section"]';
+
+            return {
+              selector: id || classSelector || testIdSelector,
+              elementTagName: element.tagName,
+              width: element.getBoundingClientRect().width,
+              text: textContent,
+            };
+          }
+
+          // If not found by heading, try searching for text
+          const elementsWithRemixText = Array.from(
+            document.querySelectorAll("*")
+          ).filter(
+            (el) =>
+              el.textContent.includes("Remix Integration") &&
+              !["SCRIPT", "STYLE", "META", "LINK"].includes(el.tagName)
+          );
+
+          // Skip heading elements, get first substantial element
+          const elementWithText =
+            elementsWithRemixText.find(
+              (el) => !["H1", "H2", "H3", "H4", "H5", "H6"].includes(el.tagName)
+            ) || elementsWithRemixText[0];
+
+          if (elementWithText) {
+            elementWithText.setAttribute("data-testid", "jods-remix-section");
+            const textContent =
+              elementWithText.textContent.substring(0, 100) +
+              (elementWithText.textContent.length > 100 ? "..." : "");
+            return {
+              selector: '[data-testid="jods-remix-section"]',
+              elementTagName: elementWithText.tagName,
+              width: elementWithText.getBoundingClientRect().width,
+              text: textContent,
+            };
+          }
+
+          return null;
+        });
+
+        if (remixElement) {
+          const selectorInfo = await remixElement.evaluate((info) => info);
+
+          if (selectorInfo) {
+            console.log(
+              `  Found remix section manually: ${selectorInfo.selector}`
+            );
+            console.log(
+              `  Element: ${selectorInfo.elementTagName}, Width: ${selectorInfo.width}px`
+            );
+            console.log(`  Text: ${selectorInfo.text}`);
+
+            // Add to selectors
+            selectors["remix-integration"] = {
+              selector: selectorInfo.selector,
+              testId: "jods-remix-section",
+              padding: 40,
+              originalLocator: {
+                strategy: "heading",
+                value: "Remix Integration",
+                contextSelector:
+                  "section, div.container, [class*='container_']",
+              },
+              debug: {
+                elementTagName: selectorInfo.elementTagName,
+                width: selectorInfo.width,
+                isSameAsOriginal: true,
+                textSummary: selectorInfo.text,
+              },
+            };
+          }
+        }
+      } catch (error) {
+        console.error("  Error finding Remix section manually:", error);
+      }
+
+      await browser.close();
+    }
 
     // Save to JSON file
     if (Object.keys(selectors).length > 0) {
