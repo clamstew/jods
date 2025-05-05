@@ -33,6 +33,14 @@ const COMPONENTS = [
     selector: ".features",
     padding: 50,
   },
+  {
+    page: "/",
+    name: "remix-section",
+    selector: "h2:contains('Remix Integration') + div", // Targeting the section about Remix
+    selector_type: "xpath", // Using xpath for more flexible selection
+    xpath: "//h2[contains(text(), 'Remix Integration')]/parent::*", // Alternative xpath approach
+    padding: 70,
+  },
   // Add more components as needed
 ];
 
@@ -67,7 +75,14 @@ async function takeComponentScreenshots(
 
   const page = await context.newPage();
 
-  for (const { page: pagePath, name, selector, padding } of COMPONENTS) {
+  for (const {
+    page: pagePath,
+    name,
+    selector,
+    padding,
+    selector_type,
+    xpath,
+  } of COMPONENTS) {
     const url = `${BASE_URL}${PATH_PREFIX}${pagePath}`;
     console.log(`Navigating to ${url} to capture component: ${name}`);
 
@@ -123,11 +138,49 @@ async function takeComponentScreenshots(
       }
 
       try {
-        // Find the element and get its bounding box
-        const elementHandle = await page.$(selector);
+        // Find the element based on selector type
+        let elementHandle;
+        if (selector_type === "xpath" && xpath) {
+          elementHandle = await page.$(`xpath=${xpath}`);
+          if (!elementHandle) {
+            console.error(`Element not found using XPath: ${xpath}`);
+            // Fallback to CSS selector
+            elementHandle = await page.$(selector);
+          }
+        } else {
+          elementHandle = await page.$(selector);
+        }
+
         if (!elementHandle) {
           console.error(`Element not found: ${selector}`);
-          continue;
+
+          // Try to find Remix related content with a more general approach
+          if (name === "remix-section") {
+            console.log("Trying alternative selectors for Remix section...");
+            // Try a variety of selectors that might match the Remix section
+            for (const trySelector of [
+              "text=Remix Integration",
+              "text=Remix",
+              "h2:has-text('Remix')",
+              ".remix-section",
+              "[data-section='remix']",
+              "section:has-text('Remix')",
+            ]) {
+              console.log(`Trying selector: ${trySelector}`);
+              elementHandle = await page.$(trySelector);
+              if (elementHandle) {
+                console.log(
+                  `Found Remix section with selector: ${trySelector}`
+                );
+                break;
+              }
+            }
+          }
+
+          if (!elementHandle) {
+            console.error(`Could not find element for: ${name}`);
+            continue;
+          }
         }
 
         const boundingBox = await elementHandle.boundingBox();
