@@ -218,10 +218,10 @@
 
 /* Light mode specific styles for hero description */
 :root:not([data-theme="dark"]) .hero-description {
-  color: #0057b7; /* Strong blue for better contrast on light backgrounds */
-  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8),
-    0 0 2px rgba(255, 255, 255, 0.9);
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 57, 183, 0.9), 0 0 8px rgba(0, 57, 183, 0.6);
   font-weight: 800;
+  letter-spacing: 0.02em;
 }
 
 /* Dark mode specific styles for hero description */
@@ -254,7 +254,7 @@
   font-size: 1.1rem;
   font-weight: 600;
   border-radius: 8px;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
   overflow: hidden;
 }
@@ -275,10 +275,8 @@
 }
 
 .hero-buttons .button--primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px
-      var(--button-primary-shadow-hover, rgba(6, 182, 212, 0.6)),
-    0 0 25px rgba(132, 204, 22, 0.5); /* Enhanced glow on hover */
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 8px 20px rgba(0, 57, 183, 0.4), 0 0 15px rgba(6, 182, 212, 0.4);
   animation: button-glow 2s infinite alternate ease-in-out;
 }
 
@@ -328,11 +326,9 @@
 }
 
 .hero-buttons .button--secondary:hover {
-  transform: translateY(-3px);
-  background: var(--button-secondary-bg-hover, rgba(255, 255, 255, 0.25));
-  box-shadow: 0 8px 16px
-      var(--button-secondary-shadow-hover, rgba(0, 87, 183, 0.3)),
-    0 0 15px rgba(72, 255, 168, 0.3); /* Add subtle glow on hover */
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 8px 20px rgba(0, 57, 183, 0.2),
+    0 0 10px rgba(255, 255, 255, 0.3);
 }
 
 /* Mascot animations and positioning */
@@ -805,4 +801,97 @@
     opacity: 0.3;
     transform: scale(0.8);
   }
+}
+
+/* Add a subtle hover animation to the jods logo */
+.jods-logo {
+  position: relative;
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+
+.jods-logo:hover {
+  transform: scale(1.03);
+}
+
+/* Add a subtle brace animation */
+.jods-logo-braces {
+  display: inline-block;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.jods-logo:hover .jods-logo-braces {
+  transform: rotate(5deg) translateY(-2px);
+  opacity: 0.9;
+}
+
+.jods-logo:hover .jods-logo-braces + .jods-logo-braces {
+  transform: rotate(-5deg) translateY(-2px);
+}
+
+/* Enhanced emoji animations */
+@keyframes emoji-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.2);
+    filter: brightness(1.2);
+  }
+}
+
+/* Apply staggered animation to emojis */
+.hero-features span:nth-child(1) {
+  animation: emoji-pulse 3s infinite ease-in-out;
+}
+
+.hero-features span:nth-child(3) {
+  animation: emoji-pulse 3s infinite ease-in-out 0.5s;
+}
+
+.hero-features span:nth-child(5) {
+  animation: emoji-pulse 3s infinite ease-in-out 1s;
+}
+
+/* Add subtle animation to the background particles */
+.hero-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at 30% 60%,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(255, 255, 255, 0) 50%
+  );
+  animation: background-shine 15s infinite alternate ease-in-out;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes background-shine {
+  0% {
+    opacity: 0;
+    transform: translateX(-30%) translateY(-20%);
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(30%) translateY(20%);
+  }
+}
+
+/* Dark mode specific shine adjustment */
+[data-theme="dark"] .hero-container::after {
+  background: radial-gradient(
+    circle at 30% 60%,
+    rgba(255, 154, 92, 0.08) 0%,
+    rgba(255, 154, 92, 0) 50%
+  );
 }
