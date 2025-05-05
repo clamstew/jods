@@ -10,23 +10,23 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #6b3369;
-  --ifm-color-primary-dark: #5e2d5c;
-  --ifm-color-primary-darker: #592a57;
-  --ifm-color-primary-darkest: #3f214f;
-  --ifm-color-primary-light: #783976;
-  --ifm-color-primary-lighter: #7d3c7b;
-  --ifm-color-primary-lightest: #8a3458;
+  --ifm-color-primary: #0284c7;
+  --ifm-color-primary-dark: #0272b0;
+  --ifm-color-primary-darker: #016ba6;
+  --ifm-color-primary-darkest: #015889;
+  --ifm-color-primary-light: #0297de;
+  --ifm-color-primary-lighter: #02a1ea;
+  --ifm-color-primary-lightest: #0eaefa;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 
-  /* Custom colors for the dream-like vibe */
-  --jods-purple-dark: #332954;
-  --jods-purple-mid: #6b3369;
-  --jods-purple-light: #8a3458;
-  --jods-orange: #ff9a5c;
-  --jods-orange-light: #ffc559;
-  --jods-neon-glow: rgba(255, 255, 255, 0.8);
+  /* Custom colors for the gradient vibe */
+  --jods-blue: #0057b7;
+  --jods-cyan: #06b6d4;
+  --jods-green: #84cc16;
+  --jods-green-light: #a7e22e;
+  --jods-blue-dark: #004095;
+  --jods-neon-glow: rgba(132, 204, 22, 0.6);
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -43,14 +43,50 @@
 
 /* Add your custom styles here */
 
-/* Global gradient text styling */
+/* Global gradient text styling - enhanced */
 .gradient-text {
-  background-image: linear-gradient(135deg, #0057b7, #84cc16);
+  background-image: linear-gradient(
+    135deg,
+    var(--jods-blue),
+    var(--jods-cyan) 45%,
+    var(--jods-green) 75%,
+    var(--jods-green-light)
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   display: inline-block;
   filter: drop-shadow(0 2px 4px rgba(72, 255, 168, 0.3));
+  position: relative;
+}
+
+/* Add subtle shimmer animation to gradient text */
+.gradient-text::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: text-shimmer 3s infinite;
+  background-size: 200% 100%;
+}
+
+@keyframes text-shimmer {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
 }
 
 [data-theme="dark"] .gradient-text {
@@ -60,6 +96,51 @@
     var(--jods-orange-light)
   );
   filter: drop-shadow(0 2px 4px rgba(255, 154, 92, 0.5));
+}
+
+/* Enhanced "minimal API" specific styling */
+h1 .gradient-text,
+h2 .gradient-text {
+  font-weight: 700;
+  filter: drop-shadow(0 2px 6px rgba(72, 255, 168, 0.4));
+}
+
+[data-theme="dark"] h1 .gradient-text,
+[data-theme="dark"] h2 .gradient-text {
+  filter: drop-shadow(0 2px 6px rgba(255, 154, 92, 0.6));
+}
+
+/* Enhance framework tabs in docs - apply gradient style */
+.react-tabs__tab--selected {
+  border-bottom-color: var(--jods-cyan) !important;
+  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
+}
+
+[data-theme="dark"] .react-tabs__tab--selected {
+  border-bottom-color: var(--jods-orange) !important;
+  box-shadow: 0 2px 8px rgba(255, 154, 92, 0.3);
+}
+
+/* Enhanced code block styling */
+.prism-code {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Add subtle glow to inline code */
+:not(pre) > code {
+  border-radius: 4px;
+  padding: 2px 6px !important;
+  background-color: rgba(6, 182, 212, 0.1) !important;
+  color: var(--jods-blue) !important;
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.1);
+  transition: all 0.2s ease;
+}
+
+[data-theme="dark"] :not(pre) > code {
+  background-color: rgba(255, 154, 92, 0.1) !important;
+  color: var(--jods-orange-light) !important;
+  box-shadow: 0 0 8px rgba(255, 154, 92, 0.1);
 }
 
 /* Footer styling with gradient background for light mode */

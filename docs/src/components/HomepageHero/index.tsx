@@ -40,6 +40,35 @@ export default function HomepageHero(): React.ReactElement {
     }
   }, [isBrowser]);
 
+  // Create floating particles
+  useEffect(() => {
+    if (!containerRef.current || isPaused) return;
+
+    const container = containerRef.current;
+    const particles: HTMLDivElement[] = [];
+
+    // Create particles
+    for (let i = 0; i < 25; i++) {
+      const particle = document.createElement("div");
+      particle.className = "hero-particle";
+
+      // Random positioning
+      const randomX = Math.random() * 100;
+      const randomAnimDelay = Math.random() * 15;
+
+      particle.style.left = `${randomX}%`;
+      particle.style.animationDelay = `${randomAnimDelay}s`;
+      particle.style.setProperty("--random-x", String(Math.random() * 2 - 1));
+
+      container.appendChild(particle);
+      particles.push(particle);
+    }
+
+    return () => {
+      particles.forEach((p) => p.remove());
+    };
+  }, [containerRef, isPaused]);
+
   // Effect to handle mascot interaction state based on animation paused state
   useEffect(() => {
     if (isPaused && mascotsInteracting) {

@@ -29,17 +29,19 @@
   padding: 2rem;
   background: var(
     --hero-content-bg,
-    rgba(255, 255, 255, 0.15)
-  ); /* More transparent for light mode */
-  backdrop-filter: blur(10px);
+    rgba(255, 255, 255, 0.08)
+  ); /* Even more transparent */
+  backdrop-filter: blur(12px);
   border-radius: 16px;
-  border: 1px solid var(--hero-content-border, rgba(72, 255, 168, 0.3)); /* Neon border for light mode */
-  box-shadow: 0 10px 30px var(--hero-content-shadow, rgba(0, 255, 255, 0.2));
+  border: 1px solid var(--hero-content-border, rgba(72, 255, 168, 0.4)); /* Brighter border */
+  box-shadow: 0 10px 30px var(--hero-content-shadow, rgba(0, 255, 255, 0.2)),
+    0 0 30px rgba(132, 204, 22, 0.15); /* Add outer glow */
   margin: 2rem auto;
   max-width: 800px;
   text-align: center;
   transform: translateZ(0);
   animation: content-pulse 4s infinite alternate ease-in-out; /* Add pulsing effect */
+  overflow: hidden; /* For the gradient shine effect */
 }
 
 @keyframes content-pulse {
@@ -68,12 +70,45 @@
   }
 }
 
+/* Add gradient shine animation overlay */
+.hero-content::after {
+  content: "";
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  right: -100%;
+  bottom: -100%;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.03) 43%,
+    rgba(255, 255, 255, 0.15) 45%,
+    rgba(255, 255, 255, 0.03) 47%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(45deg);
+  animation: shine 8s infinite ease-in-out;
+  z-index: -1;
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  20%,
+  100% {
+    transform: translateX(100%) rotate(45deg);
+  }
+}
+
+/* Hero title with enhanced gradient */
 .hero-title {
   margin-bottom: 0.5rem;
   font-size: 3.5rem;
   font-weight: 800;
   letter-spacing: -0.025em;
   animation: title-glow 4s infinite alternate ease-in-out;
+  text-shadow: 0 0 15px rgba(0, 87, 183, 0.3);
 }
 
 .hero-title .gradient-text {
@@ -120,7 +155,7 @@
   text-shadow: 0 1px 2px var(--hero-text-shadow, rgba(0, 0, 0, 0.1));
 }
 
-/* Button styling */
+/* Button styling - updated for more vibrance */
 .hero-buttons {
   display: flex;
   gap: 1rem;
@@ -141,34 +176,77 @@
 .hero-buttons .button--primary {
   background: linear-gradient(
     135deg,
-    var(--button-primary-gradient-start, #0ea5e9),
-    var(--button-primary-gradient-end, #0284c7)
+    var(--button-primary-gradient-start, #06b6d4),
+    var(--button-primary-gradient-end, #84cc16)
   );
   border: none;
   color: #fff;
-  box-shadow: 0 4px 12px var(--button-primary-shadow, rgba(14, 165, 233, 0.4));
+  box-shadow: 0 4px 12px var(--button-primary-shadow, rgba(6, 182, 212, 0.4)),
+    0 0 20px rgba(132, 204, 22, 0.3); /* Add glow */
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
 }
 
 .hero-buttons .button--primary:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 20px
-    var(--button-primary-shadow-hover, rgba(14, 165, 233, 0.6));
+      var(--button-primary-shadow-hover, rgba(6, 182, 212, 0.6)),
+    0 0 25px rgba(132, 204, 22, 0.5); /* Enhanced glow on hover */
   animation: button-glow 2s infinite alternate ease-in-out;
 }
 
+/* Add shimmer effect to primary button */
+.hero-buttons .button--primary::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.05) 40%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.05) 60%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(45deg);
+  z-index: -1;
+  animation: button-shimmer 3s infinite ease-in-out;
+}
+
+@keyframes button-shimmer {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  20%,
+  100% {
+    transform: translateX(100%) rotate(45deg);
+  }
+}
+
+/* Enhanced secondary button */
 .hero-buttons .button--secondary {
-  background: var(--button-secondary-bg, rgba(240, 249, 255, 0.7));
-  border: 1px solid var(--button-secondary-border, rgba(56, 189, 248, 0.3));
-  color: var(--button-secondary-color, #0284c7);
+  background: var(--button-secondary-bg, rgba(255, 255, 255, 0.15));
+  border: 1px solid var(--button-secondary-border, rgba(72, 255, 168, 0.4));
+  color: var(
+    --button-secondary-color,
+    white
+  ); /* Changed to white for better contrast */
   backdrop-filter: blur(5px);
-  box-shadow: 0 4px 12px var(--button-secondary-shadow, rgba(14, 165, 233, 0.2));
+  box-shadow: 0 4px 12px var(--button-secondary-shadow, rgba(0, 87, 183, 0.2));
+  position: relative;
+  overflow: hidden;
 }
 
 .hero-buttons .button--secondary:hover {
   transform: translateY(-3px);
-  background: var(--button-secondary-bg-hover, rgba(240, 249, 255, 0.9));
+  background: var(--button-secondary-bg-hover, rgba(255, 255, 255, 0.25));
   box-shadow: 0 8px 16px
-    var(--button-secondary-shadow-hover, rgba(14, 165, 233, 0.3));
+      var(--button-secondary-shadow-hover, rgba(0, 87, 183, 0.3)),
+    0 0 15px rgba(72, 255, 168, 0.3); /* Add subtle glow on hover */
 }
 
 /* Mascot animations and positioning */
@@ -536,5 +614,88 @@
   50% {
     opacity: 1;
     transform: translateX(-50%) translateY(-10px) scale(1.2);
+  }
+}
+
+/* Add floating particles for dynamic effect */
+.hero-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(1px);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+  z-index: 3;
+  opacity: 0;
+  animation: particle-float 15s infinite linear;
+}
+
+/* Create multiple particles with different animations */
+.hero-particle:nth-child(3n) {
+  width: 4px;
+  height: 4px;
+  animation-duration: 20s;
+  box-shadow: 0 0 10px rgba(132, 204, 22, 0.8);
+}
+
+.hero-particle:nth-child(3n + 1) {
+  width: 3px;
+  height: 3px;
+  animation-duration: 25s;
+  animation-delay: 1s;
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.8);
+}
+
+.hero-particle:nth-child(3n + 2) {
+  width: 5px;
+  height: 5px;
+  animation-duration: 22s;
+  animation-delay: 3s;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+}
+
+@keyframes particle-float {
+  0% {
+    transform: translateY(100%) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(calc(var(--random-x) * 20vw));
+    opacity: 0;
+  }
+}
+
+/* Firefly styling for visual effect */
+.hero-firefly {
+  position: absolute;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.8);
+  filter: blur(1px);
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(132, 204, 22, 0.6);
+  z-index: 3;
+  animation: firefly-pulse 3s infinite alternate ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes firefly-pulse {
+  0% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 0.3;
+    transform: scale(0.8);
   }
 }

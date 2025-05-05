@@ -97,12 +97,27 @@ export default function BackgroundAnimations({
       firefly.style.width = `${size}px`;
       firefly.style.height = `${size}px`;
 
-      // Random color
-      const colorIndex = Math.floor(Math.random() * colors.length);
-      const color = colors[colorIndex].replace(
-        /rgba\((\d+), (\d+), (\d+), [\d\.]+\)/,
-        (_, r, g, b) => `rgba(${r}, ${g}, ${b}, 0.7)`
-      );
+      // Random color based on our palette
+      let color;
+      if (colorMode === "light") {
+        // For light mode, use blues, cyans, and greens
+        const colorChoices = [
+          "rgba(0, 87, 183, 0.7)", // Blue
+          "rgba(6, 182, 212, 0.7)", // Cyan
+          "rgba(132, 204, 22, 0.7)", // Green
+          "rgba(167, 226, 46, 0.7)", // Light green
+          "rgba(255, 255, 255, 0.9)", // White
+        ];
+        color = colorChoices[Math.floor(Math.random() * colorChoices.length)];
+      } else {
+        // For dark mode, use the original color selection
+        const colorIndex = Math.floor(Math.random() * colors.length);
+        color = colors[colorIndex].replace(
+          /rgba\((\d+), (\d+), (\d+), [\d\.]+\)/,
+          (_, r, g, b) => `rgba(${r}, ${g}, ${b}, 0.7)`
+        );
+      }
+
       firefly.style.backgroundColor = color;
       firefly.style.boxShadow = `0 0 ${
         size * 2
@@ -121,6 +136,62 @@ export default function BackgroundAnimations({
 
       container.appendChild(firefly);
       fireflies.push(firefly);
+    }
+
+    // Add some of our new hero-fireflies with enhanced glow effect
+    for (let i = 0; i < 12; i++) {
+      const glowFirefly = document.createElement("div");
+      glowFirefly.className = "hero-firefly";
+
+      // Random positioning
+      glowFirefly.style.top = `${Math.random() * 100}%`;
+      glowFirefly.style.left = `${Math.random() * 100}%`;
+
+      // Random size for varied effect
+      const glowSize = Math.random() * 8 + 4;
+      glowFirefly.style.width = `${glowSize}px`;
+      glowFirefly.style.height = `${glowSize}px`;
+
+      // Color based on theme
+      let glowColor;
+      if (colorMode === "light") {
+        const glowOptions = [
+          "rgba(255, 255, 255, 0.9)",
+          "rgba(132, 204, 22, 0.8)",
+          "rgba(6, 182, 212, 0.8)",
+        ];
+        glowColor = glowOptions[Math.floor(Math.random() * glowOptions.length)];
+      } else {
+        const glowOptions = [
+          "rgba(255, 255, 255, 0.9)",
+          "rgba(255, 154, 92, 0.8)",
+          "rgba(255, 197, 89, 0.8)",
+        ];
+        glowColor = glowOptions[Math.floor(Math.random() * glowOptions.length)];
+      }
+
+      glowFirefly.style.backgroundColor = glowColor;
+
+      // Enhanced glow effect
+      if (colorMode === "light") {
+        glowFirefly.style.boxShadow = `0 0 ${
+          glowSize * 2
+        }px ${glowColor}, 0 0 ${glowSize * 3}px rgba(132, 204, 22, 0.6)`;
+      } else {
+        glowFirefly.style.boxShadow = `0 0 ${
+          glowSize * 2
+        }px ${glowColor}, 0 0 ${glowSize * 3}px rgba(255, 154, 92, 0.6)`;
+      }
+
+      // Animation timing
+      const glowDuration = Math.random() * 6 + 3;
+      const glowDelay = Math.random() * 4;
+
+      glowFirefly.style.animationDuration = `${glowDuration}s`;
+      glowFirefly.style.animationDelay = `${glowDelay}s`;
+
+      container.appendChild(glowFirefly);
+      fireflies.push(glowFirefly);
     }
 
     // Create JSON text elements
