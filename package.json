@@ -55,7 +55,8 @@
     "docs:screenshot:unified:remix": "node docs/scripts/screenshot-unified.mjs --mode=remix",
     "docs:screenshot:cleanup": "node docs/scripts/screenshot-cleanup.mjs",
     "docs:screenshot:cleanup:dry-run": "node docs/scripts/screenshot-cleanup.mjs --dry-run",
-    "docs:screenshot:cleanup:keep-latest": "node docs/scripts/screenshot-cleanup.mjs --keep-latest --keep=3"
+    "docs:screenshot:cleanup:keep-latest": "node docs/scripts/screenshot-cleanup.mjs --keep-latest --keep=3",
+    "docs:screenshot:cleanup:keep": "node docs/scripts/screenshot-cleanup.mjs --keep-latest"
   },
   "keywords": [
     "state",

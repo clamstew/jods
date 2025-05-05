@@ -25,7 +25,8 @@
     "screenshot:unified:remix": "node scripts/screenshot-unified.mjs --mode=remix",
     "screenshot:cleanup": "node scripts/screenshot-cleanup.mjs",
     "screenshot:cleanup:dry-run": "node scripts/screenshot-cleanup.mjs --dry-run",
-    "screenshot:cleanup:keep-latest": "node scripts/screenshot-cleanup.mjs --keep-latest --keep=3"
+    "screenshot:cleanup:keep-latest": "node scripts/screenshot-cleanup.mjs --keep-latest --keep=3",
+    "screenshot:cleanup:keep": "node scripts/screenshot-cleanup.mjs --keep-latest"
   },
   "dependencies": {
     "@docusaurus/core": "3.7.0",

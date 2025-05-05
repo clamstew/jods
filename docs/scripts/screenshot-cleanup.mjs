@@ -6,12 +6,20 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const screenshotsDir = path.join(__dirname, "../static/screenshots/unified");
 
 // Parameters
-const keepLatest = process.argv.includes("--keep-latest")
-  ? parseInt(
-      process.argv.find((arg) => arg.startsWith("--keep="))?.split("=")[1] ||
-        "1"
-    )
-  : 1;
+const keepLatestIndex = process.argv.indexOf("--keep-latest");
+const keepLatest =
+  keepLatestIndex !== -1
+    ? // First check for a positional argument after --keep-latest
+      keepLatestIndex + 1 < process.argv.length &&
+      !process.argv[keepLatestIndex + 1].startsWith("--")
+      ? parseInt(process.argv[keepLatestIndex + 1]) || 1
+      : // Fall back to the --keep=N format
+        parseInt(
+          process.argv
+            .find((arg) => arg.startsWith("--keep="))
+            ?.split("=")[1] || "1"
+        )
+    : 1;
 const dryRun = process.argv.includes("--dry-run");
 
 console.log(`🧹 Screenshot Cleanup Tool`);
