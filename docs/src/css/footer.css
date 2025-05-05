@@ -280,6 +280,13 @@
   z-index: 3;
 }
 
+/* Remove default bullets from footer lists since they have emojis */
+.footer__items {
+  list-style-type: none;
+  padding-left: 0;
+  margin-left: 0;
+}
+
 .footer__item {
   margin-bottom: 0.75rem;
   position: relative;
