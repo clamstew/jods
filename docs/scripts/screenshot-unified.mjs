@@ -750,8 +750,8 @@ async function captureSpecificElement(
   // Get updated position after scrolling
   const updatedBoundingBox = await elementHandle.boundingBox();
 
-  // Create clip with padding around the element, respecting minHeight
-  const clip = {
+  // Handle element exclusions if specified
+  let adjustedClip = {
     x: Math.max(0, updatedBoundingBox.x - padding),
     y: Math.max(0, updatedBoundingBox.y - topPadding),
     width: Math.min(
@@ -764,15 +764,110 @@ async function captureSpecificElement(
     ),
   };
 
+  // Process excluded elements if any
+  if (component.excludeElements && component.excludeElements.length > 0) {
+    console.log(
+      `Processing ${component.excludeElements.length} excluded elements`
+    );
+
+    // Get bounding boxes of elements to exclude
+    const excludeBoundingBoxes = await Promise.all(
+      component.excludeElements.map(async (selector) => {
+        try {
+          const elements = await page.$$(selector);
+          return Promise.all(
+            elements.map(async (el) => {
+              const box = await el.boundingBox();
+              if (box) {
+                return {
+                  selector,
+                  box,
+                  isVisible: await el.isVisible(),
+                };
+              }
+              return null;
+            })
+          );
+        } catch (e) {
+          console.log(
+            `Error getting excluded element ${selector}: ${e.message}`
+          );
+          return [];
+        }
+      })
+    );
+
+    // Flatten and filter results
+    const validExcludedBoxes = excludeBoundingBoxes
+      .flat()
+      .filter((item) => item !== null && item.isVisible);
+
+    if (validExcludedBoxes.length > 0) {
+      console.log(
+        `Found ${validExcludedBoxes.length} visible elements to exclude`
+      );
+
+      // Check for elements that affect the top of the screenshot
+      const topExclusions = validExcludedBoxes.filter(
+        (item) =>
+          item.box.y < adjustedClip.y + 100 && // Element is near the top
+          item.box.y + item.box.height <
+            adjustedClip.y + adjustedClip.height / 2 // Not spanning the whole element
+      );
+
+      // Check for elements that affect the bottom of the screenshot
+      const bottomExclusions = validExcludedBoxes.filter(
+        (item) =>
+          item.box.y > adjustedClip.y + adjustedClip.height / 2 && // Element is in the bottom half
+          item.box.y + item.box.height <=
+            adjustedClip.y + adjustedClip.height + 50 // Within or just below the clip area
+      );
+
+      // Adjust clip area based on exclusions
+      if (topExclusions.length > 0) {
+        // Find the lowest bottom edge of top exclusions
+        const maxBottom = Math.max(
+          ...topExclusions.map((item) => item.box.y + item.box.height)
+        );
+        const newY = maxBottom + 10; // Add small gap
+
+        // Adjust clip area from the top
+        const heightReduction = newY - adjustedClip.y;
+        if (heightReduction > 0 && heightReduction < adjustedClip.height) {
+          adjustedClip.y = newY;
+          adjustedClip.height -= heightReduction;
+          console.log(
+            `Adjusted top of clip to exclude elements, new y=${adjustedClip.y}`
+          );
+        }
+      }
+
+      if (bottomExclusions.length > 0) {
+        // Find the highest top edge of bottom exclusions
+        const minTop = Math.min(...bottomExclusions.map((item) => item.box.y));
+
+        // Adjust clip area from the bottom
+        const newHeight = minTop - adjustedClip.y - 10; // Subtract small gap
+        if (newHeight > adjustedClip.height / 2) {
+          // Ensure we don't cut off too much
+          adjustedClip.height = newHeight;
+          console.log(
+            `Adjusted bottom of clip to exclude elements, new height=${adjustedClip.height}`
+          );
+        }
+      }
+    }
+  }
+
   // Make sure we don't exceed the page dimensions
-  if (clip.y + clip.height > page.viewportSize().height) {
-    clip.height = page.viewportSize().height - clip.y - 10;
+  if (adjustedClip.y + adjustedClip.height > page.viewportSize().height) {
+    adjustedClip.height = page.viewportSize().height - adjustedClip.y - 10;
   }
 
   // Verify clip dimensions are positive
-  if (clip.width <= 0 || clip.height <= 0) {
+  if (adjustedClip.width <= 0 || adjustedClip.height <= 0) {
     console.log(
-      `Invalid clip dimensions: width=${clip.width}, height=${clip.height}`
+      `Invalid clip dimensions: width=${adjustedClip.width}, height=${adjustedClip.height}`
     );
     console.log(`Taking full viewport screenshot instead`);
 
@@ -783,12 +878,12 @@ async function captureSpecificElement(
   } else {
     // Take the screenshot with the calculated clip area
     console.log(
-      `Taking screenshot with clip: x=${clip.x}, y=${clip.y}, width=${clip.width}, height=${clip.height}`
+      `Taking screenshot with clip: x=${adjustedClip.x}, y=${adjustedClip.y}, width=${adjustedClip.width}, height=${adjustedClip.height}`
     );
 
     await page.screenshot({
       path: screenshotPath,
-      clip,
+      clip: adjustedClip,
     });
   }
 

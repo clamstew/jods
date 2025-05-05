@@ -19,112 +19,20 @@ The documentation site includes a Playwright-based screenshot system that:
 7. Preserves baseline images for comparison during design iterations
 8. Provides tools to manage and clean up screenshot history
 
-## 📊 Available Commands
+## 📊 Recommended Commands
 
-From the root project directory:
-
-```bash
-# Take full-page screenshots of the local development site
-pnpm docs:screenshot:homepage
-
-# Take component-focused screenshots of the local development site
-pnpm docs:screenshot:component
-
-# Take screenshots of specific homepage sections
-pnpm docs:screenshot:sections:homepage
-
-# Take section screenshots with consistent selectors
-pnpm docs:screenshot:sections:use-selectors
-
-# Fix all screenshot issues at once (component heights, selectors, etc)
-pnpm docs:screenshot:fix
-
-# Fix all screenshots and save as baselines (no timestamps)
-pnpm docs:screenshot:fix:baseline
-
-# Create baseline screenshots (without timestamps)
-pnpm docs:screenshot:baseline
-pnpm docs:screenshot:sections:homepage:baseline
-pnpm docs:screenshot:sections:use-selectors:baseline
-
-# Generate selectors for sections to reuse later
-pnpm docs:screenshot:sections:generate-selectors
-
-# Force regenerate selectors and take screenshots
-pnpm docs:screenshot:sections:regenerate
-
-# Clean up all timestamped screenshots
-pnpm docs:screenshot:cleanup
-
-# Clean up old screenshots but keep the 3 most recent batches
-pnpm docs:screenshot:cleanup:keep-latest
-
-# Clean up only section screenshots (keeping the most recent one for each section/theme)
-pnpm docs:screenshot:cleanup:sections
-
-# Clean up section screenshots but keep the 3 most recent for each section/theme
-pnpm docs:screenshot:cleanup:sections:keep
-
-# Do a dry run to see what would be deleted without actually deleting
-pnpm docs:screenshot:cleanup:sections:dry-run
-
-# Take screenshots of the production site
-pnpm docs:screenshot:production
-
-# NEW: Take screenshots using the unified approach (recommended)
-pnpm docs:screenshot:unified
-pnpm docs:screenshot:unified:baseline
-pnpm docs:screenshot:unified:localhost
-pnpm docs:screenshot:unified:components
-pnpm docs:screenshot:unified:sections
-pnpm docs:screenshot:unified:remix
-```
-
-From the docs directory:
+The unified screenshot approach is the recommended way to capture screenshots:
 
 ```bash
-# Take full-page screenshots of the local development site
-pnpm screenshot
+# From root directory
+pnpm docs:screenshot:unified              # All components
+pnpm docs:screenshot:unified:baseline     # Create baseline screenshots (no timestamp)
+pnpm docs:screenshot:unified:localhost    # Use localhost URL
+pnpm docs:screenshot:unified:components   # Only UI components
+pnpm docs:screenshot:unified:sections     # Only homepage sections
+pnpm docs:screenshot:unified:remix        # Only Remix section
 
-# Take full-page screenshots with specific environment
-pnpm screenshot:localhost
-pnpm screenshot:production
-
-# Take component-focused screenshots
-pnpm screenshot:component
-pnpm screenshot:component:localhost
-pnpm screenshot:component:production
-
-# Fix all screenshot issues at once (component heights, selectors, etc)
-pnpm screenshot:fix
-pnpm screenshot:fix:baseline
-pnpm screenshot:fix:localhost
-
-# Take section screenshots with direct content selection
-pnpm screenshot:sections:homepage
-pnpm screenshot:sections:homepage:baseline
-
-# Take section screenshots with saved selectors
-pnpm screenshot:sections:use-selectors
-pnpm screenshot:sections:use-selectors:baseline
-
-# Generate selectors for sections to reuse later
-pnpm screenshot:sections:generate-selectors
-
-# Force regenerate selectors and take screenshots
-pnpm screenshot:sections:regenerate
-
-# Create baseline screenshots (without timestamps)
-pnpm screenshot:baseline
-
-# Clean up screenshots
-pnpm screenshot:cleanup
-pnpm screenshot:cleanup:keep-latest
-pnpm screenshot:cleanup:sections
-pnpm screenshot:cleanup:sections:keep
-pnpm screenshot:cleanup:sections:dry-run
-
-# NEW: Take screenshots using the unified approach (recommended)
+# From docs directory
 pnpm screenshot:unified
 pnpm screenshot:unified:baseline
 pnpm screenshot:unified:localhost
@@ -133,58 +41,37 @@ pnpm screenshot:unified:sections
 pnpm screenshot:unified:remix
 ```
 
-## 📁 Screenshot Output
+Advanced options:
 
-Full-page screenshots are saved to:
+```bash
+# Capture specific named components
+node scripts/screenshot-unified.mjs --components=hero-section,framework-section
 
-```
-docs/static/screenshots/
-```
-
-Component screenshots are saved to:
-
-```
-docs/static/screenshots/components/
+# Run with debug mode for detailed logs
+DEBUG=true pnpm screenshot:unified
 ```
 
-Section screenshots are saved to:
+### 📁 Screenshot Output
+
+Unified screenshots are saved to:
 
 ```
-docs/static/screenshots/sections/
+docs/static/screenshots/unified/
 ```
 
-With the following naming format for new screenshots:
+With the following naming format:
 
 ```
-# Full page screenshots
-[page-name]-[theme]-[YYYYMMDD-HHMMSS].png
-
-# Component screenshots
-[component-name]-[theme]-[YYYYMMDD-HHMMSS].png
-
-# Section screenshots
-[section-name]-[theme]-[YYYYMMDD-HHMMSS].png
+[component-name]-[theme]-[YYYYMMDD-HHMMSS].png  # Timestamped screenshots
+[component-name]-[theme].png                     # Baseline screenshots (no timestamp)
 ```
 
 For example:
 
-- `homepage-light-20240615-134527.png`
-- `homepage-dark-20240615-134527.png`
 - `hero-section-light-20240615-134527.png`
 - `hero-section-dark-20240615-134527.png`
-- `hero-light-20240615-134527.png`
-- `features-dark-20240615-134527.png`
-
-The baseline images (without timestamps) are:
-
-- `homepage-light.png`
-- `homepage-dark.png`
-- `hero-section-light.png`
-- `hero-section-dark.png`
-- `hero-light.png`
-- `features-dark.png`
-
-This approach allows you to track design changes over time and compare new versions with the original baseline without overwriting important reference images.
+- `hero-section-light.png` (baseline)
+- `hero-section-dark.png` (baseline)
 
 ## 🔧 How It Works
 
@@ -193,186 +80,122 @@ The screenshot system uses Playwright, a browser automation library, to:
 1. Launch a headless Chromium browser
 2. Navigate to each configured page
 3. Toggle between light and dark themes using the site's theme toggle button
-4. Take full-page, component-specific, or section-specific screenshots in both themes
+4. Take component and section screenshots in both themes
 5. Save images with timestamped filenames to preserve version history
 
-## 📋 Screenshot Approaches
+## 📋 Unified Screenshot Approach
 
-### Full-page Screenshots
+The unified screenshot approach provides a consistent, flexible system for capturing screenshots:
 
-Full-page screenshots capture entire pages, useful for overall design review.
+### Benefits
 
-### Component Screenshots
+1. **Consistent Output** - All screenshots use the same selectors, padding rules, and filename conventions
+2. **Single Source of Truth** - Component definitions are defined once in `screenshot-selectors.mjs`
+3. **Flexible Modes** - Run the script with different modes for components, sections, or specific items
+4. **Smart Element Triangulation** - Uses multiple selectors to reliably locate sections
+5. **Element Exclusion** - Allows excluding specific elements from screenshots
 
-Component screenshots capture specific UI elements rather than entire pages, which is helpful for:
+### Advanced Features
 
-1. Focused UI testing of specific components
-2. Comparing design changes to isolated UI elements
-3. More efficient visual regression testing
-4. Creating component-specific documentation
+#### Element Triangulation
 
-Components are defined in `docs/scripts/screenshot-component.mjs`:
+The unified script uses multiple selectors to find elements more reliably:
 
 ```js
-const COMPONENTS = [
-  {
-    page: "/",
-    name: "hero-section",
-    selector: ".hero__title",
-    padding: 100, // Extra padding around element in pixels
-  },
-  {
-    page: "/",
-    name: "features-section",
-    selector: ".features",
-    padding: 50,
-  },
-  // Add more components as needed
-];
+{
+  page: "/",
+  name: "hero-section",
+  // Primary selector
+  selector: "div.heroBanner_UJgQ, div.hero-container, .hero, [class*='hero_']",
+  // Additional selectors for triangulation
+  alternativeSelectors: [
+    "h1:has-text('jods')",
+    ".hero-subtitle, .hero-description",
+    "div:has(> h1:has-text('jods'))"
+  ]
+}
 ```
 
-### Section Screenshots
+If the primary selector doesn't find the element, the script will:
 
-Section screenshots focus on capturing specific sections of the homepage for marketing and design review. We have two approaches:
+1. Try each alternative selector individually
+2. If multiple alternative selectors match, find their common parent
+3. Use triangulation to determine the correct section boundaries
 
-1. **Direct Section Location** (`homepage-sections.mjs`)
+#### Element Exclusion
 
-   - Uses text content and headings to find sections
-   - Adds data-testid attributes to elements
-   - Works well for initial screenshots
+The unified script allows you to exclude specific elements from screenshots while still using them for triangulation:
 
-2. **Selector-based Screenshots** (`use-selectors.mjs` + `generate-selectors.mjs`)
-   - Generates and saves CSS selectors to a JSON file
-   - Reuses selectors for consistent screenshots
-   - Falls back to testIds if selectors change
+```js
+{
+  page: "/",
+  name: "hero-section",
+  selector: "div.heroBanner_UJgQ",
+  alternativeSelectors: [ /* ... */ ],
+  // Elements to exclude from screenshot
+  excludeElements: [
+    "nav",
+    ".navbar",
+    "[class*='navbar_']"
+  ]
+}
+```
 
-### Consolidated Fix Script
+This enables:
 
-The `screenshot-fix.mjs` script provides a consolidated approach to fix common screenshot issues:
+- Using navigation bars for triangulation without including them in screenshots
+- Excluding footer links or pagination from section captures
+- Precise control over what appears in the final screenshot
+- Better consistency across themes and viewport sizes
 
-1. **Multiple Screenshot Types in One Run**
+The script automatically:
 
-   - Runs both component screenshots and dedicated section screenshots (like Remix integration)
-   - Uses a shared timestamp for all screenshots to keep them in sync
-   - Handles both standard timestamped screenshots and baselines
-
-2. **Enhanced Section Finding**
-
-   - Uses specialized finder functions for complex sections like Remix integration
-   - Implements minimum height requirements for tall sections
-   - Better targeting for sections with similar content
-
-3. **Simplified Usage**
-   - Single command to fix all screenshot issues: `pnpm docs:screenshot:fix` or `pnpm screenshot:fix`
-   - Creates baseline versions with `--baseline` flag
-   - Works with localhost environment via `screenshot:fix:localhost`
+1. Identifies excluded elements within the section
+2. Adjusts the screenshot boundaries to exclude them
+3. Maintains proper spacing and context for the remaining content
 
 ## ⚙️ Configuration
 
-### Full Page Screenshots
+### Component and Section Configuration
 
-Full page screenshots are configured in `docs/scripts/screenshot.mjs`.
-
-To add a new page, edit the `PAGES` array:
+All screenshots are configured in `docs/scripts/screenshot-selectors.mjs` using a unified component definition format:
 
 ```js
-const PAGES = [
-  { path: "/", name: "homepage" },
-  { path: "/intro", name: "intro" },
-  { path: "/api-reference", name: "api-reference" },
-  // Add your new page here
-  { path: "/your-page", name: "your-page-name" },
-];
-```
-
-### Component Screenshots
-
-Component screenshots are configured in `docs/scripts/screenshot-component.mjs`.
-
-To add a new component, edit the `COMPONENTS` array:
-
-```js
-const COMPONENTS = [
+export const COMPONENTS = [
+  // Hero section
   {
     page: "/",
     name: "hero-section",
-    selector: ".hero__title",
-    padding: 100,
-  },
-  // Add your new component here
-  {
-    page: "/your-page",
-    name: "your-component-name",
-    selector: ".your-component-selector",
+    selector: "div.heroBanner_UJgQ, div.hero-container",
+    fallbackStrategy: "first-heading",
     padding: 50,
-  },
-];
-```
-
-### Section Screenshots
-
-Section screenshots are configured in `docs/scripts/generate-selectors.mjs`.
-
-To add a new section, edit the `HOMEPAGE_SECTIONS` array:
-
-```js
-const HOMEPAGE_SECTIONS = [
-  {
-    name: "hero",
-    locator: {
-      strategy: "text",
-      value: "Zero dependency JSON store",
-      contextSelector: 'section, div.hero, [class*="hero"]',
-      fallback: "h1",
-    },
+    waitForSelector: "h1",
     testId: "jods-hero-section",
-    padding: 40,
+    alternativeSelectors: [
+      "h1:has-text('jods')",
+      ".hero-subtitle, .hero-description",
+    ],
+    excludeElements: ["nav", ".navbar"],
   },
-  // Add your new section here
-  {
-    name: "your-section",
-    locator: {
-      strategy: "heading", // Can be "text", "heading", or "element"
-      value: "Your Section Title",
-      contextSelector: "section, div.container",
-    },
-    testId: "jods-your-section",
-    padding: 40,
-  },
+  // Add more components here...
 ];
 ```
 
-### Selector-based Screenshots
+Each component definition can include:
 
-The selector-based approach works in two phases:
-
-1. **Generating Selectors**
-
-   - Script analyzes the homepage to find each section
-   - Uses text content, headings, and other semantic hints
-   - Generates unique CSS selectors for each section
-   - Saves selectors to `static/selectors/homepage-selectors.json`
-
-2. **Taking Screenshots**
-   - Loads selectors from the JSON file
-   - Uses them to locate sections consistently
-   - Adds padding and captures each section in light/dark mode
-   - Falls back to data-testid attributes when selectors change
-
-The selector file format is:
-
-```json
-{
-  "section-name": {
-    "selector": "unique.css .selector",
-    "testId": "jods-section-id",
-    "padding": 40,
-    "originalLocator": {
-      /* original locator data */
-    }
-  }
-}
-```
+| Property               | Description                                                                  |
+| ---------------------- | ---------------------------------------------------------------------------- |
+| `page`                 | Page path where the component appears                                        |
+| `name`                 | Unique identifier for the component                                          |
+| `selector`             | Primary CSS selector to find the element                                     |
+| `fallbackStrategy`     | Strategy to use when selector fails (e.g., "first-heading", "section-index") |
+| `padding`              | Extra padding around element in pixels                                       |
+| `waitForSelector`      | Selector to wait for before capturing (ensures content is loaded)            |
+| `testId`               | Test ID attribute for fallback identification                                |
+| `alternativeSelectors` | Array of alternative selectors for triangulation                             |
+| `excludeElements`      | Array of selectors for elements to exclude from screenshot                   |
+| `minHeight`            | Minimum height for the screenshot (useful for tall sections)                 |
+| `extraScroll`          | Extra scroll amount to better position the section                           |
 
 ### Path Handling
 
@@ -391,31 +214,13 @@ The system automatically detects and toggles between light and dark themes by:
 
 ## 📸 Screenshot Management
 
-The screenshot system includes tools to manage your screenshots:
-
 ### Creating Baselines
 
 Baseline screenshots are the reference images without timestamps used for comparison:
 
 ```bash
-# Create all baselines (full-page and component)
-pnpm docs:screenshot:baseline
-
-# From root directory - Create section baselines
-pnpm docs:screenshot:sections:homepage:baseline
-pnpm docs:screenshot:sections:use-selectors:baseline
-pnpm docs:screenshot:sections:remix:baseline
-
-# From docs directory - Create section baselines
-pnpm sections:homepage:baseline
-pnpm sections:use-selectors:baseline
-pnpm sections:remix:baseline
-
-# Create only component baselines
-node scripts/screenshot-manager.mjs --create-baselines --components-only
-
-# Create only full-page baselines
-node scripts/screenshot-manager.mjs --create-baselines --full-pages-only
+# Create baseline screenshots (no timestamp)
+pnpm docs:screenshot:unified:baseline
 ```
 
 ### Cleaning Up Screenshots
@@ -437,12 +242,6 @@ pnpm docs:screenshot:cleanup:sections:keep
 
 # Test section cleanup without actually deleting (dry run)
 pnpm docs:screenshot:cleanup:sections:dry-run
-
-# Only clean up component screenshots
-node scripts/screenshot-manager.mjs --cleanup --components-only
-
-# Only clean up full-page screenshots but keep 5 recent batches
-node scripts/screenshot-manager.mjs --cleanup --full-pages-only --keep=5
 ```
 
 ## 🤔 Troubleshooting
@@ -458,10 +257,10 @@ If the screenshot system encounters issues:
 
 If section screenshots aren't capturing the right elements:
 
-1. **Delete the selectors file** to force regeneration: `rm docs/static/selectors/homepage-selectors.json`
-2. **Verify the section locator definitions** in `generate-selectors.mjs`
-3. **Run with regeneration**: `node docs/scripts/use-selectors.mjs --regenerate`
-4. **Check the DOM structure** to ensure text content and headings match your locator strategies
+1. **Add more specific alternative selectors** in `screenshot-selectors.mjs` for better triangulation
+2. **Use element exclusion** to remove unwanted elements while keeping useful ones for triangulation
+3. **Run with debug mode** for detailed logs: `DEBUG=true pnpm screenshot:unified`
+4. **Adjust padding settings** for specific sections that need more context
 
 ## 🔄 Design Versioning and Comparison
 
@@ -498,49 +297,53 @@ To compare design changes with the baselines:
 - [Docusaurus Theming System](https://docusaurus.io/docs/styling-layout#theme)
 - [jods Maintainer's Guide](./maintainers-guide)
 
-## Consolidated Unified Screenshot Script
+## Appendix: Legacy Screenshot Approaches
 
-The project now includes a unified screenshot script that replaces the various specialized scripts with a single consistent approach:
+:::note
+The following sections describe legacy screenshot approaches that are maintained for backward compatibility. For new development, use the unified approach described above.
+:::
 
-### Benefits of the Unified Script
-
-1. **Consistent Output** - All screenshots use the same selectors, padding rules, and filename conventions
-2. **Single Source of Truth** - Component definitions are defined once in `screenshot-selectors.mjs`
-3. **Flexible Modes** - Run the script with different modes:
-   - `--mode=all` - Capture all components (default)
-   - `--mode=components` - Capture only components (legacy mode)
-   - `--mode=sections` - Capture only homepage sections
-   - `--mode=remix` - Capture only the Remix section
-   - `--components=hero-section,footer-section` - Capture specific named components
-
-### Example Usage
+### Legacy Available Commands
 
 ```bash
-# Capture all components with a timestamp
-node scripts/screenshot-unified.mjs
+# Take full-page screenshots of the local development site
+pnpm docs:screenshot:homepage
 
-# Create baseline screenshots (no timestamp) for all components
-node scripts/screenshot-unified.mjs --baseline
+# Take component-focused screenshots of the local development site
+pnpm docs:screenshot:component
 
-# Capture only the section screenshots
-node scripts/screenshot-unified.mjs --mode=sections
+# Take screenshots of specific homepage sections
+pnpm docs:screenshot:sections:homepage
 
-# Capture specific components
-node scripts/screenshot-unified.mjs --components=hero-section,framework-section
+# Take section screenshots with consistent selectors
+pnpm docs:screenshot:sections:use-selectors
+
+# Fix all screenshots
+pnpm docs:screenshot:fix
+
+# Create baseline screenshots
+pnpm docs:screenshot:baseline
 ```
 
-### Output Location
-
-Unified screenshots are saved to:
+### Legacy Output Directories
 
 ```
-docs/static/screenshots/unified/
+# Full page screenshots
+docs/static/screenshots/
+
+# Component screenshots
+docs/static/screenshots/components/
+
+# Section screenshots
+docs/static/screenshots/sections/
 ```
 
-### Migration Path
+### Legacy Configuration
 
-While the legacy scripts are still maintained for backward compatibility, new development should use the unified script. To migrate from the old scripts:
+The legacy approaches use different configuration files:
 
-1. Use `screenshot:unified` instead of `screenshot:component`
-2. Use `screenshot:unified:sections` instead of `screenshot:sections:homepage` or `screenshot:sections:use-selectors`
-3. Use `screenshot:unified:remix` instead of `screenshot:sections:remix`
+- Full page screenshots: `docs/scripts/screenshot.mjs`
+- Component screenshots: `docs/scripts/screenshot-component.mjs`
+- Section screenshots: `docs/scripts/generate-selectors.mjs`
+
+For details on these legacy approaches, see the archived documentation.

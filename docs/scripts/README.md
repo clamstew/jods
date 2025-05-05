@@ -29,11 +29,13 @@ The unified screenshot approach consists of:
    - Includes primary selectors and multiple alternative selectors for triangulation
    - Provides fallback strategies for each component
    - Includes optional test IDs
+   - Supports element exclusion for fine-tuned screenshots
 
 2. **Unified Screenshot Script** (`screenshot-unified.mjs`)
 
    - Supports multiple modes (all, components, sections, remix)
    - Uses triangulation of multiple elements for more reliable section capture
+   - Intelligently excludes specified elements while capturing sections
    - Uses consistent padding, naming, and screenshot logic
    - Supports both light and dark themes
    - Handles complex components like tabbed interfaces
@@ -82,10 +84,39 @@ When adding new screenshot capabilities:
 2. Add npm scripts to package.json if needed
 3. Update the documentation in `docs/docs/playwright-screenshots.md`
 
+## Advanced Features
+
+### Element Exclusion
+
+The script supports fine-tuned control over what appears in screenshots:
+
+- Use `excludeElements` to specify elements that should be excluded from the screenshot
+- Elements are still used for triangulation and section identification
+- The script automatically adjusts clip boundaries to exclude these elements
+- Useful for removing navigation bars, footers, or other elements that shouldn't be in the final screenshot
+
+Example:
+
+```js
+{
+  name: "hero-section",
+  // primary selector and other properties...
+  alternativeSelectors: [
+    "h1:has-text('jods')",
+    ".hero-subtitle"
+  ],
+  excludeElements: [
+    "nav",
+    ".navbar"
+  ]
+}
+```
+
 ## Troubleshooting
 
 If screenshots aren't capturing the right sections:
 
 1. Check the component definitions in `screenshot-selectors.mjs`
 2. Add more specific alternative selectors to help with triangulation
-3. Run with debug mode for detailed logging: `DEBUG=true pnpm screenshot:unified`
+3. Use `excludeElements` to remove unwanted parts from screenshots
+4. Run with debug mode for detailed logging: `DEBUG=true pnpm screenshot:unified`

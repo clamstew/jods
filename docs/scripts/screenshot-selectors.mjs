@@ -18,6 +18,7 @@ export const COMPONENTS = [
       ".hero-subtitle, .hero-description",
       "div:has(> h1:has-text('jods'))",
     ],
+    excludeElements: ["nav", ".navbar", "[class*='navbar_']"],
   },
 
   // Features section
@@ -35,6 +36,7 @@ export const COMPONENTS = [
       ".features-container, [class*='features']",
       "section:nth-of-type(2)",
     ],
+    excludeElements: [],
   },
 
   // Try jods section
@@ -54,6 +56,7 @@ export const COMPONENTS = [
       ".playground-container, [class*='playground'], [class*='liveEditor']",
       "iframe.code-editor",
     ],
+    excludeElements: [".bottom-links", ".pagination"],
   },
 
   // Framework section
@@ -77,6 +80,7 @@ export const COMPONENTS = [
       "button:has-text('React'), button:has-text('Preact'), button:has-text('Remix')",
       ".framework-tabs, [class*='tabs_'], [role='tablist']",
     ],
+    excludeElements: [],
   },
 
   // Compare section
@@ -97,6 +101,7 @@ export const COMPONENTS = [
       "table, .comparison-table, [class*='comparisonTable']",
       ".feature-comparison, [class*='comparison']",
     ],
+    excludeElements: [".footer-links", ".next-section-link"],
   },
 
   // Remix section
@@ -118,6 +123,7 @@ export const COMPONENTS = [
       "[id='remix-integration'], #remix-integration",
       "section:has(code:has-text('createCookieStore'))",
     ],
+    excludeElements: [".footer-cta", ".next-section-navigator"],
   },
 
   // Footer section
@@ -134,6 +140,7 @@ export const COMPONENTS = [
       ".footer, [class*='footer_']",
       "div:has(a[href*='github']):last-child",
     ],
+    excludeElements: [],
   },
 ];
 
