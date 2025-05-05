@@ -33,7 +33,7 @@ export default function HeroContent(): React.ReactElement {
           Get Started
         </Link>
 
-        <Link to="/remix" className="button button-remix button--secondary">
+        <Link to="/remix" className="button button--remix">
           <span className="remix-button-icon">💿</span> Remix
         </Link>
       </div>

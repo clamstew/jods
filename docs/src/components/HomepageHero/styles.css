@@ -369,9 +369,10 @@
   font-size: 1.3em;
   display: inline-block;
   transition: all 0.3s ease;
+  transform-origin: center;
 }
 
-.hero-buttons .button--remix:hover .remix-button-icon {
+.button--remix:hover .remix-button-icon {
   animation: spin 1.5s infinite linear;
 }
 
