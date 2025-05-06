@@ -6,7 +6,8 @@ export const COMPONENTS = [
   // Hero section
   {
     page: "/",
-    name: "hero-section",
+    name: "01-hero-section",
+    sectionIndex: 1, // Explicitly numbered for order
     selector:
       "div.heroBanner_UJgQ, div.hero-container, .hero, [class*='hero_']",
     fallbackStrategy: "first-heading",
@@ -27,10 +28,10 @@ export const COMPONENTS = [
   // Features section
   {
     page: "/",
-    name: "features-section",
+    name: "02-features-section",
+    sectionIndex: 2, // Explicitly numbered for order
     selector: "section:has(h2:has-text('Powerful features'))",
     fallbackStrategy: "section-index",
-    sectionIndex: 1,
     padding: 50,
     waitForSelector: "h2:has-text('Powerful features')",
     testId: "jods-features-section",
@@ -45,10 +46,10 @@ export const COMPONENTS = [
   // Try jods section
   {
     page: "/",
-    name: "try-jods-section",
+    name: "03-try-jods-section",
+    sectionIndex: 3, // Explicitly numbered for order
     selector: "section:has(h2:has-text('Try jods live'))",
     fallbackStrategy: "section-index",
-    sectionIndex: 2,
     padding: 200, // Increased for more space all around
     waitForSelector: "h2:has-text('Try jods live')",
     minHeight: 1100, // Increased to ensure editor is fully captured
@@ -70,7 +71,8 @@ export const COMPONENTS = [
   // Framework section - React tab (default on load)
   {
     page: "/",
-    name: "framework-section-react",
+    name: "04-framework-section-react",
+    sectionIndex: 4, // Explicitly numbered for order
     selector:
       "section:has(h2:has-text('Works with your favorite frameworks')), section:has(h2:has-text('Framework Integration'))",
     fallbackStrategy: "keyword-context",
@@ -162,7 +164,8 @@ export const COMPONENTS = [
   // Framework section - Remix tab (needs to click tab)
   {
     page: "/",
-    name: "framework-section-remix",
+    name: "05-framework-section-remix",
+    sectionIndex: 5, // Explicitly numbered for order (same section but different tab)
     selector:
       "section:has(h2:has-text('Works with your favorite frameworks')), section:has(h2:has-text('Framework Integration'))",
     fallbackStrategy: "keyword-context",
@@ -205,11 +208,11 @@ export const COMPONENTS = [
   // Compare section
   {
     page: "/",
-    name: "compare-section",
+    name: "06-compare-section",
+    sectionIndex: 6, // Explicitly numbered for order
     selector:
       "section:has(h2:has-text('Compare')), section:has(h2:has-text('How jods compares'))",
     fallbackStrategy: "section-index",
-    sectionIndex: 4,
     padding: 120,
     waitForSelector: "h2:has-text('Compare'), h2:has-text('How jods compares')",
     minHeight: 900,
@@ -238,7 +241,8 @@ export const COMPONENTS = [
   // Remix section
   {
     page: "/",
-    name: "remix-section",
+    name: "07-remix-section",
+    sectionIndex: 7, // Explicitly numbered for order
     selector:
       "section#remix-integration, section:has(h2:has-text('Remix Integration'))",
     fallbackStrategy: "keyword-context",
@@ -269,7 +273,8 @@ export const COMPONENTS = [
   // Footer section
   {
     page: "/",
-    name: "footer-section",
+    name: "08-footer-section",
+    sectionIndex: 8, // Explicitly numbered for order
     selector: "footer",
     fallbackStrategy: "last-element",
     padding: 30,
