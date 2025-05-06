@@ -51,6 +51,11 @@ export const COMPONENTS = [
     minHeight: 700,
     testId: "jods-try-live-section",
     extraScroll: 100,
+    // New properties for better dark mode handling
+    darkModeExtraWait: 2500, // Extra long wait for dark mode
+    editorLoadVerification: true, // Verify editor is loaded before screenshot
+    verifyContentLoaded: true, // Verify content is fully loaded
+    minVisibleCodeLines: 3, // Ensure at least 3 lines of code are visible
     alternativeSelectors: [
       "h2:has-text('Try jods live')",
       ".playground-container, [class*='playground'], [class*='liveEditor']",

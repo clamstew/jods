@@ -1178,6 +1178,122 @@ async function captureSpecificElement(
         }
       }
     }
+
+    // NEW: For try-jods-section, verify editor is loaded
+    if (
+      component.name === "try-jods-section" &&
+      component.editorLoadVerification
+    ) {
+      console.log("Verifying code editor is fully loaded...");
+
+      const editorLoaded = await page.evaluate(() => {
+        // Check for editor elements - multiple possible implementations
+        const editorFrames = document.querySelectorAll(
+          'iframe.code-editor, iframe[title*="editor"]'
+        );
+        const codeBlocks = document.querySelectorAll(
+          'pre code, .prism-code, [class*="codeBlock"]'
+        );
+        const editorDivs = document.querySelectorAll(
+          '[class*="editor"], [class*="playground"], [class*="liveEditor"], ' +
+            '[data-testid*="editor"], [data-testid*="playground"]'
+        );
+
+        // Log what we found for debugging
+        console.log(
+          `Found: ${editorFrames.length} editor iframes, ${codeBlocks.length} code blocks, ${editorDivs.length} editor divs`
+        );
+
+        if (
+          editorFrames.length === 0 &&
+          codeBlocks.length === 0 &&
+          editorDivs.length === 0
+        ) {
+          console.log("No editor elements found on page");
+          return false;
+        }
+
+        // If we have code blocks, check if they contain code
+        if (codeBlocks.length > 0) {
+          const hasCode = Array.from(codeBlocks).some(
+            (block) =>
+              block.textContent.trim().length > 50 || // Has substantial content
+              block.textContent.includes("import") || // Has code keywords
+              block.textContent.includes("function") ||
+              block.textContent.includes("const") ||
+              block.textContent.includes("jods")
+          );
+
+          if (!hasCode) {
+            console.log("Code blocks found but don't contain code yet");
+            return false;
+          }
+        }
+
+        // Check for Monaco editor or other common editor implementations
+        const hasMonacoEditor =
+          document.querySelector(".monaco-editor") !== null ||
+          document.querySelector('[data-mode="javascript"]') !== null ||
+          document.querySelector('[data-language="javascript"]') !== null;
+
+        if (hasMonacoEditor) {
+          console.log("Monaco editor found and loaded");
+          return true;
+        }
+
+        // If we have editor divs, check if they're rendered with content
+        if (editorDivs.length > 0) {
+          const hasRenderedEditor = Array.from(editorDivs).some((div) => {
+            const rect = div.getBoundingClientRect();
+            return rect.width > 100 && rect.height > 100; // Must have significant size
+          });
+
+          if (!hasRenderedEditor) {
+            console.log("Editor divs found but not properly rendered yet");
+            return false;
+          }
+        }
+
+        // If we have iframes, check if they're properly loaded
+        if (editorFrames.length > 0) {
+          // Can't directly check iframe content due to same-origin policy
+          // but we can check if they're visible and sized properly
+          const hasRenderedFrames = Array.from(editorFrames).some((frame) => {
+            const rect = frame.getBoundingClientRect();
+            return rect.width > 100 && rect.height > 100 && !frame.hidden;
+          });
+
+          if (!hasRenderedFrames) {
+            console.log("Editor iframes found but not properly rendered yet");
+            return false;
+          }
+        }
+
+        // If we got here, we've found editor elements that appear to be loaded
+        return true;
+      });
+
+      if (!editorLoaded) {
+        console.log("Editor not fully loaded, waiting longer...");
+        await page.waitForTimeout(2000);
+
+        // Scroll slightly to trigger any lazy loading
+        await page.evaluate(() => {
+          window.scrollBy(0, 20);
+          window.scrollBy(0, -20);
+        });
+
+        await page.waitForTimeout(1000);
+
+        // For dark mode specifically, even longer wait
+        if (theme === "dark") {
+          console.log("Extra wait for editor in dark mode...");
+          await page.waitForTimeout(1500);
+        }
+      } else {
+        console.log("Editor appears to be fully loaded");
+      }
+    }
   }
 
   // Get updated position after scrolling
