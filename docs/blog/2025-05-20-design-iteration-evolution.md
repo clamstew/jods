@@ -148,6 +148,27 @@ This preserves our Git history (so we can always recover if needed), keeps our w
 
 ## 📊 The Results Speak for Themselves
 
+Here's a concrete example of how this process improved our design - the evolution of the "Remix State, Reimagined" section:
+
+<div className="grid grid-cols-2 gap-4">
+  <div>
+    <p className="text-center font-bold">Before (Light Mode)</p>
+    <img src="/jods/screenshots/redesign-comparison/remix-section-before-light.png" alt="Remix section before redesign (light mode)" />
+  </div>
+  <div>
+    <p className="text-center font-bold">After (Light Mode)</p>
+    <img src="/jods/screenshots/redesign-comparison/remix-section-after-light.png" alt="Remix section after redesign (light mode)" />
+  </div>
+  <div>
+    <p className="text-center font-bold">Before (Dark Mode)</p>
+    <img src="/jods/screenshots/redesign-comparison/remix-section-before-dark.png" alt="Remix section before redesign (dark mode)" />
+  </div>
+  <div>
+    <p className="text-center font-bold">After (Dark Mode)</p>
+    <img src="/jods/screenshots/redesign-comparison/remix-section-after-dark.png" alt="Remix section after redesign (dark mode)" />
+  </div>
+</div>
+
 The impact of this evolution was dramatic:
 
 - **Design quality improved** - By systematically trying multiple approaches, we found solutions we wouldn't have discovered with just one attempt

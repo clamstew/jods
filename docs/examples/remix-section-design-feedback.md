@@ -11,8 +11,8 @@
 
 ### Screenshot References
 
-- Light theme: `/static/screenshots/unified/05-remix-section-light-20250506-012209.png`
-- Dark theme: `/static/screenshots/unified/05-remix-section-dark-20250506-012209.png`
+- Light theme: `/jods/screenshots/redesign-comparison/remix-section-before-light.png`
+- Dark theme: `/jods/screenshots/redesign-comparison/remix-section-before-dark.png`
 
 ### Implementation Details
 
@@ -42,8 +42,8 @@
 
 ### Screenshot References
 
-- Light theme: `/static/screenshots/unified/05-remix-section-light-20250506-012403.png`
-- Dark theme: `/static/screenshots/unified/05-remix-section-dark-20250506-012403.png`
+- Light theme: `/jods/screenshots/redesign-comparison/remix-section-after-light.png`
+- Dark theme: `/jods/screenshots/redesign-comparison/remix-section-after-dark.png`
 
 ### Implementation Details
 
@@ -73,8 +73,8 @@
 
 ### Screenshot References
 
-- Light theme: `/static/screenshots/unified/05-remix-section-light-20250506-012559.png`
-- Dark theme: `/static/screenshots/unified/05-remix-section-dark-20250506-012559.png`
+- Light theme: `/jods/screenshots/redesign-comparison/remix-section-after-light.png`
+- Dark theme: `/jods/screenshots/redesign-comparison/remix-section-after-dark.png`
 
 ### Implementation Details
 

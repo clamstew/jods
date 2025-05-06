@@ -40,9 +40,26 @@ With each iteration, it gets smarter about what you're trying to achieve! 🧠
 
 ## 🔍 Real Example: Remix Integration Section
 
-:::warning reminder
-TODO: Add screenshots showing the evolution of the Remix section design from initial commits through final version
-:::
+Here's the evolution of our "Remix State, Reimagined" section through the design iteration process:
+
+<div className="grid grid-cols-2 gap-4">
+  <div>
+    <p className="text-center font-bold">Before (Light Mode)</p>
+    <img src="/jods/screenshots/redesign-comparison/remix-section-before-light.png" alt="Remix section before redesign (light mode)" />
+  </div>
+  <div>
+    <p className="text-center font-bold">After (Light Mode)</p>
+    <img src="/jods/screenshots/redesign-comparison/remix-section-after-light.png" alt="Remix section after redesign (light mode)" />
+  </div>
+  <div>
+    <p className="text-center font-bold">Before (Dark Mode)</p>
+    <img src="/jods/screenshots/redesign-comparison/remix-section-before-dark.png" alt="Remix section before redesign (dark mode)" />
+  </div>
+  <div>
+    <p className="text-center font-bold">After (Dark Mode)</p>
+    <img src="/jods/screenshots/redesign-comparison/remix-section-after-dark.png" alt="Remix section after redesign (dark mode)" />
+  </div>
+</div>
 
 We recently used this process to redesign the "Remix State, Reimagined" section. Here's what happened:
 
