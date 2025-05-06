@@ -1,6 +1,6 @@
 ---
-description: How and when to use and create Cursor rules
-globs: ["**/*"]
+description: Guidelines for working with Cursor rules in this project
+globs: ["**/*.mdc", ".cursor/**/*"]
 alwaysApply: true
 ---
 # Cursor Rules Workflow
@@ -14,7 +14,7 @@ When working with Cursor rules in this project:
   ```
   ---
   description: Brief description of what this rule does
-  globs: optional/glob/patterns/*.ts
+  globs: ["**/*.{tsx,jsx,js,ts}", "**/*.css", "**/*.md"]
   alwaysApply: true or false
   ---
   ```
@@ -30,15 +30,36 @@ When working with Cursor rules in this project:
    - `alwaysApply`: Boolean indicating if rule should apply to all sessions
 3. Ensure the metadata is formatted correctly with triple dashes at the beginning and end
 4. Cursor will NOT recognize the file as a valid rule without this metadata
+5. **NEVER leave a blank line** between the metadata section and the first header - this breaks the formatting
 
 Example of CORRECT metadata:
 ```
 ---
 description: Guidelines for component design patterns
-globs: ["**/*.tsx", "**/*.jsx"]
+globs: ["**/*.{tsx,jsx,js,ts}"]
 alwaysApply: false
 ---
+# Heading starts immediately after metadata
 ```
+
+## Recommended Update Pattern
+
+When updating an existing rule file:
+
+1. **Create a .new version** of the file instead of editing directly:
+   ```bash
+   # Create a new version
+   edit_file .cursor/rules/rulename.mdc.new
+   
+   # After editing, move it to replace the original
+   mv .cursor/rules/rulename.mdc.new .cursor/rules/rulename.mdc
+   ```
+
+2. This pattern helps when Cursor's editor has difficulty with direct edits to MDC files
+3. Make sure to:
+   - Include the complete metadata section in the new file
+   - Copy over all relevant content
+   - Delete the .new file after moving it
 
 ## Best Practices
 
@@ -47,16 +68,17 @@ alwaysApply: false
 3. **Update existing rules** rather than duplicating content
 4. **Use the `@filename` syntax** to reference supporting files
 5. **Keep rules focused** on a specific aspect of the codebase
+6. **Consolidate glob patterns** for related file types using pattern groups, e.g., `["**/*.{tsx,jsx,js,ts}"]`
 
 ## Common Issues
 
 - If you can't locate a rule, use `find .cursor -name "*.mdc"` to see all rule files
 - Use proper MDC format with the metadata section (the part between `---` lines)
-- If updating a rule with the editor doesn't work, you can use terminal commands to recreate the file
+- If updating a rule with the editor doesn't work, use the create-and-move pattern described above
 - If a rule isn't being applied, check that the metadata header is complete and correctly formatted
 
 ## References
 
 For more information on Cursor rules, see the [official documentation](https://docs.cursor.com/context/rules).
 
-@docs/docs/design-iterations/index.md
+@docs/docs/design-iterations/index.md 
