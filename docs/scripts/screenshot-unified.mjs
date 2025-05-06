@@ -87,6 +87,72 @@ function getTimestamp() {
   return `${year}${month}${day}-${hours}${minutes}${seconds}`;
 }
 
+// Debug mode flag - can be enabled with DEBUG=true environment variable
+const DEBUG = process.env.DEBUG === "true";
+
+// Logger utility for consistent logging with optional debugging
+const logger = {
+  info: (message) => console.log(`ℹ️ ${message}`),
+  success: (message) => console.log(`✅ ${message}`),
+  warn: (message) => console.log(`⚠️ ${message}`),
+  error: (message) => console.error(`❌ ${message}`),
+  debug: (message) => {
+    if (DEBUG) console.log(`🔍 DEBUG: ${message}`);
+  },
+};
+
+// Retry utility for operations that might fail
+async function retry(operation, options = {}) {
+  const {
+    retries = 3,
+    delay = 500,
+    name = "operation",
+    onRetry = null,
+    onSuccess = null,
+    onFailure = null,
+  } = options;
+
+  let lastError;
+
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const result = await operation();
+
+      if (onSuccess) {
+        onSuccess(result, attempt);
+      } else if (attempt > 1) {
+        logger.success(`${name} succeeded on attempt ${attempt}`);
+      }
+
+      return result;
+    } catch (error) {
+      lastError = error;
+
+      if (attempt < retries) {
+        if (onRetry) {
+          onRetry(error, attempt);
+        } else {
+          logger.warn(
+            `${name} failed (attempt ${attempt}/${retries}): ${error.message}`
+          );
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, delay * attempt)); // Exponential backoff
+      }
+    }
+  }
+
+  if (onFailure) {
+    onFailure(lastError);
+  } else {
+    logger.error(
+      `${name} failed after ${retries} attempts: ${lastError.message}`
+    );
+  }
+
+  throw lastError;
+}
+
 /**
  * Take screenshots in unified mode
  * @param {string} mode - The screenshot mode: 'all', 'components', 'sections', or a specific component name
@@ -103,18 +169,18 @@ async function takeUnifiedScreenshots(
   // If saving baselines, clear the timestamp
   timestamp = saveBaseline ? null : timestamp;
 
-  console.log(
-    `🚀 Taking unified screenshots in ${mode} mode from ${BASE_URL}${PATH_PREFIX}`
+  logger.info(
+    `Taking unified screenshots in ${mode} mode from ${BASE_URL}${PATH_PREFIX}`
   );
-  console.log(`📂 Saving to ${directories.unified}`);
-  console.log(`🎨 Capturing themes: ${THEMES.join(", ")}`);
+  logger.info(`Saving to ${directories.unified}`);
+  logger.info(`Capturing themes: ${THEMES.join(", ")}`);
 
   // Determine which components to capture based on mode
   let componentsToCapture = [];
 
   if (specificComponents && specificComponents.length > 0) {
     // Specific named components - this should take priority over mode
-    console.log(
+    logger.info(
       `Filtering to specific components: ${specificComponents.join(", ")}`
     );
     componentsToCapture = componentsToUse.filter((component) =>
@@ -142,9 +208,9 @@ async function takeUnifiedScreenshots(
     if (component) {
       componentsToCapture = [component];
     } else {
-      console.error(`Unknown mode or component: ${mode}`);
-      console.log(`Available modes: all, components, sections, remix`);
-      console.log(
+      logger.error(`Unknown mode or component: ${mode}`);
+      logger.info(`Available modes: all, components, sections, remix`);
+      logger.info(
         `Available components: ${getAllComponentNames(componentsToUse).join(
           ", "
         )}`
@@ -154,12 +220,12 @@ async function takeUnifiedScreenshots(
   }
 
   if (componentsToCapture.length === 0) {
-    console.error("No components to capture based on the specified mode");
+    logger.error("No components to capture based on the specified mode");
     return;
   }
 
-  console.log(
-    `📸 Will capture ${
+  logger.info(
+    `Will capture ${
       componentsToCapture.length
     } components: ${componentsToCapture.map((c) => c.name).join(", ")}`
   );
@@ -173,221 +239,398 @@ async function takeUnifiedScreenshots(
     componentsByPage[component.page].push(component);
   }
 
-  // Launch browser
-  const browser = await chromium.launch();
-  const context = await browser.newContext({
-    viewport: { width: 1280, height: 2000 }, // Increased height from 1600 to 2000
-  });
+  // Launch browser with error handling
+  let browser;
+  let context;
+  let page;
 
-  const page = await context.newPage();
-
-  // Process each page and its components
-  for (const [pagePath, pageComponents] of Object.entries(componentsByPage)) {
-    const url = `${BASE_URL}${PATH_PREFIX}${pagePath}`;
-    console.log(`\n📄 Navigating to ${url}`);
-
-    // Go to the page and wait for it to be fully loaded
-    await page.goto(url, {
-      waitUntil: "networkidle",
-      timeout: 30000,
+  try {
+    browser = await chromium.launch();
+    context = await browser.newContext({
+      viewport: { width: 1280, height: 2000 }, // Increased height from 1600 to 2000
     });
 
-    // Wait additional time for animations and dynamic content
-    await page.waitForTimeout(2000);
+    page = await context.newPage();
 
-    // Capture screenshots for each theme
-    for (const theme of THEMES) {
-      console.log(`\n🎨 Capturing ${theme} theme`);
+    // Set up error handling for page events
+    page.on("pageerror", (exception) => {
+      logger.warn(`Page error: ${exception.message}`);
+    });
 
-      // Set the theme if needed
-      await setTheme(page, theme, componentsToUse[0]);
+    page.on("console", (msg) => {
+      if (msg.type() === "error") {
+        logger.debug(`Console error: ${msg.text()}`);
+      } else if (DEBUG) {
+        logger.debug(`Console ${msg.type()}: ${msg.text()}`);
+      }
+    });
+  } catch (error) {
+    logger.error(`Failed to launch browser: ${error.message}`);
+    throw error;
+  }
 
-      // Take screenshots of each component on this page
-      for (const component of pageComponents) {
+  // Track overall statistics
+  const stats = {
+    total: componentsToCapture.length * THEMES.length,
+    successful: 0,
+    failed: 0,
+    skipped: 0,
+    componentResults: {},
+  };
+
+  try {
+    // Process each page and its components
+    for (const [pagePath, pageComponents] of Object.entries(componentsByPage)) {
+      const url = `${BASE_URL}${PATH_PREFIX}${pagePath}`;
+      logger.info(`\n📄 Navigating to ${url}`);
+
+      // Go to the page with retry for better reliability
+      try {
+        await retry(
+          () => page.goto(url, { waitUntil: "networkidle", timeout: 30000 }),
+          {
+            name: "Page navigation",
+            retries: 3,
+            onSuccess: () => logger.success(`Successfully loaded ${url}`),
+          }
+        );
+
+        // Wait additional time for animations and dynamic content
+        await page.waitForTimeout(2000);
+      } catch (error) {
+        logger.error(
+          `Failed to navigate to ${url} after multiple attempts. Skipping components on this page.`
+        );
+
+        // Mark all components on this page as skipped
+        for (const component of pageComponents) {
+          stats.skipped += THEMES.length;
+          stats.componentResults[component.name] = {
+            status: "skipped",
+            reason: "navigation_failed",
+          };
+        }
+
+        continue; // Skip to the next page
+      }
+
+      // Capture screenshots for each theme
+      for (const theme of THEMES) {
+        logger.info(`\n🎨 Capturing ${theme} theme`);
+
+        // Set the theme with retry
         try {
-          console.log(`\n📸 Capturing ${component.name} component...`);
+          await retry(() => setTheme(page, theme, pageComponents[0]), {
+            name: `Theme setting (${theme})`,
+            retries: 2,
+          });
+        } catch (error) {
+          logger.error(
+            `Failed to set ${theme} theme after multiple attempts. Using whatever theme is currently active.`
+          );
+        }
 
-          // Wait for specific selector if provided
-          if (component.waitForSelector) {
-            try {
-              await page.waitForSelector(component.waitForSelector, {
-                timeout: 5000,
-                state: "attached",
-              });
-            } catch (e) {
-              console.log(
-                `Warning: Could not find wait selector for ${component.name}: ${e.message}`
-              );
+        // Take screenshots of each component on this page
+        for (const component of pageComponents) {
+          try {
+            logger.info(`\n📸 Capturing ${component.name} component...`);
+            stats.componentResults[component.name] =
+              stats.componentResults[component.name] || {};
+
+            // Wait for specific selector if provided
+            if (component.waitForSelector) {
+              try {
+                await page.waitForSelector(component.waitForSelector, {
+                  timeout: 5000,
+                  state: "attached",
+                });
+              } catch (e) {
+                logger.warn(
+                  `Could not find wait selector for ${component.name}: ${e.message}`
+                );
+              }
             }
-          }
 
-          // Special handling for framework tabs if needed
-          if (component.captureFrameworkTabs && component.frameworkTabs) {
-            await captureFrameworkTabs(
-              page,
-              component,
-              theme,
-              timestamp,
-              saveBaseline
-            );
-            continue; // Skip normal screenshot handling
-          }
-
-          // Special handling for Remix section
-          if (component.name === "remix-section") {
-            const remixElement = await findRemixSection(page);
-            if (remixElement) {
-              await captureSpecificElement(
+            // Special handling for framework tabs if needed
+            if (component.captureFrameworkTabs && component.frameworkTabs) {
+              const result = await captureFrameworkTabs(
                 page,
-                remixElement,
                 component,
                 theme,
                 timestamp,
                 saveBaseline
               );
+
+              if (result) {
+                stats.successful++;
+                stats.componentResults[component.name][theme] = "success";
+              } else {
+                stats.failed++;
+                stats.componentResults[component.name][theme] = "failed";
+              }
               continue; // Skip normal screenshot handling
             }
-          }
 
-          // Special treatment for compare section to ensure bottom rows are visible
-          if (component.name === "compare-section") {
-            // First scroll to the top of the section
-            await page.evaluate(() => {
-              // Find the compare section using standard DOM methods
-              const compareHeadings = Array.from(
-                document.querySelectorAll("h2")
-              ).filter(
-                (h) =>
-                  h.textContent.includes("Compare") ||
-                  h.textContent.includes("How jods compares")
-              );
+            // Special handling for Remix section
+            if (component.name === "remix-section") {
+              const remixElement = await findRemixSection(page);
+              if (remixElement) {
+                const result = await captureSpecificElement(
+                  page,
+                  remixElement,
+                  component,
+                  theme,
+                  timestamp,
+                  saveBaseline
+                );
 
-              let section = null;
-              if (compareHeadings.length > 0) {
-                // Find parent section
-                let current = compareHeadings[0];
-                while (
-                  current &&
-                  current.tagName !== "SECTION" &&
-                  current !== document.body
-                ) {
-                  current = current.parentElement;
+                if (result) {
+                  stats.successful++;
+                  stats.componentResults[component.name][theme] = "success";
+                } else {
+                  stats.failed++;
+                  stats.componentResults[component.name][theme] = "failed";
                 }
-                if (current && current.tagName === "SECTION") {
-                  section = current;
-                }
+                continue; // Skip normal screenshot handling
               }
+            }
 
-              // Fallback to data-testid
-              if (!section) {
-                section = document.querySelector(
-                  '[data-testid="jods-compare-section"]'
+            // Special treatment for compare section to ensure bottom rows are visible
+            if (component.name === "compare-section") {
+              // First scroll to the top of the section
+              await page.evaluate(() => {
+                // Find the compare section using standard DOM methods
+                const compareHeadings = Array.from(
+                  document.querySelectorAll("h2")
+                ).filter(
+                  (h) =>
+                    h.textContent.includes("Compare") ||
+                    h.textContent.includes("How jods compares")
+                );
+
+                let section = null;
+                if (compareHeadings.length > 0) {
+                  // Find parent section
+                  let current = compareHeadings[0];
+                  while (
+                    current &&
+                    current.tagName !== "SECTION" &&
+                    current !== document.body
+                  ) {
+                    current = current.parentElement;
+                  }
+                  if (current && current.tagName === "SECTION") {
+                    section = current;
+                  }
+                }
+
+                // Fallback to data-testid
+                if (!section) {
+                  section = document.querySelector(
+                    '[data-testid="jods-compare-section"]'
+                  );
+                }
+
+                if (section) {
+                  // Scroll to the section first
+                  section.scrollIntoView({ block: "start" });
+                }
+              });
+
+              // Wait for the first scroll to complete
+              await page.waitForTimeout(500);
+
+              // Then scroll down to see the bottom content
+              await page.evaluate(() => {
+                window.scrollBy(0, 300); // Scroll down 300px to reveal bottom content
+              });
+
+              await page.waitForTimeout(500); // Wait for second scroll
+            }
+
+            // Special handling for remix-section in light mode to ensure proper positioning
+            if (component.name === "remix-section" && theme === "light") {
+              // For light mode, we need to ensure the section is properly positioned
+              await page.evaluate(() => {
+                // Scroll to top first to ensure consistent positioning
+                window.scrollTo(0, 0);
+
+                // Find the remix section
+                const section = document.querySelector(
+                  "section#remix-integration"
+                );
+                if (section) {
+                  // Calculate a good scroll position to see the header and some content above
+                  const rect = section.getBoundingClientRect();
+                  const targetY = Math.max(0, rect.top - 350); // Increased from 300 to 350px
+                  window.scrollTo(0, targetY);
+                }
+              });
+              await page.waitForTimeout(1000); // Increased from 800 to 1000ms
+            }
+
+            // Special handling for remix-section in dark mode
+            if (component.name === "remix-section" && theme === "dark") {
+              await page.evaluate(() => {
+                // Find the remix section
+                const section = document.querySelector(
+                  "section#remix-integration"
+                );
+                if (section) {
+                  // Calculate a good scroll position for dark mode
+                  const rect = section.getBoundingClientRect();
+                  const targetY = Math.max(0, rect.top - 350); // Increased from 300 to 350px
+                  window.scrollTo(0, targetY);
+                }
+              });
+              await page.waitForTimeout(1000); // Increased from 800 to 1000ms
+            }
+
+            // Find the element using the selector or fallback strategies
+            const elementHandle = await findElementForComponent(
+              page,
+              component
+            );
+
+            if (elementHandle) {
+              // Capture HTML debug info for the component
+              if (component.captureHtmlDebug !== false) {
+                await captureComponentHtml(
+                  page,
+                  component,
+                  elementHandle,
+                  theme
                 );
               }
 
-              if (section) {
-                // Scroll to the section first
-                section.scrollIntoView({ block: "start" });
-              }
-            });
-
-            // Wait for the first scroll to complete
-            await page.waitForTimeout(500);
-
-            // Then scroll down to see the bottom content
-            await page.evaluate(() => {
-              window.scrollBy(0, 300); // Scroll down 300px to reveal bottom content
-            });
-
-            await page.waitForTimeout(500); // Wait for second scroll
-          }
-
-          // Special handling for remix-section in light mode to ensure proper positioning
-          if (component.name === "remix-section" && theme === "light") {
-            // For light mode, we need to ensure the section is properly positioned
-            await page.evaluate(() => {
-              // Scroll to top first to ensure consistent positioning
-              window.scrollTo(0, 0);
-
-              // Find the remix section
-              const section = document.querySelector(
-                "section#remix-integration"
+              const result = await captureSpecificElement(
+                page,
+                elementHandle,
+                component,
+                theme,
+                timestamp,
+                saveBaseline
               );
-              if (section) {
-                // Calculate a good scroll position to see the header and some content above
-                const rect = section.getBoundingClientRect();
-                const targetY = Math.max(0, rect.top - 350); // Increased from 300 to 350px
-                window.scrollTo(0, targetY);
-              }
-            });
-            await page.waitForTimeout(1000); // Increased from 800 to 1000ms
-          }
 
-          // Special handling for remix-section in dark mode
-          if (component.name === "remix-section" && theme === "dark") {
-            await page.evaluate(() => {
-              // Find the remix section
-              const section = document.querySelector(
-                "section#remix-integration"
+              if (result) {
+                stats.successful++;
+                stats.componentResults[component.name][theme] = "success";
+              } else {
+                stats.failed++;
+                stats.componentResults[component.name][theme] = "failed";
+              }
+            } else {
+              logger.warn(
+                `Could not find element for ${component.name}, taking viewport screenshot as fallback`
               );
-              if (section) {
-                // Calculate a good scroll position for dark mode
-                const rect = section.getBoundingClientRect();
-                const targetY = Math.max(0, rect.top - 350); // Increased from 300 to 350px
-                window.scrollTo(0, targetY);
+
+              // Take viewport screenshot as fallback
+              try {
+                const screenshotPath = path.join(
+                  directories.unified,
+                  `${component.name}-${theme}-fallback${
+                    saveBaseline ? "" : "-" + timestamp
+                  }.png`
+                );
+
+                await page.screenshot({
+                  path: screenshotPath,
+                  fullPage: false,
+                });
+
+                logger.success(`Fallback screenshot saved: ${screenshotPath}`);
+                stats.successful++;
+                stats.componentResults[component.name][theme] = "fallback";
+              } catch (error) {
+                logger.error(
+                  `Error taking fallback screenshot for ${component.name}: ${error.message}`
+                );
+                stats.failed++;
+                stats.componentResults[component.name][theme] = "failed";
               }
-            });
-            await page.waitForTimeout(1000); // Increased from 800 to 1000ms
-          }
-
-          // Find the element using the selector or fallback strategies
-          const elementHandle = await findElementForComponent(page, component);
-
-          if (elementHandle) {
-            // Capture HTML debug info for the component
-            if (component.captureHtmlDebug !== false) {
-              await captureComponentHtml(page, component, elementHandle, theme);
             }
-
-            await captureSpecificElement(
-              page,
-              elementHandle,
-              component,
-              theme,
-              timestamp,
-              saveBaseline
+          } catch (error) {
+            logger.error(
+              `Error capturing ${component.name} in ${theme} theme: ${error.message}`
             );
-          } else {
-            console.log(
-              `Could not find element for ${component.name}, taking viewport screenshot as fallback`
-            );
+            stats.failed++;
+            stats.componentResults[component.name][theme] = "error";
 
-            // Take viewport screenshot as fallback
-            const screenshotPath = path.join(
-              directories.unified,
-              `${component.name}-${theme}-fallback${
-                saveBaseline ? "" : "-" + timestamp
-              }.png`
-            );
+            // Create error screenshot to help with debugging if possible
+            try {
+              const errorScreenshotPath = path.join(
+                directories.unified,
+                `${component.name}-${theme}-error${
+                  saveBaseline ? "" : "-" + timestamp
+                }.png`
+              );
 
-            await page.screenshot({
-              path: screenshotPath,
-              fullPage: false,
-            });
+              await page.screenshot({
+                path: errorScreenshotPath,
+                fullPage: false,
+              });
 
-            console.log(`Fallback screenshot saved: ${screenshotPath}`);
+              logger.info(
+                `Error state screenshot saved: ${errorScreenshotPath}`
+              );
+            } catch (e) {
+              logger.debug(`Could not take error screenshot: ${e.message}`);
+            }
           }
-        } catch (error) {
-          console.error(`Error capturing ${component.name}:`, error);
         }
       }
     }
-  }
+  } catch (error) {
+    logger.error(`Fatal error in screenshot process: ${error.message}`);
 
-  await browser.close();
-  console.log("\n✅ All screenshots completed!");
-  if (!saveBaseline) {
-    console.log(`🏷️ Timestamp for this batch: ${timestamp}`);
+    // Try to save an error screenshot if possible
+    try {
+      if (page) {
+        const errorScreenshotPath = path.join(
+          directories.unified,
+          `fatal-error-${timestamp || "baseline"}.png`
+        );
+
+        await page.screenshot({
+          path: errorScreenshotPath,
+          fullPage: true,
+        });
+
+        logger.info(`Fatal error screenshot saved: ${errorScreenshotPath}`);
+      }
+    } catch (e) {
+      logger.debug(`Could not take fatal error screenshot: ${e.message}`);
+    }
+  } finally {
+    // Close browser
+    if (browser) {
+      await browser.close();
+    }
+
+    // Generate summary report
+    logger.info("\n📊 Screenshot Results Summary:");
+    logger.info(`Total components: ${stats.total}`);
+    logger.info(`✅ Successful: ${stats.successful}`);
+    logger.info(`❌ Failed: ${stats.failed}`);
+    logger.info(`⏭️ Skipped: ${stats.skipped}`);
+
+    // Generate detailed report of failed components
+    if (stats.failed > 0) {
+      logger.info("\nFailed components:");
+      for (const [component, results] of Object.entries(
+        stats.componentResults
+      )) {
+        for (const [theme, status] of Object.entries(results)) {
+          if (status === "failed" || status === "error") {
+            logger.info(`  - ${component} (${theme}): ${status}`);
+          }
+        }
+      }
+    }
+
+    logger.success(
+      `\nScreenshot process complete! Timestamp: ${timestamp || "baseline"}`
+    );
   }
 
   return timestamp;
@@ -829,6 +1072,7 @@ async function manageAnimations(page, action = "pause", component = null) {
 
 /**
  * Helper: Capture a specific element with appropriate clipping
+ * @returns {boolean} Whether the capture was successful
  */
 async function captureSpecificElement(
   page,
@@ -838,707 +1082,464 @@ async function captureSpecificElement(
   timestamp,
   saveBaseline
 ) {
-  // Pause animations if specified in the component config
-  await manageAnimations(page, "pause", component);
+  try {
+    // Pause animations if specified in the component config
+    await manageAnimations(page, "pause", component);
 
-  // Create the screenshot filename
-  const screenshotPath = path.join(
-    directories.unified,
-    `${component.name}-${theme}${saveBaseline ? "" : "-" + timestamp}.png`
-  );
-
-  // Get element's bounding box
-  const boundingBox = await elementHandle.boundingBox();
-
-  if (!boundingBox) {
-    console.log(`Could not get bounding box for ${component.name}`);
-    return;
-  }
-
-  // Debug element position
-  console.log(
-    `Element ${component.name} found at y=${boundingBox.y}, height=${boundingBox.height}`
-  );
-
-  // Account for fixed header height
-  const headerHeight = await page.evaluate(() => {
-    const header = document.querySelector(
-      'header, .navbar, [class*="navbar_"]'
+    // Create the screenshot filename
+    const screenshotPath = path.join(
+      directories.unified,
+      `${component.name}-${theme}${saveBaseline ? "" : "-" + timestamp}.png`
     );
-    return header ? header.offsetHeight : 0;
-  });
 
-  // Calculate padding
-  const padding = component.padding || 40;
-  const topPadding = padding + headerHeight;
-  const bottomPadding = padding;
+    // Get element's bounding box
+    const boundingBox = await elementHandle.boundingBox();
 
-  // Make sure element is in view
-  await elementHandle.scrollIntoViewIfNeeded();
-  await page.waitForTimeout(600);
+    if (!boundingBox) {
+      logger.warn(`Could not get bounding box for ${component.name}`);
+      return false;
+    }
 
-  // If this component has a clickSelector, click it
-  if (component.clickSelector) {
-    console.log(
-      `Clicking element matching selector: ${component.clickSelector}`
+    // Debug element position
+    logger.debug(
+      `Element ${component.name} found at y=${boundingBox.y}, height=${boundingBox.height}`
     );
-    try {
-      // Try to find and click the element
-      const clickResult = await page.evaluate((tabName) => {
-        // First try by data-testid (most reliable)
-        const testIdSelector = `[data-testid='framework-tab-${tabName.toLowerCase()}']`;
-        const elementByTestId = document.querySelector(testIdSelector);
-        if (elementByTestId) {
-          console.log(`Found element by data-testid: ${testIdSelector}`);
-          elementByTestId.click();
-          return { success: true, method: "data-testid-click" };
-        }
 
-        // Then try to find the Remix card by its specific styles and content
-        const frameworkCards = Array.from(
-          document.querySelectorAll(
-            'div.framework-card, div[style*="cursor: pointer"][style*="padding"][style*="gradient"]'
-          )
-        );
+    // Account for fixed header height
+    const headerHeight = await page.evaluate(() => {
+      const header = document.querySelector(
+        'header, .navbar, [class*="navbar_"]'
+      );
+      return header ? header.offsetHeight : 0;
+    });
 
-        // Look for the card with Remix content or CD emoji
-        for (const card of frameworkCards) {
-          if (
-            card.textContent.includes(tabName) ||
-            (tabName === "Remix" && card.textContent.includes("💿"))
-          ) {
-            console.log(`Found ${tabName} card with gradient styling`);
-            // Click the card
-            card.click();
-            return { success: true, method: "direct-card-click" };
+    // Calculate padding
+    const padding = component.padding || 40;
+    const topPadding = padding + headerHeight;
+    const bottomPadding = padding;
+
+    // Make sure element is in view
+    await elementHandle.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(600);
+
+    // If this component has a clickSelector, click it
+    if (component.clickSelector) {
+      logger.info(
+        `Clicking element matching selector: ${component.clickSelector}`
+      );
+      try {
+        // Try to find and click the element
+        const clickResult = await page.evaluate((tabName) => {
+          // First try by data-testid (most reliable)
+          const testIdSelector = `[data-testid='framework-tab-${tabName.toLowerCase()}']`;
+          const elementByTestId = document.querySelector(testIdSelector);
+          if (elementByTestId) {
+            console.log(`Found element by data-testid: ${testIdSelector}`);
+            elementByTestId.click();
+            return { success: true, method: "data-testid-click" };
           }
-        }
 
-        // If we couldn't find it by style, try by emoji
-        const emojiSelector =
-          tabName === "Remix"
-            ? 'div:has(div:has-text("💿"))'
-            : tabName === "React"
-            ? 'div:has(div:has-text("⚛️"))'
-            : "";
-
-        if (emojiSelector) {
-          const emojis = Array.from(document.querySelectorAll(emojiSelector));
-          if (emojis.length > 0) {
-            const closestCard = emojis[0].closest(
-              'div[style*="cursor: pointer"]'
-            );
-            if (closestCard) {
-              console.log(`Found ${tabName} card via emoji`);
-              closestCard.click();
-              return { success: true, method: "emoji-parent-click" };
-            }
-
-            // Try clicking the emoji container itself
-            console.log(`Clicking directly on ${tabName} emoji container`);
-            emojis[0].click();
-            return { success: true, method: "emoji-click" };
-          }
-        }
-
-        // Couldn't find it with any method
-        return { success: false };
-      }, component.verifyTabName || "Remix");
-
-      // If the direct DOM click didn't work, fall back to traditional click
-      if (!clickResult || !clickResult.success) {
-        console.log(
-          "Direct DOM click didn't succeed, falling back to traditional click"
-        );
-        await page.click(component.clickSelector);
-      } else {
-        console.log(`Successfully clicked tab via ${clickResult.method}`);
-      }
-
-      // Wait for content to update after clicking
-      const waitTime = component.clickWaitTime || 1000;
-      console.log(`Waiting ${waitTime}ms for content to update after click...`);
-      await page.waitForTimeout(waitTime);
-
-      // Verify tab selection if required
-      if (component.verifyTabSelected) {
-        console.log(`Verifying ${component.verifyTabName} tab is selected...`);
-
-        // Verify the tab is selected
-        let isTabSelected = await verifyTabIsSelected(page, component);
-        let retryCount = 0;
-        const maxRetries = component.retryTabSelection || 2;
-
-        // Retry clicking the tab if not selected
-        while (!isTabSelected && retryCount < maxRetries) {
-          console.log(
-            `Tab not selected, retrying click (${
-              retryCount + 1
-            }/${maxRetries})...`
+          // Then try to find the Remix card by its specific styles and content
+          const frameworkCards = Array.from(
+            document.querySelectorAll(
+              'div.framework-card, div[style*="cursor: pointer"][style*="padding"][style*="gradient"]'
+            )
           );
 
-          // Try a more direct clicking approach
-          await page.evaluate((tabName) => {
-            // First try by data-testid (most reliable)
-            const testIdSelector = `[data-testid='framework-tab-${tabName.toLowerCase()}']`;
-            const elementByTestId = document.querySelector(testIdSelector);
-            if (elementByTestId) {
-              console.log(
-                `Found element by data-testid: ${testIdSelector}, clicking it`
+          // Look for the card with Remix content or CD emoji
+          for (const card of frameworkCards) {
+            if (
+              card.textContent.includes(tabName) ||
+              (tabName === "Remix" && card.textContent.includes("💿"))
+            ) {
+              console.log(`Found ${tabName} card with gradient styling`);
+              // Click the card
+              card.click();
+              return { success: true, method: "direct-card-click" };
+            }
+          }
+
+          // If we couldn't find it by style, try by emoji
+          const emojiSelector =
+            tabName === "Remix"
+              ? 'div:has(div:has-text("💿"))'
+              : tabName === "React"
+              ? 'div:has(div:has-text("⚛️"))'
+              : "";
+
+          if (emojiSelector) {
+            const emojis = Array.from(document.querySelectorAll(emojiSelector));
+            if (emojis.length > 0) {
+              const closestCard = emojis[0].closest(
+                'div[style*="cursor: pointer"]'
               );
-              elementByTestId.click();
-              return true;
-            }
-
-            // Then try specific Remix card with active class
-            const frameworkCards = Array.from(
-              document.querySelectorAll(
-                'div.framework-card, div[style*="cursor: pointer"][style*="padding"][style*="gradient"]'
-              )
-            );
-            const targetCard = frameworkCards.find(
-              (card) =>
-                card.textContent.includes(tabName) ||
-                (tabName === "Remix" && card.textContent.includes("💿"))
-            );
-
-            if (targetCard) {
-              console.log(`Found ${tabName} card, attempting click`);
-              targetCard.click();
-              return true;
-            }
-
-            // Try finding by emoji
-            const emojiSelector =
-              tabName === "Remix"
-                ? 'div:has-text("💿")'
-                : tabName === "React"
-                ? 'div:has-text("⚛️")'
-                : "";
-            if (emojiSelector) {
-              const emojiElement = document.querySelector(emojiSelector);
-              if (emojiElement) {
-                const cardParent = emojiElement.closest(
-                  'div[style*="cursor: pointer"]'
-                );
-                if (cardParent) {
-                  console.log(
-                    `Found ${tabName} card via emoji, clicking parent`
-                  );
-                  cardParent.click();
-                  return true;
-                }
-
-                // Click on emoji itself
-                console.log(`Clicking directly on ${tabName} emoji`);
-                emojiElement.click();
-                return true;
+              if (closestCard) {
+                console.log(`Found ${tabName} card via emoji`);
+                closestCard.click();
+                return { success: true, method: "emoji-parent-click" };
               }
+
+              // Try clicking the emoji container itself
+              console.log(`Clicking directly on ${tabName} emoji container`);
+              emojis[0].click();
+              return { success: true, method: "emoji-click" };
             }
+          }
 
-            // Try original approach as fallback
-            const buttons = Array.from(document.querySelectorAll("button"));
-            const targetButtons = buttons.filter(
-              (btn) =>
-                btn.textContent.includes(tabName) ||
-                (tabName === "Remix" && btn.textContent.includes("💿")) ||
-                (tabName === "React" && btn.textContent.includes("⚛️"))
-            );
+          // Couldn't find it with any method
+          return { success: false };
+        }, component.verifyTabName || "Remix");
 
-            if (targetButtons.length > 0) {
-              console.log(
-                `Found ${targetButtons.length} ${tabName} buttons, clicking the first one...`
-              );
-              targetButtons[0].click();
-              return true;
-            }
-
-            return false;
-          }, component.verifyTabName || "Remix");
-
-          await page.waitForTimeout(1000); // Wait after retry click
-
-          // Check again
-          isTabSelected = await verifyTabIsSelected(page, component);
-          retryCount++;
-        }
-
-        if (isTabSelected) {
-          console.log(
-            `✅ ${component.verifyTabName} tab successfully selected!`
+        // If the direct DOM click didn't work, fall back to traditional click
+        if (!clickResult || !clickResult.success) {
+          logger.warn(
+            "Direct DOM click didn't succeed, falling back to traditional click"
           );
+
+          // Use retry for more reliability
+          await retry(() => page.click(component.clickSelector), {
+            name: "Element click",
+            retries: 2,
+            onSuccess: () => logger.success("Traditional click succeeded"),
+          });
         } else {
-          console.log(
-            `⚠️ Could not verify ${component.verifyTabName} tab selection after ${maxRetries} retries`
-          );
-        }
-      }
-
-      // Special handling for Remix tab to ensure proper scrolling
-      if (component.name === "framework-section-remix") {
-        console.log("Special handling for Remix tab...");
-        await page.evaluate(() => {
-          // Find the framework section
-          const sections = Array.from(document.querySelectorAll("section"));
-          const frameworkSection = sections.find((section) => {
-            // Look for headings in this section
-            const headings = Array.from(section.querySelectorAll("h2"));
-            return headings.some(
-              (h) =>
-                h.textContent.includes("Works with your favorite frameworks") ||
-                h.textContent.includes("Framework Integration")
-            );
-          });
-
-          if (frameworkSection) {
-            // Calculate position to show the entire section
-            const rect = frameworkSection.getBoundingClientRect();
-            // Scroll to show from the top of the section with just enough room for the fixed header
-            const headerHeight =
-              document.querySelector("header")?.offsetHeight || 70;
-            window.scrollTo(0, window.scrollY + rect.top - headerHeight - 50);
-          }
-        });
-
-        // Wait for scroll to complete
-        await page.waitForTimeout(800);
-      }
-
-      // Re-scroll to ensure element is still in view after click
-      await elementHandle.scrollIntoViewIfNeeded();
-      await page.waitForTimeout(400);
-    } catch (error) {
-      console.log(`Error clicking element: ${error.message}`);
-    }
-  }
-
-  // Special handling for framework-section-remix to ensure we capture the full section
-  if (component.name === "framework-section-remix") {
-    // Ensure we can see the heading and tabs
-    await page.evaluate(() => {
-      // Find the framework section heading using standard DOM methods
-      const headings = Array.from(document.querySelectorAll("h2"));
-      const heading = headings.find(
-        (h) =>
-          h.textContent.includes("Works with your favorite frameworks") ||
-          h.textContent.includes("Framework Integration")
-      );
-
-      if (heading) {
-        const rect = heading.getBoundingClientRect();
-        // Adjust scroll to show heading at top with padding
-        window.scrollTo(0, window.scrollY + rect.top - 100);
-      }
-    });
-
-    await page.waitForTimeout(500);
-  }
-
-  // For tall sections, scroll up a bit to ensure full visibility
-  if (component.name.includes("section") || boundingBox.height > 500) {
-    // Apply extra scroll if specified in the component config
-    const extraScroll = component.extraScroll || 0;
-    const totalOffset = topPadding + extraScroll;
-
-    await page.evaluate(
-      (params) => {
-        window.scrollBy(0, -params.offset);
-      },
-      { offset: totalOffset }
-    );
-    await page.waitForTimeout(500);
-
-    // NEW: Check if we need to verify content is loaded
-    if (component.verifyContentLoaded) {
-      console.log("Verifying content is fully loaded...");
-
-      // Check for code blocks specifically
-      const codeBlocksVisible = await page.evaluate((minLines) => {
-        const codeBlocks = document.querySelectorAll("pre code");
-
-        if (codeBlocks.length === 0) {
-          console.log("No code blocks found on page");
-          return false;
+          logger.success(`Successfully clicked tab via ${clickResult.method}`);
         }
 
-        // Check if any code block has minimum number of lines
-        const hasVisibleCode = Array.from(codeBlocks).some((block) => {
-          const lineCount = block.textContent.split("\n").length;
-          console.log(`Found code block with ${lineCount} lines`);
-          return lineCount >= minLines;
-        });
-
-        // If we don't have visible code with enough lines, we need to adjust
-        if (!hasVisibleCode) {
-          console.log("Code blocks don't have enough visible lines");
-          return false;
-        }
-
-        return true;
-      }, component.minVisibleCodeLines || 5);
-
-      // If code blocks aren't properly visible, scroll down to reveal them
-      if (!codeBlocksVisible) {
-        console.log("Code blocks not fully visible, adjusting scroll...");
-        await page.evaluate(() => window.scrollBy(0, 200));
-        await page.waitForTimeout(800); // Give more time for rendering
-      }
-    }
-
-    // NEW: For framework-section-react, ensure React tab is selected if needed
-    if (
-      component.name === "framework-section-react" &&
-      component.forceReactTabSelected
-    ) {
-      console.log(
-        "Ensuring React tab is selected for framework-section-react..."
-      );
-
-      // Check if React tab is already selected
-      const isReactSelected = await page.evaluate(() => {
-        // Look for React tab with selected state
-        const reactTabs = Array.from(
-          document.querySelectorAll('button, [role="tab"], .framework-card')
-        ).filter(
-          (el) =>
-            (el.textContent.includes("React") &&
-              !el.textContent.includes("Preact")) ||
-            el.textContent.includes("⚛️")
+        // Wait for content to update after clicking
+        const waitTime = component.clickWaitTime || 1000;
+        logger.debug(
+          `Waiting ${waitTime}ms for content to update after click...`
         );
+        await page.waitForTimeout(waitTime);
 
-        if (reactTabs.length === 0) return false;
-
-        // Check if any React tab appears selected
-        return reactTabs.some((tab) => {
-          // Check various selection indicators
-          return (
-            tab.getAttribute("aria-selected") === "true" ||
-            tab.classList.contains("active") ||
-            tab.classList.contains("selected") ||
-            tab.style.background?.includes("gradient") ||
-            (window.getComputedStyle(tab).background || "").includes("gradient")
+        // Verify tab selection if required
+        if (component.verifyTabSelected) {
+          logger.info(
+            `Verifying ${component.verifyTabName} tab is selected...`
           );
-        });
-      });
 
-      // If React tab isn't selected, try to click it
-      if (!isReactSelected) {
-        console.log("React tab not selected, attempting to select it...");
+          // Verify the tab is selected
+          let isTabSelected = await verifyTabIsSelected(page, component);
+          let retryCount = 0;
+          const maxRetries = component.retryTabSelection || 2;
 
-        try {
-          // Try to find and click the React tab
+          // Retry clicking the tab if not selected
+          while (!isTabSelected && retryCount < maxRetries) {
+            logger.warn(
+              `Tab not selected, retrying click (${
+                retryCount + 1
+              }/${maxRetries})...`
+            );
+
+            // Try a more direct clicking approach with retry
+            await retry(
+              () =>
+                page.evaluate((tabName) => {
+                  // First try by data-testid (most reliable)
+                  const testIdSelector = `[data-testid='framework-tab-${tabName.toLowerCase()}']`;
+                  const elementByTestId =
+                    document.querySelector(testIdSelector);
+                  if (elementByTestId) {
+                    console.log(
+                      `Found element by data-testid: ${testIdSelector}, clicking it`
+                    );
+                    elementByTestId.click();
+                    return true;
+                  }
+
+                  // Then try specific Remix card with active class
+                  const frameworkCards = Array.from(
+                    document.querySelectorAll(
+                      'div.framework-card, div[style*="cursor: pointer"][style*="padding"][style*="gradient"]'
+                    )
+                  );
+                  const targetCard = frameworkCards.find(
+                    (card) =>
+                      card.textContent.includes(tabName) ||
+                      (tabName === "Remix" && card.textContent.includes("💿"))
+                  );
+
+                  if (targetCard) {
+                    console.log(`Found ${tabName} card, attempting click`);
+                    targetCard.click();
+                    return true;
+                  }
+
+                  // Try finding by emoji
+                  const emojiSelector =
+                    tabName === "Remix"
+                      ? 'div:has-text("💿")'
+                      : tabName === "React"
+                      ? 'div:has-text("⚛️")'
+                      : "";
+                  if (emojiSelector) {
+                    const emojiElement = document.querySelector(emojiSelector);
+                    if (emojiElement) {
+                      const cardParent = emojiElement.closest(
+                        'div[style*="cursor: pointer"]'
+                      );
+                      if (cardParent) {
+                        console.log(
+                          `Found ${tabName} card via emoji, clicking parent`
+                        );
+                        cardParent.click();
+                        return true;
+                      }
+
+                      // Click on emoji itself
+                      console.log(`Clicking directly on ${tabName} emoji`);
+                      emojiElement.click();
+                      return true;
+                    }
+                  }
+
+                  // Try original approach as fallback
+                  const buttons = Array.from(
+                    document.querySelectorAll("button")
+                  );
+                  const targetButtons = buttons.filter(
+                    (btn) =>
+                      btn.textContent.includes(tabName) ||
+                      (tabName === "Remix" && btn.textContent.includes("💿")) ||
+                      (tabName === "React" && btn.textContent.includes("⚛️"))
+                  );
+
+                  if (targetButtons.length > 0) {
+                    console.log(
+                      `Found ${targetButtons.length} ${tabName} buttons, clicking the first one...`
+                    );
+                    targetButtons[0].click();
+                    return true;
+                  }
+
+                  return false;
+                }, component.verifyTabName || "Remix"),
+              { name: "Tab selection", retries: 2 }
+            );
+
+            await page.waitForTimeout(1000); // Wait after retry click
+
+            // Check again
+            isTabSelected = await verifyTabIsSelected(page, component);
+            retryCount++;
+          }
+
+          if (isTabSelected) {
+            logger.success(
+              `${component.verifyTabName} tab successfully selected!`
+            );
+          } else {
+            logger.warn(
+              `Could not verify ${component.verifyTabName} tab selection after ${maxRetries} retries`
+            );
+          }
+        }
+
+        // Special handling for Remix tab to ensure proper scrolling
+        if (component.name === "framework-section-remix") {
+          logger.debug("Special handling for Remix tab...");
           await page.evaluate(() => {
-            // Try various ways to find React tab
-            const reactSelectors = [
-              '[data-testid="jods-framework-tab-react"]',
-              'button:has-text("React"):not(:has-text("Preact"))',
-              'button:has-text("⚛️")',
-              '.framework-card:has-text("React"):not(:has-text("Preact"))',
-              '.framework-card:has-text("⚛️")',
-            ];
+            // Find the framework section
+            const sections = Array.from(document.querySelectorAll("section"));
+            const frameworkSection = sections.find((section) => {
+              // Look for headings in this section
+              const headings = Array.from(section.querySelectorAll("h2"));
+              return headings.some(
+                (h) =>
+                  h.textContent.includes(
+                    "Works with your favorite frameworks"
+                  ) || h.textContent.includes("Framework Integration")
+              );
+            });
 
-            for (const selector of reactSelectors) {
-              try {
-                const reactTab = document.querySelector(selector);
-                if (reactTab) {
-                  console.log(`Found React tab with selector: ${selector}`);
-                  reactTab.click();
-                  return true;
+            if (frameworkSection) {
+              // Calculate position to show the entire section
+              const rect = frameworkSection.getBoundingClientRect();
+              // Scroll to show from the top of the section with just enough room for the fixed header
+              const headerHeight =
+                document.querySelector("header")?.offsetHeight || 70;
+              window.scrollTo(0, window.scrollY + rect.top - headerHeight - 50);
+            }
+          });
+
+          // Wait for scroll to complete
+          await page.waitForTimeout(800);
+        }
+
+        // Re-scroll to ensure element is still in view after click
+        await elementHandle.scrollIntoViewIfNeeded();
+        await page.waitForTimeout(400);
+      } catch (error) {
+        logger.error(`Error clicking element: ${error.message}`);
+      }
+    }
+
+    // Get updated position after scrolling
+    const updatedBoundingBox = await elementHandle.boundingBox();
+
+    if (!updatedBoundingBox) {
+      logger.warn(`Element disappeared after scrolling for ${component.name}`);
+      return false;
+    }
+
+    // Handle element exclusions if specified
+    let adjustedClip = {
+      x: Math.max(0, updatedBoundingBox.x - padding),
+      y: Math.max(0, updatedBoundingBox.y - topPadding),
+      width: Math.min(
+        page.viewportSize().width - Math.max(0, updatedBoundingBox.x - padding),
+        updatedBoundingBox.width + padding * 2
+      ),
+      height: Math.max(
+        updatedBoundingBox.height + topPadding + bottomPadding,
+        component.minHeight || 0
+      ),
+    };
+
+    // Process excluded elements if any
+    if (component.excludeElements && component.excludeElements.length > 0) {
+      logger.debug(
+        `Processing ${component.excludeElements.length} excluded elements`
+      );
+
+      // Get bounding boxes of elements to exclude
+      const excludeBoundingBoxes = await Promise.all(
+        component.excludeElements.map(async (selector) => {
+          try {
+            const elements = await page.$$(selector);
+            return Promise.all(
+              elements.map(async (el) => {
+                const box = await el.boundingBox();
+                if (box) {
+                  return {
+                    selector,
+                    box,
+                    isVisible: await el.isVisible(),
+                  };
                 }
-              } catch (e) {
-                console.log(`Error with selector ${selector}: ${e.message}`);
-              }
-            }
-
-            // Try by text content if selectors failed
-            const allButtons = Array.from(
-              document.querySelectorAll('button, [role="tab"], .framework-card')
+                return null;
+              })
             );
-            const reactButton = allButtons.find(
-              (btn) =>
-                (btn.textContent.includes("React") &&
-                  !btn.textContent.includes("Preact")) ||
-                btn.textContent.includes("⚛️")
+          } catch (e) {
+            logger.debug(
+              `Error getting excluded element ${selector}: ${e.message}`
             );
+            return [];
+          }
+        })
+      );
 
-            if (reactButton) {
-              console.log("Found React tab by text content");
-              reactButton.click();
-              return true;
-            }
+      // Flatten and filter results
+      const validExcludedBoxes = excludeBoundingBoxes
+        .flat()
+        .filter((item) => item !== null && item.isVisible);
 
-            return false;
-          });
+      if (validExcludedBoxes.length > 0) {
+        logger.debug(
+          `Found ${validExcludedBoxes.length} visible elements to exclude`
+        );
 
-          // Wait after clicking
-          await page.waitForTimeout(1200);
-        } catch (error) {
-          console.log(`Error selecting React tab: ${error.message}`);
+        // Check for elements that affect the top of the screenshot
+        const topExclusions = validExcludedBoxes.filter(
+          (item) =>
+            item.box.y < adjustedClip.y + 100 && // Element is near the top
+            item.box.y + item.box.height <
+              adjustedClip.y + adjustedClip.height / 2 // Not spanning the whole element
+        );
+
+        // Check for elements that affect the bottom of the screenshot
+        const bottomExclusions = validExcludedBoxes.filter(
+          (item) =>
+            item.box.y > adjustedClip.y + adjustedClip.height / 2 && // Element is in the bottom half
+            item.box.y + item.box.height <=
+              adjustedClip.y + adjustedClip.height + 50 // Within or just below the clip area
+        );
+
+        // Adjust clip area based on exclusions
+        if (topExclusions.length > 0) {
+          // Find the lowest bottom edge of top exclusions
+          const maxBottom = Math.max(
+            ...topExclusions.map((item) => item.box.y + item.box.height)
+          );
+          const newY = maxBottom + 10; // Add small gap
+
+          // Adjust clip area from the top
+          const heightReduction = newY - adjustedClip.y;
+          if (heightReduction > 0 && heightReduction < adjustedClip.height) {
+            adjustedClip.y = newY;
+            adjustedClip.height -= heightReduction;
+            logger.debug(
+              `Adjusted top of clip to exclude elements, new y=${adjustedClip.y}`
+            );
+          }
+        }
+
+        if (bottomExclusions.length > 0) {
+          // Find the highest top edge of bottom exclusions
+          const minTop = Math.min(
+            ...bottomExclusions.map((item) => item.box.y)
+          );
+
+          // Adjust clip area from the bottom
+          const newHeight = minTop - adjustedClip.y - 10; // Subtract small gap
+          if (newHeight > adjustedClip.height / 2) {
+            // Ensure we don't cut off too much
+            adjustedClip.height = newHeight;
+            logger.debug(
+              `Adjusted bottom of clip to exclude elements, new height=${adjustedClip.height}`
+            );
+          }
         }
       }
     }
 
-    // NEW: For try-jods-section, verify editor is loaded
-    if (
-      component.name === "try-jods-section" &&
-      component.editorLoadVerification
-    ) {
-      console.log("Verifying code editor is fully loaded...");
+    // Make sure we don't exceed the page dimensions
+    if (adjustedClip.y + adjustedClip.height > page.viewportSize().height) {
+      adjustedClip.height = page.viewportSize().height - adjustedClip.y - 10;
+    }
 
-      const editorLoaded = await page.evaluate(() => {
-        // Check for editor elements - multiple possible implementations
-        const editorFrames = document.querySelectorAll(
-          'iframe.code-editor, iframe[title*="editor"]'
-        );
-        const codeBlocks = document.querySelectorAll(
-          'pre code, .prism-code, [class*="codeBlock"]'
-        );
-        const editorDivs = document.querySelectorAll(
-          '[class*="editor"], [class*="playground"], [class*="liveEditor"], ' +
-            '[data-testid*="editor"], [data-testid*="playground"]'
-        );
+    // Verify clip dimensions are positive
+    if (adjustedClip.width <= 0 || adjustedClip.height <= 0) {
+      logger.error(
+        `Invalid clip dimensions: width=${adjustedClip.width}, height=${adjustedClip.height}`
+      );
+      logger.info(`Taking full viewport screenshot instead`);
 
-        // Log what we found for debugging
-        console.log(
-          `Found: ${editorFrames.length} editor iframes, ${codeBlocks.length} code blocks, ${editorDivs.length} editor divs`
-        );
-
-        if (
-          editorFrames.length === 0 &&
-          codeBlocks.length === 0 &&
-          editorDivs.length === 0
-        ) {
-          console.log("No editor elements found on page");
-          return false;
-        }
-
-        // If we have code blocks, check if they contain code
-        if (codeBlocks.length > 0) {
-          const hasCode = Array.from(codeBlocks).some(
-            (block) =>
-              block.textContent.trim().length > 50 || // Has substantial content
-              block.textContent.includes("import") || // Has code keywords
-              block.textContent.includes("function") ||
-              block.textContent.includes("const") ||
-              block.textContent.includes("jods")
-          );
-
-          if (!hasCode) {
-            console.log("Code blocks found but don't contain code yet");
-            return false;
-          }
-        }
-
-        // Check for Monaco editor or other common editor implementations
-        const hasMonacoEditor =
-          document.querySelector(".monaco-editor") !== null ||
-          document.querySelector('[data-mode="javascript"]') !== null ||
-          document.querySelector('[data-language="javascript"]') !== null;
-
-        if (hasMonacoEditor) {
-          console.log("Monaco editor found and loaded");
-          return true;
-        }
-
-        // If we have editor divs, check if they're rendered with content
-        if (editorDivs.length > 0) {
-          const hasRenderedEditor = Array.from(editorDivs).some((div) => {
-            const rect = div.getBoundingClientRect();
-            return rect.width > 100 && rect.height > 100; // Must have significant size
-          });
-
-          if (!hasRenderedEditor) {
-            console.log("Editor divs found but not properly rendered yet");
-            return false;
-          }
-        }
-
-        // If we have iframes, check if they're properly loaded
-        if (editorFrames.length > 0) {
-          // Can't directly check iframe content due to same-origin policy
-          // but we can check if they're visible and sized properly
-          const hasRenderedFrames = Array.from(editorFrames).some((frame) => {
-            const rect = frame.getBoundingClientRect();
-            return rect.width > 100 && rect.height > 100 && !frame.hidden;
-          });
-
-          if (!hasRenderedFrames) {
-            console.log("Editor iframes found but not properly rendered yet");
-            return false;
-          }
-        }
-
-        // If we got here, we've found editor elements that appear to be loaded
-        return true;
+      await page.screenshot({
+        path: screenshotPath,
+        fullPage: false,
       });
+    } else {
+      // Take the screenshot with the calculated clip area
+      logger.info(
+        `Taking screenshot with clip: x=${adjustedClip.x}, y=${adjustedClip.y}, width=${adjustedClip.width}, height=${adjustedClip.height}`
+      );
 
-      if (!editorLoaded) {
-        console.log("Editor not fully loaded, waiting longer...");
-        await page.waitForTimeout(2000);
-
-        // Scroll slightly to trigger any lazy loading
-        await page.evaluate(() => {
-          window.scrollBy(0, 20);
-          window.scrollBy(0, -20);
-        });
-
-        await page.waitForTimeout(1000);
-
-        // For dark mode specifically, even longer wait
-        if (theme === "dark") {
-          console.log("Extra wait for editor in dark mode...");
-          await page.waitForTimeout(1500);
-        }
-      } else {
-        console.log("Editor appears to be fully loaded");
-      }
+      await page.screenshot({
+        path: screenshotPath,
+        clip: adjustedClip,
+      });
     }
-  }
 
-  // Get updated position after scrolling
-  const updatedBoundingBox = await elementHandle.boundingBox();
+    logger.success(`Screenshot saved to: ${screenshotPath}`);
 
-  // Handle element exclusions if specified
-  let adjustedClip = {
-    x: Math.max(0, updatedBoundingBox.x - padding),
-    y: Math.max(0, updatedBoundingBox.y - topPadding),
-    width: Math.min(
-      page.viewportSize().width - Math.max(0, updatedBoundingBox.x - padding),
-      updatedBoundingBox.width + padding * 2
-    ),
-    height: Math.max(
-      updatedBoundingBox.height + topPadding + bottomPadding,
-      component.minHeight || 0
-    ),
-  };
+    // Resume animations if they were paused
+    await manageAnimations(page, "resume", component);
 
-  // Process excluded elements if any
-  if (component.excludeElements && component.excludeElements.length > 0) {
-    console.log(
-      `Processing ${component.excludeElements.length} excluded elements`
-    );
+    return true;
+  } catch (error) {
+    logger.error(`Error capturing ${component.name}: ${error.message}`);
 
-    // Get bounding boxes of elements to exclude
-    const excludeBoundingBoxes = await Promise.all(
-      component.excludeElements.map(async (selector) => {
-        try {
-          const elements = await page.$$(selector);
-          return Promise.all(
-            elements.map(async (el) => {
-              const box = await el.boundingBox();
-              if (box) {
-                return {
-                  selector,
-                  box,
-                  isVisible: await el.isVisible(),
-                };
-              }
-              return null;
-            })
-          );
-        } catch (e) {
-          console.log(
-            `Error getting excluded element ${selector}: ${e.message}`
-          );
-          return [];
-        }
-      })
-    );
-
-    // Flatten and filter results
-    const validExcludedBoxes = excludeBoundingBoxes
-      .flat()
-      .filter((item) => item !== null && item.isVisible);
-
-    if (validExcludedBoxes.length > 0) {
-      console.log(
-        `Found ${validExcludedBoxes.length} visible elements to exclude`
-      );
-
-      // Check for elements that affect the top of the screenshot
-      const topExclusions = validExcludedBoxes.filter(
-        (item) =>
-          item.box.y < adjustedClip.y + 100 && // Element is near the top
-          item.box.y + item.box.height <
-            adjustedClip.y + adjustedClip.height / 2 // Not spanning the whole element
-      );
-
-      // Check for elements that affect the bottom of the screenshot
-      const bottomExclusions = validExcludedBoxes.filter(
-        (item) =>
-          item.box.y > adjustedClip.y + adjustedClip.height / 2 && // Element is in the bottom half
-          item.box.y + item.box.height <=
-            adjustedClip.y + adjustedClip.height + 50 // Within or just below the clip area
-      );
-
-      // Adjust clip area based on exclusions
-      if (topExclusions.length > 0) {
-        // Find the lowest bottom edge of top exclusions
-        const maxBottom = Math.max(
-          ...topExclusions.map((item) => item.box.y + item.box.height)
-        );
-        const newY = maxBottom + 10; // Add small gap
-
-        // Adjust clip area from the top
-        const heightReduction = newY - adjustedClip.y;
-        if (heightReduction > 0 && heightReduction < adjustedClip.height) {
-          adjustedClip.y = newY;
-          adjustedClip.height -= heightReduction;
-          console.log(
-            `Adjusted top of clip to exclude elements, new y=${adjustedClip.y}`
-          );
-        }
-      }
-
-      if (bottomExclusions.length > 0) {
-        // Find the highest top edge of bottom exclusions
-        const minTop = Math.min(...bottomExclusions.map((item) => item.box.y));
-
-        // Adjust clip area from the bottom
-        const newHeight = minTop - adjustedClip.y - 10; // Subtract small gap
-        if (newHeight > adjustedClip.height / 2) {
-          // Ensure we don't cut off too much
-          adjustedClip.height = newHeight;
-          console.log(
-            `Adjusted bottom of clip to exclude elements, new height=${adjustedClip.height}`
-          );
-        }
-      }
+    // Resume animations even if the screenshot failed
+    try {
+      await manageAnimations(page, "resume", component);
+    } catch (e) {
+      // Ignore errors in animation resuming
     }
+
+    return false;
   }
-
-  // Make sure we don't exceed the page dimensions
-  if (adjustedClip.y + adjustedClip.height > page.viewportSize().height) {
-    adjustedClip.height = page.viewportSize().height - adjustedClip.y - 10;
-  }
-
-  // Verify clip dimensions are positive
-  if (adjustedClip.width <= 0 || adjustedClip.height <= 0) {
-    console.log(
-      `Invalid clip dimensions: width=${adjustedClip.width}, height=${adjustedClip.height}`
-    );
-    console.log(`Taking full viewport screenshot instead`);
-
-    await page.screenshot({
-      path: screenshotPath,
-      fullPage: false,
-    });
-  } else {
-    // Take the screenshot with the calculated clip area
-    console.log(
-      `Taking screenshot with clip: x=${adjustedClip.x}, y=${adjustedClip.y}, width=${adjustedClip.width}, height=${adjustedClip.height}`
-    );
-
-    await page.screenshot({
-      path: screenshotPath,
-      clip: adjustedClip,
-    });
-  }
-
-  console.log(`Screenshot saved to: ${screenshotPath}`);
-
-  // Resume animations if they were paused
-  await manageAnimations(page, "resume", component);
 }
 
 /**
