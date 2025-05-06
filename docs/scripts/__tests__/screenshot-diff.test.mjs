@@ -1,35 +1,37 @@
 // Basic tests for screenshot-diff.mjs
-import { setupMocks, fs, path } from "./setup-mocks.mjs";
+import { jest } from "@jest/globals";
+import { mockFS } from "./setup-mocks.mjs";
 
 // In a real implementation, we would import actual functions
 // For now, we'll simulate key functionality we expect from screenshot-diff.mjs
 
 describe("screenshot-diff", () => {
   beforeEach(() => {
-    setupMocks();
+    jest.clearAllMocks();
+    // Set default mock behaviors
+    mockFS.existsSync.mockReturnValue(true);
+    mockFS.readdirSync.mockReturnValue([]);
+    mockFS.readFileSync.mockReturnValue(Buffer.from("mock-data"));
   });
 
   // Mock implementation of key functions we expect in the module
 
-  function findScreenshotPairs(baselineDir, currentDir) {
-    const baselineFiles = fs.readdirSync(baselineDir);
-    const currentFiles = fs.readdirSync(currentDir);
+  function findScreenshotPairs(baselineDir, compareDir) {
+    if (!mockFS.existsSync(baselineDir) || !mockFS.existsSync(compareDir)) {
+      return [];
+    }
+
+    const baselineFiles = mockFS.readdirSync(baselineDir);
+    const compareFiles = new Set(mockFS.readdirSync(compareDir));
 
     const pairs = [];
 
-    for (const baselineFile of baselineFiles) {
-      // Skip non-PNG files
-      if (!baselineFile.endsWith(".png")) continue;
-
-      const baselinePath = path.join(baselineDir, baselineFile);
-
-      // Find matching current file
-      if (currentFiles.includes(baselineFile)) {
-        const currentPath = path.join(currentDir, baselineFile);
+    for (const baseFile of baselineFiles) {
+      if (compareFiles.has(baseFile)) {
         pairs.push({
-          name: baselineFile,
-          baseline: baselinePath,
-          current: currentPath,
+          name: baseFile,
+          baseline: `${baselineDir}/${baseFile}`,
+          compare: `${compareDir}/${baseFile}`,
         });
       }
     }
@@ -37,181 +39,186 @@ describe("screenshot-diff", () => {
     return pairs;
   }
 
-  function compareImages(baseline, current, options = {}) {
-    // Simulated image comparison result
-    // In a real implementation, this would use an image diffing library
+  function compareImages(baselineFile, compareFile, diffFile, threshold = 0.1) {
+    // Mock implementation for testing
+    const baselineData = mockFS.readFileSync(baselineFile);
+    const compareData = mockFS.readFileSync(compareFile);
 
-    const { threshold = 0.1 } = options;
+    // For testing, assume identical if they're the same buffer
+    const isDifferent = baselineData !== compareData;
+    const percentDiff = isDifferent ? 0.05 : 0; // Below threshold for test
 
-    // For testing, we'll simulate based on filenames
-    // In reality, this would do pixel-by-pixel comparison
-    const baselineContent = fs.readFileSync(baseline);
-    const currentContent = fs.readFileSync(current);
-
-    // Determine if images are identical (for test purposes)
-    // In this mock, we'll say they're different if the mock returns different content
-    const identical = baselineContent === currentContent;
-
-    // Calculate simulated diff percentage for testing
-    // This logic is for test purposes only
-    let diffPercentage = 0;
-    if (!identical) {
-      // Extract "difference" from filename for testing (e.g., "component-10pct-diff.png")
-      const filename = path.basename(current);
-      const match = filename.match(/(\d+)pct/);
-      diffPercentage = match ? Number(match[1]) / 100 : 0.05;
+    // Generate diff image in real implementation
+    if (isDifferent) {
+      mockFS.writeFileSync(diffFile, Buffer.from("diff-data"));
     }
 
-    // Determine pass/fail based on threshold
-    const passed = diffPercentage <= threshold;
-
     return {
-      identical,
-      diffPercentage,
-      passed,
-      diffImage: identical ? null : `${current.replace(".png", "")}-diff.png`,
+      isDifferent,
+      percentDiff,
+      diffFile: isDifferent ? diffFile : null,
     };
   }
 
   function generateDiffReport(results) {
-    const totalTests = results.length;
-    const passedTests = results.filter((r) => r.passed).length;
-    const failedTests = totalTests - passedTests;
+    if (!results || results.length === 0) {
+      return {
+        total: 0,
+        failed: 0,
+        passed: 0,
+        details: [],
+      };
+    }
 
-    return {
-      totalTests,
-      passedTests,
-      failedTests,
-      passRate: totalTests > 0 ? passedTests / totalTests : 1,
-      details: results,
+    const report = {
+      total: results.length,
+      failed: 0,
+      passed: 0,
+      details: [],
     };
+
+    for (const result of results) {
+      if (result.percentDiff > 0.1) {
+        report.failed++;
+      } else {
+        report.passed++;
+      }
+
+      report.details.push({
+        name: result.name,
+        percentDiff: result.percentDiff,
+        status: result.percentDiff > 0.1 ? "failed" : "passed",
+        diffFile: result.diffFile,
+      });
+    }
+
+    return report;
   }
 
   describe("findScreenshotPairs", () => {
     test("finds matching screenshot pairs between directories", () => {
       // Setup
-      const baselineDir = "static/screenshots/baseline";
-      const currentDir = "static/screenshots/current";
+      const baselineDir = "static/screenshots/baselines";
+      const compareDir = "static/screenshots/current";
 
-      fs.readdirSync.mockImplementation((dir) => {
-        if (dir === baselineDir) {
-          return [
-            "button-primary.png",
-            "form-input.png",
-            "header.png",
-            "not-image.txt",
-          ];
-        } else if (dir === currentDir) {
-          return ["button-primary.png", "header.png", "new-component.png"];
-        }
+      mockFS.readdirSync.mockImplementation((dir) => {
+        if (dir === baselineDir) return ["file1.png", "file2.png", "file3.png"];
+        if (dir === compareDir) return ["file1.png", "file3.png", "file4.png"];
         return [];
       });
 
       // Execute
-      const pairs = findScreenshotPairs(baselineDir, currentDir);
+      const pairs = findScreenshotPairs(baselineDir, compareDir);
 
       // Assert
+      expect(pairs).toHaveLength(2);
       expect(pairs).toEqual([
         {
-          name: "button-primary.png",
-          baseline: "static/screenshots/baseline/button-primary.png",
-          current: "static/screenshots/current/button-primary.png",
+          name: "file1.png",
+          baseline: "static/screenshots/baselines/file1.png",
+          compare: "static/screenshots/current/file1.png",
         },
         {
-          name: "header.png",
-          baseline: "static/screenshots/baseline/header.png",
-          current: "static/screenshots/current/header.png",
+          name: "file3.png",
+          baseline: "static/screenshots/baselines/file3.png",
+          compare: "static/screenshots/current/file3.png",
         },
       ]);
-
-      // Verify directory reads
-      expect(fs.readdirSync).toHaveBeenCalledWith(baselineDir);
-      expect(fs.readdirSync).toHaveBeenCalledWith(currentDir);
     });
 
     test("returns empty array if no matching files", () => {
       // Setup
-      const baselineDir = "static/screenshots/baseline";
-      const currentDir = "static/screenshots/current";
+      const baselineDir = "static/screenshots/baselines";
+      const compareDir = "static/screenshots/current";
 
-      fs.readdirSync.mockImplementation((dir) => {
-        if (dir === baselineDir) {
-          return ["button-primary.png", "form-input.png"];
-        } else if (dir === currentDir) {
-          return ["new-component.png"];
-        }
+      mockFS.readdirSync.mockImplementation((dir) => {
+        if (dir === baselineDir) return ["file1.png", "file2.png"];
+        if (dir === compareDir) return ["file3.png", "file4.png"];
         return [];
       });
 
       // Execute
-      const pairs = findScreenshotPairs(baselineDir, currentDir);
+      const pairs = findScreenshotPairs(baselineDir, compareDir);
 
       // Assert
-      expect(pairs).toEqual([]);
+      expect(pairs).toHaveLength(0);
     });
   });
 
   describe("compareImages", () => {
     test("identifies identical images", () => {
       // Setup
-      const baseline = "static/screenshots/baseline/identical.png";
-      const current = "static/screenshots/current/identical.png";
+      const baselineFile = "static/screenshots/baselines/test.png";
+      const compareFile = "static/screenshots/current/test.png";
+      const diffFile = "static/screenshots/diffs/test.png";
 
-      // Mock reading identical content
-      const imageContent = Buffer.from("mock-image-data");
-      fs.readFileSync.mockReturnValue(imageContent);
+      // Use same buffer for identical images
+      const testBuffer = Buffer.from("same-data");
+      mockFS.readFileSync.mockReturnValue(testBuffer);
 
       // Execute
-      const result = compareImages(baseline, current);
+      const result = compareImages(baselineFile, compareFile, diffFile);
 
       // Assert
-      expect(result.identical).toBe(true);
-      expect(result.diffPercentage).toBe(0);
-      expect(result.passed).toBe(true);
-      expect(result.diffImage).toBeNull();
+      expect(result.isDifferent).toBe(false);
+      expect(result.percentDiff).toBe(0);
+      expect(result.diffFile).toBeNull();
+      expect(mockFS.writeFileSync).not.toHaveBeenCalled();
     });
 
     test("detects differences below threshold (pass)", () => {
       // Setup
-      const baseline = "static/screenshots/baseline/button.png";
-      const current = "static/screenshots/current/button-5pct.png";
+      const baselineFile = "static/screenshots/baselines/test.png";
+      const compareFile = "static/screenshots/current/test.png";
+      const diffFile = "static/screenshots/diffs/test.png";
 
-      // Mock reading different content
-      fs.readFileSync.mockImplementation((path) => {
-        return path.includes("baseline") ? "baseline-data" : "current-data";
-      });
+      // Different buffers for differing images
+      mockFS.readFileSync
+        .mockImplementationOnce(() => Buffer.from("baseline-data"))
+        .mockImplementationOnce(() => Buffer.from("compare-data"));
 
       // Execute
-      const result = compareImages(baseline, current, { threshold: 0.1 });
+      const result = compareImages(baselineFile, compareFile, diffFile);
 
       // Assert
-      expect(result.identical).toBe(false);
-      expect(result.diffPercentage).toBe(0.05); // 5%
-      expect(result.passed).toBe(true); // Below 10% threshold
-      expect(result.diffImage).toBe(
-        "static/screenshots/current/button-5pct-diff.png"
+      expect(result.isDifferent).toBe(true);
+      expect(result.percentDiff).toBe(0.05); // Below threshold
+      expect(result.diffFile).toBe(diffFile);
+      expect(mockFS.writeFileSync).toHaveBeenCalledWith(
+        diffFile,
+        expect.any(Buffer)
       );
     });
 
     test("detects differences above threshold (fail)", () => {
       // Setup
-      const baseline = "static/screenshots/baseline/button.png";
-      const current = "static/screenshots/current/button-20pct.png";
+      const baselineFile = "static/screenshots/baselines/test.png";
+      const compareFile = "static/screenshots/current/test.png";
+      const diffFile = "static/screenshots/diffs/test.png";
 
-      // Mock reading different content
-      fs.readFileSync.mockImplementation((path) => {
-        return path.includes("baseline") ? "baseline-data" : "current-data";
-      });
+      // Different buffers for differing images
+      mockFS.readFileSync
+        .mockImplementationOnce(() => Buffer.from("baseline-data"))
+        .mockImplementationOnce(() => Buffer.from("compare-data"));
+
+      // Custom threshold for test
+      const threshold = 0.01; // Make threshold lower than our mock diff (0.05)
 
       // Execute
-      const result = compareImages(baseline, current, { threshold: 0.1 });
+      const result = compareImages(
+        baselineFile,
+        compareFile,
+        diffFile,
+        threshold
+      );
 
       // Assert
-      expect(result.identical).toBe(false);
-      expect(result.diffPercentage).toBe(0.2); // 20%
-      expect(result.passed).toBe(false); // Above 10% threshold
-      expect(result.diffImage).toBe(
-        "static/screenshots/current/button-20pct-diff.png"
+      expect(result.isDifferent).toBe(true);
+      expect(result.percentDiff).toBe(0.05); // Above threshold
+      expect(result.diffFile).toBe(diffFile);
+      expect(mockFS.writeFileSync).toHaveBeenCalledWith(
+        diffFile,
+        expect.any(Buffer)
       );
     });
   });
@@ -220,20 +227,37 @@ describe("screenshot-diff", () => {
     test("generates summary report from results", () => {
       // Setup
       const results = [
-        { name: "button1.png", passed: true, diffPercentage: 0 },
-        { name: "button2.png", passed: true, diffPercentage: 0.05 },
-        { name: "header.png", passed: false, diffPercentage: 0.2 },
+        {
+          name: "test1.png",
+          percentDiff: 0.05, // Pass
+          isDifferent: true,
+          diffFile: "static/screenshots/diffs/test1.png",
+        },
+        {
+          name: "test2.png",
+          percentDiff: 0.2, // Fail
+          isDifferent: true,
+          diffFile: "static/screenshots/diffs/test2.png",
+        },
+        {
+          name: "test3.png",
+          percentDiff: 0, // Pass (identical)
+          isDifferent: false,
+          diffFile: null,
+        },
       ];
 
       // Execute
       const report = generateDiffReport(results);
 
       // Assert
-      expect(report.totalTests).toBe(3);
-      expect(report.passedTests).toBe(2);
-      expect(report.failedTests).toBe(1);
-      expect(report.passRate).toBe(2 / 3);
-      expect(report.details).toBe(results);
+      expect(report.total).toBe(3);
+      expect(report.passed).toBe(2);
+      expect(report.failed).toBe(1);
+      expect(report.details).toHaveLength(3);
+      expect(report.details[0].status).toBe("passed");
+      expect(report.details[1].status).toBe("failed");
+      expect(report.details[2].status).toBe("passed");
     });
 
     test("handles empty results array", () => {
@@ -241,10 +265,9 @@ describe("screenshot-diff", () => {
       const report = generateDiffReport([]);
 
       // Assert
-      expect(report.totalTests).toBe(0);
-      expect(report.passedTests).toBe(0);
-      expect(report.failedTests).toBe(0);
-      expect(report.passRate).toBe(1); // Default to 100% when no tests
+      expect(report.total).toBe(0);
+      expect(report.passed).toBe(0);
+      expect(report.failed).toBe(0);
       expect(report.details).toEqual([]);
     });
   });

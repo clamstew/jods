@@ -1,48 +1,50 @@
 import { jest } from "@jest/globals";
 
-// Standard module mocks
-jest.mock("fs");
-jest.mock("path");
-jest.mock("child_process");
+// Create mock implementations
+const mockFS = {
+  existsSync: jest.fn().mockReturnValue(true),
+  statSync: jest.fn().mockReturnValue({ isDirectory: () => true }),
+  readdirSync: jest.fn().mockReturnValue([]),
+  readFileSync: jest.fn().mockReturnValue("{}"),
+  writeFileSync: jest.fn(),
+  mkdirSync: jest.fn(),
+  rmSync: jest.fn(),
+  unlinkSync: jest.fn(),
+  copyFileSync: jest.fn(),
+  createWriteStream: jest.fn().mockReturnValue({
+    write: jest.fn(),
+    end: jest.fn(),
+  }),
+};
 
-// Import modules after mocking
-import * as fs from "fs";
-import * as path from "path";
-import * as childProcess from "child_process";
-
-// Shared setup function that can be called from individual test files
-export function setupMocks() {
-  // Clear all previous mock calls
-  jest.clearAllMocks();
-
-  // fs module mocks
-  fs.existsSync = jest.fn().mockReturnValue(true);
-  fs.readdirSync = jest.fn().mockReturnValue([]);
-  fs.readFileSync = jest.fn().mockReturnValue(Buffer.from("mock-data"));
-  fs.writeFileSync = jest.fn();
-  fs.statSync = jest.fn().mockReturnValue({ isDirectory: () => true });
-  fs.mkdirSync = jest.fn();
-  fs.copyFileSync = jest.fn();
-  fs.rmSync = jest.fn();
-  fs.unlinkSync = jest.fn();
-
-  // path module mocks
-  path.join = jest.fn((...args) => args.join("/"));
-  path.basename = jest.fn((path) => path.split("/").pop());
-  path.dirname = jest.fn((dir) => dir.split("/").slice(0, -1).join("/"));
-  path.resolve = jest.fn((...args) => args.join("/"));
-  path.relative = jest.fn((from, to) => to.replace(from, ""));
-
-  // child_process mocks
-  const mockProcess = {
-    on: jest.fn(),
-    kill: jest.fn(),
+// Mock child_process
+const mockChildProcess = {
+  spawn: jest.fn().mockReturnValue({
+    on: jest.fn((event, callback) => {
+      if (event === "close") callback(0);
+      return this;
+    }),
     stdout: { on: jest.fn() },
     stderr: { on: jest.fn() },
-  };
-  childProcess.spawn = jest.fn().mockReturnValue(mockProcess);
-  childProcess.execSync = jest.fn().mockReturnValue(Buffer.from("success"));
-}
+  }),
+  exec: jest.fn((cmd, callback) =>
+    callback(null, { stdout: "success", stderr: "" })
+  ),
+};
 
-// Export the mocked modules directly for use in tests
-export { fs, path, childProcess };
+// Mock pixelmatch and PNG
+const mockPixelmatch = jest.fn().mockReturnValue(0);
+const mockPNG = jest.fn().mockImplementation(() => ({
+  width: 100,
+  height: 100,
+  data: Buffer.alloc(100 * 100 * 4),
+}));
+
+// Setup mocks with proper jest.mock calls
+jest.mock("fs", () => mockFS);
+jest.mock("child_process", () => mockChildProcess);
+jest.mock("pixelmatch", () => mockPixelmatch);
+jest.mock("pngjs", () => ({ PNG: mockPNG }));
+
+// Export the mocks for direct usage in tests
+export { mockFS, mockChildProcess, mockPixelmatch, mockPNG };

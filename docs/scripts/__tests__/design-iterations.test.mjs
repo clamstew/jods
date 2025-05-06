@@ -1,37 +1,6 @@
 // Basic tests for design-iterations.mjs
 import { jest } from "@jest/globals";
-
-// Mock the modules
-jest.mock("fs");
-jest.mock("path");
-
-// Import modules AFTER mocking
-import * as fs from "fs";
-import * as path from "path";
-
-// Mock implementation setup
-const setupMocks = () => {
-  // Clear all mocks and set up default behavior
-  jest.clearAllMocks();
-
-  // fs module
-  fs.existsSync = jest.fn().mockReturnValue(true);
-  fs.statSync = jest.fn().mockReturnValue({ isDirectory: () => true });
-  fs.readdirSync = jest.fn().mockReturnValue([]);
-  fs.readFileSync = jest.fn().mockReturnValue("{}");
-  fs.writeFileSync = jest.fn();
-  fs.mkdirSync = jest.fn();
-
-  // path module
-  path.join = jest.fn((...args) => args.join("/"));
-  path.resolve = jest.fn((...args) => args.join("/"));
-  path.basename = jest.fn((p) => p.split("/").pop());
-};
-
-// Set up mocks before each test
-beforeEach(() => {
-  setupMocks();
-});
+import { mockFS } from "./setup-mocks.mjs";
 
 // Import functions from the module we want to test
 // Note: In a real implementation, the script would be refactored to export these functions
@@ -39,29 +8,38 @@ beforeEach(() => {
 describe("design-iterations", () => {
   // Utility functions that we would expect to extract from the script
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+    // Default mock behaviors
+    mockFS.existsSync.mockReturnValue(true);
+    mockFS.statSync.mockReturnValue({ isDirectory: () => true });
+    mockFS.readdirSync.mockReturnValue([]);
+    mockFS.readFileSync.mockReturnValue("{}");
+  });
+
   // Helper to simulate finding components with templates
   function findComponentsWithTemplates(baseDir) {
     const components = [];
 
     // Check if directory exists
-    if (!fs.existsSync(baseDir)) {
+    if (!mockFS.existsSync(baseDir)) {
       return components;
     }
 
     // Get list of component directories
-    const files = fs.readdirSync(baseDir);
+    const files = mockFS.readdirSync(baseDir);
 
     for (const file of files) {
-      const componentDir = path.join(baseDir, file);
-      const templateFile = path.join(componentDir, "template.json");
+      const componentDir = `${baseDir}/${file}`;
+      const templateFile = `${componentDir}/template.json`;
 
       // Check if directory and has template file
       if (
-        fs.statSync(componentDir).isDirectory() &&
-        fs.existsSync(templateFile)
+        mockFS.statSync(componentDir).isDirectory() &&
+        mockFS.existsSync(templateFile)
       ) {
         try {
-          const templateContent = fs.readFileSync(templateFile, "utf8");
+          const templateContent = mockFS.readFileSync(templateFile, "utf8");
           const templateData = JSON.parse(templateContent);
 
           components.push({
@@ -83,9 +61,9 @@ describe("design-iterations", () => {
     const { name, path: componentPath, template } = component;
 
     // Create iteration directory
-    const iterationDir = path.join(componentPath, `iteration-${iterationNum}`);
-    if (!fs.existsSync(iterationDir)) {
-      fs.mkdirSync(iterationDir, { recursive: true });
+    const iterationDir = `${componentPath}/iteration-${iterationNum}`;
+    if (!mockFS.existsSync(iterationDir)) {
+      mockFS.mkdirSync(iterationDir, { recursive: true });
     }
 
     // Generate iteration metadata
@@ -98,8 +76,8 @@ describe("design-iterations", () => {
     };
 
     // Write metadata file
-    const metadataFile = path.join(iterationDir, "metadata.json");
-    fs.writeFileSync(metadataFile, JSON.stringify(metadata, null, 2));
+    const metadataFile = `${iterationDir}/metadata.json`;
+    mockFS.writeFileSync(metadataFile, JSON.stringify(metadata, null, 2));
 
     return {
       path: iterationDir,
@@ -111,21 +89,21 @@ describe("design-iterations", () => {
     test("returns empty array if base directory does not exist", () => {
       // Setup
       const baseDir = "static/screenshots/iterations";
-      fs.existsSync.mockReturnValue(false);
+      mockFS.existsSync.mockReturnValueOnce(false);
 
       // Execute
       const components = findComponentsWithTemplates(baseDir);
 
       // Assert
       expect(components).toEqual([]);
-      expect(fs.existsSync).toHaveBeenCalledWith(baseDir);
-      expect(fs.readdirSync).not.toHaveBeenCalled();
+      expect(mockFS.existsSync).toHaveBeenCalledWith(baseDir);
+      expect(mockFS.readdirSync).not.toHaveBeenCalled();
     });
 
     test("finds components with valid templates", () => {
       // Setup
       const baseDir = "static/screenshots/iterations";
-      fs.readdirSync.mockReturnValue([
+      mockFS.readdirSync.mockReturnValue([
         "component1",
         "component2",
         "not-a-component",
@@ -136,11 +114,11 @@ describe("design-iterations", () => {
       const template2 = { name: "Component 2", iterations: 5 };
 
       // Set up statSync and existsSync for directories and template files
-      fs.statSync.mockImplementation((path) => ({
+      mockFS.statSync.mockImplementation((path) => ({
         isDirectory: () => !path.includes("not-a-component"),
       }));
 
-      fs.existsSync.mockImplementation((path) => {
+      mockFS.existsSync.mockImplementation((path) => {
         if (path === baseDir) return true;
         if (path.includes("template.json") && !path.includes("not-a-component"))
           return true;
@@ -148,7 +126,7 @@ describe("design-iterations", () => {
       });
 
       // Set up readFileSync for template files
-      fs.readFileSync.mockImplementation((path) => {
+      mockFS.readFileSync.mockImplementation((path) => {
         if (path.includes("component1")) return JSON.stringify(template1);
         if (path.includes("component2")) return JSON.stringify(template2);
         return "";
@@ -175,17 +153,17 @@ describe("design-iterations", () => {
     test("skips components with invalid template files", () => {
       // Setup
       const baseDir = "static/screenshots/iterations";
-      fs.readdirSync.mockReturnValue(["component1", "invalid-json"]);
+      mockFS.readdirSync.mockReturnValue(["component1", "invalid-json"]);
 
       // Mock template files
       const template1 = { name: "Component 1", iterations: 3 };
 
       // Set up statSync and existsSync for directories and template files
-      fs.statSync.mockReturnValue({ isDirectory: () => true });
-      fs.existsSync.mockReturnValue(true);
+      mockFS.statSync.mockReturnValue({ isDirectory: () => true });
+      mockFS.existsSync.mockReturnValue(true);
 
       // Set up readFileSync for template files
-      fs.readFileSync.mockImplementation((path) => {
+      mockFS.readFileSync.mockImplementation((path) => {
         if (path.includes("component1")) return JSON.stringify(template1);
         if (path.includes("invalid-json")) return "{not valid json";
         return "";
@@ -230,19 +208,19 @@ describe("design-iterations", () => {
       const expectedPath =
         "static/screenshots/iterations/test-component/iteration-1";
       expect(iteration.path).toBe(expectedPath);
-      expect(fs.existsSync).toHaveBeenCalledWith(expectedPath);
-      expect(fs.mkdirSync).toHaveBeenCalledWith(expectedPath, {
+      expect(mockFS.existsSync).toHaveBeenCalledWith(expectedPath);
+      expect(mockFS.mkdirSync).toHaveBeenCalledWith(expectedPath, {
         recursive: true,
       });
 
       // Check metadata file
-      expect(fs.writeFileSync).toHaveBeenCalledWith(
+      expect(mockFS.writeFileSync).toHaveBeenCalledWith(
         "static/screenshots/iterations/test-component/iteration-1/metadata.json",
         expect.any(String)
       );
 
       // Verify metadata content
-      const metadataArg = fs.writeFileSync.mock.calls[0][1];
+      const metadataArg = mockFS.writeFileSync.mock.calls[0][1];
       const metadata = JSON.parse(metadataArg);
       expect(metadata).toMatchObject({
         componentName: "test-component",
@@ -260,14 +238,14 @@ describe("design-iterations", () => {
         path: "static/screenshots/iterations/test-component",
         template: { name: "Test Component", iterations: 3 },
       };
-      fs.existsSync.mockReturnValue(true);
+      mockFS.existsSync.mockReturnValue(true);
 
       // Execute
       generateIteration(component, 2);
 
       // Assert
-      expect(fs.mkdirSync).not.toHaveBeenCalled();
-      expect(fs.writeFileSync).toHaveBeenCalled(); // Still writes metadata
+      expect(mockFS.mkdirSync).not.toHaveBeenCalled();
+      expect(mockFS.writeFileSync).toHaveBeenCalled(); // Still writes metadata
     });
   });
 

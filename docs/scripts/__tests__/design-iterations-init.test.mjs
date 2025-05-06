@@ -1,40 +1,19 @@
 // Basic tests for design-iterations-init.mjs
 import { jest } from "@jest/globals";
-
-// Mock modules first
-jest.mock("fs");
-jest.mock("path");
-
-// Import modules after mocking
-import * as fs from "fs";
-import * as path from "path";
-
-// Set up mock implementations
-const setupMocks = () => {
-  // Clear all previous mock calls
-  jest.clearAllMocks();
-
-  // fs module mocks
-  fs.existsSync = jest.fn().mockReturnValue(false);
-  fs.readdirSync = jest.fn().mockReturnValue([]);
-  fs.writeFileSync = jest.fn();
-  fs.mkdirSync = jest.fn();
-
-  // path module mocks
-  path.join = jest.fn((...args) => args.join("/"));
-  path.dirname = jest.fn((p) => p.split("/").slice(0, -1).join("/"));
-};
-
-// Initialize mocks before each test
-beforeEach(() => {
-  setupMocks();
-});
+import { mockFS } from "./setup-mocks.mjs";
 
 // Import functions from the module we want to test
 // Note: We're not importing the module directly to avoid executing its main code
 // In a real test, you would refactor the script to export its functions
 
 describe("design-iterations-init", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    // Default mock behaviors
+    mockFS.existsSync.mockReturnValue(false);
+    mockFS.readdirSync.mockReturnValue([]);
+  });
+
   // Helper to simulate the module's functionality for testing
   // In real implementation, refactor the script to export these functions
   function createTemplateFile(dirPath, data = {}) {
@@ -47,13 +26,13 @@ describe("design-iterations-init", () => {
     const mergedData = { ...defaultData, ...data };
 
     // Check if directory exists
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
+    if (!mockFS.existsSync(dirPath)) {
+      mockFS.mkdirSync(dirPath, { recursive: true });
     }
 
     // Write template file
-    const filePath = path.join(dirPath, "template.json");
-    fs.writeFileSync(filePath, JSON.stringify(mergedData, null, 2));
+    const filePath = `${dirPath}/template.json`;
+    mockFS.writeFileSync(filePath, JSON.stringify(mergedData, null, 2));
 
     return filePath;
   }
@@ -67,21 +46,23 @@ describe("design-iterations-init", () => {
       createTemplateFile(dirPath);
 
       // Assert
-      expect(fs.existsSync).toHaveBeenCalledWith(dirPath);
-      expect(fs.mkdirSync).toHaveBeenCalledWith(dirPath, { recursive: true });
+      expect(mockFS.existsSync).toHaveBeenCalledWith(dirPath);
+      expect(mockFS.mkdirSync).toHaveBeenCalledWith(dirPath, {
+        recursive: true,
+      });
     });
 
     test("does not create directory if it already exists", () => {
       // Setup
       const dirPath = "static/screenshots/iterations/test-component";
-      fs.existsSync.mockReturnValue(true);
+      mockFS.existsSync.mockReturnValue(true);
 
       // Execute
       createTemplateFile(dirPath);
 
       // Assert
-      expect(fs.existsSync).toHaveBeenCalledWith(dirPath);
-      expect(fs.mkdirSync).not.toHaveBeenCalled();
+      expect(mockFS.existsSync).toHaveBeenCalledWith(dirPath);
+      expect(mockFS.mkdirSync).not.toHaveBeenCalled();
     });
 
     test("writes template file with default data", () => {
@@ -95,7 +76,7 @@ describe("design-iterations-init", () => {
       expect(filePath).toBe(
         "static/screenshots/iterations/test-component/template.json"
       );
-      expect(fs.writeFileSync).toHaveBeenCalledWith(
+      expect(mockFS.writeFileSync).toHaveBeenCalledWith(
         "static/screenshots/iterations/test-component/template.json",
         JSON.stringify(
           {
@@ -122,7 +103,7 @@ describe("design-iterations-init", () => {
       createTemplateFile(dirPath, customData);
 
       // Assert
-      expect(fs.writeFileSync).toHaveBeenCalledWith(
+      expect(mockFS.writeFileSync).toHaveBeenCalledWith(
         "static/screenshots/iterations/test-component/template.json",
         JSON.stringify(
           {

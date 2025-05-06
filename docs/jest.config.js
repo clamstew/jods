@@ -36,6 +36,9 @@ const config = {
 
   // To support ESM modules
   testTimeout: 30000,
+
+  // Setup files to run before each test
+  setupFilesAfterEnv: ["./scripts/__tests__/jest.setup.mjs"],
 };
 
 module.exports = config;
