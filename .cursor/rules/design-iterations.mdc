@@ -1,6 +1,6 @@
 ---
 description: Guidelines for using the design iterations workflow for UI components
-globs: 
+globs: ["**/*.tsx", "**/*.jsx", "**/*.js", "**/*.ts", "**/design-iterations/**/*"]
 alwaysApply: false
 ---
 # Design Iterations System

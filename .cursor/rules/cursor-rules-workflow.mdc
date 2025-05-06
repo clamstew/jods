@@ -1,7 +1,7 @@
 ---
-description:
-globs:
-alwaysApply: false
+description: How and when to use and create Cursor rules
+globs: ["**/*"]
+alwaysApply: true
 ---
 # Cursor Rules Workflow
 
