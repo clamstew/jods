@@ -736,12 +736,195 @@ async function captureSpecificElement(
     );
     try {
       // Try to find and click the element
-      await page.click(component.clickSelector);
+      const clickResult = await page.evaluate((tabName) => {
+        // First try by data-testid (most reliable)
+        const testIdSelector = `[data-testid='framework-tab-${tabName.toLowerCase()}']`;
+        const elementByTestId = document.querySelector(testIdSelector);
+        if (elementByTestId) {
+          console.log(`Found element by data-testid: ${testIdSelector}`);
+          elementByTestId.click();
+          return { success: true, method: "data-testid-click" };
+        }
+
+        // Then try to find the Remix card by its specific styles and content
+        const frameworkCards = Array.from(
+          document.querySelectorAll(
+            'div.framework-card, div[style*="cursor: pointer"][style*="padding"][style*="gradient"]'
+          )
+        );
+
+        // Look for the card with Remix content or CD emoji
+        for (const card of frameworkCards) {
+          if (
+            card.textContent.includes(tabName) ||
+            (tabName === "Remix" && card.textContent.includes("💿"))
+          ) {
+            console.log(`Found ${tabName} card with gradient styling`);
+            // Click the card
+            card.click();
+            return { success: true, method: "direct-card-click" };
+          }
+        }
+
+        // If we couldn't find it by style, try by emoji
+        const emojiSelector =
+          tabName === "Remix"
+            ? 'div:has(div:has-text("💿"))'
+            : tabName === "React"
+            ? 'div:has(div:has-text("⚛️"))'
+            : "";
+
+        if (emojiSelector) {
+          const emojis = Array.from(document.querySelectorAll(emojiSelector));
+          if (emojis.length > 0) {
+            const closestCard = emojis[0].closest(
+              'div[style*="cursor: pointer"]'
+            );
+            if (closestCard) {
+              console.log(`Found ${tabName} card via emoji`);
+              closestCard.click();
+              return { success: true, method: "emoji-parent-click" };
+            }
+
+            // Try clicking the emoji container itself
+            console.log(`Clicking directly on ${tabName} emoji container`);
+            emojis[0].click();
+            return { success: true, method: "emoji-click" };
+          }
+        }
+
+        // Couldn't find it with any method
+        return { success: false };
+      }, component.verifyTabName || "Remix");
+
+      // If the direct DOM click didn't work, fall back to traditional click
+      if (!clickResult || !clickResult.success) {
+        console.log(
+          "Direct DOM click didn't succeed, falling back to traditional click"
+        );
+        await page.click(component.clickSelector);
+      } else {
+        console.log(`Successfully clicked tab via ${clickResult.method}`);
+      }
 
       // Wait for content to update after clicking
       const waitTime = component.clickWaitTime || 1000;
       console.log(`Waiting ${waitTime}ms for content to update after click...`);
       await page.waitForTimeout(waitTime);
+
+      // Verify tab selection if required
+      if (component.verifyTabSelected) {
+        console.log(`Verifying ${component.verifyTabName} tab is selected...`);
+
+        // Verify the tab is selected
+        let isTabSelected = await verifyTabIsSelected(page, component);
+        let retryCount = 0;
+        const maxRetries = component.retryTabSelection || 2;
+
+        // Retry clicking the tab if not selected
+        while (!isTabSelected && retryCount < maxRetries) {
+          console.log(
+            `Tab not selected, retrying click (${
+              retryCount + 1
+            }/${maxRetries})...`
+          );
+
+          // Try a more direct clicking approach
+          await page.evaluate((tabName) => {
+            // First try by data-testid (most reliable)
+            const testIdSelector = `[data-testid='framework-tab-${tabName.toLowerCase()}']`;
+            const elementByTestId = document.querySelector(testIdSelector);
+            if (elementByTestId) {
+              console.log(
+                `Found element by data-testid: ${testIdSelector}, clicking it`
+              );
+              elementByTestId.click();
+              return true;
+            }
+
+            // Then try specific Remix card with active class
+            const frameworkCards = Array.from(
+              document.querySelectorAll(
+                'div.framework-card, div[style*="cursor: pointer"][style*="padding"][style*="gradient"]'
+              )
+            );
+            const targetCard = frameworkCards.find(
+              (card) =>
+                card.textContent.includes(tabName) ||
+                (tabName === "Remix" && card.textContent.includes("💿"))
+            );
+
+            if (targetCard) {
+              console.log(`Found ${tabName} card, attempting click`);
+              targetCard.click();
+              return true;
+            }
+
+            // Try finding by emoji
+            const emojiSelector =
+              tabName === "Remix"
+                ? 'div:has-text("💿")'
+                : tabName === "React"
+                ? 'div:has-text("⚛️")'
+                : "";
+            if (emojiSelector) {
+              const emojiElement = document.querySelector(emojiSelector);
+              if (emojiElement) {
+                const cardParent = emojiElement.closest(
+                  'div[style*="cursor: pointer"]'
+                );
+                if (cardParent) {
+                  console.log(
+                    `Found ${tabName} card via emoji, clicking parent`
+                  );
+                  cardParent.click();
+                  return true;
+                }
+
+                // Click on emoji itself
+                console.log(`Clicking directly on ${tabName} emoji`);
+                emojiElement.click();
+                return true;
+              }
+            }
+
+            // Try original approach as fallback
+            const buttons = Array.from(document.querySelectorAll("button"));
+            const targetButtons = buttons.filter(
+              (btn) =>
+                btn.textContent.includes(tabName) ||
+                (tabName === "Remix" && btn.textContent.includes("💿")) ||
+                (tabName === "React" && btn.textContent.includes("⚛️"))
+            );
+
+            if (targetButtons.length > 0) {
+              console.log(
+                `Found ${targetButtons.length} ${tabName} buttons, clicking the first one...`
+              );
+              targetButtons[0].click();
+              return true;
+            }
+
+            return false;
+          }, component.verifyTabName || "Remix");
+
+          await page.waitForTimeout(1000); // Wait after retry click
+
+          // Check again
+          isTabSelected = await verifyTabIsSelected(page, component);
+          retryCount++;
+        }
+
+        if (isTabSelected) {
+          console.log(
+            `✅ ${component.verifyTabName} tab successfully selected!`
+          );
+        } else {
+          console.log(
+            `⚠️ Could not verify ${component.verifyTabName} tab selection after ${maxRetries} retries`
+          );
+        }
+      }
 
       // Special handling for Remix tab to ensure proper scrolling
       if (component.name === "framework-section-remix") {
@@ -1008,6 +1191,21 @@ async function captureFrameworkTabs(
             '[role="tab"], [role="tablist"] button'
           )
         ).map((tab) => tab.outerHTML),
+        frameworkCards: Array.from(
+          frameworkSection.querySelectorAll(
+            ".framework-card, div:has(h3:has-text('Remix')), div:has(h3:has-text('React'))"
+          )
+        ).map((card) => ({
+          html: card.outerHTML,
+          hasRemix:
+            card.textContent.includes("Remix") ||
+            card.textContent.includes("💿"),
+          hasReact:
+            card.textContent.includes("React") ||
+            card.textContent.includes("⚛️"),
+          hasPreact: card.textContent.includes("Preact"),
+          classes: card.className,
+        })),
       };
     }
     return null;
@@ -1054,6 +1252,119 @@ async function captureFrameworkTabs(
 
   if (!tabButtons || tabButtons.length === 0) {
     console.log("Could not find framework tabs, trying alternative selectors");
+
+    // Try direct approach with framework cards
+    console.log("Trying to find framework cards...");
+
+    // Look for div.framework-card elements, especially those containing Remix/CD emoji
+    const frameworkCardSelector =
+      "div.framework-card, div:has(h3:has-text('Remix')), div:has(.spinningEmoji_oGVK:has-text('💿'))";
+    const frameworkCards = await page.$$(frameworkCardSelector);
+
+    if (frameworkCards && frameworkCards.length > 0) {
+      console.log(`Found ${frameworkCards.length} framework cards`);
+
+      // Find cards for each framework
+      const frameworkCardByType = {
+        react: null,
+        preact: null,
+        remix: null,
+      };
+
+      for (const card of frameworkCards) {
+        const cardText = await card.evaluate((el) => el.textContent);
+        const cardClasses = await card.evaluate((el) => el.className);
+        console.log(
+          `Found card with text: "${cardText}" and classes: "${cardClasses}"`
+        );
+
+        if (cardText.includes("Remix") || cardText.includes("💿")) {
+          frameworkCardByType.remix = card;
+          console.log("Identified Remix card");
+        } else if (cardText.includes("Preact")) {
+          frameworkCardByType.preact = card;
+          console.log("Identified Preact card");
+        } else if (cardText.includes("React") || cardText.includes("⚛️")) {
+          frameworkCardByType.react = card;
+          console.log("Identified React card");
+        }
+      }
+
+      // Prioritize Remix card for this component
+      if (frameworkCardByType.remix) {
+        console.log("Clicking Remix framework card");
+
+        // Direct click on the Remix card
+        try {
+          await frameworkCardByType.remix.click();
+          console.log("Successfully clicked Remix card");
+          await page.waitForTimeout(1500);
+
+          // After clicking, take screenshot of Remix tab
+          await captureTabScreenshot(
+            page,
+            frameworkSection,
+            frameworkCardByType.remix,
+            component.forceSaveAsReact ? "react" : "remix",
+            component,
+            theme,
+            timestamp,
+            saveBaseline
+          );
+        } catch (err) {
+          console.log(`Error clicking Remix card: ${err.message}`);
+        }
+      }
+
+      // If we want other framework cards too and not just forceReactTabOnly
+      if (!component.forceReactTabOnly) {
+        // Handle React card if found
+        if (frameworkCardByType.react) {
+          console.log("Clicking React framework card");
+          try {
+            await frameworkCardByType.react.click();
+            await page.waitForTimeout(1500);
+
+            await captureTabScreenshot(
+              page,
+              frameworkSection,
+              frameworkCardByType.react,
+              "react",
+              component,
+              theme,
+              timestamp,
+              saveBaseline
+            );
+          } catch (err) {
+            console.log(`Error clicking React card: ${err.message}`);
+          }
+        }
+
+        // Handle Preact card if found
+        if (frameworkCardByType.preact) {
+          console.log("Clicking Preact framework card");
+          try {
+            await frameworkCardByType.preact.click();
+            await page.waitForTimeout(1500);
+
+            await captureTabScreenshot(
+              page,
+              frameworkSection,
+              frameworkCardByType.preact,
+              component.forceSaveAsReact ? "react" : "preact",
+              component,
+              theme,
+              timestamp,
+              saveBaseline
+            );
+          } catch (err) {
+            console.log(`Error clicking Preact card: ${err.message}`);
+          }
+        }
+      }
+
+      return; // We've handled all cards, so return early
+    }
 
     // Get all buttons on the page for debugging
     const allButtons = await page.$$("button");
@@ -1303,83 +1614,6 @@ async function captureFrameworkTabs(
       console.log("Could not find React tab, but forceReactTabOnly is set");
     }
     return;
-  }
-
-  // Look for Remix/Traditional tab first and prioritize capturing it
-  let remixButton = null;
-  for (const button of tabButtons) {
-    const buttonText = await button.evaluate((el) => el.textContent.trim());
-    if (
-      buttonText.includes("Remix") ||
-      buttonText.includes("Traditional") ||
-      buttonText.includes("💿")
-    ) {
-      remixButton = button;
-      break;
-    }
-  }
-
-  // Capture Remix tab first if found
-  if (remixButton) {
-    console.log("Capturing Remix tab first (prioritized)");
-    await captureTabScreenshot(
-      page,
-      frameworkSection,
-      remixButton,
-      component.forceSaveAsReact ? "react" : "remix",
-      component,
-      theme,
-      timestamp,
-      saveBaseline
-    );
-  }
-
-  // For each explicitly named tab in component config, try to find and capture it
-  for (const tabName of component.frameworkTabs) {
-    // Skip Remix tab if we already captured it
-    if (
-      remixButton &&
-      (tabName.includes("Remix") ||
-        tabName.includes("Traditional") ||
-        tabName.includes("💿"))
-    ) {
-      console.log(`Skipping duplicate Remix tab: ${tabName}`);
-      continue;
-    }
-
-    console.log(`Looking for tab: ${tabName}`);
-    let matchingButton = null;
-
-    // Try to find a button that contains this tab name
-    for (const button of tabButtons) {
-      const buttonText = await button.evaluate((el) => el.textContent.trim());
-      if (buttonText.includes(tabName) || tabName.includes(buttonText)) {
-        matchingButton = button;
-        break;
-      }
-    }
-
-    if (matchingButton) {
-      let tabIdentifier = tabName.toLowerCase().replace(/[^a-z0-9]/g, "-");
-
-      // If forceSaveAsReact is true, always use "react"
-      if (component.forceSaveAsReact) {
-        tabIdentifier = "react";
-      }
-
-      await captureTabScreenshot(
-        page,
-        frameworkSection,
-        matchingButton,
-        tabIdentifier,
-        component,
-        theme,
-        timestamp,
-        saveBaseline
-      );
-    } else {
-      console.log(`Could not find tab button for: ${tabName}`);
-    }
   }
 }
 
@@ -1651,6 +1885,146 @@ async function captureComponentHtml(page, component, elementHandle, theme) {
     }
   } catch (error) {
     console.log(`Error capturing HTML debug: ${error.message}`);
+  }
+}
+
+// New helper function to verify tab selection
+async function verifyTabIsSelected(page, component) {
+  // Try multiple approaches to verify tab selection
+  const tabName = component.verifyTabName || "Remix";
+
+  try {
+    return await page.evaluate((name) => {
+      // Method 0: Check for data-testid first (most reliable)
+      const dataTestIdSelector = `[data-testid='framework-tab-${name.toLowerCase()}'][aria-selected='true'], [data-testid='framework-tab-${name.toLowerCase()}'].active`;
+      const selectedByTestId = document.querySelector(dataTestIdSelector);
+      if (selectedByTestId) {
+        console.log(
+          `Tab selected via data-testid: ${selectedByTestId.getAttribute(
+            "data-testid"
+          )}`
+        );
+        return true;
+      }
+
+      // Method 1: Check for aria-selected attribute
+      const buttons = Array.from(
+        document.querySelectorAll('button[role="tab"], [role="tab"], button')
+      );
+      const tabButtons = buttons.filter(
+        (btn) =>
+          btn.textContent.includes(name) ||
+          (name === "Remix" && btn.textContent.includes("💿"))
+      );
+
+      for (const btn of tabButtons) {
+        // Check aria-selected attribute
+        if (btn.getAttribute("aria-selected") === "true") {
+          console.log("Tab selected via aria-selected");
+          return true;
+        }
+
+        // Check for common "selected" classes
+        const selectedClasses = [
+          "selected",
+          "active",
+          "current",
+          "tabs__item--active",
+          "active-tab",
+        ];
+        if (selectedClasses.some((cls) => btn.className.includes(cls))) {
+          console.log("Tab selected via CSS class");
+          return true;
+        }
+
+        // Check for parent with role="tablist" and child with aria-selected
+        const tablist = btn.closest('[role="tablist"]');
+        if (tablist) {
+          const selectedTab = tablist.querySelector('[aria-selected="true"]');
+          if (selectedTab && selectedTab.textContent.includes(name)) {
+            console.log("Tab selected via parent tablist");
+            return true;
+          }
+        }
+
+        // Special case: Check if button visually appears selected (has different background color)
+        if (name === "Remix") {
+          // Get computed style to check if background has changed
+          const style = window.getComputedStyle(btn);
+          const hasDistinctBackground =
+            style.backgroundColor &&
+            style.backgroundColor !== "transparent" &&
+            style.backgroundColor !== "rgba(0, 0, 0, 0)";
+
+          if (hasDistinctBackground) {
+            console.log("Remix tab appears visually selected via background");
+            return true;
+          }
+
+          // Check if within a visually distinct container (like the magenta square)
+          const parent = btn.closest("div, li, span");
+          if (parent) {
+            const parentStyle = window.getComputedStyle(parent);
+            if (
+              parentStyle.backgroundColor &&
+              parentStyle.backgroundColor !== "transparent" &&
+              parentStyle.backgroundColor !== "rgba(0, 0, 0, 0)"
+            ) {
+              console.log("Remix tab appears in visually selected container");
+              return true;
+            }
+          }
+        }
+      }
+
+      // Method 2: Check for framework card layout with the "active" class
+      const frameworkCards = Array.from(
+        document.querySelectorAll("div.framework-card")
+      );
+
+      // Look for active framework card that matches the tab name
+      for (const card of frameworkCards) {
+        // Check if this card contains the tab name
+        if (
+          card.textContent.includes(name) ||
+          (name === "Remix" && card.textContent.includes("💿"))
+        ) {
+          // Check if it has the active class or appears visually selected
+          if (card.classList.contains("active")) {
+            console.log("Tab selected via framework-card.active class");
+            return true;
+          }
+
+          // Check if it has a distinct visual style (transformed or elevated)
+          const style = window.getComputedStyle(card);
+          if (
+            style.transform &&
+            style.transform !== "none" &&
+            style.transform.includes("translate")
+          ) {
+            console.log("Tab selected via framework card transform style");
+            return true;
+          }
+
+          // Check if it has a background gradient that looks like selection
+          if (
+            style.background &&
+            (style.background.includes("gradient") ||
+              style.background.includes("rgb(184, 29, 91)") ||
+              style.background.includes("rgb(233, 30, 99)"))
+          ) {
+            console.log("Tab selected via framework card background style");
+            return true;
+          }
+        }
+      }
+
+      // If we got here, no clear indication of selection
+      return false;
+    }, tabName);
+  } catch (error) {
+    console.log(`Error verifying tab selection: ${error.message}`);
+    return false;
   }
 }
 

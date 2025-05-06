@@ -112,12 +112,17 @@ export const COMPONENTS = [
     waitForSelector:
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
     minHeight: 1800, // Increased from 1600 to capture more content
-    clickSelector: "button:has-text('Remix'), button:has-text('💿')", // Click Remix tab
+    clickSelector:
+      "[data-testid='framework-tab-remix'], div.framework-card.active:has-text('Remix'), div.framework-card:has(h3:has-text('Remix')), div:has-text('💿'):has(h3:has-text('Remix')), button:has-text('Remix'), button:has-text('💿')", // Updated to first try data-testid
     clickWaitTime: 1800, // Increased from 1500 to ensure tab content is fully loaded
+    verifyTabSelected: true, // Verify the Remix tab is visibly selected
+    verifyTabName: "Remix", // The tab name to verify as selected
+    retryTabSelection: 3, // Number of retries if tab isn't selected
     testId: "jods-framework-section",
     extraScroll: 150, // Reduced from 250 to show more of the section
     captureHtmlDebug: true,
     alternativeSelectors: [
+      "[data-testid='jods-framework-section']",
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
       "button:has-text('React'), button:has-text('Preact'), button:has-text('Remix')",
       ".framework-tabs, [class*='tabs_'], [role='tablist']",
