@@ -13,6 +13,9 @@ export const COMPONENTS = [
     padding: 50,
     waitForSelector: "h1",
     testId: "jods-hero-section",
+    pauseAnimations: true, // Flag to pause background particles
+    particleBackground: true, // Specifically has particle background
+    diffThreshold: 0.05, // Higher threshold for particle randomness
     alternativeSelectors: [
       "h1:has-text('jods')",
       ".hero-subtitle, .hero-description",
@@ -88,6 +91,7 @@ export const COMPONENTS = [
     verifyTabSelected: true, // Check if tab is properly selected
     retryTabSelection: 2, // Number of retries if tab isn't selected
     forceReactTabSelected: true, // Force the React tab to be selected even if it's not the default
+    pauseAnimations: true, // Pause animations during screenshot
     alternativeSelectors: [
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
       "button:has-text('React'), button:has-text('Preact'), button:has-text('Remix')",
@@ -138,6 +142,8 @@ export const COMPONENTS = [
     darkModeExtraWait: 2000, // Extra wait time specifically for dark mode (even longer for Remix)
     verifyContentLoaded: true, // Verify that code blocks are visible
     minVisibleCodeLines: 5, // Ensure at least 5 lines of code are visible
+    pauseAnimations: true, // Pause animations during screenshot
+    diffThreshold: 0.05, // Higher threshold for this component with animations
     alternativeSelectors: [
       "[data-testid='jods-framework-section']",
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
@@ -198,6 +204,8 @@ export const COMPONENTS = [
     minHeight: 1600,
     testId: "jods-remix-section",
     extraScroll: 40, // Reduced to prevent scrolling too far down
+    pauseAnimations: true, // Flag to pause animations during screenshot
+    diffThreshold: 0.05, // Higher threshold for this animated component
     alternativeSelectors: [
       "h2:has-text('Remix Integration')",
       "h3:has-text('Remix')",

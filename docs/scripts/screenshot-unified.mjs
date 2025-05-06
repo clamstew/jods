@@ -732,6 +732,57 @@ async function findElementForComponent(page, component) {
 }
 
 /**
+ * Helper: Pause all animations on the page for consistent screenshots
+ * Used for components with animations or particle backgrounds
+ */
+async function pauseAllAnimations(page, shouldPause = true) {
+  console.log(
+    `${
+      shouldPause ? "Pausing" : "Resuming"
+    } animations for consistent screenshots...`
+  );
+
+  await page.evaluate((pause) => {
+    const style = document.createElement("style");
+    style.id = "pause-animations-for-screenshots";
+    style.textContent = pause
+      ? `
+      *, *::before, *::after {
+        animation-play-state: paused !important;
+        transition: none !important;
+        animation-duration: 0s !important;
+        animation-delay: 0s !important;
+        transition-duration: 0s !important;
+        transition-delay: 0s !important;
+      }
+      
+      /* Hide canvas elements for particle backgrounds */
+      canvas.particles-js-canvas-el,
+      canvas.tsparticles-canvas-el, 
+      canvas[id^="tsparticles"] {
+        opacity: 0 !important;
+      }
+    `
+      : "";
+
+    // Remove existing style if present
+    const existingStyle = document.getElementById(
+      "pause-animations-for-screenshots"
+    );
+    if (existingStyle) {
+      existingStyle.remove();
+    }
+
+    if (pause) {
+      document.head.appendChild(style);
+    }
+  }, shouldPause);
+
+  // Wait for style to take effect
+  await page.waitForTimeout(200);
+}
+
+/**
  * Helper: Capture a specific element with appropriate clipping
  */
 async function captureSpecificElement(
@@ -742,6 +793,11 @@ async function captureSpecificElement(
   timestamp,
   saveBaseline
 ) {
+  // Pause animations if specified in the component config
+  if (component.pauseAnimations) {
+    await pauseAllAnimations(page, true);
+  }
+
   // Create the screenshot filename
   const screenshotPath = path.join(
     directories.unified,
@@ -1437,6 +1493,11 @@ async function captureSpecificElement(
   }
 
   console.log(`Screenshot saved to: ${screenshotPath}`);
+
+  // Resume animations if they were paused
+  if (component.pauseAnimations) {
+    await pauseAllAnimations(page, false);
+  }
 }
 
 /**
@@ -1934,6 +1995,11 @@ async function captureTabScreenshot(
   // Wait longer for tab content to fully load and render
   await page.waitForTimeout(1500);
 
+  // Pause animations if specified in the component config
+  if (component.pauseAnimations) {
+    await pauseAllAnimations(page, true);
+  }
+
   // NEW: Extra wait for dark mode if needed
   if (theme === "dark" && component.darkModeExtraWait) {
     console.log(
@@ -2174,6 +2240,11 @@ async function captureTabScreenshot(
   });
 
   console.log(`Framework tab screenshot saved to: ${screenshotPath}`);
+
+  // Resume animations if they were paused
+  if (component.pauseAnimations) {
+    await pauseAllAnimations(page, false);
+  }
 
   // If this is the Remix tab and React tab couldn't be found, create a React file too
   if (finalTabId === "remix" && component.simulateReactTab) {
