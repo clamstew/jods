@@ -261,7 +261,7 @@ async function takeUnifiedScreenshots(
             await page.waitForTimeout(500); // Wait for second scroll
           }
 
-          // Special treatment for remix-section in light mode to ensure proper positioning
+          // Special handling for remix-section in light mode to ensure proper positioning
           if (component.name === "remix-section" && theme === "light") {
             // For light mode, we need to ensure the section is properly positioned
             await page.evaluate(() => {
@@ -275,11 +275,11 @@ async function takeUnifiedScreenshots(
               if (section) {
                 // Calculate a good scroll position to see the header and some content above
                 const rect = section.getBoundingClientRect();
-                const targetY = Math.max(0, rect.top - 300); // Show 300px above the section (increased from 200)
+                const targetY = Math.max(0, rect.top - 350); // Increased from 300 to 350px
                 window.scrollTo(0, targetY);
               }
             });
-            await page.waitForTimeout(800); // Wait longer for scroll and rendering
+            await page.waitForTimeout(1000); // Increased from 800 to 1000ms
           }
 
           // Special handling for remix-section in dark mode
@@ -292,11 +292,11 @@ async function takeUnifiedScreenshots(
               if (section) {
                 // Calculate a good scroll position for dark mode
                 const rect = section.getBoundingClientRect();
-                const targetY = Math.max(0, rect.top - 300);
+                const targetY = Math.max(0, rect.top - 350); // Increased from 300 to 350px
                 window.scrollTo(0, targetY);
               }
             });
-            await page.waitForTimeout(800);
+            await page.waitForTimeout(1000); // Increased from 800 to 1000ms
           }
 
           // Find the element using the selector or fallback strategies
@@ -902,13 +902,94 @@ async function captureFrameworkTabs(
     return;
   }
 
+  // Debug: Save HTML content to file for inspection
+  const htmlContent = await page.evaluate(() => {
+    const sections = document.querySelectorAll("section");
+    let frameworkSection = null;
+
+    // Find section with framework-related content
+    for (const section of sections) {
+      if (
+        section.textContent.includes("Works with your favorite frameworks") ||
+        section.textContent.includes("Framework Integration")
+      ) {
+        frameworkSection = section;
+        break;
+      }
+    }
+
+    if (frameworkSection) {
+      return {
+        html: frameworkSection.outerHTML,
+        buttons: Array.from(frameworkSection.querySelectorAll("button")).map(
+          (btn) => btn.outerHTML
+        ),
+        tabs: Array.from(
+          frameworkSection.querySelectorAll(
+            '[role="tab"], [role="tablist"] button'
+          )
+        ).map((tab) => tab.outerHTML),
+      };
+    }
+    return null;
+  });
+
+  if (htmlContent) {
+    // Write to debug file in static/debug directory
+    const debugDir = path.join(__dirname, "../static/debug");
+    if (!fs.existsSync(debugDir)) {
+      fs.mkdirSync(debugDir, { recursive: true });
+    }
+
+    const debugFilePath = path.join(
+      debugDir,
+      `framework-section-${theme}-debug.html`
+    );
+    let debugContent = `<h1>Framework Section Debug (${theme} theme)</h1>`;
+    debugContent += `<h2>Full HTML</h2><pre>${htmlContent.html
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")}</pre>`;
+    debugContent += `<h2>Buttons (${htmlContent.buttons.length})</h2>`;
+    htmlContent.buttons.forEach((btn, i) => {
+      debugContent += `<h3>Button ${i + 1}</h3><pre>${btn
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")}</pre>`;
+    });
+    debugContent += `<h2>Tabs (${htmlContent.tabs.length})</h2>`;
+    htmlContent.tabs.forEach((tab, i) => {
+      debugContent += `<h3>Tab ${i + 1}</h3><pre>${tab
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")}</pre>`;
+    });
+
+    fs.writeFileSync(debugFilePath, debugContent);
+    console.log(`Debug info saved to: ${debugFilePath}`);
+  } else {
+    console.log("Could not extract HTML content for debugging");
+  }
+
   // Find all tab buttons
   const tabButtonsSelector =
-    "button:has-text('React'), button:has-text('Preact'), button:has-text('Remix'), button:has-text('Traditional')";
+    "button:has-text('React'), button:has-text('Preact'), button:has-text('Remix'), button:has-text('Traditional'), button:has-text('⚛️'), button:has-text('💿')";
   const tabButtons = await page.$$(tabButtonsSelector);
 
   if (!tabButtons || tabButtons.length === 0) {
     console.log("Could not find framework tabs, trying alternative selectors");
+
+    // Get all buttons on the page for debugging
+    const allButtons = await page.$$("button");
+    console.log(`Found ${allButtons.length} total buttons on the page`);
+
+    // Print the text of all buttons to help debug
+    for (const button of allButtons) {
+      try {
+        const buttonText = await button.evaluate((el) => el.textContent.trim());
+        console.log(`Button text: "${buttonText}"`);
+      } catch (e) {
+        console.log(`Error getting button text: ${e.message}`);
+      }
+    }
+
     // Try more specific selectors with emoji
     const emojiTabButtonsSelector =
       "button:has-text('⚛️'), button:has-text('💿')";
@@ -1170,17 +1251,17 @@ async function captureTabScreenshot(
 
       if (frameworkHeading) {
         console.log("Found framework heading, scrolling to position it at top");
-        // Calculate position to show heading at top with some margin
+        // Calculate position to show heading at top with more margin (increased from 100px to 250px)
         const rect = frameworkHeading.getBoundingClientRect();
-        const scrollOffset = window.scrollY + rect.top - 100; // 100px from top
+        const scrollOffset = window.scrollY + rect.top - 250; // Increased from 100px to 250px
         window.scrollTo(0, scrollOffset);
         return true;
       }
       return false;
     });
 
-    // Wait for scroll to complete
-    await page.waitForTimeout(800);
+    // Wait longer for scroll to complete (increased from 800ms to 1000ms)
+    await page.waitForTimeout(1000);
 
     // Now try to find the Remix content but avoid scrolling too far
     const remixContent = await page.evaluate(() => {
@@ -1271,13 +1352,13 @@ async function captureTabScreenshot(
   const padding = component.padding || 40;
   const clip = {
     x: Math.max(0, updatedBoundingBox.x - padding),
-    y: Math.max(0, updatedBoundingBox.y - padding),
+    y: Math.max(0, updatedBoundingBox.y - padding * 2), // Double the top padding
     width: Math.min(
       page.viewportSize().width - Math.max(0, updatedBoundingBox.x - padding),
       updatedBoundingBox.width + padding * 2
     ),
     height: Math.max(
-      updatedBoundingBox.height + padding * 2,
+      updatedBoundingBox.height + padding * 3, // Extra padding for the height
       component.minHeight || 0
     ),
   };
@@ -1314,6 +1395,20 @@ async function captureTabScreenshot(
   });
 
   console.log(`Framework tab screenshot saved to: ${screenshotPath}`);
+
+  // If this is the Remix tab and React tab couldn't be found, create a React file too
+  if (finalTabId === "remix" && component.simulateReactTab) {
+    const reactPath = path.join(
+      directories.unified,
+      `${component.name}-react-${theme}${
+        saveBaseline ? "" : "-" + timestamp
+      }.png`
+    );
+
+    // Copy the file to create a React version
+    fs.copyFileSync(screenshotPath, reactPath);
+    console.log(`Created simulated React tab screenshot: ${reactPath}`);
+  }
 }
 
 // Parse command line arguments

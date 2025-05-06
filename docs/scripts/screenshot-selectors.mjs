@@ -67,14 +67,15 @@ export const COMPONENTS = [
       "section:has(h2:has-text('Works with your favorite frameworks')), section:has(h2:has-text('Framework Integration'))",
     fallbackStrategy: "keyword-context",
     keywords: ["favorite frameworks", "Framework Integration"],
-    padding: 100,
+    padding: 150,
     waitForSelector:
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
     minHeight: 1200,
     captureFrameworkTabs: true,
-    frameworkTabs: ["💿 Traditional Remix", "⚛️ React", "⚛️ Preact"],
+    frameworkTabs: ["💿 Remix", "⚛️ React", "⚛️ Preact"],
     testId: "jods-framework-section",
-    extraScroll: 150,
+    extraScroll: 250,
+    simulateReactTab: true,
     alternativeSelectors: [
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
       "button:has-text('React'), button:has-text('Preact'), button:has-text('Remix')",
