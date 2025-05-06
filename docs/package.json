@@ -24,6 +24,9 @@
     "rebaseline": "node scripts/rebaseline.mjs",
     "rebaseline:full": "node scripts/rebaseline.mjs --full",
     "rebaseline:testid": "node scripts/rebaseline.mjs --testid",
+    "design-iterations:init": "node scripts/design-iterations-init.mjs",
+    "design-iterations": "node scripts/design-iterations.mjs",
+    "design-iterations:count-5": "node scripts/design-iterations.mjs --count=5",
     "dev": "docusaurus start"
   },
   "dependencies": {

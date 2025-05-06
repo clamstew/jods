@@ -14,6 +14,8 @@ export function setupEnvironment() {
   // Create screenshot directories
   const directories = {
     unified: path.join(screenshotsBaseDir, "unified"),
+    diffs: path.join(screenshotsBaseDir, "diffs"),
+    iterations: path.join(screenshotsBaseDir, "iterations"),
   };
 
   // Create directories if they don't exist
@@ -74,6 +76,14 @@ export function setupLogger(DEBUG) {
     debug: (message) => {
       if (DEBUG) console.log(`🔍 DEBUG: ${message}`);
     },
+    // New standardized methods for the framework
+    component: (component, message) =>
+      console.log(`🧩 [${component}] ${message}`),
+    theme: (theme, message) => console.log(`🎨 [${theme}] ${message}`),
+    capture: (component, theme, message) =>
+      console.log(`📸 [${component}|${theme}] ${message}`),
+    timing: (duration, operation) =>
+      console.log(`⏱️ ${operation} took ${duration}ms`),
   };
 }
 
@@ -133,4 +143,57 @@ export function setupRetry(logger) {
 
     throw lastError;
   };
+}
+
+/**
+ * Unified configuration system for screenshot framework
+ * @returns {Object} Configuration object
+ */
+export function getConfiguration() {
+  // Default configuration values
+  const defaults = {
+    // Core settings
+    captureHtmlDebug: true,
+    pauseAnimationsDefault: true,
+
+    // Timeouts and delays
+    navigationTimeout: 30000,
+    elementTimeout: 5000,
+    postClickDelay: 1500,
+
+    // Selection strategies
+    prioritySelectors: ["testId", "attribute", "css", "text", "triangulation"],
+
+    // Theme handling
+    themeSwitchStrategy: "attribute",
+    themeAttributeName: "data-theme",
+
+    // TestID configuration
+    testIdPrefix: "jods-",
+    testIdDelimiter: "-",
+
+    // Output configuration
+    outputFormat: "{name}-{theme}{timestamp}.png",
+    errorOutputFormat: "{name}-{theme}-error{timestamp}.png",
+  };
+
+  // TODO: Load from a config file if needed
+  return defaults;
+}
+
+/**
+ * Measure execution time of an operation
+ * @param {Function} fn - Function to measure
+ * @param {Object} logger - Logger instance
+ * @param {string} operationName - Name of the operation
+ * @returns {Promise<any>} Result of the function
+ */
+export async function measureTime(fn, logger, operationName) {
+  const start = performance.now();
+  try {
+    return await fn();
+  } finally {
+    const duration = Math.round(performance.now() - start);
+    logger.timing(duration, operationName);
+  }
 }
