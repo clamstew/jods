@@ -137,6 +137,33 @@ html[data-theme="light"] .header::before {
   }
 }
 
+@keyframes gradientBorder {
+  0% {
+    border-image-source: linear-gradient(to bottom, #f43f5e, #8b5cf6);
+  }
+  25% {
+    border-image-source: linear-gradient(to bottom, #8b5cf6, #3b82f6);
+  }
+  50% {
+    border-image-source: linear-gradient(to bottom, #3b82f6, #10b981);
+  }
+  75% {
+    border-image-source: linear-gradient(to bottom, #10b981, #f43f5e);
+  }
+  100% {
+    border-image-source: linear-gradient(to bottom, #f43f5e, #8b5cf6);
+  }
+}
+
+@keyframes shimmerActiveFeature {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
 /* Animated floating effects for text */
 .remix {
   font-weight: 800;
@@ -338,7 +365,7 @@ html[data-theme="light"] .featureItem {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03), 0 0 0 1px rgba(16, 185, 129, 0.05);
 }
 
-/* Enhanced active feature styling with more distinct highlighting */
+/* Restore regular active feature styling with more distinct highlighting */
 .activeFeature {
   transform: translateY(-5px) scale(1.02);
   border-color: #10b981; /* Green border to match Remix text */
@@ -378,6 +405,55 @@ html[data-theme="light"] .activeFeature {
 
 html[data-theme="light"] .activeFeature::after {
   border-left-color: #10b981; /* Green arrow to match Remix text */
+}
+
+/* Enhanced active feature styling for dark mode */
+html[data-theme="dark"] .activeFeature {
+  transform: translateY(-5px) scale(1.02);
+  border-left: 5px solid;
+  border-image-slice: 1;
+  border-image-source: linear-gradient(
+    to bottom,
+    #f43f5e,
+    #8b5cf6,
+    #3b82f6,
+    #10b981
+  );
+  border-image-width: 5px;
+  animation: gradientBorder 5s linear infinite;
+  box-shadow: -8px 0 25px rgba(139, 92, 246, 0.5);
+  background: linear-gradient(
+    to right,
+    rgba(139, 92, 246, 0.1),
+    rgba(59, 130, 246, 0.05),
+    rgba(16, 185, 129, 0)
+  );
+}
+
+html[data-theme="dark"] .activeFeature::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(139, 92, 246, 0.15),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmerActiveFeature 3s infinite;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: 16px;
+}
+
+/* Adjust the after arrow for dark mode to match the gradient style */
+html[data-theme="dark"] .activeFeature::after {
+  border-left-color: #8b5cf6; /* Purple arrow to match Remix colors */
+  filter: drop-shadow(0 0 3px rgba(139, 92, 246, 0.5));
 }
 
 .featureIcon {
@@ -865,28 +941,59 @@ html[data-theme="light"] .featureItem:nth-child(5) {
   border-left: 3px solid rgba(236, 72, 153, 0.5); /* Pink */
 }
 
-/* Add hot pink borders to feature boxes in dark mode with glow effect */
+/* Add dynamic Remix-inspired borders to feature boxes in dark mode */
+@keyframes gradientBorder {
+  0% {
+    border-image-source: linear-gradient(to bottom, #f43f5e, #8b5cf6);
+  }
+  25% {
+    border-image-source: linear-gradient(to bottom, #8b5cf6, #3b82f6);
+  }
+  50% {
+    border-image-source: linear-gradient(to bottom, #3b82f6, #10b981);
+  }
+  75% {
+    border-image-source: linear-gradient(to bottom, #10b981, #f43f5e);
+  }
+  100% {
+    border-image-source: linear-gradient(to bottom, #f43f5e, #8b5cf6);
+  }
+}
+
+html[data-theme="dark"] .featureItem {
+  border-left: 5px solid;
+  border-image-slice: 1;
+  box-shadow: none;
+  transition: all 0.3s ease;
+}
+
 html[data-theme="dark"] .featureItem:nth-child(1) {
-  border-left: 4px solid #ff2d70; /* Brighter hot pink */
-  box-shadow: -3px 0 10px rgba(255, 45, 112, 0.4); /* Add glow effect */
+  border-image-source: linear-gradient(to bottom, #f43f5e, #8b5cf6);
+  box-shadow: -3px 0 15px rgba(244, 63, 94, 0.3);
 }
 
 html[data-theme="dark"] .featureItem:nth-child(2) {
-  border-left: 4px solid #ff2d70; /* Brighter hot pink */
-  box-shadow: -3px 0 10px rgba(255, 45, 112, 0.4); /* Add glow effect */
+  border-image-source: linear-gradient(to bottom, #8b5cf6, #3b82f6);
+  box-shadow: -3px 0 15px rgba(139, 92, 246, 0.3);
 }
 
 html[data-theme="dark"] .featureItem:nth-child(3) {
-  border-left: 4px solid #ff2d70; /* Brighter hot pink */
-  box-shadow: -3px 0 10px rgba(255, 45, 112, 0.4); /* Add glow effect */
+  border-image-source: linear-gradient(to bottom, #3b82f6, #10b981);
+  box-shadow: -3px 0 15px rgba(59, 130, 246, 0.3);
 }
 
 html[data-theme="dark"] .featureItem:nth-child(4) {
-  border-left: 4px solid #ff2d70; /* Brighter hot pink */
-  box-shadow: -3px 0 10px rgba(255, 45, 112, 0.4); /* Add glow effect */
+  border-image-source: linear-gradient(to bottom, #10b981, #f59e0b);
+  box-shadow: -3px 0 15px rgba(16, 185, 129, 0.3);
 }
 
 html[data-theme="dark"] .featureItem:nth-child(5) {
-  border-left: 4px solid #ff2d70; /* Brighter hot pink */
-  box-shadow: -3px 0 10px rgba(255, 45, 112, 0.4); /* Add glow effect */
+  border-image-source: linear-gradient(to bottom, #f59e0b, #f43f5e);
+  box-shadow: -3px 0 15px rgba(245, 158, 11, 0.3);
+}
+
+html[data-theme="dark"] .featureItem:hover {
+  animation: gradientBorder 3s linear infinite;
+  border-image-slice: 1;
+  box-shadow: -5px 0 20px rgba(139, 92, 246, 0.4);
 }
