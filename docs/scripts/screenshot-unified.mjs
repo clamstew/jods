@@ -303,6 +303,11 @@ async function takeUnifiedScreenshots(
           const elementHandle = await findElementForComponent(page, component);
 
           if (elementHandle) {
+            // Capture HTML debug info for the component
+            if (component.captureHtmlDebug !== false) {
+              await captureComponentHtml(page, component, elementHandle, theme);
+            }
+
             await captureSpecificElement(
               page,
               elementHandle,
@@ -1373,7 +1378,10 @@ async function captureTabScreenshot(
 
   // Simplify the filename for the Traditional Remix tab
   let finalTabId = safeTabId;
-  if (
+  if (component.name === "framework-section") {
+    // For framework section, always use 'react' as the identifier
+    finalTabId = "react";
+  } else if (
     safeTabId.includes("traditional") ||
     safeTabId.includes("remix") ||
     tabName.includes("💿")
@@ -1408,6 +1416,67 @@ async function captureTabScreenshot(
     // Copy the file to create a React version
     fs.copyFileSync(screenshotPath, reactPath);
     console.log(`Created simulated React tab screenshot: ${reactPath}`);
+  }
+}
+
+/**
+ * Helper: Capture HTML debug information for any component
+ */
+async function captureComponentHtml(page, component, elementHandle, theme) {
+  try {
+    // Create debug directory if it doesn't exist
+    const debugDir = path.join(__dirname, "../static/debug");
+    if (!fs.existsSync(debugDir)) {
+      fs.mkdirSync(debugDir, { recursive: true });
+    }
+
+    // Get HTML content of the component
+    const htmlContent = await page.evaluate(() => {
+      const element = document.activeElement;
+      if (!element) return null;
+
+      return {
+        html: element.outerHTML,
+        buttons: Array.from(element.querySelectorAll("button")).map((btn) => ({
+          text: btn.textContent.trim(),
+          html: btn.outerHTML,
+        })),
+        headings: Array.from(
+          element.querySelectorAll("h1, h2, h3, h4, h5, h6")
+        ).map((h) => ({
+          level: h.tagName,
+          text: h.textContent.trim(),
+        })),
+      };
+    });
+
+    if (htmlContent) {
+      const debugFilePath = path.join(
+        debugDir,
+        `${component.name}-${theme}-debug.html`
+      );
+      let debugContent = `<h1>${component.name} Debug (${theme} theme)</h1>`;
+      debugContent += `<h2>Full HTML</h2><pre>${htmlContent.html
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")}</pre>`;
+
+      debugContent += `<h2>Headings (${htmlContent.headings.length})</h2>`;
+      htmlContent.headings.forEach((heading, _i) => {
+        debugContent += `<p><strong>${heading.level}</strong>: ${heading.text}</p>`;
+      });
+
+      debugContent += `<h2>Buttons (${htmlContent.buttons.length})</h2>`;
+      htmlContent.buttons.forEach((btn, _i) => {
+        debugContent += `<h3>Button: "${btn.text}"</h3><pre>${btn.html
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")}</pre>`;
+      });
+
+      fs.writeFileSync(debugFilePath, debugContent);
+      console.log(`HTML debug info saved to: ${debugFilePath}`);
+    }
+  } catch (error) {
+    console.log(`Error capturing HTML debug: ${error.message}`);
   }
 }
 

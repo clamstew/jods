@@ -72,10 +72,11 @@ export const COMPONENTS = [
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
     minHeight: 1200,
     captureFrameworkTabs: true,
-    frameworkTabs: ["💿 Remix", "⚛️ React", "⚛️ Preact"],
+    frameworkTabs: ["⚛️ React"],
     testId: "jods-framework-section",
     extraScroll: 250,
-    simulateReactTab: true,
+    simulateReactTab: false,
+    captureHtmlDebug: true,
     alternativeSelectors: [
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
       "button:has-text('React'), button:has-text('Preact'), button:has-text('Remix')",
