@@ -113,7 +113,19 @@ export const COMPONENTS = [
       "table, .comparison-table, [class*='comparisonTable']",
       ".feature-comparison, [class*='comparison']",
     ],
-    excludeElements: [".footer-links", ".next-section-link"],
+    excludeElements: [
+      ".footer-links",
+      ".next-section-link",
+      "a:has-text('Explore Remix Integration')",
+      "a:has-text('Learn about Active Record')",
+      "button:has-text('Explore Remix Integration')",
+      "button:has-text('Learn about Active Record')",
+      "[class*='button']:has-text('Explore')",
+      "[class*='button']:has-text('Learn')",
+      "a[href*='remix']",
+      "a[href*='active-record']",
+      ".cta-button, .action-button, .learn-more",
+    ],
   },
 
   // Remix section
