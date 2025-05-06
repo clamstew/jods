@@ -638,13 +638,114 @@ html[data-theme="light"] .activeFeature .featureIcon {
   pointer-events: none;
 }
 
-/* Improved light mode code container with subtle gradient accents */
-html[data-theme="light"] .codeContainer {
-  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05);
-  border-radius: 0 12px 12px 12px;
+/* Light Mode Tabs Variation 2 - Card-like Elevated Design */
+html[data-theme="light"] .tab {
+  color: #334155;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background: white;
+  margin-right: 8px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0.9rem 1.25rem;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.02);
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  border: 1px solid rgba(241, 245, 249, 0.9);
+  border-bottom: none;
   position: relative;
   overflow: hidden;
+  transform: translateY(3px);
+  z-index: 1;
+}
+
+/* Enhanced tab container for light mode */
+html[data-theme="light"] .tabsContainer {
+  background: linear-gradient(to right, #f8fafc, #f1f5f9);
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-bottom: none;
+  padding: 0.75rem 0.75rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Light mode tab hover */
+html[data-theme="light"] .tab:hover {
+  background: white;
+  color: #0f172a;
+  transform: translateY(0);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08), 0 -1px 3px rgba(0, 0, 0, 0.02);
+}
+
+/* Enhanced active tab with clean design */
+html[data-theme="light"] .activeTab {
+  background: white;
+  color: #4f46e5;
+  font-weight: 700;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-bottom: 1px solid white;
+  margin-bottom: -1px;
+  box-shadow: 0 -6px 16px rgba(0, 0, 0, 0.08);
+  position: relative;
+  transform: translateY(0);
+  z-index: 2;
+}
+
+html[data-theme="light"] .activeTab::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #4f46e5;
+  background-size: 100% 100%;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+/* Rainbow gradient background accent in the code container */
+html[data-theme="light"] .codeContainer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(
+    circle at top right,
+    rgba(236, 72, 153, 0.08) 0%,
+    rgba(168, 85, 247, 0.06) 30%,
+    rgba(59, 130, 246, 0.04) 60%,
+    transparent 90%
+  );
+  pointer-events: none;
+}
+
+/* Remove any extra decorations */
+html[data-theme="light"] .codeContainer::after {
+  display: none;
+}
+
+/* Remove window controls in light mode */
+html[data-theme="light"] .windowControls {
+  display: none;
+}
+
+/* Style for tab icon in light mode with better contrast */
+html[data-theme="light"] .tabIcon {
+  color: #4f46e5;
+  opacity: 0.8;
+  margin-right: 8px;
+  transition: all 0.2s ease;
+}
+
+html[data-theme="light"] .tab:hover .tabIcon,
+html[data-theme="light"] .activeTab .tabIcon {
+  opacity: 1;
+  transform: scale(1.1);
+  color: #6366f1;
 }
 
 /* Rainbow accent in top-right corner */
@@ -693,33 +794,6 @@ html[data-theme="light"] .codeContainer::after {
   z-index: 2;
 }
 
-/* Enhanced tab container styling for light mode */
-html[data-theme="light"] .tabsContainer {
-  background: linear-gradient(to right, #1e293b, #334155);
-  border-bottom: 1px solid rgba(79, 70, 229, 0.3);
-  padding: 0.5rem 0.5rem 0;
-  position: relative;
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-}
-
-html[data-theme="light"] .tabsContainer::before {
-  content: "";
-  position: absolute;
-  top: 10px;
-  left: 12px;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #f87171;
-  box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.3),
-    0 0 8px rgba(248, 113, 113, 0.5), 20px 0 0 #fbbf24,
-    20px 0 0 1px rgba(251, 191, 36, 0.3), 20px 0 8px rgba(251, 191, 36, 0.5),
-    40px 0 0 #4ade80, 40px 0 0 1px rgba(74, 222, 128, 0.3),
-    40px 0 8px rgba(74, 222, 128, 0.5);
-  z-index: 2;
-}
-
 /* Base tab styling */
 .tab {
   flex: 1;
@@ -752,7 +826,8 @@ html[data-theme="light"] .tabsContainer::before {
   align-items: center;
 }
 
-.tab:hover {
+/* Dark mode tab hover */
+html[data-theme="dark"] .tab:hover {
   background: rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.9);
 }
@@ -778,93 +853,86 @@ html[data-theme="light"] .tabsContainer::before {
   border-radius: 3px 3px 0 0;
 }
 
-/* Enhanced tab styling for light mode */
+/* Fun and practical light mode tab styling */
 html[data-theme="light"] .tab {
-  color: rgba(0, 0, 0, 0.7);
-  font-weight: 500;
+  color: #1e293b;
+  font-weight: 600;
   letter-spacing: 0.01em;
-  background: rgba(255, 255, 255, 0.8);
-  margin-right: 5px;
-  transition: all 0.3s ease;
-  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05);
+  background: rgba(249, 250, 251, 0.95);
+  margin-right: 8px;
+  transition: all 0.2s ease;
+  padding: 0.9rem 1.25rem;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03);
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-bottom: none;
-}
-
-html[data-theme="light"] .tab:hover {
-  background: rgba(79, 70, 229, 0.1);
-  color: rgba(0, 0, 0, 0.9);
-  box-shadow: 0 -5px 15px rgba(79, 70, 229, 0.1);
-}
-
-/* Enhanced light mode active tab with rainbow indicator and shimmer */
-html[data-theme="light"] .activeTab {
-  background: #ffffff;
-  color: #f43f5e;
-  font-weight: 600;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(226, 232, 240, 0.8);
   border-bottom: none;
   position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+html[data-theme="light"] .tab::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(
+    to right,
+    rgba(236, 72, 153, 0.4),
+    rgba(168, 85, 247, 0.4),
+    rgba(59, 130, 246, 0.4)
+  );
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* Enhanced active tab with cleaner design */
+html[data-theme="light"] .activeTab {
+  background: white;
+  color: #4f46e5;
+  font-weight: 700;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-bottom: 1px solid white;
+  margin-bottom: -1px;
+  box-shadow: 0 -4px 12px rgba(79, 70, 229, 0.1);
+  position: relative;
+  z-index: 2;
 }
 
 html[data-theme="light"] .activeTab::before {
   content: "";
   position: absolute;
-  top: -2px;
+  top: 0;
   left: 0;
   right: 0;
   height: 3px;
   background: linear-gradient(to right, #f43f5e 0%, #a855f7 50%, #3b82f6 100%);
   background-size: 200% 100%;
-  border-radius: 3px 3px 0 0;
   animation: shimmerBackground 3s infinite;
-  box-shadow: 0 0 10px rgba(236, 72, 153, 0.3);
 }
 
-/* Enhance code editor tabs area in light mode */
-html[data-theme="light"] .codeTabs {
-  background: linear-gradient(
-    to right,
-    rgba(243, 244, 246, 0.8),
-    rgba(249, 250, 251, 0.8)
+/* Add subtle stripe pattern to light mode code container */
+html[data-theme="light"] .codeContainer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 2px,
+    rgba(241, 245, 249, 0.5) 2px,
+    rgba(241, 245, 249, 0.5) 4px
   );
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-  border-bottom: none;
-  padding: 0.5rem 0.5rem 0;
-  backdrop-filter: blur(5px);
-  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.03);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-bottom: none;
-}
-
-/* Window controls in light mode */
-html[data-theme="light"] .windowControls {
-  background: rgba(249, 250, 251, 0.7);
-  border-radius: 10px;
-  padding: 0 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.03);
-}
-
-html[data-theme="light"] .windowControl {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1) inset;
-}
-
-html[data-theme="light"] .windowControl.close {
-  background-color: #f87171;
-}
-
-html[data-theme="light"] .windowControl.minimize {
-  background-color: #fbbf24;
-}
-
-html[data-theme="light"] .windowControl.maximize {
-  background-color: #34d399;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0;
+  display: block;
 }
 
 /* Code sections display fix */
@@ -1197,4 +1265,197 @@ html[data-theme="dark"] .featureItem:hover {
   animation: gradientBorder 3s linear infinite;
   border-image-slice: 1;
   box-shadow: -5px 0 20px rgba(139, 92, 246, 0.4);
+}
+
+/* Essential code that was removed - need to restore */
+html[data-theme="light"] .tabsContainer::before {
+  display: none;
+}
+
+/* Enhanced code editor tabs area in light mode */
+html[data-theme="light"] .codeTabs {
+  background: transparent;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+}
+
+/* Improved light mode code container to match tabs */
+html[data-theme="light"] .codeContainer {
+  background: white;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.03);
+  border-radius: 0 0 12px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-top: none;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Light Mode Tabs Variation 4 - Minimalist Flat Design */
+html[data-theme="light"] .tab {
+  color: #64748b;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  background: rgba(241, 245, 249, 0.5);
+  margin-right: 12px;
+  transition: all 0.2s ease;
+  padding: 0.8rem 1.1rem;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  border: none;
+  border-bottom: 2px solid rgba(226, 232, 240, 0.8);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Light mode tab hover */
+html[data-theme="light"] .tab:hover {
+  background: rgba(249, 250, 251, 0.8);
+  color: #334155;
+  border-bottom-color: rgba(79, 70, 229, 0.2);
+}
+
+/* Container for tabs with clean background */
+html[data-theme="light"] .tabsContainer {
+  background: rgba(249, 250, 251, 0.5);
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  border: 1px solid rgba(226, 232, 240, 0.5);
+  border-bottom: none;
+  padding: 0.6rem 0.6rem 0;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+/* Light mode active tab with subtle rainbow indicator */
+html[data-theme="light"] .activeTab {
+  background: white;
+  color: #334155;
+  font-weight: 600;
+  border-bottom: 2px solid transparent;
+  border-top: 1px solid rgba(226, 232, 240, 0.8);
+  border-left: 1px solid rgba(226, 232, 240, 0.8);
+  border-right: 1px solid rgba(226, 232, 240, 0.8);
+  position: relative;
+  z-index: 2;
+}
+
+html[data-theme="light"] .activeTab::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(to right, #f43f5e, #a855f7, #3b82f6);
+}
+
+/* Light Mode Tabs Variation 5 - Glassmorphism Design */
+html[data-theme="light"] .tab {
+  color: #475569;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  background: rgba(255, 255, 255, 0.7);
+  margin-right: 6px;
+  transition: all 0.2s ease;
+  padding: 0.85rem 1.4rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-bottom: none;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(5px);
+  z-index: 1;
+}
+
+/* Glassmorphism container */
+html[data-theme="light"] .tabsContainer {
+  background: linear-gradient(
+    135deg,
+    rgba(249, 250, 251, 0.6),
+    rgba(241, 245, 249, 0.8)
+  );
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-bottom: none;
+  padding: 0.8rem 0.8rem 0;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+/* Rainbow reflection effect on container */
+html[data-theme="light"] .tabsContainer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(236, 72, 153, 0.05),
+    rgba(168, 85, 247, 0.05) 25%,
+    rgba(59, 130, 246, 0.05) 50%,
+    rgba(16, 185, 129, 0.05) 75%,
+    rgba(249, 115, 22, 0.05) 100%
+  );
+  pointer-events: none;
+}
+
+/* Light mode tab hover */
+html[data-theme="light"] .tab:hover {
+  background: rgba(255, 255, 255, 0.9);
+  color: #1e293b;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+}
+
+/* Active tab with glass effect and rainbow indicator */
+html[data-theme="light"] .activeTab {
+  background: white;
+  color: #3b82f6;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-bottom: none;
+  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.1);
+  position: relative;
+  z-index: 2;
+}
+
+html[data-theme="light"] .activeTab::before {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    #f43f5e 0%,
+    #ec4899 20%,
+    #a855f7 40%,
+    #3b82f6 60%,
+    #06b6d4 80%,
+    #10b981 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmerBackground 6s linear infinite;
+}
+
+/* Improved light mode code container with glass effect */
+html[data-theme="light"] .codeContainer {
+  background: white;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.02);
+  border-radius: 0 0 12px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-top: none;
+  position: relative;
+  overflow: hidden;
 }

@@ -1,13 +1,13 @@
 {
   "iteration": 1,
-  "timestamp": "2025-05-06T07:51:59.094Z",
+  "timestamp": "2025-05-06T08:36:42.472Z",
   "targets": [
     "hero-section",
     "features-section",
     "framework-section-react",
     "framework-section-remix"
   ],
-  "screenshotTimestamp": "20250506T075158",
+  "screenshotTimestamp": "20250506T083642",
   "changes": [
     {
       "component": "hero-section",
@@ -46,7 +46,24 @@
       "reasoning": "Placeholder reasoning - would come from AI"
     }
   ],
-  "diffInfo": {},
+  "diffInfo": {
+    "hero-section": {
+      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/hero-section-20250506T083642.diff",
+      "diffFileName": "hero-section-20250506T083642.diff"
+    },
+    "features-section": {
+      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/features-section-20250506T083642.diff",
+      "diffFileName": "features-section-20250506T083642.diff"
+    },
+    "framework-section-react": {
+      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/framework-section-react-20250506T083642.diff",
+      "diffFileName": "framework-section-react-20250506T083642.diff"
+    },
+    "framework-section-remix": {
+      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/framework-section-remix-20250506T083642.diff",
+      "diffFileName": "framework-section-remix-20250506T083642.diff"
+    }
+  },
   "config": {
     "count": 1,
     "targets": [
