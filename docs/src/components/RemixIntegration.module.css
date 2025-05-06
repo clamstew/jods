@@ -13,20 +13,20 @@
 .header {
   margin-bottom: 3rem;
   text-align: center;
-  /* Unified Remix-inspired rainbow gradient with dark mode colors top-left and light mode colors bottom-right */
   background: linear-gradient(
     135deg,
-    #ff4d4d 0%,
-    #e11d48 15%,
-    #9333ea 30%,
-    #4f46e5 50%,
-    #3b82f6 70%,
-    #10b981 90% /* Keep the nice kelly green */
+    #1e40af 0%,
+    #3730a3 30%,
+    #6d28d9 50%,
+    #9d174d 70%,
+    #be123c 100%
   );
+  background-size: 200% 200%;
+  animation: shimmerBackground 15s ease infinite;
   padding: 4rem 2.5rem;
   border-radius: 20px;
   margin: -5rem -2rem 3rem;
-  box-shadow: 0 15px 35px rgba(165, 4, 60, 0.3);
+  box-shadow: 0 15px 35px rgba(30, 64, 175, 0.4);
   position: relative;
   overflow: hidden;
   will-change: transform;
@@ -38,14 +38,15 @@
 html[data-theme="light"] .header {
   background: linear-gradient(
     135deg,
-    #ff4d4d 0%,
-    #e11d48 15%,
-    #9333ea 30%,
-    #4f46e5 50%,
-    #3b82f6 70%,
-    #10b981 90% /* Keep the nice kelly green */
+    #1e40af 0%,
+    #3730a3 30%,
+    #6d28d9 50%,
+    #9d174d 70%,
+    #be123c 100%
   );
-  box-shadow: 0 15px 30px rgba(185, 28, 28, 0.2);
+  background-size: 200% 200%;
+  animation: shimmerBackground 15s ease infinite;
+  box-shadow: 0 15px 30px rgba(30, 64, 175, 0.3);
 }
 
 /* Enhanced glass effect overlay - subtle blur as requested */
@@ -101,42 +102,89 @@ html[data-theme="light"] .header::before {
   opacity: 0.4;
 }
 
+/* Title with modern floating effect */
 .title {
-  font-size: 3.2rem;
+  font-size: 3.5rem;
   font-weight: 800;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   position: relative;
   z-index: 3;
   letter-spacing: -0.02em;
   line-height: 1.1;
-  color: white; /* Reset to white for consistent base */
+  color: white;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
 }
 
-@keyframes titleGlow {
-  0% {
-    background-position: 0% 50%;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 20px rgba(79, 70, 229, 0.15);
+@keyframes floatAnimation {
+  0%,
+  100% {
+    transform: translateY(0px);
   }
   50% {
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3),
-      0 0 30px rgba(147, 197, 253, 0.25);
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes shimmerBackground {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
   }
   100% {
-    background-position: 100% 50%;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 20px rgba(79, 70, 229, 0.15);
+    background-position: 0% 50%;
   }
 }
 
-/* Override the light mode title styling to ensure the colorful text shows properly */
-html[data-theme="light"] .title {
-  background: none;
-  -webkit-background-clip: initial;
-  -webkit-text-fill-color: initial;
-  text-shadow: none;
+/* Animated floating effects for text */
+.remix {
+  font-weight: 800;
+  color: #67e8f9; /* Light cyan */
+  position: relative;
+  z-index: 3;
+  letter-spacing: -0.01em;
+  display: inline-block;
+  animation: floatAnimation 4s ease-in-out infinite;
 }
 
+/* Light mode styling */
+html[data-theme="light"] .remix {
+  color: #22d3ee; /* Medium cyan for better contrast */
+  text-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
+}
+
+/* State text with animation delay */
+.stateText {
+  position: relative;
+  display: inline-block;
+  color: #fed7aa; /* Light orange */
+  animation: floatAnimation 4s ease-in-out infinite 0.5s; /* Delayed start */
+}
+
+/* Light mode styling */
+html[data-theme="light"] .stateText {
+  color: #fb923c; /* Medium orange for better contrast */
+  text-shadow: 0 0 10px rgba(251, 146, 60, 0.5);
+}
+
+/* Reimagined text with animation delay */
+.reimaginedText {
+  position: relative;
+  display: inline-block;
+  color: #e9d5ff; /* Light purple */
+  animation: floatAnimation 4s ease-in-out infinite 1s; /* More delayed start */
+}
+
+/* Light mode styling */
+html[data-theme="light"] .reimaginedText {
+  color: #c084fc; /* Medium purple for better contrast */
+  text-shadow: 0 0 10px rgba(192, 132, 252, 0.5);
+}
+
+/* Redesigned tagline with glass effect */
 .subtitle {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   margin-bottom: 2.5rem;
   color: rgba(255, 255, 255, 0.95);
   max-width: 680px;
@@ -146,154 +194,57 @@ html[data-theme="light"] .title {
   z-index: 3;
   line-height: 1.5;
   will-change: opacity;
-  font-weight: 500;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Added subtle shadow */
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.01em;
+  opacity: 0.9;
 }
 
-html[data-theme="light"] .subtitle {
-  color: rgba(255, 255, 255, 0.95); /* Increased contrast */
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Added subtle shadow */
-}
-
+/* Glass effect highlight */
 .highlight {
-  background: #f43f5e;
-  padding: 0.4rem 1rem;
-  border-radius: 8px;
-  color: white;
-  font-weight: 700;
   display: inline-flex;
   align-items: center;
-  box-shadow: 0 4px 16px rgba(244, 63, 94, 0.35);
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  font-weight: 700;
   margin: 0 0.3rem;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  animation: floatAnimation 4s ease-in-out infinite 1.5s; /* Extra delayed start */
 }
 
-/* Light mode specific styling */
-html[data-theme="light"] .highlight {
-  background: #e11d48;
-  color: white;
-  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
-}
-
-.highlight:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(244, 63, 94, 0.45);
-}
-
-html[data-theme="light"] .highlight:hover {
-  box-shadow: 0 8px 20px rgba(225, 29, 72, 0.4);
-}
-
-/* Enhanced Ruby icon with more realistic gem effect */
+/* Ruby gem with floating animation */
 .rubyIcon {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-right: 8px;
+  margin-right: 10px;
 }
 
-.rubyIcon::before {
-  content: "";
-  position: absolute;
-  width: 140%;
-  height: 140%;
-  background: radial-gradient(
-    circle,
-    rgba(255, 92, 92, 0.4) 0%,
-    rgba(249, 115, 22, 0) 70%
-  );
-  border-radius: 50%;
-  z-index: -1;
-}
-
-html[data-theme="light"] .rubyIcon::before {
-  background: radial-gradient(
-    circle,
-    rgba(234, 88, 12, 0.35) 0%,
-    rgba(234, 88, 12, 0) 70%
-  );
-}
-
-/* Refined Ruby gem styling with enhanced facets */
 .rubyGem {
   display: inline-block;
-  margin-right: 0.5rem;
-  font-size: 1.3em;
+  margin-right: 0.4rem;
+  font-size: 1.5em;
   transform-origin: center;
-  filter: drop-shadow(0 0 8px rgba(252, 165, 165, 0.8));
-  animation: gemShine 6s infinite;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+  animation: floatAnimation 3s ease-in-out infinite 0.5s;
 }
 
-@keyframes gemShine {
-  0%,
-  100% {
-    filter: drop-shadow(0 0 8px rgba(252, 165, 165, 0.7));
-    transform: scale(1);
-  }
-  50% {
-    filter: drop-shadow(0 0 15px rgba(252, 165, 165, 1)); /* Increased glow */
-    transform: scale(1.05);
-  }
-}
-
-html[data-theme="light"] .rubyGem {
-  filter: drop-shadow(
-    0 0 12px rgba(220, 38, 38, 0.9)
-  ); /* Enhanced red filter */
-}
-
-/* Remix - styled like the official Remix logo */
-.remix {
-  font-weight: 800;
-  color: #10b981; /* Changed to green as requested */
-  text-shadow: 0 0 1px rgba(0, 0, 0, 0.5), 0 0 2px rgba(0, 0, 0, 0.3); /* Softened black outline effect */
-  position: relative;
-  z-index: 3;
-  letter-spacing: -0.01em;
-}
-
-/* Light mode - more vibrant styling */
-html[data-theme="light"] .remix {
-  color: #059669; /* Slightly deeper green for better contrast in light mode */
-  text-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 0 2px rgba(0, 0, 0, 0.2),
-    0 0 5px rgba(16, 185, 129, 0.4); /* Added color glow */
-  position: relative;
-}
-
-/* Style for "State" in orange */
-.stateText {
-  color: #f97316; /* Changed to orange from kelly green */
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-/* Light mode - more vibrant styling */
-html[data-theme="light"] .stateText {
-  color: #ea580c; /* Deeper orange for better contrast in light mode */
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 0 5px rgba(249, 115, 22, 0.4); /* Added color glow */
-}
-
-/* Style for "Reimagined" in purple */
-.reimaginedText {
-  color: #a855f7; /* Changed to purple from orange */
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-/* Light mode - more vibrant styling */
-html[data-theme="light"] .reimaginedText {
-  color: #9333ea; /* Deeper purple for better contrast in light mode */
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 0 5px rgba(168, 85, 247, 0.4); /* Added color glow */
-}
-
-/* Enhanced Remix icon with rainbow animation */
+/* Spinning CD with floating effect */
 .remixIconWrapper {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   margin-right: 8px;
+  animation: floatAnimation 3s ease-in-out infinite;
 }
 
 .remixIconWrapper::before {
@@ -303,50 +254,19 @@ html[data-theme="light"] .reimaginedText {
   height: 150%;
   background: radial-gradient(
     circle,
-    rgba(147, 197, 253, 0.5) 0%,
-    rgba(79, 70, 229, 0.3) 50%,
-    rgba(147, 197, 253, 0) 100%
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0.1) 40%,
+    rgba(255, 255, 255, 0) 100%
   );
   border-radius: 50%;
   z-index: -1;
-  animation: pulse 3s infinite;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 0.5;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.8;
-  }
-}
-
-/* Enhanced CD icon in light mode */
-html[data-theme="light"] .remixIconWrapper::before {
-  background: radial-gradient(
-    circle,
-    rgba(147, 197, 253, 0.7) 0%,
-    rgba(79, 70, 229, 0.4) 50%,
-    rgba(147, 197, 253, 0) 100%
-  );
-  opacity: 0.8;
 }
 
 .remixIcon {
   display: inline-block;
-  animation: spinSlowly 10s linear infinite;
-}
-
-@keyframes spinSlowly {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  animation: spinSlowly 8s linear infinite;
+  font-size: 1.1em;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
 }
 
 /* Content layout with depth */

@@ -221,11 +221,11 @@ export default function TodosPage() {
             <span className={styles.rubyIcon}>
               <span className={styles.rubyGem}>💎</span>
             </span>
-            Active Record
+            Modern Data Layer
           </span>{" "}
           for Remix:
           <br />
-          simple, reactive, type-safe state management
+          reactive, type-safe, and persistence-ready
         </p>
       </div>
 
