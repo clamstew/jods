@@ -10,6 +10,7 @@ These scripts handle:
 - Component screenshots
 - Section screenshots using content-based selection and CSS selectors
 - Screenshot batch cleanup and management
+- Automated rebaselining of screenshots
 
 ## 📚 Documentation
 
@@ -20,6 +21,31 @@ For complete documentation on the screenshot system, please refer to the [Playwr
 - `screenshot-selectors.mjs` - Unified selectors registry for all components
 - `screenshot-unified.mjs` - Consolidated screenshot script with multiple modes (RECOMMENDED)
 - `screenshot-cleanup.mjs` - Tool for managing screenshot batches
+- `rebaseline.mjs` - All-in-one script for rebaselining screenshots
+
+## Rebaselining Screenshots
+
+The rebaseline script handles the entire rebaselining workflow including starting the development server, capturing baseline screenshots, and shutting down automatically:
+
+```bash
+# From docs directory
+npm run rebaseline            # Simple rebaseline (cleanup + baseline)
+npm run rebaseline:full       # Full rebaseline (cleanup + baseline + test IDs)
+npm run rebaseline:testid     # TestID-specific rebaseline
+
+# Direct script usage with more options
+node scripts/rebaseline.mjs --help
+```
+
+The rebaseline script:
+
+1. Creates necessary directories
+2. Starts a Docusaurus server
+3. Waits for the server to be ready
+4. Cleans up old screenshots
+5. Captures new baseline screenshots
+6. Optionally generates test ID selectors and captures those
+7. Shuts down the server when complete
 
 ## Unified Screenshot Approach
 
@@ -63,22 +89,27 @@ When running screenshot scripts:
 
 ```bash
 # From docs directory
-pnpm screenshot                    # All components
-pnpm screenshot -- --mode=sections # Just homepage sections
-pnpm screenshot -- --mode=remix    # Just Remix section
+npm run screenshot                    # All components
+npm run screenshot -- --mode=sections # Just homepage sections
+npm run screenshot -- --mode=remix    # Just Remix section
 
 # Capture specific components by name
-pnpm screenshot -- --components=framework-section-react
-pnpm screenshot -- --components=framework-section-react,framework-section-remix
+npm run screenshot -- --components=framework-section-react
+npm run screenshot -- --components=framework-section-react,framework-section-remix
 
 # Create baseline screenshots (without timestamp)
-pnpm screenshot:baseline
+npm run screenshot:baseline
+
+# Rebaseline screenshots (fully automated)
+npm run rebaseline                   # Simple rebaseline
+npm run rebaseline:full              # Full rebaseline
+npm run rebaseline:testid            # TestID rebaseline
 
 # From root directory
-pnpm docs:screenshot
-pnpm docs:screenshot:baseline
-pnpm docs:screenshot:diff
-pnpm docs:screenshot:cleanup
+npm run docs:screenshot
+npm run docs:screenshot:baseline
+npm run docs:screenshot:diff
+npm run docs:screenshot:cleanup
 ```
 
 ## Framework Tabs

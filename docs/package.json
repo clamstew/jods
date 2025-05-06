@@ -20,7 +20,11 @@
     "screenshot:diff": "node scripts/screenshot-diff.mjs",
     "screenshot:cleanup": "node scripts/screenshot-cleanup.mjs",
     "screenshot:testid": "node scripts/screenshot-unified.mjs --use-generated-selectors",
-    "generate-selectors": "node scripts/generate-selectors.mjs"
+    "generate-selectors": "node scripts/generate-selectors.mjs",
+    "rebaseline": "node scripts/rebaseline.mjs",
+    "rebaseline:full": "node scripts/rebaseline.mjs --full",
+    "rebaseline:testid": "node scripts/rebaseline.mjs --testid",
+    "dev": "npm run start"
   },
   "dependencies": {
     "@docusaurus/core": "3.7.0",
