@@ -57,6 +57,73 @@ pnpm docs:design-iterations --count=2 --target="hero-section" --prompt="Make it 
 pnpm docs:design-iterations --count=3 --target="compare-section" --compare-with="react,zustand,redux" --skip-other-sections
 ```
 
+## Critical: Understanding Component Styling Conventions
+
+Before making any design changes, it's **essential** to analyze how styling is implemented in the target component:
+
+### Step 1: Check for CSS/Style Files
+
+First, look for existing style files associated with the component:
+
+```bash
+# Check if there's a CSS module file for the component
+find docs/src/components -name "ComponentName*.css"
+
+# Look at style files in the components directory
+find docs/src/components -type f -name "*.css" | head -5
+```
+
+### Step 2: Analyze Component Imports and Usage
+
+Examine the component file's imports and className usage to determine the styling approach:
+
+```tsx
+// Look for these import patterns at the top of the file:
+
+// CSS Modules approach
+import styles from './ComponentName.module.css';
+
+// Global CSS approach
+import './ComponentName.css';
+
+// CSS-in-JS library imports
+import styled from 'styled-components';
+import { css } from '@emotion/react';
+
+// Then check how className is used in the JSX:
+
+// CSS Modules usage
+<div className={styles.container}>
+
+// Global CSS usage
+<div className="component-container">
+
+// Inline styles usage
+<div style={{ display: 'flex', padding: '1rem' }}>
+```
+
+### Step 3: Follow the Established Convention
+
+Always follow the existing styling approach:
+
+| If the component uses... | Then you should... |
+|--------------------------|-------------------|
+| **CSS Modules** (.module.css files) | Create or update the module file and use `className={styles.element}` |
+| **Global CSS** (regular .css files) | Update the CSS file and use `className="element-name"` |
+| **Inline styles** | Use the `style={{ property: 'value' }}` approach |
+| **CSS-in-JS** (styled-components, emotion) | Use the same library's API |
+
+### Common Mistakes to Avoid
+
+❌ **Do not mix styling approaches** within a single component
+❌ **Do not add inline styles** to a component using CSS modules
+❌ **Do not create a new CSS module** for a component using global CSS
+❌ **Do not ignore existing style patterns** in the codebase
+
+✅ **Always analyze first** before making style changes
+✅ **Respect the existing architecture** of the component
+✅ **Match variable naming conventions** for consistency
+
 ## Step 2: Review and Provide Feedback
 
 After generating iterations:
@@ -119,6 +186,26 @@ The `--refine` flag tells the system to:
 
 You can repeat this refinement process multiple times until you're satisfied with the design.
 
+## Proper Timing Between Iterations
+
+For reliable results, follow this procedure for each iteration:
+
+1. **Make design changes** to component files following the established styling convention
+2. **Save all changes** to both component and style files
+3. **Wait 15-20 seconds** for DocuSaurus to fully rebuild with your changes
+4. **Verify in browser** that your changes are visible (check http://localhost:3000)
+5. **Then run** the screenshot command for just that iteration
+6. **Wait for completion** before starting changes for the next iteration
+
+```bash
+# CORRECT: One iteration at a time with proper waiting
+# First modify component code, save, wait 15-20 seconds, verify in browser, then:
+pnpm docs:design-iterations:count-1 --target="try-jods-section" --skip-other-sections
+
+# INCORRECT: Running multiple iterations without verification
+pnpm docs:design-iterations:count-3 --target="try-jods-section" --skip-other-sections
+```
+
 ## Step 4: Implement Final Design
 
 When you've found a design you're happy with, apply it to your codebase:
@@ -154,6 +241,34 @@ You can preview what would be deleted without removing anything:
 
 ```bash
 pnpm docs:design-iterations:cleanup --dry-run
+```
+
+## Providing Clear Iteration Summaries
+
+After completing iterations, always provide a structured summary to help the user understand what was created and how to proceed:
+
+```
+# Design Iterations Summary
+
+You now have X design iterations for the [component] section:
+
+## Review Your Designs
+You can find the screenshots at:
+- Light mode: /docs/static/screenshots/unified/[component]-light-[timestamp].png
+- Dark mode: /docs/static/screenshots/unified/[component]-dark-[timestamp].png
+- Iteration folders: /docs/temp/design-iterations/iteration-[N]/screenshots/
+
+## Apply Your Preferred Design
+Once you've chosen a design, apply it with:
+```bash
+pnpm docs:design-iterations:apply --iteration=[N] --target="[component]"
+```
+
+## Clean Up Artifacts
+After applying, clean up with:
+```bash
+pnpm docs:design-iterations:cleanup
+```
 ```
 
 ## 🔍 Checking Design Iteration Status
@@ -230,6 +345,13 @@ pnpm docs:design-iterations:cleanup
 - Try running with verbose logging: `DEBUG=1 pnpm docs:design-iterations --count=1 --target="features-section" --skip-other-sections`
 - Ensure the documentation site is running (the script will attempt to start it if not)
 
+### Identical screenshots across iterations
+
+- Not waiting long enough between design changes
+- DocuSaurus hasn't rebuilt with your changes yet
+- Try waiting at least 20 seconds between iterations
+- Verify changes in browser before capturing screenshots
+
 ### Can't see changes in screenshots
 
 - Try clearing browser cache: `pnpm docs:design-iterations:clear-cache`
@@ -241,6 +363,12 @@ pnpm docs:design-iterations:cleanup
 - Make sure you have no uncommitted changes: `git status`
 - Try with the force flag: `pnpm docs:design-iterations:apply --iteration=X --target="section" --force`
 - Check if the iteration exists in the expected directory
+
+### Styling inconsistencies
+
+- You're using a different styling approach than the component
+- Analyze the imports and className patterns, then follow them
+- Check for existing CSS/module files before creating new ones
 
 ## 📚 Related Guides
 
@@ -284,16 +412,22 @@ Use this comprehensive checklist to ensure you're following best practices throu
 - [ ] Check for related previous iterations 🕰️
 - [ ] Set up screenshots of current state as baseline 📸
 - [ ] Plan for at least 3 distinct design approaches 🔢
+- [ ] **Analyze the component's styling approach** 🔍
 
 ### For Each Iteration 🔄
 
 - [ ] Create a new Git branch for this iteration (handled automatically) 🌿
+- [ ] **Follow the component's established styling convention** 👣
 - [ ] Implement focused CSS/HTML changes (handled by the tool) 🛠️
+- [ ] Save all changes ✅
+- [ ] **Wait 15-20 seconds for DocuSaurus to rebuild** ⏱️
+- [ ] **Verify changes are visible in browser** 👁️
 - [ ] Capture screenshot in light mode ☀️
 - [ ] Capture screenshot in dark mode 🌙
 - [ ] Save Git diff of changes 💾
 - [ ] Document specific changes made 📝
 - [ ] Provide commentary on design intent 💭
+- [ ] **Wait until screenshot process is complete before starting next iteration** ⏳
 
 ### Review Process 🔍
 
@@ -338,4 +472,4 @@ Use this comprehensive checklist to ensure you're following best practices throu
 - [ ] Elements align properly on all screen sizes 📏
 - [ ] Animation/transitions are not distracting ✨
 - [ ] Font sizes are consistent and readable 📊
-- [ ] Color usage follows design system 🎨
+- [ ] Color usage follows design system 🎨 
