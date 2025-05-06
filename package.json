@@ -62,7 +62,14 @@
     "docs:screenshot:cleanup": "node docs/scripts/screenshot-cleanup.mjs",
     "docs:screenshot:cleanup:dry-run": "node docs/scripts/screenshot-cleanup.mjs --dry-run",
     "docs:screenshot:cleanup:keep-latest": "node docs/scripts/screenshot-cleanup.mjs --keep-latest --keep=3",
-    "docs:screenshot:cleanup:keep": "node docs/scripts/screenshot-cleanup.mjs --keep-latest"
+    "docs:screenshot:cleanup:keep": "node docs/scripts/screenshot-cleanup.mjs --keep-latest",
+    "docs:design-iterations:init": "cd docs && pnpm design-iterations:init",
+    "docs:design-iterations": "node docs/scripts/design-iterations.mjs",
+    "docs:design-iterations:count-5": "node docs/scripts/design-iterations.mjs --count=5",
+    "docs:design-iterations:hero-features": "node docs/scripts/design-iterations.mjs --target=hero-section,features-section",
+    "docs:design-iterations:frameworks": "node docs/scripts/design-iterations.mjs --target=framework-section-react,framework-section-remix",
+    "docs:design-iterations:prompt": "node docs/scripts/design-iterations.mjs --prompt='Create a modern and bold design with enhanced contrast'",
+    "docs:design-iterations:compare": "node docs/scripts/design-iterations.mjs --compare-with=react,redux,zustand"
   },
   "keywords": [
     "state",

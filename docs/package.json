@@ -38,7 +38,14 @@
     "generate-selectors:production": "BASE_URL=https://jods.dev node scripts/generate-selectors.mjs",
     "screenshot:testid": "node scripts/screenshot-unified.mjs --use-generated-selectors",
     "screenshot:testid:baseline": "node scripts/screenshot-unified.mjs --use-generated-selectors --baseline",
-    "screenshot:auto": "npm run generate-selectors && npm run screenshot:testid"
+    "screenshot:auto": "npm run generate-selectors && npm run screenshot:testid",
+    "design-iterations:init": "bash scripts/init-design-iterations.sh",
+    "design-iterations": "node scripts/design-iterations.mjs",
+    "design-iterations:count-5": "node scripts/design-iterations.mjs --count=5",
+    "design-iterations:hero-features": "node scripts/design-iterations.mjs --target=hero-section,features-section",
+    "design-iterations:frameworks": "node scripts/design-iterations.mjs --target=framework-section-react,framework-section-remix",
+    "design-iterations:prompt": "node scripts/design-iterations.mjs --prompt='Create a modern and bold design with enhanced contrast'",
+    "design-iterations:compare": "node scripts/design-iterations.mjs --compare-with=react,redux,zustand"
   },
   "dependencies": {
     "@docusaurus/core": "3.7.0",
@@ -55,6 +62,7 @@
     "@docusaurus/tsconfig": "3.7.0",
     "@docusaurus/types": "3.7.0",
     "@playwright/test": "^1.52.0",
+    "minimist": "^1.2.8",
     "typescript": "~5.6.2"
   },
   "browserslist": {
