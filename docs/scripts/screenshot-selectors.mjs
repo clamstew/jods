@@ -85,13 +85,16 @@ export const COMPONENTS = [
     testId: "jods-framework-section",
     extraScroll: 250,
     captureHtmlDebug: true,
-    darkModeExtraWait: 1800,
+    darkModeExtraWait: 2000, // Increased for more stability
     verifyContentLoaded: true,
     minVisibleCodeLines: 5,
     pauseAnimations: true,
+    // Enhanced React tab selection approach
     beforeScreenshot: async (page) => {
       try {
+        // More aggressive approach to force React tab content
         await page.evaluate(() => {
+          // First, try to click the React tab
           const buttons = Array.from(document.querySelectorAll("button"));
           const reactButton = buttons.find(
             (btn) =>
@@ -101,36 +104,87 @@ export const COMPONENTS = [
           );
 
           if (reactButton) {
+            console.log("Found React button, clicking it");
             reactButton.click();
-            console.log("Clicked React tab via JavaScript");
           }
-        });
-        await page.waitForTimeout(1000);
-      } catch (e) {
-        console.log("Error in React tab selection:", e);
-      }
 
-      try {
-        await page.evaluate(() => {
-          const allElements = document.querySelectorAll(
-            'h3, h4, pre, code, .remix-tab, [data-tab="remix"]'
-          );
-          for (const el of allElements) {
+          // Force-hide any Remix-specific content and elements
+          const hideRemixContent = () => {
+            document
+              .querySelectorAll('[data-tab="remix"], .remix-content')
+              .forEach((el) => {
+                if (el) el.style.display = "none";
+              });
+
+            // Find any elements containing createCookieStore and hide their containers
+            const allCodeElements = document.querySelectorAll("pre, code, div");
+            allCodeElements.forEach((el) => {
+              if (
+                el.textContent &&
+                el.textContent.includes("createCookieStore")
+              ) {
+                const container =
+                  el.closest(".tab-content, .framework-tab-content") || el;
+                container.style.display = "none";
+              }
+            });
+          };
+
+          // Force-show React content
+          const showReactContent = () => {
+            document
+              .querySelectorAll('[data-tab="react"], .react-content')
+              .forEach((el) => {
+                if (el) el.style.display = "block";
+              });
+          };
+
+          // Force tab selection state
+          const forceReactTabSelected = () => {
+            const allTabs = document.querySelectorAll(
+              '.framework-tabs button, [role="tab"]'
+            );
+            allTabs.forEach((tab, index) => {
+              const isReact =
+                tab.textContent.includes("React") &&
+                !tab.textContent.includes("Preact");
+              if (isReact || index === 0) {
+                // First tab is usually React
+                tab.setAttribute("aria-selected", "true");
+                tab.classList.add("active", "selected");
+              } else {
+                tab.setAttribute("aria-selected", "false");
+                tab.classList.remove("active", "selected");
+              }
+            });
+          };
+
+          // Execute all approaches for maximum reliability
+          hideRemixContent();
+          showReactContent();
+          forceReactTabSelected();
+
+          // If all else fails, force-hide elements with Remix in the text
+          document.querySelectorAll("h3, h4, pre, div, code").forEach((el) => {
             if (
               el.textContent &&
               (el.textContent.includes("Remix") ||
                 el.textContent.includes("createCookieStore"))
             ) {
-              if (el.closest(".framework-tab-content, .tab-content")) {
-                el.closest(
-                  ".framework-tab-content, .tab-content"
-                ).style.display = "none";
+              const closestTab = el.closest(
+                ".tab-content, .framework-tab-content"
+              );
+              if (closestTab) {
+                closestTab.style.display = "none";
               }
             }
-          }
+          });
         });
+
+        // Wait longer for changes to apply
+        await page.waitForTimeout(1500);
       } catch (e) {
-        console.log("Error hiding Remix content:", e);
+        console.log("Error ensuring React tab is displayed:", e);
       }
     },
     alternativeSelectors: [
@@ -205,11 +259,43 @@ export const COMPONENTS = [
     ],
   },
 
-  // Compare section
+  // Remix section - MOVED UP before compare section
   {
     page: "/",
-    name: "06-compare-section",
+    name: "06-remix-section",
     sectionIndex: 6, // Explicitly numbered for order
+    selector:
+      "section#remix-integration, section:has(h2:has-text('Remix Integration'))",
+    fallbackStrategy: "keyword-context",
+    keywords: ["Remix", "Integration"],
+    padding: 250, // Increased from 200 to capture more of the surrounding area
+    waitForSelector: "h2:has-text('Remix Integration')",
+    minHeight: 1600,
+    testId: "jods-remix-section",
+    extraScroll: -200, // Changed from -100 to -200 to scroll up more and show the full header
+    pauseAnimations: true, // Flag to pause animations during screenshot
+    diffThreshold: 0.05, // Higher threshold for this animated component
+    alternativeSelectors: [
+      "h2:has-text('Remix Integration')",
+      "h3:has-text('Remix')",
+      "[id='remix-integration'], #remix-integration",
+      "section:has(code:has-text('createCookieStore'))",
+    ],
+    excludeElements: [
+      ".footer-cta",
+      ".next-section-navigator",
+      "section:has(h2:has-text('Compare'))", // Added to exclude compare section
+      "[data-testid='jods-compare-section']",
+      "section:has(h2:has-text('How jods compares'))",
+      "table, .comparison-table",
+    ],
+  },
+
+  // Compare section - MOVED DOWN after remix section
+  {
+    page: "/",
+    name: "07-compare-section",
+    sectionIndex: 7, // Explicitly numbered for order
     selector:
       "section:has(h2:has-text('Compare')), section:has(h2:has-text('How jods compares'))",
     fallbackStrategy: "section-index",
@@ -235,38 +321,6 @@ export const COMPONENTS = [
       "a[href*='remix']",
       "a[href*='active-record']",
       ".cta-button, .action-button, .learn-more",
-    ],
-  },
-
-  // Remix section
-  {
-    page: "/",
-    name: "07-remix-section",
-    sectionIndex: 7, // Explicitly numbered for order
-    selector:
-      "section#remix-integration, section:has(h2:has-text('Remix Integration'))",
-    fallbackStrategy: "keyword-context",
-    keywords: ["Remix", "Integration"],
-    padding: 250, // Increased from 200 to capture more of the surrounding area
-    waitForSelector: "h2:has-text('Remix Integration')",
-    minHeight: 1600,
-    testId: "jods-remix-section",
-    extraScroll: -200, // Changed from -100 to -200 to scroll up more and show the full header
-    pauseAnimations: true, // Flag to pause animations during screenshot
-    diffThreshold: 0.05, // Higher threshold for this animated component
-    alternativeSelectors: [
-      "h2:has-text('Remix Integration')",
-      "h3:has-text('Remix')",
-      "[id='remix-integration'], #remix-integration",
-      "section:has(code:has-text('createCookieStore'))",
-    ],
-    excludeElements: [
-      ".footer-cta",
-      ".next-section-navigator",
-      "section:has(h2:has-text('Compare'))", // Added to exclude compare section
-      "[data-testid='jods-compare-section']",
-      "section:has(h2:has-text('How jods compares'))",
-      "table, .comparison-table",
     ],
   },
 
