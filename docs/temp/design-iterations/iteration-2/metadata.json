@@ -1,10 +1,10 @@
 {
   "iteration": 2,
-  "timestamp": "2025-05-06T17:20:28.644Z",
+  "timestamp": "2025-05-06T19:07:15.889Z",
   "targets": [
     "features-section"
   ],
-  "screenshotTimestamp": "20250506T172028",
+  "screenshotTimestamp": "20250506T190715",
   "changes": [
     {
       "component": "features-section",
@@ -16,12 +16,7 @@
       "reasoning": "Placeholder reasoning - would come from AI"
     }
   ],
-  "diffInfo": {
-    "features-section": {
-      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/features-section-20250506T172028.diff",
-      "diffFileName": "features-section-20250506T172028.diff"
-    }
-  },
+  "diffInfo": {},
   "config": {
     "count": 3,
     "targets": [
@@ -29,7 +24,13 @@
     ],
     "compareWith": [],
     "aiPrompt": "Improve the visual design while maintaining brand identity",
-    "requireSignoff": true
+    "requireSignoff": true,
+    "apply": false,
+    "iteration": null,
+    "refine": true,
+    "status": false,
+    "cleanup": false,
+    "force": false
   },
   "evaluation": {
     "aesthetic_score": null,

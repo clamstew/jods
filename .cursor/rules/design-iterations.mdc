@@ -1,0 +1,37 @@
+---
+description: anytime we want do design iterations using the workflow strips and screenshots on the marketing site to improve the design of sections use this rule.
+globs: 
+alwaysApply: false
+---
+# Design Iterations Workflow
+
+When working with the design iterations system for jods documentation:
+
+## Command Structure
+- Basic command: `pnpm design-iterations --count=N --target="component-name"`
+- Refinement: `pnpm design-iterations --count=N --target="component-name" --refine`
+- Apply design: `pnpm design-iterations --apply="iteration-N" --target="component-name"`
+
+## Workflow Steps
+1. Generate initial design iterations (3-5 recommended)
+2. Review screenshots in `static/screenshots/design-iterations/{timestamp}`
+3. Provide feedback in the generated template
+4. Run refinement iterations based on feedback
+5. Apply final design when satisfied
+
+## Common Targets
+- `features-section` - Feature grid on homepage
+- `hero-section` - Main hero section
+- `framework-section-react` - React framework comparison
+- `framework-section-remix` - Remix framework section
+- `compare-section` - Library comparison section
+
+## Best Practices
+- Use specific, actionable feedback
+- Compare both light and dark mode screenshots
+- Check mobile responsiveness
+- Clean up old iterations periodically
+
+@docs/scripts/design-iterations.mjs
+@docs/scripts/design-iterations-init.mjs
+@docs/docs/design-iterations/workflow.md

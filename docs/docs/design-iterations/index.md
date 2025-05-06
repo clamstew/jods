@@ -18,20 +18,59 @@ Design iterations allow you to:
 - **Maintain a visual history** of your design evolution
 - **Apply your favorite designs** with simple commands
 
-## 🚀 Quick Start
+## 🚀 Quick Start Guide
+
+### Step 1: Generate Initial Designs
 
 ```bash
 # From the /docs directory, run:
 pnpm design-iterations --count=3 --target="features-section"
-
-# Review the screenshots and provide feedback in the generated template
-# Then run another iteration if needed:
-pnpm design-iterations --count=1 --target="features-section" --refine
 ```
 
-## 📚 Guide Contents
+### Step 2: Review the Screenshots
 
-This guide covers the complete Design Iterations workflow:
+Screenshots are saved in `static/screenshots/design-iterations/{timestamp}/`
+
+Each iteration includes:
+
+- Light mode screenshot
+- Dark mode screenshot
+- Visual differences from baseline
+
+### Step 3: Provide Feedback
+
+Edit the generated feedback template in the terminal or your editor:
+
+```
+# Iteration 1 Feedback
+## Strengths
+- Clean layout
+- Good use of color
+
+## Areas for Improvement
+- Header font size too small
+- Spacing between cards inconsistent
+```
+
+### Step 4: Generate Refined Designs
+
+```bash
+# Run another iteration based on your feedback:
+pnpm design-iterations --count=2 --target="features-section" --refine
+```
+
+### Step 5: Apply Your Favorite Design
+
+```bash
+# Apply the design you prefer:
+pnpm design-iterations --apply="iteration-2" --target="features-section"
+```
+
+<div className="workflow-diagram">
+  <img src="/jods/img/design-iteration-flow.png" alt="Design Iteration Workflow" />
+</div>
+
+## 📚 Complete Documentation
 
 1. [**Complete Workflow**](./workflow.md) - Step-by-step guide to using design iterations
 2. [**AI-Assisted Design**](./with-ai.md) - How AI powers the design iteration process
@@ -39,15 +78,17 @@ This guide covers the complete Design Iterations workflow:
 4. [**Feedback System**](./feedback.md) - How to provide structured feedback
 5. [**Screenshot System**](./screenshot-system/index.md) - The foundation for capturing and comparing UI components
 
-## 🎯 Available Targets
+## 🎯 Available Design Targets
 
 The following UI components can be targeted for design iterations:
 
-- `hero-section` - The main hero section on the homepage
-- `features-section` - The features grid on the homepage
-- `framework-section-react` - The React framework comparison section
-- `framework-section-remix` - The Remix framework section
-- `compare-section` - The comparison section with other libraries
+| Target                    | Description                   | Example Command                                                       |
+| ------------------------- | ----------------------------- | --------------------------------------------------------------------- |
+| `hero-section`            | Main hero section on homepage | `pnpm design-iterations --count=3 --target="hero-section"`            |
+| `features-section`        | Features grid on homepage     | `pnpm design-iterations --count=3 --target="features-section"`        |
+| `framework-section-react` | React framework comparison    | `pnpm design-iterations --count=3 --target="framework-section-react"` |
+| `framework-section-remix` | Remix framework section       | `pnpm design-iterations --count=3 --target="framework-section-remix"` |
+| `compare-section`         | Library comparison section    | `pnpm design-iterations --count=3 --target="compare-section"`         |
 
 ## 💡 Best Practices
 
