@@ -92,6 +92,11 @@ export const COMPONENTS = [
       ".subtitle, .feature-subtitle",
       "h3:has-text('Remix state')",
       "div:has(h3:has-text('Remix state'))",
+      "h3:has-text('Remix State, Reimagined')",
+      "div:has(h3:has-text('Remix State, Reimagined'))",
+      "h3:has-text('Reimagined')",
+      "[class*='heading']:has-text('Remix')",
+      "[class*='heading']:has-text('Reimagined')",
     ],
   },
 

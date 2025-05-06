@@ -1159,10 +1159,30 @@ async function captureTabScreenshot(
   if (isRemixTab && theme === "light") {
     console.log("Special handling for Remix tab in light mode");
 
-    // Wait longer for Remix tab content
-    await page.waitForTimeout(1000);
+    // First, ensure "Works with your favorite frameworks" is visible at the top
+    await page.evaluate(() => {
+      // Find the heading
+      const frameworkHeading = Array.from(document.querySelectorAll("h2")).find(
+        (h) =>
+          h.textContent.includes("Works with your favorite frameworks") ||
+          h.textContent.includes("Framework Integration")
+      );
 
-    // Try to find the actual remix content for better positioning
+      if (frameworkHeading) {
+        console.log("Found framework heading, scrolling to position it at top");
+        // Calculate position to show heading at top with some margin
+        const rect = frameworkHeading.getBoundingClientRect();
+        const scrollOffset = window.scrollY + rect.top - 100; // 100px from top
+        window.scrollTo(0, scrollOffset);
+        return true;
+      }
+      return false;
+    });
+
+    // Wait for scroll to complete
+    await page.waitForTimeout(800);
+
+    // Now try to find the Remix content but avoid scrolling too far
     const remixContent = await page.evaluate(() => {
       // Use standard DOM traversal instead of :has-text() selector
       const codeBlocks = document.querySelectorAll("pre code");
@@ -1181,11 +1201,23 @@ async function captureTabScreenshot(
       }
 
       if (remixCodeBlock) {
-        // Scroll to show the code block properly
+        // Check if the code block is already in view
         const containerRect = remixCodeBlock.getBoundingClientRect();
-        const scrollOffset = Math.max(0, containerRect.top - 200);
-        window.scrollTo(0, window.scrollY + scrollOffset);
-        return true;
+        if (containerRect.top > 0 && containerRect.top < window.innerHeight) {
+          console.log("Remix code block already in view");
+          return true;
+        }
+
+        // Only scroll if necessary and don't scroll too far
+        if (containerRect.top < 0 || containerRect.top > window.innerHeight) {
+          const maxScroll = 200; // Limit how far we scroll
+          const scrollOffset = Math.min(
+            maxScroll,
+            Math.max(0, containerRect.top - 300)
+          );
+          window.scrollBy(0, scrollOffset);
+          return true;
+        }
       }
 
       // Alternative approach - look for Remix headers
@@ -1193,14 +1225,25 @@ async function captureTabScreenshot(
         document.querySelectorAll("h2, h3, h4")
       ).filter(
         (el) =>
-          el.textContent.includes("Remix") && !el.textContent.includes("state")
+          el.textContent.includes("Remix") &&
+          !el.textContent.includes("State") &&
+          !el.textContent.includes("Reimagined")
       );
 
       if (remixHeaders.length > 0) {
         const header = remixHeaders[0];
         const headerRect = header.getBoundingClientRect();
-        window.scrollTo(0, window.scrollY + Math.max(0, headerRect.top - 100));
-        return true;
+
+        // Only scroll if needed and don't scroll too far
+        if (headerRect.top < 0 || headerRect.top > window.innerHeight) {
+          const maxScroll = 200; // Limit how far we scroll
+          const scrollOffset = Math.min(
+            maxScroll,
+            Math.max(0, headerRect.top - 200)
+          );
+          window.scrollBy(0, scrollOffset);
+          return true;
+        }
       }
 
       return false;
