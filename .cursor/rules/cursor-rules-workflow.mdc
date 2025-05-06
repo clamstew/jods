@@ -19,6 +19,27 @@ When working with Cursor rules in this project:
   ---
   ```
 
+## Creating MDC Files with Chat Agents
+
+**IMPORTANT**: When creating or editing MDC files via the chat agent:
+
+1. **ALWAYS include the metadata header** - This is REQUIRED for the rule to function properly
+2. The metadata section MUST include these three fields:
+   - `description`: A brief description of the rule's purpose
+   - `globs`: Array or string pattern for which files the rule applies to
+   - `alwaysApply`: Boolean indicating if rule should apply to all sessions
+3. Ensure the metadata is formatted correctly with triple dashes at the beginning and end
+4. Cursor will NOT recognize the file as a valid rule without this metadata
+
+Example of CORRECT metadata:
+```
+---
+description: Guidelines for component design patterns
+globs: ["**/*.tsx", "**/*.jsx"]
+alwaysApply: false
+---
+```
+
 ## Best Practices
 
 1. **NEVER create new markdown files** in the docs directory as a substitute for editing rule files
@@ -32,6 +53,7 @@ When working with Cursor rules in this project:
 - If you can't locate a rule, use `find .cursor -name "*.mdc"` to see all rule files
 - Use proper MDC format with the metadata section (the part between `---` lines)
 - If updating a rule with the editor doesn't work, you can use terminal commands to recreate the file
+- If a rule isn't being applied, check that the metadata header is complete and correctly formatted
 
 ## References
 
