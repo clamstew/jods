@@ -125,6 +125,27 @@ This would:
 3. Save Git diffs for each iteration 💾
 4. Generate a feedback template to fill out 📝
 
+## The Post-Decision Cleanup: Avoiding Design Ghosts 👻
+
+One important lesson we learned through this process was about cleanup. After you've made a design decision and re-baselined, what do you do with all those screenshots and iterations?
+
+Here's what we discovered:
+
+1. **Keep the notes, delete the screenshots** - The written feedback and decision-making context is valuable, but the actual image files become problematic.
+
+2. **"Design ghosts" are real** - When working with AI, old screenshots from previous iterations can haunt your context window and subtly influence new design directions in unexpected ways.
+
+3. **Prioritize context efficiency** - Every screenshot eats up valuable context window space that could be used for more important information.
+
+Our current practice is to:
+
+```bash
+# After finalizing a design
+node docs/scripts/cleanup-iterations.mjs --keep-baseline --target="framework-section-remix"
+```
+
+This preserves our Git history (so we can always recover if needed), keeps our written documentation, but removes the actual images that can confuse future design work. This turned out to be crucial for maintaining clean context boundaries between different design initiatives. 🧹
+
 ## The Results Speak for Themselves 📊
 
 The impact of this evolution was dramatic:
@@ -143,6 +164,7 @@ If I could distill what we've learned into a few key points:
 3. **Contextual documentation matters** - Writing down "why" is as important as "what" we changed
 4. **Multiple iterations > single attempts** - The first solution is rarely the best one
 5. **Automation amplifies good processes** - Once you have a good manual process, automate it!
+6. **Clean up after yourself** - Delete old screenshots after finalizing to keep your context window clear 🧹
 
 ## What's Next? 🔮
 
@@ -157,6 +179,6 @@ We're continuing to refine this process. Some exciting developments on the horiz
 
 The evolution of our design process wasn't planned — it emerged organically from trying to solve real problems. The simple act of taking screenshots, saving them with timestamps, and documenting our thought process transformed how we work.
 
-Sometimes the best systems don't come from grand plans, but from small, practical solutions that compound over time. So next time you're working on a design challenge, remember: screenshot it, document it, timestamp it, and let your future self thank you! 🙏
+Sometimes the best systems don't come from grand plans, but from small, practical solutions that compound over time. So next time you're working on a design challenge, remember: screenshot it, document it, timestamp it, clean it up when you're done, and let your future self thank you! 🙏
 
 What design process evolution stories do you have? I'd love to hear how your team approaches design iteration!
