@@ -10,7 +10,7 @@ Create an AI-powered workflow that:
 
 1. Makes intelligent design changes to the documentation site
 2. Captures screenshots after each iteration
-3. Evaluates the effectiveness of changes
+3. Evaluates the effectiveness of changes through visual diffing
 4. Selects the most promising directions
 5. Repeats the process with new insights
 
@@ -63,6 +63,8 @@ Create an AI-powered workflow that:
 - AI evaluation of aesthetic improvements
 - Quantitative metrics (clarity, information density, accessibility)
 - A/B testing of multiple design directions
+- **Pixel diffing** for automated visual regression testing
+- Percentage-based difference measurement for objective comparison
 
 ## Reliability Challenges
 
@@ -86,6 +88,7 @@ The screenshot-based feedback loop faces several technical challenges that the s
 - **Content Verification**: Checking for expected elements before capturing
 - **Multi-Phase Capture**: Taking sequences of screenshots after interactions
 - **Failure Recovery**: Detecting and retrying failed captures
+- **Pixel Diffing**: Automatically detecting visual regressions and changes
 
 ## Testing Dimensions
 
@@ -97,6 +100,7 @@ The AI design iteration system should test changes across multiple dimensions:
 - **Content Variables**: Empty states, overflow states, error states
 - **User Flows**: Multi-step interactions
 - **Accessibility**: Contrast ratios, keyboard navigation, screen reader compatibility
+- **Visual Regression**: Pixel-perfect comparison with baseline images
 
 ## Implementation Strategy
 
@@ -106,6 +110,7 @@ The AI design iteration system should test changes across multiple dimensions:
 - Build script to automate change-screenshot-store cycle
 - Implement basic comparison functionality
 - Define metadata schema for iterations
+- **Implement pixel diff tool** for automated visual testing (✅ completed)
 
 ### Phase 2: AI Integration
 
@@ -113,6 +118,7 @@ The AI design iteration system should test changes across multiple dimensions:
 - Teach AI to understand CSS and component structure
 - Develop prompts for specific design goals
 - Create evaluation metrics for design changes
+- Integrate AI with pixel diff results for objective evaluation
 
 ### Phase 3: Advanced Features
 
@@ -120,6 +126,7 @@ The AI design iteration system should test changes across multiple dimensions:
 - Automated A/B testing of design variations
 - Pre-trained aesthetic evaluation models
 - Design version control system
+- Weighted evaluation based on diff metrics and AI judgment
 
 ### Phase 4: Autonomous Improvements
 
@@ -127,6 +134,7 @@ The AI design iteration system should test changes across multiple dimensions:
 - Self-guided design exploration
 - Learning from user feedback
 - Style transfer from inspiration sources
+- Continuous improvement based on quantifiable metrics
 
 ## Technical Architecture
 
@@ -151,6 +159,14 @@ The AI design iteration system should test changes across multiple dimensions:
 │             │    Tools      │            │                 │
 │             │               │            │                 │
 └─────────────┴───────────────┴────────────┴─────────────────┘
+                                                      │
+                                                      ▼
+                                            ┌─────────────────┐
+                                            │                 │
+                                            │   Pixel Diff    │
+                                            │     Engine      │
+                                            │                 │
+                                            └─────────────────┘
 ```
 
 ## Command Examples
@@ -170,6 +186,12 @@ pnpm docs:apply-design --iteration=3
 
 # Evaluate existing iterations
 pnpm docs:evaluate-designs
+
+# Run visual regression tests against baselines
+pnpm docs:screenshot:diff
+
+# Run visual tests with specific threshold
+pnpm docs:screenshot:diff:threshold=0.03
 ```
 
 ## Storage Structure
@@ -180,6 +202,10 @@ pnpm docs:evaluate-designs
     /screenshots/
       hero-section-light.png
       hero-section-dark.png
+      ...
+    /diffs/
+      diff-hero-section-light.png
+      diff-hero-section-dark.png
       ...
     diff.patch
     metadata.json
@@ -211,7 +237,13 @@ pnpm docs:evaluate-designs
   "evaluation": {
     "aesthetic_score": 7.8,
     "readability_score": 8.2,
-    "accessibility_score": 9.0
+    "accessibility_score": 9.0,
+    "diff_percentage": 0.034,
+    "visual_changes": {
+      "hero-section-light": 0.057,
+      "hero-section-dark": 0.028,
+      "framework-section-react": 0.012
+    }
   }
 }
 ```
@@ -225,6 +257,7 @@ The user can:
 3. Select promising directions for further refinement
 4. Apply specific iterations to the codebase
 5. Provide feedback to guide future iterations
+6. View automated visual diff reports for objective comparison
 
 ## Long-Term Benefits
 
@@ -233,11 +266,14 @@ The user can:
 - **Efficient Exploration**: Try more variations than humanly practical
 - **Knowledge Transfer**: Learn from successful projects across the ecosystem
 - **Consistent Brand Identity**: Maintain design cohesion while evolving
+- **Objective Evaluation**: Pixel diffing provides measurable design impact
+- **Regression Protection**: Prevent unintended visual changes during development
 
 ## Next Steps
 
 1. Create basic iteration storage structure
 2. Implement design change capture mechanism
 3. Build first version of the iteration script
-4. Develop visual comparison tools
+4. Develop visual comparison tools - ✅ Completed with pixel diff tool
 5. Connect with AI-driven design suggestions
+6. Enhance pixel diffing with component-specific importance weighting

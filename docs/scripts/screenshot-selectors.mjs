@@ -50,7 +50,7 @@ export const COMPONENTS = [
     waitForSelector: "h2:has-text('Try jods live')",
     minHeight: 1100, // Increased to ensure editor is fully captured
     testId: "jods-try-live-section",
-    extraScroll: 40, // Reduced to prevent scrolling too far down
+    extraScroll: 150, // Increased from 40 to position section higher in screenshot
     // New properties for better dark mode handling
     darkModeExtraWait: 2500, // Extra long wait for dark mode
     editorLoadVerification: true, // Verify editor is loaded before screenshot

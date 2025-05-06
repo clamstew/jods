@@ -18,6 +18,7 @@ The documentation site includes a Playwright-based screenshot system that:
 6. Works with both local development and production environments
 7. Preserves baseline images for comparison during design iterations
 8. Provides tools to manage and clean up screenshot history
+9. Enables visual regression testing through pixel diffing
 
 ## 📊 Recommended Commands
 
@@ -37,6 +38,12 @@ pnpm docs:screenshot:react-tab            # Only React tab
 pnpm docs:screenshot:remix-tab            # Only Remix tab
 pnpm docs:screenshot:framework-tabs       # Both tabs
 
+# Visual regression testing
+pnpm docs:screenshot:diff                 # Compare against baselines with 2% threshold
+pnpm docs:screenshot:diff:verbose         # Keep all diff images, even when passed
+pnpm docs:screenshot:diff:components      # Test specific components
+pnpm docs:screenshot:diff:threshold       # Use custom 5% threshold
+
 # From docs directory
 pnpm screenshot:unified
 pnpm screenshot:unified:baseline
@@ -44,6 +51,7 @@ pnpm screenshot:unified:localhost
 pnpm screenshot:unified:components
 pnpm screenshot:unified:sections
 pnpm screenshot:unified:remix
+pnpm screenshot:diff
 ```
 
 Advanced options:
@@ -401,7 +409,48 @@ The timestamped screenshots enable several workflows for design management:
 4. **Regression Testing**: Identify unintended visual changes
 5. **Design Reviews**: Share specific timestamped versions for feedback
 
-To compare design changes with the baselines:
+### Visual Regression Testing
+
+The screenshot system includes an automated pixel diff tool for visual regression testing:
+
+```bash
+# Basic diff test (uses 2% threshold)
+pnpm docs:screenshot:diff
+
+# Keep all diff images (even passed tests)
+pnpm docs:screenshot:diff:verbose
+
+# Test specific components
+pnpm docs:screenshot:diff:components=try-jods-section,framework-section-react
+
+# Custom threshold (5% by default)
+pnpm docs:screenshot:diff:threshold=0.05
+```
+
+The pixel diff tool:
+
+1. Takes new screenshots with the current code
+2. Compares them with the baseline screenshots
+3. Highlights differences in magenta
+4. Generates diff images when differences exceed the threshold
+5. Reports a pass/fail summary with percentage differences
+6. Exits with error code on test failure
+
+This creates a powerful workflow:
+
+1. Establish baseline screenshots with `pnpm docs:screenshot:unified:baseline`
+2. Make design changes or code updates
+3. Run `pnpm docs:screenshot:diff` to detect visual regressions
+4. Review diff images in the `diffs` folder to see highlighted changes
+5. Only update baselines when intentionally changing designs
+
+Diff images are saved to:
+
+```
+docs/static/screenshots/unified/diffs/
+```
+
+To compare design changes manually:
 
 1. Take new screenshots with the updated design (they'll automatically get timestamped)
 2. Place the baseline image and new timestamped image side by side
@@ -418,8 +467,10 @@ To compare design changes with the baselines:
 6. Include screenshots in PR descriptions for visual reviews
 7. Use screenshots for marketing materials and documentation updates
 8. Store screenshot sets for each major release for reference
-9. When comparing design changes, always use timestamped versions against baselines
-10. Clean up older timestamped screenshots periodically to save space
+9. **Run visual regression tests** before and after significant changes
+10. Use pixel diffing to ensure design consistency across updates
+11. Only update baseline screenshots when intentionally changing design
+12. Clean up older timestamped screenshots periodically to save space
 
 ## 🔗 Related Resources
 
