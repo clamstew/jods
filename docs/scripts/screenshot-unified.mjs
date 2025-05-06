@@ -732,53 +732,98 @@ async function findElementForComponent(page, component) {
 }
 
 /**
- * Helper: Pause all animations on the page for consistent screenshots
- * Used for components with animations or particle backgrounds
+ * Helper: Manage animations on the page for consistent screenshots
+ * @param {Page} page - Playwright page object
+ * @param {string} action - 'pause' or 'resume'
+ * @param {Object} component - Component configuration (optional)
  */
-async function pauseAllAnimations(page, shouldPause = true) {
+async function manageAnimations(page, action = "pause", component = null) {
+  // Skip if no action needed
+  if (action !== "pause" && action !== "resume") return;
+
+  // Determine if we should proceed based on component settings
+  const shouldPause =
+    action === "pause" && (!component || component.pauseAnimations);
+  const shouldResume =
+    action === "resume" && (!component || component.pauseAnimations);
+
+  if (!shouldPause && !shouldResume) return;
+
   console.log(
     `${
-      shouldPause ? "Pausing" : "Resuming"
+      action === "pause" ? "Pausing" : "Resuming"
     } animations for consistent screenshots...`
   );
 
-  await page.evaluate((pause) => {
-    const style = document.createElement("style");
-    style.id = "pause-animations-for-screenshots";
-    style.textContent = pause
-      ? `
-      *, *::before, *::after {
-        animation-play-state: paused !important;
-        transition: none !important;
-        animation-duration: 0s !important;
-        animation-delay: 0s !important;
-        transition-duration: 0s !important;
-        transition-delay: 0s !important;
+  // Component-specific animation handling
+  const options = {
+    particleBackground: component?.particleBackground || false,
+    sparkleEffects: component?.name?.includes("remix") || false,
+    transitionEffects: true, // Always handle transitions
+  };
+
+  await page.evaluate(
+    (params) => {
+      const { action, options } = params;
+      const pausing = action === "pause";
+
+      // Create or find the style element
+      let style = document.getElementById("animation-control-for-screenshots");
+      if (!style) {
+        style = document.createElement("style");
+        style.id = "animation-control-for-screenshots";
+        document.head.appendChild(style);
       }
-      
-      /* Hide canvas elements for particle backgrounds */
-      canvas.particles-js-canvas-el,
-      canvas.tsparticles-canvas-el, 
-      canvas[id^="tsparticles"] {
-        opacity: 0 !important;
+
+      // Build CSS based on options
+      let css = "";
+
+      // Base animation and transition freezing
+      if (pausing) {
+        css += `
+        *, *::before, *::after {
+          animation-play-state: paused !important;
+          transition: none !important;
+          animation-duration: 0s !important;
+          animation-delay: 0s !important;
+          transition-duration: 0s !important;
+          transition-delay: 0s !important;
+        }
+      `;
       }
-    `
-      : "";
 
-    // Remove existing style if present
-    const existingStyle = document.getElementById(
-      "pause-animations-for-screenshots"
-    );
-    if (existingStyle) {
-      existingStyle.remove();
-    }
+      // Handle particle backgrounds
+      if (options.particleBackground) {
+        css += `
+        canvas.particles-js-canvas-el,
+        canvas.tsparticles-canvas-el, 
+        canvas[id^="tsparticles"],
+        .particles-container canvas {
+          opacity: ${pausing ? "0" : "1"} !important;
+        }
+      `;
+      }
 
-    if (pause) {
-      document.head.appendChild(style);
-    }
-  }, shouldPause);
+      // Handle sparkle effects (common in Remix sections)
+      if (options.sparkleEffects) {
+        css += `
+        [class*="sparkle"],
+        [class*="glitter"],
+        [class*="shine"],
+        [class*="twinkle"],
+        [data-effect="sparkle"] {
+          opacity: ${pausing ? "0" : "1"} !important;
+        }
+      `;
+      }
 
-  // Wait for style to take effect
+      // Update the style
+      style.textContent = pausing ? css : "";
+    },
+    { action, options }
+  );
+
+  // Wait for style changes to take effect
   await page.waitForTimeout(200);
 }
 
@@ -794,9 +839,7 @@ async function captureSpecificElement(
   saveBaseline
 ) {
   // Pause animations if specified in the component config
-  if (component.pauseAnimations) {
-    await pauseAllAnimations(page, true);
-  }
+  await manageAnimations(page, "pause", component);
 
   // Create the screenshot filename
   const screenshotPath = path.join(
@@ -1495,9 +1538,7 @@ async function captureSpecificElement(
   console.log(`Screenshot saved to: ${screenshotPath}`);
 
   // Resume animations if they were paused
-  if (component.pauseAnimations) {
-    await pauseAllAnimations(page, false);
-  }
+  await manageAnimations(page, "resume", component);
 }
 
 /**
@@ -1997,7 +2038,7 @@ async function captureTabScreenshot(
 
   // Pause animations if specified in the component config
   if (component.pauseAnimations) {
-    await pauseAllAnimations(page, true);
+    await manageAnimations(page, "pause", component);
   }
 
   // NEW: Extra wait for dark mode if needed
@@ -2242,9 +2283,7 @@ async function captureTabScreenshot(
   console.log(`Framework tab screenshot saved to: ${screenshotPath}`);
 
   // Resume animations if they were paused
-  if (component.pauseAnimations) {
-    await pauseAllAnimations(page, false);
-  }
+  await manageAnimations(page, "resume", component);
 
   // If this is the Remix tab and React tab couldn't be found, create a React file too
   if (finalTabId === "remix" && component.simulateReactTab) {
