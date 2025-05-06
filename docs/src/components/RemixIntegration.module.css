@@ -34,7 +34,7 @@
   z-index: 1;
 }
 
-/* Light mode with same gradient - keeping consistency */
+/* Light mode header styling from 024938 */
 html[data-theme="light"] .header {
   background: linear-gradient(
     135deg,
@@ -733,19 +733,54 @@ html[data-theme="light"] .windowControls {
   display: none;
 }
 
-/* Style for tab icon in light mode with better contrast */
-html[data-theme="light"] .tabIcon {
-  color: #4f46e5;
-  opacity: 0.8;
+/* Tab icon animations from 033730/034305 */
+.tabIcon {
+  font-size: 1.1rem;
   margin-right: 8px;
-  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.3s ease;
+  transform-origin: center;
 }
 
-html[data-theme="light"] .tab:hover .tabIcon,
-html[data-theme="light"] .activeTab .tabIcon {
+.tab:hover .tabIcon {
+  transform: rotate(20deg) scale(1.1);
+  animation: wiggle 0.5s ease;
+}
+
+.activeTab .tabIcon {
   opacity: 1;
-  transform: scale(1.1);
-  color: #6366f1;
+  transform: scale(1.2);
+  animation: spin 6s linear infinite;
+}
+
+html[data-theme="light"] .activeTab .tabIcon {
+  color: #4f46e5;
+}
+
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(15deg) scale(1.1);
+  }
+  50% {
+    transform: rotate(-10deg) scale(1.15);
+  }
+  75% {
+    transform: rotate(5deg) scale(1.1);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg) scale(1.2);
+  }
+  to {
+    transform: rotate(360deg) scale(1.2);
+  }
 }
 
 /* Rainbow accent in top-right corner */
@@ -824,6 +859,7 @@ html[data-theme="light"] .codeContainer::after {
   margin-right: 8px;
   display: inline-flex;
   align-items: center;
+  transition: all 0.3s ease;
 }
 
 /* Dark mode tab hover */
@@ -832,17 +868,23 @@ html[data-theme="dark"] .tab:hover {
   color: rgba(255, 255, 255, 0.9);
 }
 
-/* Remix-inspired tab indicator for dark mode */
-.activeTab {
+/* Remix-inspired tab indicator from 034606 */
+html[data-theme="dark"] .activeTab {
   background: #0d1424;
-  color: #fb7185;
+  color: #f43f5e;
   font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-bottom: none;
+  border: 1px solid transparent;
+  border-image: linear-gradient(
+    to right,
+    #f43f5e 0%,
+    #a855f7 50%,
+    #3b82f6 100%
+  );
+  border-image-slice: 1;
   position: relative;
 }
 
-.activeTab::before {
+html[data-theme="dark"] .activeTab::before {
   content: "";
   position: absolute;
   top: -2px;
@@ -908,10 +950,11 @@ html[data-theme="light"] .activeTab::before {
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
-  background: linear-gradient(to right, #f43f5e 0%, #a855f7 50%, #3b82f6 100%);
-  background-size: 200% 100%;
-  animation: shimmerBackground 3s infinite;
+  height: 4px;
+  background: #4f46e5;
+  background-size: 100% 100%;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 }
 
 /* Add subtle stripe pattern to light mode code container */
@@ -1456,6 +1499,45 @@ html[data-theme="light"] .codeContainer {
   border-radius: 0 0 12px 12px;
   border: 1px solid rgba(255, 255, 255, 0.8);
   border-top: none;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Dark Mode Tabs Variation 1 - Colorful Gradient Borders */
+html[data-theme="dark"] .tab {
+  color: rgba(226, 232, 240, 0.8);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  background: rgba(17, 24, 39, 0.7);
+  margin-right: 6px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0.9rem 1.4rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border: 1px solid rgba(30, 41, 59, 0.8);
+  border-bottom: none;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Gradient glow on dark mode tab hover */
+html[data-theme="dark"] .tab:hover {
+  background: rgba(30, 41, 59, 0.9);
+  color: rgba(255, 255, 255, 0.95);
+  border-top: 1px solid rgba(79, 70, 229, 0.5);
+  border-left: 1px solid rgba(79, 70, 229, 0.3);
+  border-right: 1px solid rgba(79, 70, 229, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* Dark mode tab container styling from 034606 */
+html[data-theme="dark"] .tabsContainer {
+  background: #1e293b;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.6rem 0.6rem 0;
   position: relative;
   overflow: hidden;
 }
