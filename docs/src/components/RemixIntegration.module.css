@@ -1,36 +1,37 @@
 .container {
-  padding: 4rem 2rem;
+  padding: 5rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
   margin-top: 2rem;
-  background: var(--ifm-color-emphasis-100);
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  background: var(--ifm-color-emphasis-0);
+  border-radius: 24px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
   overflow: hidden;
+  position: relative;
 }
 
 .header {
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
   text-align: center;
-  background: linear-gradient(135deg, #0072ff 0%, #00c6ff 100%);
-  padding: 2.5rem;
-  border-radius: 16px;
-  margin: -4rem -2rem 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  background: #0f172a;
+  padding: 4rem 2.5rem;
+  border-radius: 20px;
+  margin: -5rem -2rem 3rem;
+  box-shadow: 0 15px 35px rgba(15, 23, 42, 0.25);
   position: relative;
   overflow: hidden;
   will-change: transform;
   transform: translateZ(0);
+  z-index: 1;
 }
 
 /* Light mode specific styling */
 html[data-theme="light"] .header {
-  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #93c5fd 100%);
-  box-shadow: 0 8px 30px rgba(59, 130, 246, 0.3);
-  border-bottom: 3px solid rgba(255, 255, 255, 0.5);
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
 }
 
-/* Add animated stripes to header background */
+/* Add subtle glass effect to header */
 .header::before {
   content: "";
   position: absolute;
@@ -38,97 +39,89 @@ html[data-theme="light"] .header {
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 20px,
-    rgba(255, 255, 255, 0.15) 20px,
-    rgba(255, 255, 255, 0.15) 40px
+  background: radial-gradient(
+    circle at top right,
+    rgba(101, 163, 246, 0.1) 0%,
+    rgba(34, 211, 238, 0.05) 50%,
+    rgba(15, 23, 42, 0.02) 100%
   );
-  pointer-events: none;
   z-index: 1;
-  opacity: 0.7;
+  opacity: 0.6;
+  mix-blend-mode: overlay;
 }
 
-/* Add subtle shine animation */
-.header::after {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  right: -50%;
-  bottom: -50%;
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.4) 50%,
-    rgba(255, 255, 255, 0) 100%
+html[data-theme="light"] .header::before {
+  background: radial-gradient(
+    circle at top right,
+    rgba(79, 70, 229, 0.08) 0%,
+    rgba(34, 211, 238, 0.05) 50%,
+    rgba(255, 255, 255, 0.02) 100%
   );
-  transform: rotate(45deg);
-  animation: shine 8s infinite;
-  z-index: 2;
-}
-
-@keyframes shine {
-  0% {
-    transform: rotate(45deg) translateX(-100%);
-  }
-  50%,
-  100% {
-    transform: rotate(45deg) translateX(100%);
-  }
+  mix-blend-mode: multiply;
 }
 
 .title {
-  font-size: 2.5rem;
+  font-size: 3rem;
   font-weight: 800;
-  margin-bottom: 0.8rem;
+  margin-bottom: 1rem;
   color: white;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   position: relative;
   z-index: 3;
-  will-change: opacity;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+html[data-theme="light"] .title {
+  color: #020617;
 }
 
 .subtitle {
-  font-size: 1.3rem;
-  margin-bottom: 2rem;
-  color: rgba(255, 255, 255, 0.95);
-  max-width: 600px;
+  font-size: 1.5rem;
+  margin-bottom: 2.5rem;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 680px;
   margin-left: auto;
   margin-right: auto;
   position: relative;
   z-index: 3;
   line-height: 1.5;
   will-change: opacity;
+  font-weight: 500;
+}
+
+html[data-theme="light"] .subtitle {
+  color: rgba(0, 0, 0, 0.7);
 }
 
 .highlight {
-  background: white;
-  padding: 0.3rem 0.7rem;
+  background: #38bdf8;
+  padding: 0.4rem 1rem;
   border-radius: 8px;
-  color: #0072ff;
+  color: #0f172a;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-  margin: 0 0.2rem;
+  box-shadow: 0 4px 16px rgba(56, 189, 248, 0.35);
+  margin: 0 0.3rem;
   transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 /* Light mode specific styling */
 html[data-theme="light"] .highlight {
-  background: #f0f9ff;
-  color: #1e40af;
-  box-shadow: 0 4px 12px rgba(14, 118, 253, 0.2);
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+  background: #0284c7;
+  color: white;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
 }
 
 .highlight:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(14, 118, 253, 0.3);
-  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 8px 20px rgba(56, 189, 248, 0.4);
+}
+
+html[data-theme="light"] .highlight:hover {
+  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.35);
 }
 
 .rubyIcon {
@@ -136,7 +129,7 @@ html[data-theme="light"] .highlight {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-right: 4px;
+  margin-right: 8px;
 }
 
 .rubyIcon::before {
@@ -146,83 +139,41 @@ html[data-theme="light"] .highlight {
   height: 140%;
   background: radial-gradient(
     circle,
-    rgba(239, 68, 68, 0.3) 0%,
-    rgba(239, 68, 68, 0) 70%
+    rgba(249, 115, 22, 0.3) 0%,
+    rgba(249, 115, 22, 0) 70%
   );
   border-radius: 50%;
   z-index: -1;
 }
 
-/* Use a better performing ruby styling that still looks great */
+html[data-theme="light"] .rubyIcon::before {
+  background: radial-gradient(
+    circle,
+    rgba(234, 88, 12, 0.2) 0%,
+    rgba(234, 88, 12, 0) 70%
+  );
+}
+
+/* Ruby gem styling */
 .rubyGem {
   display: inline-block;
   margin-right: 0.5rem;
-  font-size: 1.2em;
+  font-size: 1.3em;
   transform-origin: center;
-  animation: pulse 3s infinite alternate ease-in-out;
-
-  /* Optimized but beautiful gradient approach */
-  color: transparent;
-  background-color: #e11d48;
-  background-image: linear-gradient(
-    135deg,
-    #dc2626 10%,
-    #ef4444 50%,
-    #fecdd3 85%,
-    #ef4444 100%
-  );
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-
-  /* Reduced intensity shadows for better performance */
-  text-shadow: 0 0 4px rgba(220, 38, 38, 0.3);
-  filter: drop-shadow(0 0 2px rgba(220, 38, 38, 0.4));
-
-  /* Add GPU acceleration hint */
-  will-change: transform, opacity;
-  transform: translateZ(0);
+  filter: drop-shadow(0 0 4px rgba(249, 115, 22, 0.5));
 }
 
-/* Enhanced ruby styling for light mode */
 html[data-theme="light"] .rubyGem {
-  /* Optimized gradient for light mode */
-  background-image: linear-gradient(
-    135deg,
-    #b91c1c 10%,
-    #dc2626 50%,
-    #fecaca 85%,
-    #ef4444 100%
-  );
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-
-  /* Reduced intensity shadows for better performance */
-  text-shadow: 0 0 4px rgba(220, 38, 38, 0.3);
-  filter: drop-shadow(0 0 3px rgba(185, 28, 28, 0.3));
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    filter: drop-shadow(0 0 1px rgba(220, 38, 38, 0.4));
-    opacity: 0.9;
-  }
-  100% {
-    transform: scale(1.2);
-    filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.5));
-    opacity: 1;
-  }
+  filter: drop-shadow(0 0 3px rgba(234, 88, 12, 0.5));
 }
 
 .remix {
   font-weight: 800;
+  color: #93c5fd;
+}
+
+html[data-theme="light"] .remix {
+  color: #2563eb;
 }
 
 .remixIconWrapper {
@@ -230,6 +181,7 @@ html[data-theme="light"] .rubyGem {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  margin-right: 8px;
 }
 
 .remixIconWrapper::before {
@@ -239,72 +191,72 @@ html[data-theme="light"] .rubyGem {
   height: 140%;
   background: radial-gradient(
     circle,
-    rgba(8, 145, 178, 0.3) 0%,
-    rgba(8, 145, 178, 0) 70%
+    rgba(147, 197, 253, 0.3) 0%,
+    rgba(147, 197, 253, 0) 70%
   );
   border-radius: 50%;
   z-index: -1;
 }
 
-.remixIcon {
-  display: inline-block;
-  transition: all 0.3s ease;
-  font-size: 1.2em;
-}
-
-/* Light mode specific styling for remix icon */
 html[data-theme="light"] .remixIconWrapper::before {
   background: radial-gradient(
     circle,
-    rgba(59, 130, 246, 0.25) 0%,
-    rgba(59, 130, 246, 0) 70%
+    rgba(37, 99, 235, 0.2) 0%,
+    rgba(37, 99, 235, 0) 70%
   );
 }
 
-html[data-theme="light"] .remixIcon {
-  color: #2563eb;
-  text-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
-  filter: drop-shadow(0 0 5px rgba(37, 99, 235, 0.6));
-}
-
+/* Content layout with depth */
 .content {
   display: flex;
   flex-direction: row;
-  gap: 2rem;
-  margin-bottom: 2rem;
+  gap: 3rem;
+  margin-bottom: 3rem;
   align-items: flex-start;
+  position: relative;
 }
 
 .featuresColumn {
-  flex: 0 0 300px;
+  flex: 0 0 320px;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
+  position: sticky;
+  top: 100px;
 }
 
 .featureItem {
   display: flex;
   align-items: center;
   background: var(--ifm-color-emphasis-0);
-  padding: 1.25rem;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(0, 0, 0, 0.03);
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
 
 .featureItem:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+  border-color: rgba(56, 189, 248, 0.1);
 }
 
 /* Active feature styling */
 .activeFeature {
-  transform: translateY(-5px);
-  border-color: var(--ifm-color-primary);
-  box-shadow: 0 8px 20px rgba(var(--ifm-color-primary-rgb), 0.2);
+  transform: translateY(-5px) scale(1.02);
+  border-color: #38bdf8;
+  border-width: 2px;
+  box-shadow: 0 12px 28px rgba(56, 189, 248, 0.15);
   position: relative;
+}
+
+html[data-theme="light"] .activeFeature {
+  border-color: #0284c7;
+  box-shadow: 0 12px 28px rgba(2, 132, 199, 0.1);
 }
 
 .activeFeature::after {
@@ -316,134 +268,213 @@ html[data-theme="light"] .remixIcon {
   height: 0;
   border-top: 10px solid transparent;
   border-bottom: 10px solid transparent;
-  border-left: 10px solid var(--ifm-color-primary);
+  border-left: 10px solid #38bdf8;
   transform: translateY(-50%);
+  animation: pulse 2s infinite;
+}
+
+html[data-theme="light"] .activeFeature::after {
+  border-left-color: #0284c7;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
 }
 
 .featureIcon {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 50px;
-  height: 50px;
-  min-width: 50px;
-  border-radius: 12px;
-  margin-right: 1rem;
+  width: 58px;
+  height: 58px;
+  min-width: 58px;
+  border-radius: 16px;
+  margin-right: 1.25rem;
   font-size: 1.5rem;
-  background: var(--ifm-color-emphasis-200);
+  background: rgba(15, 23, 42, 0.04);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+html[data-theme="dark"] .featureIcon {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.activeFeature .featureIcon {
+  background: rgba(56, 189, 248, 0.15);
+  transform: scale(1.05);
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.2);
+}
+
+html[data-theme="light"] .activeFeature .featureIcon {
+  background: rgba(2, 132, 199, 0.1);
+  box-shadow: 0 0 0 1px rgba(2, 132, 199, 0.1);
 }
 
 .featureContent h3 {
   margin: 0 0 0.5rem;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .featureContent p {
   margin: 0;
-  font-size: 0.9rem;
-  line-height: 1.4;
+  font-size: 0.95rem;
+  line-height: 1.5;
   color: var(--ifm-color-emphasis-700);
+  opacity: 0.9;
 }
 
+/* Enhanced code container */
 .codeContainer {
   flex: 1;
   min-width: 0;
-  background: var(--ifm-color-emphasis-0);
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: #0f172a;
+  border-radius: 16px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
   overflow: hidden;
+  position: relative;
+}
+
+.codeContainer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(
+    circle,
+    rgba(56, 189, 248, 0.3) 0%,
+    rgba(56, 189, 248, 0) 70%
+  );
+  z-index: 1;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+html[data-theme="light"] .codeContainer {
+  background: #ffffff;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.03);
+}
+
+html[data-theme="light"] .codeContainer::before {
+  background: radial-gradient(
+    circle,
+    rgba(2, 132, 199, 0.2) 0%,
+    rgba(2, 132, 199, 0) 70%
+  );
 }
 
 .tabsContainer {
   display: flex;
-  background: var(--ifm-color-emphasis-200);
-  border-bottom: 1px solid var(--ifm-color-emphasis-300);
+  background: #1e293b;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 0.5rem 0;
+  position: relative;
+}
+
+.tabsContainer::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #f87171;
+  box-shadow: 20px 0 0 #fbbf24, 40px 0 0 #4ade80;
+  z-index: 2;
+}
+
+html[data-theme="light"] .tabsContainer {
+  background: #f8fafc;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .tab {
   flex: 1;
-  padding: 0.8rem 0.5rem;
+  padding: 0.9rem 1.25rem;
+  margin-top: 3px;
   background: none;
   border: none;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
   cursor: pointer;
   font-weight: 500;
-  transition: all 0.3s ease;
-  font-size: 0.85rem;
-  color: var(--ifm-color-emphasis-700);
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  margin-right: 4px;
+  margin-left: 10px;
+}
+
+html[data-theme="light"] .tab {
+  color: rgba(0, 0, 0, 0.6);
 }
 
 .tabIcon {
   font-size: 1.1rem;
-  margin-right: 6px;
+  margin-right: 8px;
   display: inline-flex;
   align-items: center;
 }
 
 .tab:hover {
-  background: var(--ifm-color-emphasis-300);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+html[data-theme="light"] .tab:hover {
+  background: rgba(0, 0, 0, 0.03);
+  color: rgba(0, 0, 0, 0.8);
 }
 
 .activeTab {
-  background: var(--ifm-color-emphasis-0);
-  color: var(--ifm-color-primary);
+  background: #0f172a;
+  color: #38bdf8;
   font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: none;
+}
+
+html[data-theme="light"] .activeTab {
+  background: #ffffff;
+  color: #0284c7;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: none;
 }
 
 .codeSections {
   position: relative;
-  padding: 1rem;
+  padding: 1.5rem;
   overflow: hidden;
-}
-
-.codeSection {
-  transition: all 0.3s ease;
-}
-
-.active {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.inactive {
-  position: absolute;
-  opacity: 0;
-  transform: translateX(20px);
-  pointer-events: none;
 }
 
 .footer {
   display: flex;
   justify-content: center;
-  margin-top: 2rem;
+  margin-top: 3rem;
   gap: 1.5rem;
   flex-wrap: wrap;
   padding: 0 1rem;
-}
-
-.button {
-  display: inline-block;
-  background: var(--ifm-color-primary);
-  color: white;
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  text-decoration: none;
-  color: white;
 }
 
 /* Enhanced remix button styling */
@@ -452,22 +483,21 @@ html[data-theme="light"] .remixIcon {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
+  background: linear-gradient(to right, #0284c7, #38bdf8);
   color: white;
   padding: 1rem 2rem;
   border-radius: 12px;
   font-weight: 700;
   font-size: 1.1rem;
   text-decoration: none;
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4),
-    0 0 0 2px rgba(59, 130, 246, 0.2);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 25px rgba(2, 132, 199, 0.25),
+    0 0 0 1px rgba(2, 132, 199, 0.1);
   position: relative;
   overflow: hidden;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
   min-width: 220px;
   text-align: center;
-  border-bottom: 3px solid rgba(29, 78, 216, 0.8);
 }
 
 .remixButton::before {
@@ -487,83 +517,33 @@ html[data-theme="light"] .remixIcon {
 }
 
 .remixButton:hover {
-  transform: translateY(-5px) scale(1.03);
-  box-shadow: 0 14px 28px rgba(59, 130, 246, 0.5),
-    0 0 0 3px rgba(59, 130, 246, 0.3);
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 15px 30px rgba(2, 132, 199, 0.3),
+    0 0 0 2px rgba(2, 132, 199, 0.2);
   text-decoration: none;
   color: white;
 }
 
-.remixButton:hover .remixButtonIcon {
-  animation: spin 1.5s infinite linear;
-}
-
-.remixButtonIcon {
-  display: inline-block;
-  font-size: 1.4em;
-  transition: all 0.3s ease;
-}
-
-@keyframes shimmer {
-  0% {
-    left: -100%;
-  }
-  50%,
-  100% {
-    left: 100%;
-  }
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Dark mode remix button */
-html[data-theme="dark"] .remixButton {
-  background: linear-gradient(135deg, #332954 0%, #6b3369 50%, #c26a5a 100%);
-  box-shadow: 0 6px 16px rgba(255, 154, 92, 0.4),
-    0 0 0 2px rgba(255, 154, 92, 0.1);
-}
-
-html[data-theme="dark"] .remixButton:hover {
-  box-shadow: 0 12px 24px rgba(255, 154, 92, 0.6),
-    0 0 0 3px rgba(255, 154, 92, 0.2);
-}
-
-/* Rails button styling with ruby-like effect */
 .railsButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  background: linear-gradient(to right, #c2410c, #f97316);
   color: white;
   padding: 1rem 2rem;
   border-radius: 12px;
   font-weight: 700;
   font-size: 1.1rem;
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 25px rgba(234, 88, 12, 0.25),
+    0 0 0 1px rgba(234, 88, 12, 0.1);
   position: relative;
   overflow: hidden;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
   min-width: 220px;
   text-align: center;
-
-  /* Enhanced ruby-like gradient */
-  background: linear-gradient(
-    135deg,
-    #991b1b 0%,
-    #b91c1c 40%,
-    #dc2626 60%,
-    #ef4444 100%
-  );
-  box-shadow: 0 6px 16px rgba(204, 0, 0, 0.25), 0 0 0 2px rgba(204, 0, 0, 0.1);
-  border-bottom: 3px solid rgba(153, 27, 27, 0.8);
 }
 
 .railsButton::before {
@@ -579,151 +559,70 @@ html[data-theme="dark"] .remixButton:hover {
     rgba(255, 255, 255, 0.2) 50%,
     transparent 100%
   );
-  animation: shimmer 3s infinite;
+  animation: shimmer 3s infinite 1s;
 }
 
 .railsButton:hover {
-  transform: translateY(-5px) scale(1.03);
-  box-shadow: 0 12px 24px rgba(204, 0, 0, 0.3), 0 0 0 3px rgba(204, 0, 0, 0.15);
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 15px 30px rgba(234, 88, 12, 0.3),
+    0 0 0 2px rgba(234, 88, 12, 0.2);
   text-decoration: none;
   color: white;
-  background: linear-gradient(
-    135deg,
-    #7f1d1d 0%,
-    #991b1b 40%,
-    #b91c1c 60%,
-    #dc2626 100%
-  );
 }
 
-.railsButton:hover .railsButtonIcon {
-  animation: spin 1.5s infinite linear;
-}
-
-.railsButtonIcon {
-  display: inline-block;
-  font-size: 1.4em;
-  transition: all 0.3s ease;
-  /* Apply ruby effect to the diamond icon in the button */
-  color: transparent;
-  background-image: linear-gradient(
-    135deg,
-    #fecaca 10%,
-    #fef2f2 60%,
-    #fee2e2 100%
-  );
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-  filter: drop-shadow(0 0 3px rgba(254, 242, 242, 0.6));
-}
-
-/* Dark mode rails button */
-html[data-theme="dark"] .railsButton {
-  background: linear-gradient(135deg, #9c2b2e 0%, #db3a3a 50%, #ff5f5f 100%);
-  box-shadow: 0 6px 16px rgba(255, 95, 95, 0.4),
-    0 0 0 2px rgba(255, 95, 95, 0.1);
-}
-
-html[data-theme="dark"] .railsButton:hover {
-  box-shadow: 0 12px 24px rgba(255, 95, 95, 0.6),
-    0 0 0 3px rgba(255, 95, 95, 0.2);
-}
-
-/* Responsive design */
 @media (max-width: 996px) {
+  .title {
+    font-size: 2.5rem;
+  }
+
   .content {
     flex-direction: column;
+    gap: 2rem;
   }
 
   .featuresColumn {
     flex: 1 1 auto;
     width: 100%;
+    position: static;
   }
 
   .codeContainer {
     width: 100%;
   }
 
-  .featureItem {
-    padding: 1rem;
-  }
-
-  .featureIcon {
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
-    font-size: 1.3rem;
+  .remixButton,
+  .railsButton {
+    min-width: 200px;
   }
 }
 
 @media (max-width: 768px) {
+  .container {
+    padding: 4rem 1.5rem;
+    border-radius: 16px;
+    margin-top: 1rem;
+  }
+
+  .header {
+    padding: 3rem 1.5rem;
+    margin: -4rem -1.5rem 2rem;
+    border-radius: 16px;
+  }
+
+  .title {
+    font-size: 2.2rem;
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+  }
+
   .tab {
     padding: 0.8rem 0.5rem;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
   }
-}
 
-/* Dark mode adjustments */
-html[data-theme="dark"] .featureItem {
-  background: rgba(30, 30, 60, 0.4);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-html[data-theme="dark"] .header {
-  background: linear-gradient(135deg, #332954 0%, #6b3369 50%, #c26a5a 100%);
-}
-
-html[data-theme="dark"] .highlight {
-  background: rgba(255, 255, 255, 0.95);
-  color: #6b3369;
-  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
-}
-
-html[data-theme="dark"] .rubyGem {
-  animation: dark-pulse 3s infinite alternate ease-in-out;
-  color: #fb7185;
-  text-shadow: 0 0 10px rgba(251, 113, 133, 0.8);
-}
-
-@keyframes dark-pulse {
-  0% {
-    transform: scale(1);
-    filter: drop-shadow(0 0 3px rgba(244, 63, 94, 0.5));
-    opacity: 0.9;
+  .featureItem {
+    padding: 1.2rem;
   }
-  100% {
-    transform: scale(1.2);
-    filter: drop-shadow(0 0 12px rgba(251, 113, 133, 0.8));
-    opacity: 1;
-  }
-}
-
-html[data-theme="dark"] .featureIcon {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-html[data-theme="dark"] .codeContainer {
-  background: rgba(30, 30, 60, 0.4);
-}
-
-html[data-theme="dark"] .tabsContainer {
-  background: rgba(20, 20, 40, 0.5);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-html[data-theme="dark"] .activeTab {
-  background: rgba(30, 30, 60, 0.4);
-}
-
-html[data-theme="dark"] .tab:hover {
-  background: rgba(40, 40, 80, 0.4);
-}
-
-.remix:hover .remixIcon {
-  animation: spin 1.5s infinite linear;
-  display: inline-block;
 }
