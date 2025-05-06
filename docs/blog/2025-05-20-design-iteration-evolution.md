@@ -5,11 +5,11 @@ authors: [clay]
 tags: [design, documentation, process, screenshots]
 ---
 
-# Tiptoe into Awesomeness: How Our Design Process Evolved 🚀
+# 🚀 Tiptoe into Awesomeness: How Our Design Process Evolved
 
 What started as a simple "let's try to make this look better" turned into a full-blown design iteration system that transformed how we build and document jods. Here's the slightly chaotic but ultimately successful journey of how we evolved our design process! 🎢
 
-## The Humble Beginnings: Just Trying Stuff 🤷‍♂️
+## 🤷‍♂️ The Humble Beginnings: Just Trying Stuff
 
 Looking back at early commits, there's a beautiful simplicity (or naivety?) to how we approached design:
 
@@ -22,7 +22,7 @@ Looking back at early commits, there's a beautiful simplicity (or naivety?) to h
 
 No system, no process — just making changes and seeing what happened. The problem? We couldn't remember why we made certain decisions, what we tried before, or even what was working well. Every design change felt like starting from scratch. 😵‍💫
 
-## The Screenshot Epiphany 💡
+## 💡 The Screenshot Epiphany
 
 One day while explaining a potential change to a contributor, I had this random thought:
 
@@ -30,15 +30,15 @@ One day while explaining a potential change to a contributor, I had this random 
 
 That simple idea changed everything. Instead of trying to describe UI changes in words (which is like dancing about architecture), I could:
 
-1. Take a screenshot of the current state 📸
-2. Make changes to CSS/components 🛠️
-3. Take another screenshot 📸
-4. Compare them side by side 👀
-5. Document what worked and what didn't 📝
+1. 📸 Take a screenshot of the current state
+2. 🛠️ Make changes to CSS/components
+3. 📸 Take another screenshot
+4. 👀 Compare them side by side
+5. 📝 Document what worked and what didn't
 
 This wasn't just about communicating with others — it was about communicating with my future self! 🔮
 
-## Building Design Context through Timestamps ⏱️
+## ⏱️ Building Design Context through Timestamps
 
 The real magic happened when we started capturing timestamps along with screenshots. Each design attempt was documented with:
 
@@ -62,7 +62,7 @@ Feedback:
 
 Having these timestamps linked to Git commits meant we could go back and answer the crucial question: **"What exactly did we change to get that result?"** 💾
 
-## The Magic of Markdown Files 📚
+## 📚 The Magic of Markdown Files
 
 Creating dedicated markdown files for each design target changed the game again. Rather than scattered Slack messages or disjointed PR comments, we had:
 
@@ -76,14 +76,14 @@ docs/
 
 These markdown files became living documents of our design thinking. Each file:
 
-- Documented what we were trying to achieve ✅
-- Showed what we tried (with screenshots) 📸
-- Captured feedback for each attempt 💬
-- Made explicit decisions about what to implement 🏆
+- ✅ Documented what we were trying to achieve
+- 📸 Showed what we tried (with screenshots)
+- 💬 Captured feedback for each attempt
+- 🏆 Made explicit decisions about what to implement
 
 The best part? These files could be reused as context for future design work. When a new team member asked "Why does the code block look like this?" we could point them to the exact document that showed our thought process! 🧠
 
-## From Manual to Automated 🤖
+## 🤖 From Manual to Automated
 
 Once we saw the value of this approach, we built tools to automate it:
 
@@ -120,12 +120,12 @@ node docs/scripts/design-iterations.mjs --count=3 --target="framework-section-re
 
 This would:
 
-1. Create three distinct design iterations 🔄
-2. Capture screenshots of each in light and dark mode 🌓
-3. Save Git diffs for each iteration 💾
-4. Generate a feedback template to fill out 📝
+1. 🔄 Create three distinct design iterations
+2. 🌓 Capture screenshots of each in light and dark mode
+3. 💾 Save Git diffs for each iteration
+4. 📝 Generate a feedback template to fill out
 
-## The Post-Decision Cleanup: Avoiding Design Ghosts 👻
+## 👻 The Post-Decision Cleanup: Avoiding Design Ghosts
 
 One important lesson we learned through this process was about cleanup. After you've made a design decision and re-baselined, what do you do with all those screenshots and iterations?
 
@@ -146,7 +146,7 @@ node docs/scripts/cleanup-iterations.mjs --keep-baseline --target="framework-sec
 
 This preserves our Git history (so we can always recover if needed), keeps our written documentation, but removes the actual images that can confuse future design work. This turned out to be crucial for maintaining clean context boundaries between different design initiatives. 🧹
 
-## The Results Speak for Themselves 📊
+## 📊 The Results Speak for Themselves
 
 The impact of this evolution was dramatic:
 
@@ -155,7 +155,7 @@ The impact of this evolution was dramatic:
 - **Design consistency improved** - Having documented decisions meant we applied the same thinking to new components
 - **Onboarding became easier** - New contributors could understand our design philosophy by reading previous iterations
 
-## Lessons Learned 🧠
+## 🧠 Lessons Learned
 
 If I could distill what we've learned into a few key points:
 
@@ -164,9 +164,9 @@ If I could distill what we've learned into a few key points:
 3. **Contextual documentation matters** - Writing down "why" is as important as "what" we changed
 4. **Multiple iterations > single attempts** - The first solution is rarely the best one
 5. **Automation amplifies good processes** - Once you have a good manual process, automate it!
-6. **Clean up after yourself** - Delete old screenshots after finalizing to keep your context window clear 🧹
+6. **Clean up after yourself** - Delete old screenshots after finalizing to keep your context window clear
 
-## What's Next? 🔮
+## 🔮 What's Next?
 
 We're continuing to refine this process. Some exciting developments on the horizon:
 
@@ -175,7 +175,7 @@ We're continuing to refine this process. Some exciting developments on the horiz
 - **Interactive design playgrounds** - Let users experiment with design variables
 - **Collaborative iteration feedback** - Let the community vote on design iterations
 
-## Final Thoughts 💭
+## 💭 Final Thoughts
 
 The evolution of our design process wasn't planned — it emerged organically from trying to solve real problems. The simple act of taking screenshots, saving them with timestamps, and documenting our thought process transformed how we work.
 
