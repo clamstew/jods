@@ -1,6 +1,6 @@
 ---
 description: Guidelines for working with Cursor rules in this project
-globs: ["**/*.mdc", ".cursor/**/*"]
+globs: ["**/*.{mdc,md}", ".cursor/rules/**/*"]
 alwaysApply: true
 ---
 # Cursor Rules Workflow
@@ -61,6 +61,40 @@ When updating an existing rule file:
    - Copy over all relevant content
    - Delete the .new file after moving it
 
+## Specific Glob Patterns
+
+Use specific glob patterns to ensure rules only apply to relevant files:
+
+1. **Directory-specific patterns** - Target only specific directories:
+   ```
+   # Only match files in the docs directory
+   globs: ["docs/**/*.{tsx,jsx,js,ts}", "docs/**/*.css", "docs/**/*.md"]
+   
+   # Only match files in src directory
+   globs: ["src/**/*.{tsx,jsx,js,ts}"]
+   ```
+
+2. **Multiple patterns** - Use arrays for different file types or directories:
+   ```
+   # Match different files in different directories
+   globs: ["docs/**/*.tsx", "src/**/*.ts", "**/*.css"]
+   ```
+
+3. **File type groups** - Group related file extensions:
+   ```
+   # React component files
+   globs: ["**/*.{tsx,jsx}"]
+   
+   # All TypeScript/JavaScript
+   globs: ["**/*.{ts,js,tsx,jsx}"]
+   ```
+
+4. **Exclude patterns** - Use negation (not directly supported, use multiple includes instead):
+   ```
+   # Instead of excluding node_modules, be specific about what to include
+   globs: ["src/**/*.ts", "docs/**/*.ts"]  # Rather than ["**/*.ts", "!node_modules/**"]
+   ```
+
 ## Best Practices
 
 1. **NEVER create new markdown files** in the docs directory as a substitute for editing rule files
@@ -69,6 +103,7 @@ When updating an existing rule file:
 4. **Use the `@filename` syntax** to reference supporting files
 5. **Keep rules focused** on a specific aspect of the codebase
 6. **Consolidate glob patterns** for related file types using pattern groups, e.g., `["**/*.{tsx,jsx,js,ts}"]`
+7. **Use directory prefixes** when a rule should only apply to specific parts of the codebase
 
 ## Common Issues
 
@@ -76,6 +111,7 @@ When updating an existing rule file:
 - Use proper MDC format with the metadata section (the part between `---` lines)
 - If updating a rule with the editor doesn't work, use the create-and-move pattern described above
 - If a rule isn't being applied, check that the metadata header is complete and correctly formatted
+- If a rule is applied too broadly, make your glob patterns more specific with directory prefixes
 
 ## References
 
