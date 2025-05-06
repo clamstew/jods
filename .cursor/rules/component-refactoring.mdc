@@ -1,0 +1,154 @@
+---
+description: Guidelines for refactoring DocuSaurus components with regression testing
+globs: ["docs/src/components/**/*.js", "docs/src/components/**/*.jsx", "docs/src/components/**/*.tsx"]
+alwaysApply: false
+---
+
+# Component Refactoring with Regression Testing
+
+This guide explains how to safely refactor DocuSaurus UI components while using the screenshot and test systems to ensure nothing regresses visually or functionally.
+
+## Quick Start
+
+```bash
+# Before refactoring: Create baseline screenshots for regression comparison
+pnpm docs:screenshot:baseline
+
+# After refactoring: Run visual regression tests to verify no visual changes
+pnpm docs:screenshot:diff
+
+# Run unit tests to verify functionality
+pnpm test
+```
+
+## Component Refactoring Workflow
+
+When refactoring components in the docs site:
+
+1. **Create baseline screenshots** - Before any changes, establish visual baselines:
+   ```bash
+   # From the docs directory
+   pnpm screenshot:baseline
+   ```
+
+2. **Run existing unit tests** - Ensure all tests pass before refactoring:
+   ```bash
+   pnpm test
+   ```
+
+3. **Refactor component code** - Focus on improving structure without changing behavior:
+   - Organize imports properly
+   - Improve type definitions
+   - Extract repeated patterns into helper functions
+   - Consolidate similar components
+   - Fix problematic CSS in common.css that might affect other components
+   - Add proper data-testid attributes for better testing
+
+4. **Run visual regression tests** - Verify no unintended visual changes:
+   ```bash
+   # From the docs directory
+   pnpm screenshot:diff
+   
+   # If focusing on specific components
+   pnpm screenshot:diff -- --components=hero-section,features-section
+   
+   # With custom tolerance threshold (default is 2%)
+   pnpm screenshot:diff -- --threshold=0.01
+   ```
+
+5. **Review and fix any regressions** - If visual differences are found:
+   - Examine diff images in `docs/static/screenshots/unified/diffs/`
+   - Fix unintended visual changes in your refactoring
+   - Only accept intentional visual changes
+
+6. **Run unit tests again** - Ensure functionality remains:
+   ```bash
+   pnpm test
+   ```
+
+## Handling CSS Issues
+
+The DocuSaurus site uses a common.css file that can cause cross-component effects:
+
+1. **Identify problematic CSS** - Issues that affect multiple components:
+   - Over-general selectors (.button, .container, etc.)
+   - !important flags that override component styles
+   - Global theme variables being overridden
+
+2. **Isolate component styles** - When refactoring:
+   - Use more specific CSS selectors
+   - Add component-specific class prefixes
+   - Consider CSS modules for better isolation
+   - Add comments explaining why certain CSS is needed
+
+3. **Test across components** - Visual regression on multiple components:
+   ```bash
+   # Test all components to catch cross-component effects
+   pnpm screenshot:diff
+   ```
+
+## Common Pitfalls
+
+When refactoring DocuSaurus components:
+
+1. **Theme compatibility** - Components must work in both light and dark modes
+2. **Responsive design** - Must maintain proper responsive behavior
+3. **CSS isolation** - Changes to common styles can affect multiple components
+4. **Hidden interactions** - Some components have state or interactions not immediately visible
+5. **DocuSaurus-specific APIs** - Respect DocuSaurus patterns and APIs
+
+## Example: Refactoring a Component
+
+Here's an example of refactoring a component with regression testing:
+
+```jsx
+// BEFORE: Disorganized component with mixed concerns
+function FeatureSection() {
+  // ...messy implementation
+}
+
+// AFTER: Refactored with clean separation of concerns
+function FeatureSection() {
+  // Main container with proper data-testid
+  return (
+    <section className="features-section" data-testid="jods-features-section">
+      <div className="container">
+        <FeatureHeader />
+        <FeatureGrid features={FEATURES} />
+      </div>
+    </section>
+  );
+}
+
+// Extracted components
+function FeatureHeader() { /* ... */ }
+function FeatureGrid({ features }) { /* ... */ }
+function FeatureCard({ title, description, icon }) { /* ... */ }
+```
+
+## Regression Test Commands
+
+For a comprehensive regression test suite:
+
+```bash
+# 1. Create or verify baseline screenshots
+pnpm docs:screenshot:baseline
+
+# 2. Run visual regression tests (with tight threshold)
+pnpm docs:screenshot:diff -- --threshold=0.005
+
+# 3. Run component unit tests
+pnpm test src/components/
+
+# 4. Run end-to-end tests (if available)
+pnpm e2e
+```
+
+## See Also
+
+- [Screenshot System Overview](../docs/design-iterations/screenshot-system/index.md)
+- [Visual Regression Testing](../docs/design-iterations/screenshot-system/advanced.md#visual-regression-testing)
+- [TestID Guidelines](../docs/design-iterations/screenshot-system/testid-guidelines.md)
+
+@docs/scripts/screenshot-unified.mjs
+@docs/scripts/screenshot-diff.mjs
