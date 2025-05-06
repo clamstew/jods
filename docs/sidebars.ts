@@ -83,11 +83,6 @@ const sidebars: SidebarsConfig = {
       label: "🛠️ Maintainer's Guide",
     },
     {
-      type: "doc",
-      id: "playwright-screenshots",
-      label: "📸 Documentation Screenshots",
-    },
-    {
       type: "category",
       label: "🎨 Design Iterations",
       collapsed: false,
@@ -116,6 +111,33 @@ const sidebars: SidebarsConfig = {
           type: "doc",
           id: "design-iterations/feedback",
           label: "📝 Feedback System",
+        },
+        {
+          type: "category",
+          label: "📸 Screenshot System",
+          collapsed: false,
+          items: [
+            {
+              type: "doc",
+              id: "design-iterations/screenshot-system/index",
+              label: "📷 Overview",
+            },
+            {
+              type: "doc",
+              id: "design-iterations/screenshot-system/getting-started",
+              label: "🚀 Getting Started",
+            },
+            {
+              type: "doc",
+              id: "design-iterations/screenshot-system/testid-guidelines",
+              label: "🧩 TestID Guidelines",
+            },
+            {
+              type: "doc",
+              id: "design-iterations/screenshot-system/advanced",
+              label: "⚙️ Advanced Usage",
+            },
+          ],
         },
       ],
     },

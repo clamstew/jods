@@ -37,7 +37,7 @@ This guide covers the complete Design Iterations workflow:
 2. [**AI-Assisted Design**](./with-ai.md) - How AI powers the design iteration process
 3. [**Command Reference**](./commands.md) - Detailed command documentation
 4. [**Feedback System**](./feedback.md) - How to provide structured feedback
-5. [**Screenshots System**](../playwright-screenshots.md) - How the screenshot system works
+5. [**Screenshot System**](./screenshot-system/index.md) - The foundation for capturing and comparing UI components
 
 ## 🎯 Available Targets
 
@@ -213,7 +213,7 @@ Read the [complete guide](./workflow.md) to start using design iterations for yo
 
 ## 🤝 Integration with Screenshot System
 
-The design iterations system is built on top of the powerful [screenshot system](../playwright-screenshots.md) that handles the automated capture of UI components. While the design iterations workflow provides a structured approach to improving designs, the screenshot system handles the technical implementation of capturing consistent images.
+The design iterations system is built on top of the powerful [screenshot system](./screenshot-system/index.md) that handles the automated capture of UI components. While the design iterations workflow provides a structured approach to improving designs, the screenshot system handles the technical implementation of capturing consistent images.
 
 ### Key Integration Points
 
@@ -223,61 +223,7 @@ The design iterations system is built on top of the powerful [screenshot system]
 4. **Visual Diffing** - Comparing design iterations using pixel diffing
 5. **Baseline Management** - Maintaining reference images for before/after comparisons
 
-Understanding both systems will help you get the most out of the design iteration workflow. Review the [Screenshot Documentation](../playwright-screenshots.md) for technical details on how the screenshot capture process works.
-
-## 📋 File Consolidation Checklist
-
-This checklist tracks the consolidation of all design iteration related files across the project. All files have now been reviewed and incorporated into the new documentation structure.
-
-### ✅ Primary Documentation (Consolidated)
-
-- [x] `/docs/docs/design-iterations/index.md` - Main overview
-- [x] `/docs/docs/design-iterations/workflow.md` - Complete workflow guide
-- [x] `/docs/docs/design-iterations/with-ai.md` - AI integration guide
-- [x] `/docs/docs/design-iterations/commands.md` - Command reference
-- [x] `/docs/docs/design-iterations/feedback.md` - Feedback system
-
-### 📸 Screenshot System Files
-
-#### Core Screenshot Scripts
-
-- [x] `/docs/scripts/screenshot-unified.mjs` - Main screenshot capture engine (essential for design iterations)
-- [x] `/docs/scripts/screenshot-selectors.mjs` - Component selection definitions (critical - defines all UI components available for design iterations)
-- [x] `/docs/scripts/screenshot-capture.mjs` - Screenshot capture utilities (used by unified script)
-- [x] `/docs/scripts/screenshot-utils.mjs` - Shared utility functions (used by unified script)
-- [x] `/docs/scripts/screenshot-diff.mjs` - Visual comparison tool (used for comparing design iterations)
-- [x] `/docs/scripts/screenshot-cleanup.mjs` - Cleanup utilities (important for managing screenshot history)
-
-#### Screenshot Helper Scripts
-
-- [x] `/docs/scripts/rebaseline.mjs` - Regenerates baseline screenshots (essential for updating baselines after design changes)
-- [x] `/docs/scripts/generate-selectors.mjs` - Auto-generates selectors from testIDs
-- [x] `/docs/scripts/testid-helpers.mjs` - TestID utility functions (used by unified script)
-- [x] `/docs/scripts/capture-diff.mjs` - Immediate screenshot diffing
-- [x] `/docs/scripts/force-react-tab.mjs` - Tab-specific screenshot helper
-- [x] `/docs/scripts/fix-react-framework.mjs` - Framework section screenshot helper
-
-### 📝 Screenshot Documentation
-
-- [x] `/docs/scripts/screenshot-testid-guidelines.md` - TestID framework documentation (critical for component identification)
-- [x] `/docs/scripts/OPTIMIZATIONS.md` - Performance optimizations
-- [x] `/docs/scripts/README.md` - Scripts documentation with screenshot section
-- [x] `/docs/scripts/guides/getting-started.md` - Screenshot system basics
-- [x] `/docs/scripts/guides/screenshot-system-for-dummies.md` - Simplified explanation
-- [x] `/docs/docs/playwright-screenshots.md` - Main screenshot documentation (incorporated in design iterations documentation)
-
-### 🛠️ Design Iteration Implementation Files
-
-- [x] `/docs/scripts/design-iterations.mjs` - Main implementation script (810 lines) (documented in workflow.md)
-- [x] `/docs/scripts/design-iterations-init.mjs` - Initialization helper (186 lines) (documented in workflow.md)
-- [x] `/docs/scripts/__tests__/design-iterations-init.test.mjs` - Unit tests for initialization
-
-### 📚 Design Iteration Examples & Vision
-
-- [x] `/docs/scripts/examples/design-iteration-example.md` - Example walkthrough
-- [x] `/docs/scripts/long-term-ai-vision.md` - Contains design iteration content
-
-This checklist helps track progress as we consolidate all design iteration related files across the project. All files have now been reviewed and incorporated into the new documentation structure.
+Understanding both systems will help you get the most out of the design iteration workflow. Review the [Screenshot System documentation](./screenshot-system/index.md) for technical details on how the screenshot capture process works.
 
 ## 🔍 Next Steps
 
