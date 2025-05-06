@@ -150,22 +150,33 @@ This preserves our Git history (so we can always recover if needed), keeps our w
 
 Here's a concrete example of how this process improved our design - the evolution of the "Remix State, Reimagined" section:
 
-<div className="grid grid-cols-2 gap-4">
-  <div>
-    <p className="text-center font-bold">Before (Light Mode)</p>
-    <img src="/jods/screenshots/redesign-comparison/remix-section-before-light.png" alt="Remix section before redesign (light mode)" />
-  </div>
-  <div>
-    <p className="text-center font-bold">After (Light Mode)</p>
-    <img src="/jods/screenshots/redesign-comparison/remix-section-after-light.png" alt="Remix section after redesign (light mode)" />
-  </div>
-  <div>
-    <p className="text-center font-bold">Before (Dark Mode)</p>
-    <img src="/jods/screenshots/redesign-comparison/remix-section-before-dark.png" alt="Remix section before redesign (dark mode)" />
-  </div>
-  <div>
-    <p className="text-center font-bold">After (Dark Mode)</p>
-    <img src="/jods/screenshots/redesign-comparison/remix-section-after-dark.png" alt="Remix section after redesign (dark mode)" />
+<div className="iterations-comparison">
+  <h3 className="comparison-heading">Before & After Comparison</h3>
+  
+  <div className="iterations-grid">
+    <!-- Light Mode Before -->
+    <div className="iteration-image-container">
+      <div className="iteration-label light-theme-label">Light Mode (Before)</div>
+      <img className="iteration-image" src="/jods/screenshots/redesign-comparison/remix-section-before-light.png" alt="Remix section before redesign (light mode)" />
+    </div>
+    
+    <!-- Light Mode After -->
+    <div className="iteration-image-container">
+      <div className="iteration-label light-theme-label">Light Mode (After)</div>
+      <img className="iteration-image" src="/jods/screenshots/redesign-comparison/remix-section-after-light.png" alt="Remix section after redesign (light mode)" />
+    </div>
+    
+    <!-- Dark Mode Before -->
+    <div className="iteration-image-container">
+      <div className="iteration-label dark-theme-label">Dark Mode (Before)</div>
+      <img className="iteration-image" src="/jods/screenshots/redesign-comparison/remix-section-before-dark.png" alt="Remix section before redesign (dark mode)" />
+    </div>
+    
+    <!-- Dark Mode After -->
+    <div className="iteration-image-container">
+      <div className="iteration-label dark-theme-label">Dark Mode (After)</div>
+      <img className="iteration-image" src="/jods/screenshots/redesign-comparison/remix-section-after-dark.png" alt="Remix section after redesign (dark mode)" />
+    </div>
   </div>
 </div>
 

@@ -390,6 +390,52 @@ The timestamped screenshots enable several workflows for design management:
 4. **Regression Testing**: Identify unintended visual changes
 5. **Design Reviews**: Share specific timestamped versions for feedback
 
+### Visual Comparison Grid Layout
+
+To showcase design iterations in your documentation, we provide a responsive grid layout system that makes it easy to compare screenshots side-by-side:
+
+```jsx
+<div className="iterations-comparison">
+  <h3 className="comparison-heading">Iterations Comparison</h3>
+
+  <div className="iterations-grid">
+    <!-- Light Mode Before -->
+    <div className="iteration-image-container">
+      <div className="iteration-label light-theme-label">Light Mode (Before)</div>
+      <img className="iteration-image" src="/jods/path/to/before-light.png" alt="Before design (light mode)" />
+    </div>
+
+    <!-- Light Mode After -->
+    <div className="iteration-image-container">
+      <div className="iteration-label light-theme-label">Light Mode (After)</div>
+      <img className="iteration-image" src="/jods/path/to/after-light.png" alt="After design (light mode)" />
+    </div>
+
+    <!-- Dark Mode Before -->
+    <div className="iteration-image-container">
+      <div className="iteration-label dark-theme-label">Dark Mode (Before)</div>
+      <img className="iteration-image" src="/jods/path/to/before-dark.png" alt="Before design (dark mode)" />
+    </div>
+
+    <!-- Dark Mode After -->
+    <div className="iteration-image-container">
+      <div className="iteration-label dark-theme-label">Dark Mode (After)</div>
+      <img className="iteration-image" src="/jods/path/to/after-dark.png" alt="After design (dark mode)" />
+    </div>
+  </div>
+</div>
+```
+
+This grid automatically organizes your screenshots in a 2x2 grid on larger screens, and stacks them in a single column on mobile devices. Some key features:
+
+- **Responsive Design**: Automatically adapts to different screen sizes
+- **Themed Labels**: Special styling for light/dark mode images
+- **Before/After Labels**: Makes comparisons more clear
+- **Hover Effects**: Subtle enhancement when hovering over images
+- **Consistent Styling**: Matches the jods documentation design system
+
+For detailed examples and customization options, see the template file at `docs/examples/design-iteration-grid-template.md`.
+
 ### Visual Regression Testing
 
 The screenshot system includes an automated pixel diff tool for visual regression testing:

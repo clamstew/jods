@@ -6,6 +6,7 @@
 
 /* Import component-specific CSS */
 @import url("./footer.css");
+@import url("./design-iterations.css");
 /* No need to import HomepageHero styles here as they're imported directly in the component */
 
 /* You can override the default Infima variables here. */

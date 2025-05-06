@@ -7,6 +7,38 @@
 - **Iteration Group:** remix-section-2025-05-06
 - **Number of Iterations:** 3
 
+## Visual Comparison
+
+<div className="iterations-comparison">
+  <h3 className="comparison-heading">Iterations Comparison</h3>
+  
+  <div className="iterations-grid">
+    <!-- Iteration 1 - Light Mode -->
+    <div className="iteration-image-container">
+      <div className="iteration-label light-theme-label">Iteration 1 (Light)</div>
+      <img className="iteration-image" src="/jods/screenshots/redesign-comparison/remix-section-before-light.png" alt="Iteration 1 light mode" />
+    </div>
+    
+    <!-- Iteration 2 - Light Mode -->
+    <div className="iteration-image-container">
+      <div className="iteration-label light-theme-label">Iteration 2 (Light)</div>
+      <img className="iteration-image" src="/jods/screenshots/redesign-comparison/remix-section-after-light.png" alt="Iteration 2 light mode" />
+    </div>
+    
+    <!-- Iteration 1 - Dark Mode -->
+    <div className="iteration-image-container">
+      <div className="iteration-label dark-theme-label">Iteration 1 (Dark)</div>
+      <img className="iteration-image" src="/jods/screenshots/redesign-comparison/remix-section-before-dark.png" alt="Iteration 1 dark mode" />
+    </div>
+    
+    <!-- Iteration 2 - Dark Mode -->
+    <div className="iteration-image-container">
+      <div className="iteration-label dark-theme-label">Iteration 2 (Dark)</div>
+      <img className="iteration-image" src="/jods/screenshots/redesign-comparison/remix-section-after-dark.png" alt="Iteration 2 dark mode" />
+    </div>
+  </div>
+</div>
+
 ## Iteration 1
 
 ### Screenshot References
