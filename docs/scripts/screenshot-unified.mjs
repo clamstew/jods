@@ -1011,7 +1011,22 @@ async function captureFrameworkTabs(
       }
     }
 
-    // Capture screenshots for each tab type
+    // Priority to capturing the Remix tab first
+    if (remixButtons.length > 0) {
+      console.log("Capturing Remix tab first (prioritized)");
+      await captureTabScreenshot(
+        page,
+        frameworkSection,
+        remixButtons[0],
+        "remix",
+        component,
+        theme,
+        timestamp,
+        saveBaseline
+      );
+    }
+
+    // Then capture the other tabs
     if (reactButtons.length > 0) {
       await captureTabScreenshot(
         page,
@@ -1038,26 +1053,53 @@ async function captureFrameworkTabs(
       );
     }
 
-    if (remixButtons.length > 0) {
-      await captureTabScreenshot(
-        page,
-        frameworkSection,
-        remixButtons[0],
-        "remix",
-        component,
-        theme,
-        timestamp,
-        saveBaseline
-      );
-    }
-
     return;
   }
 
   console.log(`Found ${tabButtons.length} framework tabs`);
 
+  // Look for Remix/Traditional tab first and prioritize capturing it
+  let remixButton = null;
+  for (const button of tabButtons) {
+    const buttonText = await button.evaluate((el) => el.textContent.trim());
+    if (
+      buttonText.includes("Remix") ||
+      buttonText.includes("Traditional") ||
+      buttonText.includes("💿")
+    ) {
+      remixButton = button;
+      break;
+    }
+  }
+
+  // Capture Remix tab first if found
+  if (remixButton) {
+    console.log("Capturing Remix tab first (prioritized)");
+    await captureTabScreenshot(
+      page,
+      frameworkSection,
+      remixButton,
+      "remix",
+      component,
+      theme,
+      timestamp,
+      saveBaseline
+    );
+  }
+
   // For each explicitly named tab in component config, try to find and capture it
   for (const tabName of component.frameworkTabs) {
+    // Skip Remix tab if we already captured it
+    if (
+      remixButton &&
+      (tabName.includes("Remix") ||
+        tabName.includes("Traditional") ||
+        tabName.includes("💿"))
+    ) {
+      console.log(`Skipping duplicate Remix tab: ${tabName}`);
+      continue;
+    }
+
     console.log(`Looking for tab: ${tabName}`);
     let matchingButton = null;
 
@@ -1108,6 +1150,67 @@ async function captureTabScreenshot(
 
   // Wait longer for tab content to fully load and render
   await page.waitForTimeout(1500);
+
+  // Special handling for Remix tab in light mode
+  const isRemixTab =
+    tabName.includes("Remix") ||
+    tabName.includes("💿") ||
+    tabIdentifier.includes("remix");
+  if (isRemixTab && theme === "light") {
+    console.log("Special handling for Remix tab in light mode");
+
+    // Wait longer for Remix tab content
+    await page.waitForTimeout(1000);
+
+    // Try to find the actual remix content for better positioning
+    const remixContent = await page.evaluate(() => {
+      // Use standard DOM traversal instead of :has-text() selector
+      const codeBlocks = document.querySelectorAll("pre code");
+      let remixCodeBlock = null;
+
+      // Look through all code blocks for Remix-specific content
+      for (const codeBlock of codeBlocks) {
+        if (
+          codeBlock.textContent.includes("createCookieStore") ||
+          codeBlock.textContent.includes("remix") ||
+          codeBlock.textContent.includes("cookie")
+        ) {
+          remixCodeBlock = codeBlock.closest("pre");
+          break;
+        }
+      }
+
+      if (remixCodeBlock) {
+        // Scroll to show the code block properly
+        const containerRect = remixCodeBlock.getBoundingClientRect();
+        const scrollOffset = Math.max(0, containerRect.top - 200);
+        window.scrollTo(0, window.scrollY + scrollOffset);
+        return true;
+      }
+
+      // Alternative approach - look for Remix headers
+      const remixHeaders = Array.from(
+        document.querySelectorAll("h2, h3, h4")
+      ).filter(
+        (el) =>
+          el.textContent.includes("Remix") && !el.textContent.includes("state")
+      );
+
+      if (remixHeaders.length > 0) {
+        const header = remixHeaders[0];
+        const headerRect = header.getBoundingClientRect();
+        window.scrollTo(0, window.scrollY + Math.max(0, headerRect.top - 100));
+        return true;
+      }
+
+      return false;
+    });
+
+    if (remixContent) {
+      console.log("Found Remix-specific content, adjusting position");
+      await page.waitForTimeout(800);
+    }
+  }
 
   // Additional scroll for better positioning
   await page.evaluate(

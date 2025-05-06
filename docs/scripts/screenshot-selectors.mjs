@@ -90,6 +90,8 @@ export const COMPONENTS = [
       ".remix-description",
       "[class*='subtitle']:has-text('reimagined')",
       ".subtitle, .feature-subtitle",
+      "h3:has-text('Remix state')",
+      "div:has(h3:has-text('Remix state'))",
     ],
   },
 
