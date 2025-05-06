@@ -1,6 +1,6 @@
 ---
 description: Guidelines for using the design iterations workflow for UI components
-globs: ["**/*.{tsx,jsx,js,ts}", "**/*.css", "**/*.md"]
+globs: ["docs/src/components/*.tsx", "docs/src/components/*.css", "docs/scripts/*.mjs"]
 alwaysApply: false
 ---
 # Design Iterations System
@@ -14,13 +14,13 @@ The Design Iterations system is a powerful workflow that combines Playwright scr
 pnpm docs:design-iterations:count-5 --target="try-jods-section" --prompt="Reimagine with bold visual hierarchy" --skip-other-sections
 ```
 
-## Proper Workflow Sequence
+## <critical> Proper Workflow Sequence </critical>
 
 **CRITICAL**: Follow this sequence exactly to ensure each iteration captures distinct designs:
 
 1. **Modify component code** - Make your design changes to both TSX/JSX and CSS files
 2. **Save changes** - Ensure all files are saved
-3. **Wait for rebuild** - Allow 15-20 seconds for DocuSaurus to fully rebuild
+3. **Wait for rebuild** - Allow 30-45 seconds for DocuSaurus to fully rebuild
 4. **Verify changes** - Confirm in the browser that your design changes are visible
 5. **Capture ONE iteration** - Run the screenshot command for just this iteration
 6. **Make new changes** - Create a different design for the next iteration
@@ -28,12 +28,26 @@ pnpm docs:design-iterations:count-5 --target="try-jods-section" --prompt="Reimag
 
 ```bash
 # CORRECT: One iteration at a time with verification between each
-# First modify component code, save, wait 15-20 seconds, verify in browser, then:
+# First modify component code, save, wait 30-45 seconds, verify in browser, then:
 pnpm docs:design-iterations:count-1 --target="try-jods-section" --skip-other-sections
 
 # INCORRECT: Running multiple iterations without verification
 pnpm docs:design-iterations:count-3 --target="try-jods-section" --skip-other-sections
 ```
+
+## <required> Artifact Preservation </required>
+
+**IMPORTANT**: Do NOT clean up design iteration artifacts until explicitly requested by the user. Artifacts are essential for:
+
+1. **Design review** - Comparing multiple design approaches
+2. **Feedback collection** - Adding notes to feedback templates
+3. **Iteration refinement** - Using previous designs as reference
+4. **Final application** - Selecting the best design to apply
+
+Only run cleanup after the user has:
+1. Reviewed all design iterations
+2. Applied their chosen design
+3. Explicitly requested cleanup with `pnpm docs:design-iterations:cleanup`
 
 ## Styling Approach: Follow Component Conventions
 
@@ -67,22 +81,24 @@ import './InteractiveDemo.css';
 <div style={{ display: 'flex', gap: '1rem' }}>
 ```
 
-## Component Code Updates Required
+## <required> Component Code Updates Required </required>
 
 For each design iteration, you MUST modify the component code BEFORE taking screenshots:
 
 1. **Step 1: Edit the component code directly** - Before generating the screenshot for each iteration, modify the component's TSX/JSX and CSS code according to the design prompt
-2. **Step 2: Wait for changes to apply** - Allow sufficient time (15-20 seconds) for DocuSaurus to rebuild with the new changes
+2. **Step 2: Wait for changes to apply** - Allow sufficient time (30-45 seconds) for DocuSaurus to rebuild with the new changes
 3. **Step 3: Then run the screenshot command** - Each iteration should capture a visually distinct design
 
 Example workflow:
 ```bash
-# First modify the component code (edit src/components/InteractiveDemo.tsx)
-# After saving changes, wait 15-20 seconds, then run:
+# First modify the component code (edit both TSX and CSS files if needed)
+# Edit src/components/InteractiveDemo.tsx
+# Edit src/components/InteractiveDemo.module.css (if the component uses CSS modules)
+# After saving changes, wait 30-45 seconds, then run:
 pnpm docs:design-iterations:count-1 --target="try-jods-section" --skip-other-sections
 
 # Then modify the component code differently
-# After saving changes, wait 15-20 seconds, then run:
+# After saving changes, wait 30-45 seconds, then run:
 pnpm docs:design-iterations:count-1 --target="try-jods-section" --skip-other-sections
 
 # Repeat for each unique design iteration
@@ -108,7 +124,7 @@ Available component names:
 - `compare-section` or `06-compare-section`
 - `footer-section` or `07-footer-section`
 
-## Important: Using --skip-other-sections Flag
+## <required> Important: Using --skip-other-sections Flag </required>
 
 The `--skip-other-sections` flag is **crucial** when you want to focus on a single component without affecting or capturing other sections:
 
@@ -145,7 +161,7 @@ When a user asks about design iterations, you should:
    - Edit the component's TSX/JSX file to change the structure/layout
    - Update CSS styles to change the visual appearance using the same style approach
    - Implement specific changes to address spacing issues, visual balance, etc.
-   - Save changes and wait for React to re-render (15-20 seconds)
+   - Save changes and wait for React to re-render (30-45 seconds)
 
 4. **Then capture the iteration screenshot** with:
    ```bash
@@ -155,7 +171,7 @@ When a user asks about design iterations, you should:
 
 5. **Repeat for each unique design** (usually 3-5 iterations):
    - Make different code changes for each iteration
-   - Wait for full rebuild between iterations
+   - Wait for full rebuild between iterations (30-45 seconds minimum)
    - Capture screenshots after each change
    - Track iteration numbers and timestamps
 
@@ -167,11 +183,11 @@ When a user asks about design iterations, you should:
    # Apply the chosen design
    pnpm docs:design-iterations:apply --iteration=N --target="try-jods-section"
    
-   # Clean up design artifacts when done
+   # Clean up design artifacts ONLY when explicitly requested
    pnpm docs:design-iterations:cleanup
    ```
 
-7. **Always provide a structured summary** to the user about their design iterations:
+7. **<critical> Always provide a structured summary </critical>** to the user about their design iterations:
    ```
    # Design Iterations Summary
 
@@ -190,7 +206,7 @@ When a user asks about design iterations, you should:
    ```
 
    ## Clean Up Artifacts
-   After applying, clean up with:
+   ONLY after reviewing and applying your chosen design, clean up with:
    ```bash
    pnpm docs:design-iterations:cleanup
    ```
@@ -215,11 +231,11 @@ Each design iteration generates these artifacts:
    - `docs/temp/design-iterations/iteration-N/feedback-template.md`
    - `docs/temp/design-iterations/iteration-N/metadata.json`
 
-## Best Practices
+## <required> Best Practices </required>
 
 1. **Analyze styling approach first** - Match the component's existing styling convention
 2. **Modify component code BEFORE each screenshot** - Make changes first, then capture
-3. **Wait 15-20 seconds after code changes** - DocuSaurus needs time to rebuild
+3. **Wait 30-45 seconds after code changes** - DocuSaurus needs time to rebuild
 4. **Verify changes in browser** - Confirm your design updates are visible before capturing
 5. **Use `count-1` for each iteration** - Generate one iteration at a time
 6. **Avoid disrupting the development server** - Keep it running between iterations
@@ -227,14 +243,15 @@ Each design iteration generates these artifacts:
 8. **Use simple component names** - Without number prefixes (e.g., `try-jods-section`)
 9. **Document your changes** - Fill in the feedback templates
 10. **Apply chosen designs** - With `docs:design-iterations:apply`
-11. **Clean up** - With `docs:design-iterations:cleanup` when finished
+11. **Preserve artifacts until explicitly requested** - Only clean up when user explicitly asks
+12. **Check for CSS module files** - If a component uses CSS modules, check for and modify those files too
 
 ## Common Issues and Troubleshooting
 
 - **Identical screenshots across iterations**: 
   - Not waiting long enough between design changes
   - DocuSaurus hasn't rebuilt with your changes yet
-  - Try waiting at least 20 seconds and verify changes in browser
+  - Try waiting at least 30-45 seconds and verify changes in browser
   
 - **No visual changes**: 
   - Did you wait long enough for DocuSaurus to rebuild?
