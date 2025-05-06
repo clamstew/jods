@@ -95,3 +95,25 @@ node scripts/design-iterations.mjs --target="hero-section"
 - Enhance design iteration system
 - Further improve TestID coverage
 - Connect with AI-driven design suggestions
+
+## Testing
+
+The screenshot framework now includes test coverage for key utilities. The tests are located in the `__tests__` directory and can be run with:
+
+```bash
+npm test
+```
+
+Or in watch mode during development:
+
+```bash
+npm run test:watch
+```
+
+The tests focus on core utilities and helper functions. When adding new scripts or refactoring existing ones, consider:
+
+1. Extracting pure functions that can be tested independently
+2. Using dependency injection for external modules to enable mocking
+3. Adding tests for complex logic and edge cases
+
+For more details on the testing approach, see the [testing README](__tests__/README.md).
