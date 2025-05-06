@@ -14,10 +14,14 @@ import {
   setupEnvironment,
   setupLogger,
   setupRetry,
+  getConfiguration,
+  measureTime,
+  safeFileOperation,
+  ensureDirectoryExists,
 } from "./screenshot-utils.mjs";
 import { captureManager } from "./screenshot-capture.mjs";
 
-// Initialize environment and utilities
+// Initialize environment and utilities with memoization
 const { directories, BASE_URL, PATH_PREFIX, THEMES, getTimestamp, DEBUG } =
   setupEnvironment();
 
@@ -26,6 +30,9 @@ const logger = setupLogger(DEBUG);
 
 // Setup retry utility
 const retry = setupRetry(logger);
+
+// Get configuration
+const config = getConfiguration();
 
 /**
  * Load components from available sources
@@ -37,48 +44,67 @@ async function loadComponents(
   useGeneratedSelectors = false,
   mergeSelectors = false
 ) {
-  let componentsToUse = COMPONENTS;
+  // Track component loading time
+  return await measureTime(
+    async () => {
+      let componentsToUse = COMPONENTS;
 
-  try {
-    // Check if the generated selectors file exists and if the flag is set
-    if (useGeneratedSelectors) {
-      // Try to import the generated selectors
       try {
-        const { GENERATED_COMPONENTS, mergeWithExisting } = await import(
-          "./screenshot-selectors.generated.mjs"
-        );
+        // Check if the generated selectors file exists and if the flag is set
+        if (useGeneratedSelectors) {
+          // Try to import the generated selectors
+          try {
+            const { GENERATED_COMPONENTS, mergeWithExisting } = await import(
+              "./screenshot-selectors.generated.mjs"
+            ).catch((error) => {
+              logger.warn(
+                `Could not import generated selectors: ${error.message}`
+              );
+              return { GENERATED_COMPONENTS: [], mergeWithExisting: () => [] };
+            });
 
-        logger.info(
-          `🔄 Loading ${GENERATED_COMPONENTS.length} generated selectors from data-testids`
-        );
+            logger.info(
+              `🔄 Loading ${GENERATED_COMPONENTS.length} generated selectors from data-testids`
+            );
 
-        // Decide if we should merge or replace
-        if (mergeSelectors) {
-          // Merge with existing selectors
-          componentsToUse = mergeWithExisting(COMPONENTS);
-          logger.info(
-            `🔄 Merged with existing selectors - ${componentsToUse.length} total components`
-          );
-        } else {
-          // Just use the generated selectors
-          componentsToUse = GENERATED_COMPONENTS;
-          logger.info(
-            `🔄 Using ${componentsToUse.length} generated selectors exclusively`
-          );
+            // Decide if we should merge or replace
+            if (mergeSelectors) {
+              // Merge with existing selectors
+              componentsToUse = mergeWithExisting(COMPONENTS);
+              logger.info(
+                `🔄 Merged with existing selectors - ${componentsToUse.length} total components`
+              );
+            } else {
+              // Just use the generated selectors
+              componentsToUse = GENERATED_COMPONENTS;
+              logger.info(
+                `🔄 Using ${componentsToUse.length} generated selectors exclusively`
+              );
+            }
+          } catch (error) {
+            logger.warn(
+              `⚠️ No generated selectors found or error loading them: ${error.message}`
+            );
+            logger.info(`ℹ️ Using default component selectors`);
+          }
         }
       } catch (error) {
-        logger.warn(
-          `⚠️ No generated selectors found or error loading them: ${error.message}`
-        );
+        logger.warn(`⚠️ Error in component loading: ${error.message}`);
         logger.info(`ℹ️ Using default component selectors`);
       }
-    }
-  } catch (error) {
-    logger.warn(`⚠️ Error in component loading: ${error.message}`);
-    logger.info(`ℹ️ Using default component selectors`);
-  }
 
-  return componentsToUse;
+      // Cache component data for faster access
+      if (config.memoizationEnabled) {
+        componentsToUse.forEach((component) => {
+          component._selectorCache = new Map();
+        });
+      }
+
+      return componentsToUse;
+    },
+    logger,
+    "Loading components"
+  );
 }
 
 /**
@@ -96,6 +122,17 @@ function selectComponents(components, mode, specificComponents = []) {
     componentsToCapture = components.filter((component) =>
       specificComponents.includes(component.name)
     );
+
+    // Check if any components weren't found
+    const missingComponents = specificComponents.filter(
+      (name) => !componentsToCapture.some((comp) => comp.name === name)
+    );
+
+    if (missingComponents.length > 0) {
+      logger.warn(
+        `Could not find these components: ${missingComponents.join(", ")}`
+      );
+    }
   } else if (mode === "all" || mode === "components") {
     // Capture all components
     componentsToCapture = components;
@@ -129,67 +166,163 @@ function selectComponents(components, mode, specificComponents = []) {
  * @returns {Object} Components grouped by page path
  */
 function groupComponentsByPage(components) {
-  const componentsByPage = {};
-  for (const component of components) {
-    if (!componentsByPage[component.page]) {
-      componentsByPage[component.page] = [];
-    }
-    componentsByPage[component.page].push(component);
-  }
-  return componentsByPage;
+  return components.reduce((groups, component) => {
+    const page = component.page || "/";
+    groups[page] = groups[page] || [];
+    groups[page].push(component);
+    return groups;
+  }, {});
 }
 
 /**
- * Initialize browser and page
+ * Initialize browser and page with enhanced error recovery
  * @returns {Object} Browser and page objects
  */
 async function initBrowser() {
-  // Launch browser
-  const browser = await chromium.launch().catch((error) => {
-    logger.error(`Failed to launch browser: ${error.message}`);
-    throw error;
-  });
+  // Create a more resilient browser launch process
+  const maxRetries = 3;
+  let attempt = 0;
 
-  const context = await browser.newContext({
-    viewport: { width: 1280, height: 2000 },
-  });
+  while (attempt < maxRetries) {
+    attempt++;
+    try {
+      logger.info(`Launching browser (attempt ${attempt}/${maxRetries})...`);
 
-  const page = await context.newPage();
+      // Launch browser with configurable options
+      const browser = await chromium
+        .launch({
+          // Add optional Chrome arguments for better stability
+          args: DEBUG ? ["--disable-gpu", "--no-sandbox"] : undefined,
+        })
+        .catch((error) => {
+          throw new Error(`Browser launch failed: ${error.message}`);
+        });
 
-  // Set up error handling for page events
-  page.on("pageerror", (exception) =>
-    logger.warn(`Page error: ${exception.message}`)
-  );
-  page.on("console", (msg) => {
-    if (msg.type() === "error") logger.debug(`Console error: ${msg.text()}`);
-    else if (DEBUG) logger.debug(`Console ${msg.type()}: ${msg.text()}`);
-  });
+      // Create a context with larger viewport
+      const context = await browser.newContext({
+        viewport: { width: 1280, height: 2000 },
+        // Increase default timeout for navigation
+        navigationTimeout: config.navigationTimeout || 30000,
+      });
 
-  return { browser, page };
+      const page = await context.newPage();
+
+      // Set up error handling for page events
+      page.on("pageerror", (exception) =>
+        logger.warn(`Page error: ${exception.message}`)
+      );
+      page.on("console", (msg) => {
+        if (msg.type() === "error")
+          logger.debug(`Console error: ${msg.text()}`);
+        else if (DEBUG) logger.debug(`Console ${msg.type()}: ${msg.text()}`);
+      });
+
+      // Add additional recovery and instrumentation
+      context.setDefaultTimeout(config.elementTimeout || 5000);
+
+      logger.success("Browser initialized successfully");
+      return { browser, page };
+    } catch (error) {
+      logger.error(
+        `Browser initialization error (attempt ${attempt}): ${error.message}`,
+        error
+      );
+
+      if (attempt < maxRetries) {
+        // Wait before retrying with increasing backoff
+        const waitTime = 1000 * Math.pow(2, attempt - 1);
+        logger.info(`Waiting ${waitTime}ms before retry...`);
+        await new Promise((resolve) => setTimeout(resolve, waitTime));
+      } else {
+        logger.error(
+          `Failed to initialize browser after ${maxRetries} attempts`
+        );
+        throw error;
+      }
+    }
+  }
 }
 
 /**
- * Navigate to a page with retry capability
+ * Navigate to a page with retry and enhanced error handling
  * @param {Page} page - Playwright page
  * @param {string} url - URL to navigate to
  * @returns {boolean} Whether navigation was successful
  */
 async function navigateToPage(page, url) {
+  let navigationSuccess = false;
+
   try {
     await retry(
-      () => page.goto(url, { waitUntil: "networkidle", timeout: 30000 }),
+      () =>
+        page.goto(url, {
+          waitUntil: "networkidle",
+          timeout: config.navigationTimeout || 30000,
+        }),
       {
         name: "Page navigation",
         retries: 3,
-        onSuccess: () => logger.success(`Successfully loaded ${url}`),
+        onSuccess: (_, attempt, duration) => {
+          navigationSuccess = true;
+          logger.success(
+            `Successfully loaded ${url} (attempt ${attempt}, ${duration}ms)`
+          );
+        },
+        onFailure: (error, duration) => {
+          logger.error(
+            `Failed to navigate to ${url} after multiple attempts (${duration}ms). Error: ${error.message}`,
+            error
+          );
+        },
       }
     );
 
-    // Wait for page to stabilize
-    await page.waitForTimeout(2000);
-    return true;
+    if (navigationSuccess) {
+      // Wait additional time for page to stabilize and render
+      await page.waitForTimeout(2000);
+
+      // Check for any critical error indicators on the page
+      const hasPageError = await page.evaluate(() => {
+        // Check for common error indicators
+        const errorElements = document.querySelectorAll(
+          '.error-page, .error-message, [data-testid="error-message"], [class*="error"]'
+        );
+
+        // Filter visible error elements
+        return Array.from(errorElements).some(
+          (el) =>
+            el.offsetParent !== null &&
+            (el.textContent.includes("Error") ||
+              el.textContent.includes("Failed"))
+        );
+      });
+
+      if (hasPageError) {
+        logger.warn(`Possible error state detected on page: ${url}`);
+        // Still continue as this might be a false positive
+      }
+    }
+
+    return navigationSuccess;
   } catch (error) {
-    logger.error(`Failed to navigate to ${url} after multiple attempts.`);
+    logger.error(
+      `Unhandled navigation error for ${url}: ${error.message}`,
+      error
+    );
+
+    // Take screenshot of error state
+    safeFileOperation(
+      () =>
+        page.screenshot({
+          path: path.join(
+            directories.debug,
+            `navigation-error-${getTimestamp()}.png`
+          ),
+          fullPage: false,
+        }),
+      { description: "taking error screenshot", logger }
+    );
+
     return false;
   }
 }
@@ -214,16 +347,21 @@ async function processComponentForTheme(
   outputDir,
   stats
 ) {
+  logger.group(`Processing ${component.name} in ${theme} theme`);
+
   try {
     logger.info(`\n📸 Capturing ${component.name} component...`);
     stats.componentResults[component.name] =
       stats.componentResults[component.name] || {};
 
+    // Track the time for this component's processing
+    const timerId = logger.startTimer(`${component.name}-${theme}`);
+
     // Wait for component selector if specified
     if (component.waitForSelector) {
       try {
         await page.waitForSelector(component.waitForSelector, {
-          timeout: 5000,
+          timeout: config.elementTimeout || 5000,
           state: "attached",
         });
       } catch (e) {
@@ -233,9 +371,12 @@ async function processComponentForTheme(
       }
     }
 
+    // Record the outcome of the processing
+    let processingResult = false;
+
     // Handle framework tabs (React/Remix) if needed
     if (component.captureFrameworkTabs && component.frameworkTabs) {
-      const result = await captureManager.captureFrameworkTabs(
+      processingResult = await captureManager.captureFrameworkTabs(
         page,
         component,
         theme,
@@ -243,22 +384,12 @@ async function processComponentForTheme(
         saveBaseline,
         outputDir
       );
-
-      if (result) {
-        stats.successful++;
-        stats.componentResults[component.name][theme] = "success";
-      } else {
-        stats.failed++;
-        stats.componentResults[component.name][theme] = "failed";
-      }
-      return true;
     }
-
     // Special handling for Remix section
-    if (component.name === "remix-section") {
+    else if (component.name === "remix-section") {
       const remixElement = await findRemixSection(page);
       if (remixElement) {
-        const result = await captureManager.captureSpecificElement(
+        processingResult = await captureManager.captureSpecificElement(
           page,
           remixElement,
           component,
@@ -267,20 +398,10 @@ async function processComponentForTheme(
           saveBaseline,
           outputDir
         );
-
-        if (result) {
-          stats.successful++;
-          stats.componentResults[component.name][theme] = "success";
-        } else {
-          stats.failed++;
-          stats.componentResults[component.name][theme] = "failed";
-        }
-        return true;
       }
     }
-
     // Handle special positioning for compare section
-    if (component.name === "compare-section") {
+    else if (component.name === "compare-section") {
       await page.evaluate(() => {
         const compareHeadings = Array.from(
           document.querySelectorAll("h2")
@@ -300,122 +421,160 @@ async function processComponentForTheme(
             current = current.parentElement;
           }
           if (current && current.tagName === "SECTION") {
-            current.scrollIntoView({ block: "start" });
+            current.scrollIntoView({ block: "start", behavior: "smooth" });
           }
         }
       });
       await page.waitForTimeout(500);
-      await page.evaluate(() => window.scrollBy(0, 300));
-      await page.waitForTimeout(500);
-    }
 
-    // Find the element to screenshot
-    const elementHandle = await captureManager.findElementForComponent(
-      page,
-      component
-    );
-
-    if (elementHandle) {
-      // Capture HTML debug info
-      if (component.captureHtmlDebug !== false) {
-        await captureManager.captureComponentHtml(
-          page,
-          component,
-          elementHandle,
-          theme
-        );
-      }
-
-      // Take the screenshot
-      const result = await captureManager.captureSpecificElement(
-        page,
-        elementHandle,
-        component,
-        theme,
-        timestamp,
-        saveBaseline,
-        outputDir
-      );
-
-      if (result) {
-        stats.successful++;
-        stats.componentResults[component.name][theme] = "success";
-      } else {
-        stats.failed++;
-        stats.componentResults[component.name][theme] = "failed";
-      }
-      return true;
-    } else {
-      // Take fallback screenshot if element not found
-      logger.warn(
-        `Could not find element for ${component.name}, taking viewport screenshot as fallback`
-      );
-
+      // Handle scrolling with better error handling
       try {
-        const screenshotPath = path.join(
-          outputDir,
-          `${component.name}-${theme}-fallback${
-            saveBaseline ? "" : "-" + timestamp
-          }.png`
-        );
+        await page.evaluate(() => window.scrollBy(0, 300));
+        await page.waitForTimeout(500);
+      } catch (scrollError) {
+        logger.warn(`Error during scrolling: ${scrollError.message}`);
+        // Continue anyway
+      }
 
-        await page.screenshot({
-          path: screenshotPath,
-          fullPage: false,
-        });
-
-        logger.success(`Fallback screenshot saved: ${screenshotPath}`);
-        stats.successful++;
-        stats.componentResults[component.name][theme] = "fallback";
-        return true;
-      } catch (error) {
-        logger.error(
-          `Error taking fallback screenshot for ${component.name}: ${error.message}`
+      // Now find and screenshot the element
+      const compareElement = await captureManager.findElementForComponent(
+        page,
+        component
+      );
+      if (compareElement) {
+        processingResult = await captureManager.captureSpecificElement(
+          page,
+          compareElement,
+          component,
+          theme,
+          timestamp,
+          saveBaseline,
+          outputDir
         );
-        stats.failed++;
-        stats.componentResults[component.name][theme] = "failed";
-        return false;
       }
     }
+    // Regular component processing
+    else {
+      // Find the element to screenshot
+      const elementHandle = await captureManager.findElementForComponent(
+        page,
+        component
+      );
+
+      if (elementHandle) {
+        // Capture HTML debug info if enabled
+        if (component.captureHtmlDebug !== false && config.captureHtmlDebug) {
+          await captureManager.captureComponentHtml(
+            page,
+            component,
+            elementHandle,
+            theme
+          );
+        }
+
+        // Take the screenshot
+        processingResult = await captureManager.captureSpecificElement(
+          page,
+          elementHandle,
+          component,
+          theme,
+          timestamp,
+          saveBaseline,
+          outputDir
+        );
+      } else {
+        // Take fallback screenshot if element not found
+        logger.warn(
+          `Could not find element for ${component.name}, taking viewport screenshot as fallback`
+        );
+
+        try {
+          const screenshotPath = path.join(
+            outputDir,
+            `${component.name}-${theme}-fallback${
+              saveBaseline ? "" : "-" + timestamp
+            }.png`
+          );
+
+          await page.screenshot({
+            path: screenshotPath,
+            fullPage: false,
+          });
+
+          logger.success(`Fallback screenshot saved: ${screenshotPath}`);
+          stats.successful++;
+          stats.componentResults[component.name][theme] = "fallback";
+          processingResult = true;
+        } catch (error) {
+          logger.error(
+            `Error taking fallback screenshot for ${component.name}: ${error.message}`,
+            error
+          );
+          stats.failed++;
+          stats.componentResults[component.name][theme] = "failed";
+          processingResult = false;
+        }
+      }
+    }
+
+    // Update stats based on processing outcome
+    if (
+      processingResult &&
+      stats.componentResults[component.name][theme] !== "fallback"
+    ) {
+      stats.successful++;
+      stats.componentResults[component.name][theme] = "success";
+    } else if (!processingResult) {
+      stats.failed++;
+      stats.componentResults[component.name][theme] = "failed";
+    }
+
+    // End the timer for this component
+    logger.endTimer(timerId);
+    logger.groupEnd();
+
+    return processingResult;
   } catch (error) {
     // Handle component errors
     logger.error(
-      `Error capturing ${component.name} in ${theme} theme: ${error.message}`
+      `Error capturing ${component.name} in ${theme} theme: ${error.message}`,
+      error
     );
     stats.failed++;
     stats.componentResults[component.name][theme] = "error";
 
     // Take error screenshot
-    try {
-      const errorScreenshotPath = path.join(
-        outputDir,
-        `${component.name}-${theme}-error${
-          saveBaseline ? "" : "-" + timestamp
-        }.png`
-      );
+    safeFileOperation(
+      () =>
+        page.screenshot({
+          path: path.join(
+            outputDir,
+            `${component.name}-${theme}-error${
+              saveBaseline ? "" : "-" + timestamp
+            }.png`
+          ),
+          fullPage: false,
+        }),
+      {
+        description: `taking error screenshot for ${component.name}`,
+        logger,
+      }
+    );
 
-      await page.screenshot({
-        path: errorScreenshotPath,
-        fullPage: false,
-      });
-
-      logger.info(`Error state screenshot saved: ${errorScreenshotPath}`);
-      return false;
-    } catch (e) {
-      logger.debug(`Could not take error screenshot: ${e.message}`);
-      return false;
-    }
+    logger.groupEnd();
+    return false;
   }
 }
 
 /**
- * Take screenshots in unified mode
+ * Take screenshots in unified mode with enhanced performance and error handling
  * @param {string} mode - The screenshot mode: 'all', 'components', 'sections', or a specific component name
  * @param {string} timestamp - Timestamp to use for filenames
  * @param {boolean} saveBaseline - Whether to save as baseline (no timestamp)
  * @param {string[]} specificComponents - Array of specific component names to screenshot (optional)
  * @param {boolean} useGeneratedSelectors - Whether to use generated selectors
  * @param {boolean} mergeSelectors - Whether to merge selectors with existing ones
+ * @returns {Promise<string|null>} Timestamp used or null if failed
  */
 async function takeUnifiedScreenshots(
   mode = "all",
@@ -427,6 +586,18 @@ async function takeUnifiedScreenshots(
 ) {
   // If saving baselines, clear the timestamp
   timestamp = saveBaseline ? null : timestamp;
+  let browser = null;
+  let page = null;
+
+  // Ensure output directory exists
+  ensureDirectoryExists(directories.unified, {
+    recursive: true,
+    fallbackDir: path.join(
+      path.dirname(directories.unified),
+      "temp-screenshots"
+    ),
+    logger,
+  });
 
   logger.info(
     `Taking unified screenshots in ${mode} mode from ${BASE_URL}${PATH_PREFIX}`
@@ -434,44 +605,41 @@ async function takeUnifiedScreenshots(
   logger.info(`Saving to ${directories.unified}`);
   logger.info(`Capturing themes: ${THEMES.join(", ")}`);
 
-  // Load components
-  const componentsToUse = await loadComponents(
-    useGeneratedSelectors,
-    mergeSelectors
-  );
-
-  // Determine which components to capture based on mode
-  const componentsToCapture = selectComponents(
-    componentsToUse,
-    mode,
-    specificComponents
-  );
-
-  if (componentsToCapture.length === 0) {
-    logger.error("No components to capture based on the specified mode");
-    logger.info(`Available modes: all, components, sections, remix`);
-    logger.info(
-      `Available components: ${getAllComponentNames(componentsToUse).join(
-        ", "
-      )}`
-    );
-    return;
-  }
-
-  logger.info(
-    `Will capture ${
-      componentsToCapture.length
-    } components: ${componentsToCapture.map((c) => c.name).join(", ")}`
-  );
-
-  // Group components by page to minimize browser navigation
-  const componentsByPage = groupComponentsByPage(componentsToCapture);
-
-  // Initialize browser and page
-  let browser;
-  let page;
-
   try {
+    // Load components
+    const componentsToUse = await loadComponents(
+      useGeneratedSelectors,
+      mergeSelectors
+    );
+
+    // Determine which components to capture based on mode
+    const componentsToCapture = selectComponents(
+      componentsToUse,
+      mode,
+      specificComponents
+    );
+
+    if (componentsToCapture.length === 0) {
+      logger.error("No components to capture based on the specified mode");
+      logger.info(`Available modes: all, components, sections, remix`);
+      logger.info(
+        `Available components: ${getAllComponentNames(componentsToUse).join(
+          ", "
+        )}`
+      );
+      return null;
+    }
+
+    logger.info(
+      `Will capture ${
+        componentsToCapture.length
+      } components: ${componentsToCapture.map((c) => c.name).join(", ")}`
+    );
+
+    // Group components by page to minimize browser navigation
+    const componentsByPage = groupComponentsByPage(componentsToCapture);
+
+    // Initialize browser and page
     ({ browser, page } = await initBrowser());
 
     // Track overall statistics
@@ -481,6 +649,7 @@ async function takeUnifiedScreenshots(
       failed: 0,
       skipped: 0,
       componentResults: {},
+      startTime: Date.now(),
     };
 
     // Process each page and its components
@@ -507,19 +676,22 @@ async function takeUnifiedScreenshots(
       for (const theme of THEMES) {
         logger.info(`\n🎨 Capturing ${theme} theme`);
 
-        // Set the theme
+        // Set the theme with better error handling
         try {
           await retry(
             () => captureManager.setTheme(page, theme, pageComponents[0]),
             {
               name: `Theme setting (${theme})`,
               retries: 2,
+              exponentialBackoff: true,
             }
           );
         } catch (error) {
           logger.error(
-            `Failed to set ${theme} theme after multiple attempts. Using current theme.`
+            `Failed to set ${theme} theme after multiple attempts: ${error.message}`,
+            error
           );
+          logger.info("Continuing with current theme...");
         }
 
         // Take screenshots of each component on this page
@@ -538,12 +710,14 @@ async function takeUnifiedScreenshots(
     }
 
     // Print summary
+    stats.endTime = Date.now();
+    stats.totalDuration = stats.endTime - stats.startTime;
     printSummary(stats, timestamp);
 
     return timestamp;
   } catch (error) {
     // Handle fatal errors
-    logger.error(`Fatal error in screenshot process: ${error.message}`);
+    logger.error(`Fatal error in screenshot process: ${error.message}`, error);
 
     try {
       if (page) {
@@ -562,10 +736,14 @@ async function takeUnifiedScreenshots(
     } catch (e) {
       logger.debug(`Could not take fatal error screenshot: ${e.message}`);
     }
+
+    return null;
   } finally {
     // Clean up
     if (browser) {
-      await browser.close();
+      await browser.close().catch((err) => {
+        logger.debug(`Error closing browser: ${err.message}`);
+      });
     }
   }
 }
@@ -581,6 +759,9 @@ function printSummary(stats, timestamp) {
   logger.info(`✅ Successful: ${stats.successful}`);
   logger.info(`❌ Failed: ${stats.failed}`);
   logger.info(`⏭️ Skipped: ${stats.skipped}`);
+  logger.info(
+    `⏱️ Total duration: ${Math.round(stats.totalDuration / 1000)} seconds`
+  );
 
   if (stats.failed > 0) {
     logger.info("\nFailed components:");
@@ -591,6 +772,18 @@ function printSummary(stats, timestamp) {
         }
       }
     }
+  }
+
+  // Log retry statistics if available
+  if (retry.getStats) {
+    const retryStats = retry.getStats();
+    logger.info("\nRetry statistics:");
+    logger.info(
+      `  Total operations: ${retryStats.successes + retryStats.failures}`
+    );
+    logger.info(`  Successful operations: ${retryStats.successes}`);
+    logger.info(`  Failed operations: ${retryStats.failures}`);
+    logger.info(`  Total retries: ${retryStats.totalRetries}`);
   }
 
   logger.success(

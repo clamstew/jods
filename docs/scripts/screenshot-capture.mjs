@@ -14,42 +14,46 @@ const tabManager = {
    * @param {Page} page - Playwright page
    * @returns {Promise<Array<{name: string, element: ElementHandle, emoji: string}>>}
    */
-  findAllTabs: function (page) {
-    return (async () => {
-      console.log("Searching for framework tabs...");
+  findAllTabs: async function (page) {
+    console.log("Searching for framework tabs...");
 
-      // Find tabs using multiple strategies
-      const tabs = await page.evaluate(() => {
-        const results = [];
+    // Find tabs using multiple strategies
+    const tabs = await page.evaluate(() => {
+      const results = [];
+      const tabDetectionStrategies = [
+        // Strategy 1: Find by data-testid (most reliable)
+        () => {
+          const testIdTabs = document.querySelectorAll(
+            '[data-testid^="jods-framework-tab-"]'
+          );
+          if (testIdTabs.length === 0) return null;
 
-        // First try data-testid (most reliable approach)
-        const testIdTabs = document.querySelectorAll(
-          '[data-testid^="jods-framework-tab-"]'
-        );
-        if (testIdTabs.length > 0) {
           console.log(
             `Found ${testIdTabs.length} framework tabs by data-testid`
           );
-          for (const tab of testIdTabs) {
+          return Array.from(testIdTabs).map((tab) => {
             const name = tab
               .getAttribute("data-testid")
               .replace("jods-framework-tab-", "");
             const emoji =
               name === "react" ? "⚛️" : name === "remix" ? "💿" : "";
-            results.push({
+            return {
               selector: `[data-testid="jods-framework-tab-${name}"]`,
               name,
               emoji,
               isTestId: true,
-            });
-          }
-          return results;
-        }
+            };
+          });
+        },
 
-        // Try framework cards
-        const frameworkCards = document.querySelectorAll(".framework-card");
-        if (frameworkCards.length > 0) {
+        // Strategy 2: Find by framework cards
+        () => {
+          const frameworkCards = document.querySelectorAll(".framework-card");
+          if (frameworkCards.length === 0) return null;
+
           console.log(`Found ${frameworkCards.length} framework cards`);
+          const cardResults = [];
+
           for (const card of frameworkCards) {
             const cardText = card.textContent;
             let name = "",
@@ -68,7 +72,7 @@ const tabManager = {
               continue; // Unrecognized framework
             }
 
-            results.push({
+            cardResults.push({
               selector: `.framework-card:has-text("${
                 name === "remix"
                   ? "Remix"
@@ -82,58 +86,73 @@ const tabManager = {
             });
           }
 
-          if (results.length > 0) return results;
-        }
+          return cardResults.length > 0 ? cardResults : null;
+        },
 
-        // Find by emoji and text
-        const buttons = document.querySelectorAll("button");
-        for (const button of buttons) {
-          const buttonText = button.textContent;
-          let name = "",
-            emoji = "";
+        // Strategy 3: Find by buttons with framework text or emoji
+        () => {
+          const buttons = document.querySelectorAll("button");
+          const buttonResults = [];
 
-          if (
-            (buttonText.includes("React") && !buttonText.includes("Preact")) ||
-            buttonText.includes("⚛️")
-          ) {
-            name = "react";
-            emoji = "⚛️";
-          } else if (buttonText.includes("Preact")) {
-            name = "preact";
-            emoji = "⚛️";
-          } else if (
-            buttonText.includes("Remix") ||
-            buttonText.includes("💿")
-          ) {
-            name = "remix";
-            emoji = "💿";
-          } else {
-            continue;
+          for (const button of buttons) {
+            const buttonText = button.textContent;
+            let name = "",
+              emoji = "";
+
+            if (
+              (buttonText.includes("React") &&
+                !buttonText.includes("Preact")) ||
+              buttonText.includes("⚛️")
+            ) {
+              name = "react";
+              emoji = "⚛️";
+            } else if (buttonText.includes("Preact")) {
+              name = "preact";
+              emoji = "⚛️";
+            } else if (
+              buttonText.includes("Remix") ||
+              buttonText.includes("💿")
+            ) {
+              name = "remix";
+              emoji = "💿";
+            } else {
+              continue;
+            }
+
+            buttonResults.push({
+              selector: `button:has-text("${emoji}")`,
+              name,
+              emoji,
+              isButton: true,
+            });
           }
 
-          results.push({
-            selector: `button:has-text("${emoji}")`,
-            name,
-            emoji,
-            isButton: true,
-          });
+          return buttonResults.length > 0 ? buttonResults : null;
+        },
+      ];
+
+      // Try each strategy in order until one succeeds
+      for (const strategy of tabDetectionStrategies) {
+        const strategyResults = strategy();
+        if (strategyResults) {
+          return strategyResults;
         }
-
-        return results;
-      });
-
-      if (tabs.length === 0) {
-        console.warn("No framework tabs could be found on the page");
-        return [];
       }
 
-      console.log(
-        `Found ${tabs.length} framework tabs: ${tabs
-          .map((t) => t.name)
-          .join(", ")}`
-      );
-      return tabs;
-    })();
+      return results; // Empty if no strategy succeeded
+    });
+
+    if (tabs.length === 0) {
+      console.warn("No framework tabs could be found on the page");
+      return [];
+    }
+
+    console.log(
+      `Found ${tabs.length} framework tabs: ${tabs
+        .map((t) => t.name)
+        .join(", ")}`
+    );
+    return tabs;
   },
 
   /**
@@ -143,194 +162,195 @@ const tabManager = {
    * @param {number} maxRetries - Maximum number of retries
    * @returns {Promise<boolean>} Whether the tab was successfully selected
    */
-  selectTab: function (page, tabName, maxRetries = 3) {
-    return (async () => {
-      console.log(`Attempting to select ${tabName} tab...`);
+  selectTab: async function (page, tabName, maxRetries = 3) {
+    console.log(`Attempting to select ${tabName} tab...`);
 
-      // Special handling for Remix tab in light mode
-      const isRemixTab = tabName.toLowerCase() === "remix";
-      const isDarkMode = await page.evaluate(() => {
-        return document.documentElement.dataset.theme === "dark";
-      });
+    // Special handling for Remix tab in light mode
+    const isRemixTab = tabName.toLowerCase() === "remix";
+    const isDarkMode = await page.evaluate(() => {
+      return document.documentElement.dataset.theme === "dark";
+    });
 
-      // For Remix in light mode, we need to be more aggressive with selection
-      const actualRetries =
-        isRemixTab && !isDarkMode ? maxRetries + 2 : maxRetries;
-      console.log(
-        `Using ${actualRetries} retries for ${tabName} tab selection`
-      );
+    // For Remix in light mode, we need to be more aggressive with selection
+    const actualRetries =
+      isRemixTab && !isDarkMode ? maxRetries + 2 : maxRetries;
+    console.log(`Using ${actualRetries} retries for ${tabName} tab selection`);
 
-      // Find all tabs first
-      const tabs = await this.findAllTabs(page);
-      const targetTab = tabs.find((tab) => tab.name === tabName.toLowerCase());
+    // Find all tabs first
+    const tabs = await this.findAllTabs(page);
+    const targetTab = tabs.find((tab) => tab.name === tabName.toLowerCase());
 
-      if (!targetTab) {
-        console.warn(`Could not find ${tabName} tab among available tabs`);
-        return false;
-      }
+    if (!targetTab) {
+      console.warn(`Could not find ${tabName} tab among available tabs`);
+      return false;
+    }
 
-      // Try to click the tab with retry
-      let attempt = 0;
-      let success = false;
+    // Try to click the tab with retry
+    let attempt = 0;
+    let success = false;
 
-      // Add specific direct click selector for light mode Remix tab as a last resort
-      const directRemixSelector = isRemixTab
-        ? '[data-testid="jods-framework-tab-remix"], button:has-text("Remix"), button:has-text("💿"), .framework-card:has-text("Remix")'
-        : null;
+    // Add specific direct click selector for light mode Remix tab as a last resort
+    const directRemixSelector = isRemixTab
+      ? '[data-testid="jods-framework-tab-remix"], button:has-text("Remix"), button:has-text("💿"), .framework-card:has-text("Remix")'
+      : null;
 
-      while (attempt < actualRetries && !success) {
-        attempt++;
-        try {
-          // First check if already selected
-          const isSelected = await this.isTabSelected(page, tabName);
-          if (isSelected) {
-            console.log(`${tabName} tab is already selected`);
-            return true;
-          }
+    while (attempt < actualRetries && !success) {
+      attempt++;
+      try {
+        // First check if already selected
+        const isSelected = await this.isTabSelected(page, tabName);
+        if (isSelected) {
+          console.log(`${tabName} tab is already selected`);
+          return true;
+        }
 
-          console.log(
-            `Clicking ${tabName} tab using selector: ${targetTab.selector} (attempt ${attempt}/${actualRetries})`
-          );
+        console.log(
+          `Clicking ${tabName} tab using selector: ${targetTab.selector} (attempt ${attempt}/${actualRetries})`
+        );
 
-          // For Remix tab in light mode, use direct evaluation for more reliable clicking
-          if (isRemixTab && !isDarkMode) {
-            // First try a direct click with Playwright
-            try {
-              await page.click(targetTab.selector, {
-                timeout: 1000,
-                force: true,
-              });
-              console.log(`Direct click on ${tabName} tab`);
-            } catch (directClickError) {
-              console.warn(`Direct click failed: ${directClickError.message}`);
+        // For Remix tab in light mode, use direct evaluation for more reliable clicking
+        if (isRemixTab && !isDarkMode) {
+          await this._handleRemixTabClick(page, targetTab.selector);
+          // Wait longer for Remix tab change to take effect
+          await page.waitForTimeout(2000);
+        } else {
+          // Standard click process for other tabs or dark mode
+          await this._handleStandardTabClick(page, targetTab.selector);
+          // Wait for tab change to take effect
+          await page.waitForTimeout(1500);
+        }
 
-              // Fall back to evaluate method
-              await page.evaluate((selector) => {
-                const elements = document.querySelectorAll(selector);
-                console.log(
-                  `Found ${elements.length} elements matching ${selector}`
-                );
+        // Verify tab selection
+        const selected = await this.isTabSelected(page, tabName);
+        if (!selected) {
+          // Try one last direct attempt with a hardcoded selector for Remix tab in light mode
+          if (
+            isRemixTab &&
+            !isDarkMode &&
+            directRemixSelector &&
+            attempt === actualRetries - 1
+          ) {
+            console.log(
+              `Last resort click for Remix tab with direct selector: ${directRemixSelector}`
+            );
+            await page.click(directRemixSelector, { force: true });
+            await page.waitForTimeout(2500);
 
-                if (elements.length > 0) {
-                  // Try clicking all matching elements to increase chances
-                  elements.forEach((el) => {
-                    try {
-                      console.log(
-                        `Clicking element: ${el.tagName}${
-                          el.className ? "." + el.className : ""
-                        }`
-                      );
-                      el.click();
-                    } catch (e) {
-                      console.warn(`Click failed on element: ${e.message}`);
-                    }
-                  });
-                } else if (selector.includes(",")) {
-                  // Try each part of the selector individually
-                  const selectorParts = selector
-                    .split(",")
-                    .map((s) => s.trim());
-                  for (const part of selectorParts) {
-                    const partElements = document.querySelectorAll(part);
-                    console.log(
-                      `Found ${partElements.length} elements matching ${part}`
-                    );
-
-                    for (const el of partElements) {
-                      try {
-                        el.click();
-                        console.log("Clicked element with selector part");
-                        break;
-                      } catch (e) {}
-                    }
-                  }
-                }
-              }, targetTab.selector);
-            }
-
-            // For Remix in light mode, add an extra forced delay for the tab change to take effect
-            await page.waitForTimeout(2000);
-          } else {
-            // Standard click process for other tabs or dark mode
-            // Use evaluate for more reliable clicking
-            const clickResult = await page.evaluate((selector) => {
-              const element = document.querySelector(selector);
-              if (!element)
-                return { success: false, error: "Element not found" };
-
-              try {
-                element.click();
-                return { success: true };
-              } catch (error) {
-                return { success: false, error: error.message };
-              }
-            }, targetTab.selector);
-
-            if (!clickResult.success) {
-              console.warn(
-                `Failed to click tab in DOM: ${
-                  clickResult.error || "unknown error"
-                }`
-              );
-
-              // Fall back to Playwright click
-              await page.click(targetTab.selector);
-            }
-
-            // Wait for tab change to take effect
-            await page.waitForTimeout(1500);
-          }
-
-          // Verify tab selection
-          const selected = await this.isTabSelected(page, tabName);
-          if (!selected) {
-            // Try one last direct attempt with a hardcoded selector for Remix tab in light mode
-            if (
-              isRemixTab &&
-              !isDarkMode &&
-              directRemixSelector &&
-              attempt === actualRetries - 1
-            ) {
+            const finalCheck = await this.isTabSelected(page, tabName);
+            if (finalCheck) {
               console.log(
-                `Last resort click for Remix tab with direct selector: ${directRemixSelector}`
+                `Successfully selected ${tabName} tab after direct selector click`
               );
-              await page.click(directRemixSelector, { force: true });
-              await page.waitForTimeout(2500);
-
-              const finalCheck = await this.isTabSelected(page, tabName);
-              if (finalCheck) {
-                console.log(
-                  `Successfully selected ${tabName} tab after direct selector click`
-                );
-                return true;
-              }
+              return true;
             }
-
-            throw new Error(`${tabName} tab still not selected after clicking`);
           }
 
-          console.log(
-            `Successfully selected ${tabName} tab after ${attempt} attempts`
+          throw new Error(`${tabName} tab still not selected after clicking`);
+        }
+
+        console.log(
+          `Successfully selected ${tabName} tab after ${attempt} attempts`
+        );
+        success = true;
+      } catch (error) {
+        if (attempt < actualRetries) {
+          console.warn(
+            `Attempt ${attempt}/${actualRetries} to select ${tabName} tab failed: ${error.message}`
           );
-          success = true;
-        } catch (error) {
-          if (attempt < actualRetries) {
-            console.warn(
-              `Attempt ${attempt}/${actualRetries} to select ${tabName} tab failed: ${error.message}`
-            );
-
-            // Increase wait time with each attempt
-            await page.waitForTimeout(800 * attempt);
-          } else {
-            console.error(
-              `Failed to select ${tabName} tab after ${actualRetries} attempts: ${error.message}`
-            );
-          }
+          // Increase wait time with each attempt
+          await page.waitForTimeout(800 * attempt);
+        } else {
+          console.error(
+            `Failed to select ${tabName} tab after ${actualRetries} attempts: ${error.message}`
+          );
         }
       }
+    }
 
-      return success;
-    })();
+    return success;
+  },
+
+  /**
+   * Specialized handler for clicking Remix tabs in light mode
+   * @private
+   */
+  _handleRemixTabClick: async function (page, selector) {
+    // First try a direct click with Playwright
+    try {
+      await page.click(selector, {
+        timeout: 1000,
+        force: true,
+      });
+      console.log(`Direct click on Remix tab`);
+    } catch (directClickError) {
+      console.warn(`Direct click failed: ${directClickError.message}`);
+
+      // Fall back to evaluate method for more aggressive clicking
+      await page.evaluate((selector) => {
+        const elements = document.querySelectorAll(selector);
+        console.log(`Found ${elements.length} elements matching ${selector}`);
+
+        if (elements.length > 0) {
+          // Try clicking all matching elements to increase chances
+          elements.forEach((el) => {
+            try {
+              console.log(
+                `Clicking element: ${el.tagName}${
+                  el.className ? "." + el.className : ""
+                }`
+              );
+              el.click();
+            } catch (e) {
+              console.warn(`Click failed on element: ${e.message}`);
+            }
+          });
+        } else if (selector.includes(",")) {
+          // Try each part of the selector individually
+          const selectorParts = selector.split(",").map((s) => s.trim());
+          for (const part of selectorParts) {
+            const partElements = document.querySelectorAll(part);
+            console.log(
+              `Found ${partElements.length} elements matching ${part}`
+            );
+
+            for (const el of partElements) {
+              try {
+                el.click();
+                console.log("Clicked element with selector part");
+                break;
+              } catch (e) {}
+            }
+          }
+        }
+      }, selector);
+    }
+  },
+
+  /**
+   * Standard tab click handler for non-Remix tabs or dark mode
+   * @private
+   */
+  _handleStandardTabClick: async function (page, selector) {
+    // Use evaluate for more reliable clicking
+    const clickResult = await page.evaluate((selector) => {
+      const element = document.querySelector(selector);
+      if (!element) return { success: false, error: "Element not found" };
+
+      try {
+        element.click();
+        return { success: true };
+      } catch (error) {
+        return { success: false, error: error.message };
+      }
+    }, selector);
+
+    if (!clickResult.success) {
+      console.warn(
+        `Failed to click tab in DOM: ${clickResult.error || "unknown error"}`
+      );
+      // Fall back to Playwright click
+      await page.click(selector);
+    }
   },
 
   /**
@@ -343,21 +363,16 @@ const tabManager = {
     return page.evaluate((name) => {
       console.log(`Checking if ${name} tab is selected...`);
 
-      // First check by data-testid with aria-selected
+      // 1. Check by data-testid with aria-selected
       const dataTestIdSelector = `[data-testid='framework-tab-${name.toLowerCase()}'][aria-selected='true'], [data-testid='framework-tab-${name.toLowerCase()}'].active, [data-testid='jods-framework-tab-${name.toLowerCase()}'][aria-selected='true']`;
-      const selectedByTestId = document.querySelector(dataTestIdSelector);
-      if (selectedByTestId) {
-        console.log(
-          `Tab selected via data-testid: ${selectedByTestId.getAttribute(
-            "data-testid"
-          )}`
-        );
+      if (document.querySelector(dataTestIdSelector)) {
         return true;
       }
 
-      // Special case for Remix: check active class on remix items directly
+      // 2. Special case for Remix tabs
       if (name.toLowerCase() === "remix") {
-        const remixSpecificSelectors = [
+        // Check common Remix selectors
+        const remixSelectors = [
           '.framework-card:has-text("Remix").active',
           '.framework-card:has-text("💿").active',
           'button:has-text("Remix").active',
@@ -366,20 +381,14 @@ const tabManager = {
           '[data-testid*="remix" i].active',
         ];
 
-        for (const selector of remixSpecificSelectors) {
-          try {
-            const element = document.querySelector(selector);
-            if (element) {
-              console.log(
-                `Remix tab selected via specific selector: ${selector}`
-              );
-              return true;
-            }
-          } catch (e) {}
+        if (
+          remixSelectors.some((selector) => document.querySelector(selector))
+        ) {
+          return true;
         }
 
-        // Special case - check for visible content that's only shown when Remix tab is active
-        const remixSpecificContent = [
+        // Check Remix-specific content visibility
+        const remixContentSelectors = [
           'code:has-text("createCookieStore")',
           'code:has-text("loader")',
           'code:has-text("createSessionStorage")',
@@ -388,35 +397,28 @@ const tabManager = {
           'h3:has-text("Remix state")',
         ];
 
-        for (const contentSelector of remixSpecificContent) {
-          try {
-            const element = document.querySelector(contentSelector);
-            if (element && element.offsetParent !== null) {
-              // Check if visible
-              console.log(
-                `Remix tab appears to be selected based on visible content: ${contentSelector}`
-              );
-              return true;
-            }
-          } catch (e) {}
+        if (
+          remixContentSelectors.some((selector) => {
+            const el = document.querySelector(selector);
+            return el && el.offsetParent !== null;
+          })
+        ) {
+          return true;
         }
       }
 
-      // Continue with the regular checks...
-      // Method 1: Check for aria-selected attribute
-      const buttons = Array.from(
+      // 3. Check for tab role with aria-selected
+      const tabElements = Array.from(
         document.querySelectorAll('button[role="tab"], [role="tab"], button')
-      );
-      const tabButtons = buttons.filter(
+      ).filter(
         (btn) =>
           btn.textContent.includes(name) ||
           (name === "Remix" && btn.textContent.includes("💿"))
       );
 
-      for (const btn of tabButtons) {
+      for (const btn of tabElements) {
         // Check aria-selected attribute
         if (btn.getAttribute("aria-selected") === "true") {
-          console.log("Tab selected via aria-selected");
           return true;
         }
 
@@ -429,35 +431,32 @@ const tabManager = {
           "active-tab",
         ];
         if (selectedClasses.some((cls) => btn.className.includes(cls))) {
-          console.log("Tab selected via CSS class");
           return true;
         }
 
-        // Check for parent with role="tablist" and child with aria-selected
+        // Check for parent tablist with selected child
         const tablist = btn.closest('[role="tablist"]');
-        if (tablist) {
-          const selectedTab = tablist.querySelector('[aria-selected="true"]');
-          if (selectedTab && selectedTab.textContent.includes(name)) {
-            console.log("Tab selected via parent tablist");
-            return true;
-          }
+        if (
+          tablist &&
+          tablist
+            .querySelector('[aria-selected="true"]')
+            ?.textContent.includes(name)
+        ) {
+          return true;
         }
 
-        // Special case: Check if button visually appears selected (has different background color)
+        // Special case for Remix: check visual appearance
         if (name === "Remix") {
-          // Get computed style to check if background has changed
           const style = window.getComputedStyle(btn);
-          const hasDistinctBackground =
+          if (
             style.backgroundColor &&
             style.backgroundColor !== "transparent" &&
-            style.backgroundColor !== "rgba(0, 0, 0, 0)";
-
-          if (hasDistinctBackground) {
-            console.log("Remix tab appears visually selected via background");
+            style.backgroundColor !== "rgba(0, 0, 0, 0)"
+          ) {
             return true;
           }
 
-          // Check if within a visually distinct container (like the magenta square)
+          // Check parent container style
           const parent = btn.closest("div, li, span");
           if (parent) {
             const parentStyle = window.getComputedStyle(parent);
@@ -466,56 +465,43 @@ const tabManager = {
               parentStyle.backgroundColor !== "transparent" &&
               parentStyle.backgroundColor !== "rgba(0, 0, 0, 0)"
             ) {
-              console.log("Remix tab appears in visually selected container");
               return true;
             }
           }
         }
       }
 
-      // Method 2: Check for framework card layout with the "active" class
+      // 4. Check for framework cards with active class
       const frameworkCards = Array.from(
         document.querySelectorAll("div.framework-card")
       );
 
-      // Look for active framework card that matches the tab name
       for (const card of frameworkCards) {
-        // Check if this card contains the tab name
         if (
           card.textContent.includes(name) ||
           (name === "Remix" && card.textContent.includes("💿"))
         ) {
-          // Check if it has the active class or appears visually selected
+          // Check active class
           if (card.classList.contains("active")) {
-            console.log("Tab selected via framework-card.active class");
             return true;
           }
 
-          // Check if it has a distinct visual style (transformed or elevated)
+          // Check visual style
           const style = window.getComputedStyle(card);
           if (
-            style.transform &&
-            style.transform !== "none" &&
-            style.transform.includes("translate")
+            (style.transform &&
+              style.transform !== "none" &&
+              style.transform.includes("translate")) ||
+            (style.background &&
+              (style.background.includes("gradient") ||
+                style.background.includes("rgb(184, 29, 91)") ||
+                style.background.includes("rgb(233, 30, 99)")))
           ) {
-            console.log("Tab selected via framework card transform style");
-            return true;
-          }
-
-          // Check if it has a background gradient that looks like selection
-          if (
-            style.background &&
-            (style.background.includes("gradient") ||
-              style.background.includes("rgb(184, 29, 91)") ||
-              style.background.includes("rgb(233, 30, 99)"))
-          ) {
-            console.log("Tab selected via framework card background style");
             return true;
           }
         }
       }
 
-      // If we got here, no clear indication of selection
       return false;
     }, tabName);
   },

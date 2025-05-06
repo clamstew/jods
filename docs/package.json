@@ -29,7 +29,8 @@
     "design-iterations:init": "node scripts/design-iterations-init.mjs",
     "design-iterations": "node scripts/design-iterations.mjs",
     "design-iterations:count-5": "node scripts/design-iterations.mjs --count=5",
-    "dev": "docusaurus start"
+    "dev": "docusaurus start",
+    "postinstall": "echo 'jods docs installed with pnpm!'"
   },
   "dependencies": {
     "@docusaurus/core": "3.7.0",
@@ -63,13 +64,13 @@
     ]
   },
   "engines": {
-    "node": ">=18.0"
+    "node": ">=18.0",
+    "pnpm": ">=8.0.0"
   },
+  "packageManager": "pnpm@10.8.0",
   "jest": {
     "transform": {},
-    "extensionsToTreatAsEsm": [
-      ".mjs"
-    ],
+    "extensionsToTreatAsEsm": [],
     "moduleNameMapper": {
       "^(\\.{1,2}/.*)\\.js$": "$1"
     },
