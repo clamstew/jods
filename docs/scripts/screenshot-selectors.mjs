@@ -75,6 +75,14 @@ export const COMPONENTS = [
     testId: "jods-framework-section",
     extraScroll: 250,
     captureHtmlDebug: true,
+    // New properties for better handling
+    darkModeExtraWait: 1800, // Extra wait time specifically for dark mode
+    verifyContentLoaded: true, // Verify that code blocks are visible before taking screenshot
+    minVisibleCodeLines: 5, // Ensure at least 5 lines of code are visible
+    verifyTabName: "React", // Verify the React tab is selected
+    verifyTabSelected: true, // Check if tab is properly selected
+    retryTabSelection: 2, // Number of retries if tab isn't selected
+    forceReactTabSelected: true, // Force the React tab to be selected even if it's not the default
     alternativeSelectors: [
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
       "button:has-text('React'), button:has-text('Preact'), button:has-text('Remix')",
@@ -121,6 +129,10 @@ export const COMPONENTS = [
     testId: "jods-framework-section",
     extraScroll: 150, // Reduced from 250 to show more of the section
     captureHtmlDebug: true,
+    // Adding the same dark mode handling as for React tab
+    darkModeExtraWait: 2000, // Extra wait time specifically for dark mode (even longer for Remix)
+    verifyContentLoaded: true, // Verify that code blocks are visible
+    minVisibleCodeLines: 5, // Ensure at least 5 lines of code are visible
     alternativeSelectors: [
       "[data-testid='jods-framework-section']",
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",

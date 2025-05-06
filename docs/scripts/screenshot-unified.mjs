@@ -200,7 +200,7 @@ async function takeUnifiedScreenshots(
       console.log(`\n🎨 Capturing ${theme} theme`);
 
       // Set the theme if needed
-      await setTheme(page, theme);
+      await setTheme(page, theme, componentsToUse[0]);
 
       // Take screenshots of each component on this page
       for (const component of pageComponents) {
@@ -396,7 +396,7 @@ async function takeUnifiedScreenshots(
 /**
  * Helper: Set the theme (light/dark)
  */
-async function setTheme(page, theme) {
+async function setTheme(page, theme, component) {
   // Check current theme
   const isDarkMode = await page.evaluate(() => {
     return document.documentElement.dataset.theme === "dark";
@@ -471,6 +471,14 @@ async function setTheme(page, theme) {
       }, theme);
 
       await page.waitForTimeout(500);
+    }
+
+    // Add extra wait time for dark mode if specified in component config
+    if (theme === "dark" && component?.darkModeExtraWait) {
+      console.log(
+        `Adding extra wait time for dark mode: ${component.darkModeExtraWait}ms`
+      );
+      await page.waitForTimeout(component.darkModeExtraWait);
     }
   }
 }
@@ -1040,6 +1048,136 @@ async function captureSpecificElement(
       { offset: totalOffset }
     );
     await page.waitForTimeout(500);
+
+    // NEW: Check if we need to verify content is loaded
+    if (component.verifyContentLoaded) {
+      console.log("Verifying content is fully loaded...");
+
+      // Check for code blocks specifically
+      const codeBlocksVisible = await page.evaluate((minLines) => {
+        const codeBlocks = document.querySelectorAll("pre code");
+
+        if (codeBlocks.length === 0) {
+          console.log("No code blocks found on page");
+          return false;
+        }
+
+        // Check if any code block has minimum number of lines
+        const hasVisibleCode = Array.from(codeBlocks).some((block) => {
+          const lineCount = block.textContent.split("\n").length;
+          console.log(`Found code block with ${lineCount} lines`);
+          return lineCount >= minLines;
+        });
+
+        // If we don't have visible code with enough lines, we need to adjust
+        if (!hasVisibleCode) {
+          console.log("Code blocks don't have enough visible lines");
+          return false;
+        }
+
+        return true;
+      }, component.minVisibleCodeLines || 5);
+
+      // If code blocks aren't properly visible, scroll down to reveal them
+      if (!codeBlocksVisible) {
+        console.log("Code blocks not fully visible, adjusting scroll...");
+        await page.evaluate(() => window.scrollBy(0, 200));
+        await page.waitForTimeout(800); // Give more time for rendering
+      }
+    }
+
+    // NEW: For framework-section-react, ensure React tab is selected if needed
+    if (
+      component.name === "framework-section-react" &&
+      component.forceReactTabSelected
+    ) {
+      console.log(
+        "Ensuring React tab is selected for framework-section-react..."
+      );
+
+      // Check if React tab is already selected
+      const isReactSelected = await page.evaluate(() => {
+        // Look for React tab with selected state
+        const reactTabs = Array.from(
+          document.querySelectorAll('button, [role="tab"], .framework-card')
+        ).filter(
+          (el) =>
+            (el.textContent.includes("React") &&
+              !el.textContent.includes("Preact")) ||
+            el.textContent.includes("⚛️")
+        );
+
+        if (reactTabs.length === 0) return false;
+
+        // Check if any React tab appears selected
+        return reactTabs.some((tab) => {
+          // Check various selection indicators
+          return (
+            tab.getAttribute("aria-selected") === "true" ||
+            tab.classList.contains("active") ||
+            tab.classList.contains("selected") ||
+            tab.style.background?.includes("gradient") ||
+            (window.getComputedStyle(tab).background || "").includes("gradient")
+          );
+        });
+      });
+
+      // If React tab isn't selected, try to click it
+      if (!isReactSelected) {
+        console.log("React tab not selected, attempting to select it...");
+
+        try {
+          // Try to find and click the React tab
+          await page.evaluate(() => {
+            // Try various ways to find React tab
+            const reactSelectors = [
+              '[data-testid="jods-framework-tab-react"]',
+              'button:has-text("React"):not(:has-text("Preact"))',
+              'button:has-text("⚛️")',
+              '.framework-card:has-text("React"):not(:has-text("Preact"))',
+              '.framework-card:has-text("⚛️")',
+            ];
+
+            for (const selector of reactSelectors) {
+              try {
+                const reactTab = document.querySelector(selector);
+                if (reactTab) {
+                  console.log(`Found React tab with selector: ${selector}`);
+                  reactTab.click();
+                  return true;
+                }
+              } catch (e) {
+                console.log(`Error with selector ${selector}: ${e.message}`);
+              }
+            }
+
+            // Try by text content if selectors failed
+            const allButtons = Array.from(
+              document.querySelectorAll('button, [role="tab"], .framework-card')
+            );
+            const reactButton = allButtons.find(
+              (btn) =>
+                (btn.textContent.includes("React") &&
+                  !btn.textContent.includes("Preact")) ||
+                btn.textContent.includes("⚛️")
+            );
+
+            if (reactButton) {
+              console.log("Found React tab by text content");
+              reactButton.click();
+              return true;
+            }
+
+            return false;
+          });
+
+          // Wait after clicking
+          await page.waitForTimeout(1200);
+        } catch (error) {
+          console.log(`Error selecting React tab: ${error.message}`);
+        }
+      }
+    }
   }
 
   // Get updated position after scrolling
@@ -1680,6 +1818,14 @@ async function captureTabScreenshot(
   // Wait longer for tab content to fully load and render
   await page.waitForTimeout(1500);
 
+  // NEW: Extra wait for dark mode if needed
+  if (theme === "dark" && component.darkModeExtraWait) {
+    console.log(
+      `Adding extra wait time for ${tabIdentifier} tab in dark mode: ${component.darkModeExtraWait}ms`
+    );
+    await page.waitForTimeout(component.darkModeExtraWait);
+  }
+
   // Special handling for Remix tab in light mode
   const isRemixTab =
     tabName.includes("Remix") ||
@@ -1781,6 +1927,66 @@ async function captureTabScreenshot(
     if (remixContent) {
       console.log("Found Remix-specific content, adjusting position");
       await page.waitForTimeout(800);
+    }
+  }
+
+  // NEW: For React tab in dark mode, ensure code blocks are visible
+  if (!isRemixTab && theme === "dark" && component.verifyContentLoaded) {
+    console.log("Verifying React tab code blocks are visible in dark mode...");
+
+    // Check for code blocks with React content
+    const reactCodeVisible = await page.evaluate((minLines) => {
+      // Look for code blocks
+      const codeBlocks = document.querySelectorAll("pre code");
+
+      if (codeBlocks.length === 0) {
+        console.log("No code blocks found on React tab");
+        return false;
+      }
+
+      // Try to find React-specific content
+      const reactBlock = Array.from(codeBlocks).find(
+        (block) =>
+          block.textContent.includes("React") ||
+          block.textContent.includes("useState") ||
+          block.textContent.includes("useEffect") ||
+          block.textContent.includes("useStore")
+      );
+
+      if (reactBlock) {
+        const lineCount = reactBlock.textContent.split("\n").length;
+        console.log(`Found React code block with ${lineCount} lines`);
+
+        if (lineCount < minLines) {
+          console.log("React code block doesn't have enough visible lines");
+          // Scroll to show more
+          reactBlock.scrollIntoView({ behavior: "smooth", block: "center" });
+          return false;
+        }
+
+        return true;
+      }
+
+      // If no React-specific block found, check if any code block has enough lines
+      return Array.from(codeBlocks).some((block) => {
+        const lineCount = block.textContent.split("\n").length;
+        return lineCount >= minLines;
+      });
+    }, component.minVisibleCodeLines || 5);
+
+    if (!reactCodeVisible) {
+      console.log("React code blocks not fully visible, adjusting scroll...");
+      // Scroll down to reveal code blocks
+      await page.evaluate(() => {
+        const codeBlocks = document.querySelectorAll("pre code");
+        if (codeBlocks.length > 0) {
+          codeBlocks[0].scrollIntoView({ behavior: "smooth", block: "center" });
+        } else {
+          // If no code blocks found, just scroll down a bit
+          window.scrollBy(0, 300);
+        }
+      });
+      await page.waitForTimeout(1000);
     }
   }
 

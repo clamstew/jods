@@ -64,6 +64,40 @@ Create an AI-powered workflow that:
 - Quantitative metrics (clarity, information density, accessibility)
 - A/B testing of multiple design directions
 
+## Reliability Challenges
+
+The screenshot-based feedback loop faces several technical challenges that the system must address:
+
+### State Management
+
+- **Complex UI States**: Tabs, accordions, and interactive elements require verification
+- **Theme-Specific Behavior**: Light and dark mode can render differently and require different handling
+- **Content Verification**: Ensuring all expected content is visible before capturing
+
+### Timing Issues
+
+- **Race Conditions**: Ensuring content is fully rendered before capturing
+- **Animation Completion**: Waiting for transitions, animations and dynamic content
+- **Progressive Loading**: Handling lazy-loaded content and async updates
+
+### Strategies
+
+- **Intelligent Waiting**: Context-aware delays based on component type
+- **Content Verification**: Checking for expected elements before capturing
+- **Multi-Phase Capture**: Taking sequences of screenshots after interactions
+- **Failure Recovery**: Detecting and retrying failed captures
+
+## Testing Dimensions
+
+The AI design iteration system should test changes across multiple dimensions:
+
+- **Themes**: Light and dark mode
+- **Viewports**: Mobile, tablet, desktop
+- **Interactive States**: Default, hover, active, focused
+- **Content Variables**: Empty states, overflow states, error states
+- **User Flows**: Multi-step interactions
+- **Accessibility**: Contrast ratios, keyboard navigation, screen reader compatibility
+
 ## Implementation Strategy
 
 ### Phase 1: Foundations
