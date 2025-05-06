@@ -111,11 +111,11 @@ export const COMPONENTS = [
     padding: 150,
     waitForSelector:
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
-    minHeight: 1600, // More height for Remix tab which has more code
+    minHeight: 1800, // Increased from 1600 to capture more content
     clickSelector: "button:has-text('Remix'), button:has-text('💿')", // Click Remix tab
-    clickWaitTime: 1500, // Wait for tab to switch
+    clickWaitTime: 1800, // Increased from 1500 to ensure tab content is fully loaded
     testId: "jods-framework-section",
-    extraScroll: 250,
+    extraScroll: 150, // Reduced from 250 to show more of the section
     captureHtmlDebug: true,
     alternativeSelectors: [
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
@@ -126,8 +126,7 @@ export const COMPONENTS = [
     ],
     // Fewer exclusions for the Remix tab since we want to show the Remix-specific content
     excludeElements: [
-      "[class*='subtitle']:has-text('reimagined')",
-      ".subtitle, .feature-subtitle",
+      // Removed most exclusions to show more content
     ],
   },
 

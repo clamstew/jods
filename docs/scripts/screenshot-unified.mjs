@@ -743,12 +743,64 @@ async function captureSpecificElement(
       console.log(`Waiting ${waitTime}ms for content to update after click...`);
       await page.waitForTimeout(waitTime);
 
+      // Special handling for Remix tab to ensure proper scrolling
+      if (component.name === "framework-section-remix") {
+        console.log("Special handling for Remix tab...");
+        await page.evaluate(() => {
+          // Find the framework section
+          const sections = Array.from(document.querySelectorAll("section"));
+          const frameworkSection = sections.find((section) => {
+            // Look for headings in this section
+            const headings = Array.from(section.querySelectorAll("h2"));
+            return headings.some(
+              (h) =>
+                h.textContent.includes("Works with your favorite frameworks") ||
+                h.textContent.includes("Framework Integration")
+            );
+          });
+
+          if (frameworkSection) {
+            // Calculate position to show the entire section
+            const rect = frameworkSection.getBoundingClientRect();
+            // Scroll to show from the top of the section with just enough room for the fixed header
+            const headerHeight =
+              document.querySelector("header")?.offsetHeight || 70;
+            window.scrollTo(0, window.scrollY + rect.top - headerHeight - 50);
+          }
+        });
+
+        // Wait for scroll to complete
+        await page.waitForTimeout(800);
+      }
+
       // Re-scroll to ensure element is still in view after click
       await elementHandle.scrollIntoViewIfNeeded();
       await page.waitForTimeout(400);
     } catch (error) {
       console.log(`Error clicking element: ${error.message}`);
     }
+  }
+
+  // Special handling for framework-section-remix to ensure we capture the full section
+  if (component.name === "framework-section-remix") {
+    // Ensure we can see the heading and tabs
+    await page.evaluate(() => {
+      // Find the framework section heading using standard DOM methods
+      const headings = Array.from(document.querySelectorAll("h2"));
+      const heading = headings.find(
+        (h) =>
+          h.textContent.includes("Works with your favorite frameworks") ||
+          h.textContent.includes("Framework Integration")
+      );
+
+      if (heading) {
+        const rect = heading.getBoundingClientRect();
+        // Adjust scroll to show heading at top with padding
+        window.scrollTo(0, window.scrollY + rect.top - 100);
+      }
+    });
+
+    await page.waitForTimeout(500);
   }
 
   // For tall sections, scroll up a bit to ensure full visibility
