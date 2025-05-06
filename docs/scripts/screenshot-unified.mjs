@@ -1542,8 +1542,306 @@ async function captureSpecificElement(
   }
 }
 
+// Create a tab manager namespace with helper functions
+const tabManager = {
+  /**
+   * Find all framework tabs in a section
+   * @param {Page} page - Playwright page
+   * @returns {Promise<Array<{name: string, element: ElementHandle, emoji: string}>>}
+   */
+  findAllTabs: function (page) {
+    return (async () => {
+      logger.debug("Searching for framework tabs...");
+
+      // Find tabs using multiple strategies
+      const tabs = await page.evaluate(() => {
+        const results = [];
+
+        // First try data-testid (most reliable approach)
+        const testIdTabs = document.querySelectorAll(
+          '[data-testid^="jods-framework-tab-"]'
+        );
+        if (testIdTabs.length > 0) {
+          console.log(
+            `Found ${testIdTabs.length} framework tabs by data-testid`
+          );
+          for (const tab of testIdTabs) {
+            const name = tab
+              .getAttribute("data-testid")
+              .replace("jods-framework-tab-", "");
+            const emoji =
+              name === "react" ? "⚛️" : name === "remix" ? "💿" : "";
+            results.push({
+              selector: `[data-testid="jods-framework-tab-${name}"]`,
+              name,
+              emoji,
+              isTestId: true,
+            });
+          }
+          return results;
+        }
+
+        // Try framework cards
+        const frameworkCards = document.querySelectorAll(".framework-card");
+        if (frameworkCards.length > 0) {
+          console.log(`Found ${frameworkCards.length} framework cards`);
+          for (const card of frameworkCards) {
+            const cardText = card.textContent;
+            let name = "",
+              emoji = "";
+
+            if (cardText.includes("React") && !cardText.includes("Preact")) {
+              name = "react";
+              emoji = "⚛️";
+            } else if (cardText.includes("Preact")) {
+              name = "preact";
+              emoji = "⚛️";
+            } else if (cardText.includes("Remix") || cardText.includes("💿")) {
+              name = "remix";
+              emoji = "💿";
+            } else {
+              continue; // Unrecognized framework
+            }
+
+            results.push({
+              selector: `.framework-card:has-text("${
+                name === "remix"
+                  ? "Remix"
+                  : name === "react"
+                  ? "React"
+                  : "Preact"
+              }")`,
+              name,
+              emoji,
+              isCard: true,
+            });
+          }
+
+          if (results.length > 0) return results;
+        }
+
+        // Find by emoji and text
+        const buttons = document.querySelectorAll("button");
+        for (const button of buttons) {
+          const buttonText = button.textContent;
+          let name = "",
+            emoji = "";
+
+          if (
+            (buttonText.includes("React") && !buttonText.includes("Preact")) ||
+            buttonText.includes("⚛️")
+          ) {
+            name = "react";
+            emoji = "⚛️";
+          } else if (buttonText.includes("Preact")) {
+            name = "preact";
+            emoji = "⚛️";
+          } else if (
+            buttonText.includes("Remix") ||
+            buttonText.includes("💿")
+          ) {
+            name = "remix";
+            emoji = "💿";
+          } else {
+            continue;
+          }
+
+          results.push({
+            selector: `button:has-text("${emoji}")`,
+            name,
+            emoji,
+            isButton: true,
+          });
+        }
+
+        return results;
+      });
+
+      if (tabs.length === 0) {
+        logger.warn("No framework tabs could be found on the page");
+        return [];
+      }
+
+      logger.debug(
+        `Found ${tabs.length} framework tabs: ${tabs
+          .map((t) => t.name)
+          .join(", ")}`
+      );
+      return tabs;
+    })();
+  },
+
+  /**
+   * Select a specific framework tab by name
+   * @param {Page} page - Playwright page
+   * @param {string} tabName - Name of the tab to select (react, remix, preact)
+   * @param {number} maxRetries - Maximum number of retries
+   * @returns {Promise<boolean>} Whether the tab was successfully selected
+   */
+  selectTab: function (page, tabName, maxRetries = 3) {
+    return (async () => {
+      logger.info(`Attempting to select ${tabName} tab...`);
+
+      // Find all tabs first
+      const tabs = await this.findAllTabs(page);
+      const targetTab = tabs.find((tab) => tab.name === tabName.toLowerCase());
+
+      if (!targetTab) {
+        logger.warn(`Could not find ${tabName} tab among available tabs`);
+        return false;
+      }
+
+      // Try to click the tab with retry
+      return await retry(
+        async () => {
+          // First check if already selected
+          const isSelected = await this.isTabSelected(page, tabName);
+          if (isSelected) {
+            logger.success(`${tabName} tab is already selected`);
+            return true;
+          }
+
+          logger.debug(
+            `Clicking ${tabName} tab using selector: ${targetTab.selector}`
+          );
+
+          // Use evaluate for more reliable clicking
+          const clickResult = await page.evaluate((selector) => {
+            const element = document.querySelector(selector);
+            if (!element) return { success: false, error: "Element not found" };
+
+            try {
+              element.click();
+              return { success: true };
+            } catch (error) {
+              return { success: false, error: error.message };
+            }
+          }, targetTab.selector);
+
+          if (!clickResult.success) {
+            logger.warn(
+              `Failed to click tab in DOM: ${
+                clickResult.error || "unknown error"
+              }`
+            );
+
+            // Fall back to Playwright click
+            await page.click(targetTab.selector);
+          }
+
+          // Wait for tab change to take effect
+          await page.waitForTimeout(1500);
+
+          // Verify tab selection
+          const selected = await this.isTabSelected(page, tabName);
+          if (!selected) {
+            throw new Error(`${tabName} tab still not selected after clicking`);
+          }
+
+          logger.success(`Successfully selected ${tabName} tab`);
+          return true;
+        },
+        {
+          name: `${tabName} tab selection`,
+          retries: maxRetries,
+          delay: 800,
+        }
+      ).catch((error) => {
+        logger.error(
+          `Failed to select ${tabName} tab after ${maxRetries} attempts: ${error.message}`
+        );
+        return false;
+      });
+    })();
+  },
+
+  /**
+   * Check if a specific tab is currently selected
+   * @param {Page} page - Playwright page
+   * @param {string} tabName - Name of the tab to check
+   * @returns {Promise<boolean>} Whether the tab is selected
+   */
+  isTabSelected: function (page, tabName) {
+    return page.evaluate((name) => {
+      // First check by data-testid with aria-selected
+      const testIdSelector = `[data-testid="jods-framework-tab-${name.toLowerCase()}"]`;
+      const elementByTestId = document.querySelector(testIdSelector);
+      if (
+        elementByTestId &&
+        elementByTestId.getAttribute("aria-selected") === "true"
+      ) {
+        console.log(`Tab selected via data-testid and aria-selected`);
+        return true;
+      }
+
+      // Next, check for selected class or gradient background
+      const possibleTabs = [];
+
+      // Collect all possible elements
+      if (name.toLowerCase() === "react") {
+        possibleTabs.push(
+          ...Array.from(
+            document.querySelectorAll(
+              '.framework-card:has-text("React"), button:has-text("React"), button:has-text("⚛️")'
+            )
+          )
+        );
+      } else if (name.toLowerCase() === "remix") {
+        possibleTabs.push(
+          ...Array.from(
+            document.querySelectorAll(
+              '.framework-card:has-text("Remix"), button:has-text("Remix"), button:has-text("💿")'
+            )
+          )
+        );
+      } else if (name.toLowerCase() === "preact") {
+        possibleTabs.push(
+          ...Array.from(
+            document.querySelectorAll(
+              '.framework-card:has-text("Preact"), button:has-text("Preact")'
+            )
+          )
+        );
+      }
+
+      // Check if any of these tabs appears to be selected
+      for (const tab of possibleTabs) {
+        // Check active class
+        if (
+          tab.classList.contains("active") ||
+          tab.classList.contains("selected") ||
+          tab.getAttribute("aria-selected") === "true"
+        ) {
+          console.log(`Tab selected via active/selected class`);
+          return true;
+        }
+
+        // Check for gradient background (common in styled components)
+        const style = window.getComputedStyle(tab);
+        if (
+          style.background.includes("gradient") ||
+          style.background.includes("rgba")
+        ) {
+          console.log(`Tab selected via background style`);
+          return true;
+        }
+
+        // Check for transform
+        if (style.transform && style.transform !== "none") {
+          console.log(`Tab selected via transform`);
+          return true;
+        }
+      }
+
+      // Not clearly selected
+      return false;
+    }, tabName);
+  },
+};
+
 /**
  * Helper: Capture framework tabs
+ * @returns {boolean} Whether capturing was successful
  */
 async function captureFrameworkTabs(
   page,
@@ -1552,752 +1850,283 @@ async function captureFrameworkTabs(
   timestamp,
   saveBaseline
 ) {
-  console.log("Capturing framework tabs...");
+  logger.info("Capturing framework tabs...");
 
   // Find the framework section
   const frameworkSection = await page.$(component.selector);
 
   if (!frameworkSection) {
-    console.log("Could not find framework section");
-    return;
+    logger.error("Could not find framework section");
+    return false;
   }
 
-  // Debug: Save HTML content to file for inspection
-  const htmlContent = await page.evaluate(() => {
-    const sections = document.querySelectorAll("section");
-    let frameworkSection = null;
-
-    // Find section with framework-related content
-    for (const section of sections) {
-      if (
-        section.textContent.includes("Works with your favorite frameworks") ||
-        section.textContent.includes("Framework Integration")
-      ) {
-        frameworkSection = section;
-        break;
-      }
-    }
-
-    if (frameworkSection) {
-      return {
-        html: frameworkSection.outerHTML,
-        buttons: Array.from(frameworkSection.querySelectorAll("button")).map(
-          (btn) => btn.outerHTML
-        ),
-        tabs: Array.from(
-          frameworkSection.querySelectorAll(
-            '[role="tab"], [role="tablist"] button'
-          )
-        ).map((tab) => tab.outerHTML),
-        frameworkCards: Array.from(
-          frameworkSection.querySelectorAll(
-            ".framework-card, div:has(h3:has-text('Remix')), div:has(h3:has-text('React'))"
-          )
-        ).map((card) => ({
-          html: card.outerHTML,
-          hasRemix:
-            card.textContent.includes("Remix") ||
-            card.textContent.includes("💿"),
-          hasReact:
-            card.textContent.includes("React") ||
-            card.textContent.includes("⚛️"),
-          hasPreact: card.textContent.includes("Preact"),
-          classes: card.className,
-        })),
-      };
-    }
-    return null;
-  });
-
-  if (htmlContent) {
-    // Write to debug file in static/debug directory
-    const debugDir = path.join(__dirname, "../static/debug");
-    if (!fs.existsSync(debugDir)) {
-      fs.mkdirSync(debugDir, { recursive: true });
-    }
-
-    const debugFilePath = path.join(
-      debugDir,
-      `framework-section-${theme}-debug.html`
-    );
-    let debugContent = `<h1>Framework Section Debug (${theme} theme)</h1>`;
-    debugContent += `<h2>Full HTML</h2><pre>${htmlContent.html
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")}</pre>`;
-    debugContent += `<h2>Buttons (${htmlContent.buttons.length})</h2>`;
-    htmlContent.buttons.forEach((btn, i) => {
-      debugContent += `<h3>Button ${i + 1}</h3><pre>${btn
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")}</pre>`;
-    });
-    debugContent += `<h2>Tabs (${htmlContent.tabs.length})</h2>`;
-    htmlContent.tabs.forEach((tab, i) => {
-      debugContent += `<h3>Tab ${i + 1}</h3><pre>${tab
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")}</pre>`;
-    });
-
-    fs.writeFileSync(debugFilePath, debugContent);
-    console.log(`Debug info saved to: ${debugFilePath}`);
-  } else {
-    console.log("Could not extract HTML content for debugging");
-  }
-
-  // Find all tab buttons
-  const tabButtonsSelector =
-    "button:has-text('React'), button:has-text('Preact'), button:has-text('Remix'), button:has-text('Traditional'), button:has-text('⚛️'), button:has-text('💿')";
-  const tabButtons = await page.$$(tabButtonsSelector);
-
-  if (!tabButtons || tabButtons.length === 0) {
-    console.log("Could not find framework tabs, trying alternative selectors");
-
-    // Try direct approach with framework cards
-    console.log("Trying to find framework cards...");
-
-    // Look for div.framework-card elements, especially those containing Remix/CD emoji
-    const frameworkCardSelector =
-      "div.framework-card, div:has(h3:has-text('Remix')), div:has(.spinningEmoji_oGVK:has-text('💿'))";
-    const frameworkCards = await page.$$(frameworkCardSelector);
-
-    if (frameworkCards && frameworkCards.length > 0) {
-      console.log(`Found ${frameworkCards.length} framework cards`);
-
-      // Find cards for each framework
-      const frameworkCardByType = {
-        react: null,
-        preact: null,
-        remix: null,
-      };
-
-      for (const card of frameworkCards) {
-        const cardText = await card.evaluate((el) => el.textContent);
-        const cardClasses = await card.evaluate((el) => el.className);
-        console.log(
-          `Found card with text: "${cardText}" and classes: "${cardClasses}"`
-        );
-
-        if (cardText.includes("Remix") || cardText.includes("💿")) {
-          frameworkCardByType.remix = card;
-          console.log("Identified Remix card");
-        } else if (cardText.includes("Preact")) {
-          frameworkCardByType.preact = card;
-          console.log("Identified Preact card");
-        } else if (cardText.includes("React") || cardText.includes("⚛️")) {
-          frameworkCardByType.react = card;
-          console.log("Identified React card");
-        }
-      }
-
-      // Prioritize Remix card for this component
-      if (frameworkCardByType.remix) {
-        console.log("Clicking Remix framework card");
-
-        // Direct click on the Remix card
-        try {
-          await frameworkCardByType.remix.click();
-          console.log("Successfully clicked Remix card");
-          await page.waitForTimeout(1500);
-
-          // After clicking, take screenshot of Remix tab
-          await captureTabScreenshot(
-            page,
-            frameworkSection,
-            frameworkCardByType.remix,
-            component.forceSaveAsReact ? "react" : "remix",
-            component,
-            theme,
-            timestamp,
-            saveBaseline
-          );
-        } catch (err) {
-          console.log(`Error clicking Remix card: ${err.message}`);
-        }
-      }
-
-      // If we want other framework cards too and not just forceReactTabOnly
-      if (!component.forceReactTabOnly) {
-        // Handle React card if found
-        if (frameworkCardByType.react) {
-          console.log("Clicking React framework card");
-          try {
-            await frameworkCardByType.react.click();
-            await page.waitForTimeout(1500);
-
-            await captureTabScreenshot(
-              page,
-              frameworkSection,
-              frameworkCardByType.react,
-              "react",
-              component,
-              theme,
-              timestamp,
-              saveBaseline
-            );
-          } catch (err) {
-            console.log(`Error clicking React card: ${err.message}`);
-          }
-        }
-
-        // Handle Preact card if found
-        if (frameworkCardByType.preact) {
-          console.log("Clicking Preact framework card");
-          try {
-            await frameworkCardByType.preact.click();
-            await page.waitForTimeout(1500);
-
-            await captureTabScreenshot(
-              page,
-              frameworkSection,
-              frameworkCardByType.preact,
-              component.forceSaveAsReact ? "react" : "preact",
-              component,
-              theme,
-              timestamp,
-              saveBaseline
-            );
-          } catch (err) {
-            console.log(`Error clicking Preact card: ${err.message}`);
-          }
-        }
-      }
-
-      return; // We've handled all cards, so return early
-    }
-
-    // Get all buttons on the page for debugging
-    const allButtons = await page.$$("button");
-    console.log(`Found ${allButtons.length} total buttons on the page`);
-
-    // Print the text of all buttons to help debug
-    for (const button of allButtons) {
-      try {
-        const buttonText = await button.evaluate((el) => el.textContent.trim());
-        console.log(`Button text: "${buttonText}"`);
-      } catch (e) {
-        console.log(`Error getting button text: ${e.message}`);
-      }
-    }
-
-    // Try more specific selectors with emoji
-    const emojiTabButtonsSelector =
-      "button:has-text('⚛️'), button:has-text('💿')";
-    const emojiTabButtons = await page.$$(emojiTabButtonsSelector);
-
-    if (!emojiTabButtons || emojiTabButtons.length === 0) {
-      console.log(
-        "Could not find framework tabs with emoji either, trying general button search"
-      );
-
-      // Last resort - try to find buttons by their text content more broadly
-      const allButtons = await page.$$("button");
-      const frameworkButtons = [];
-
-      for (const button of allButtons) {
-        const buttonText = await button.evaluate((el) => el.textContent.trim());
-        if (
-          buttonText.includes("React") ||
-          buttonText.includes("Preact") ||
-          buttonText.includes("Remix") ||
-          buttonText.includes("⚛️") ||
-          buttonText.includes("💿")
-        ) {
-          frameworkButtons.push(button);
-        }
-      }
-
-      if (frameworkButtons.length > 0) {
-        console.log(
-          `Found ${frameworkButtons.length} framework buttons through text content analysis`
-        );
-
-        for (const button of frameworkButtons) {
-          const buttonText = await button.evaluate((el) =>
-            el.textContent.trim()
-          );
-          let framework = "unknown";
-
-          // Check if we should force React tab only
-          if (component.forceReactTabOnly) {
-            if (
-              buttonText.includes("React") &&
-              !buttonText.includes("Preact")
-            ) {
-              framework = "react";
-            } else if (
-              buttonText.includes("⚛️") &&
-              !buttonText.includes("Preact")
-            ) {
-              framework = "react";
-            } else {
-              // Skip non-React tabs if forceReactTabOnly is true
-              continue;
-            }
-          } else {
-            // Standard framework determination
-            if (
-              buttonText.includes("React") &&
-              !buttonText.includes("Preact")
-            ) {
-              framework = "react";
-            } else if (buttonText.includes("Preact")) {
-              framework = "preact";
-            } else if (
-              buttonText.includes("Remix") ||
-              buttonText.includes("💿")
-            ) {
-              framework = "remix";
-            }
-          }
-
-          if (framework !== "unknown") {
-            // If forceSaveAsReact is true, always save as "react"
-            if (component.forceSaveAsReact) {
-              framework = "react";
-            }
-
-            await captureTabScreenshot(
-              page,
-              frameworkSection,
-              button,
-              framework,
-              component,
-              theme,
-              timestamp,
-              saveBaseline
-            );
-
-            // If we found a React tab and forceReactTabOnly is true, we're done
-            if (component.forceReactTabOnly && framework === "react") {
-              break;
-            }
-          }
-        }
-      } else {
-        console.log("Could not find any framework buttons");
-      }
-
-      return;
-    }
-
-    console.log(`Found ${emojiTabButtons.length} framework tabs with emoji`);
-
-    // Use the emoji buttons instead
-    const allTabButtons = emojiTabButtons;
-
-    // Group buttons by type based on their text content
-    const reactButtons = [];
-    const preactButtons = [];
-    const remixButtons = [];
-
-    for (const tabButton of allTabButtons) {
-      const buttonText = await tabButton.evaluate((el) =>
-        el.textContent.trim()
-      );
-      if (
-        buttonText.includes("⚛️") &&
-        buttonText.toLowerCase().includes("react") &&
-        !buttonText.toLowerCase().includes("preact")
-      ) {
-        reactButtons.push(tabButton);
-      } else if (
-        buttonText.includes("⚛️") &&
-        buttonText.toLowerCase().includes("preact")
-      ) {
-        preactButtons.push(tabButton);
-      } else if (
-        buttonText.includes("💿") ||
-        buttonText.toLowerCase().includes("remix")
-      ) {
-        remixButtons.push(tabButton);
-      }
-    }
-
-    // If forceReactTabOnly is true, only capture React tab
-    if (component.forceReactTabOnly) {
-      if (reactButtons.length > 0) {
-        console.log(
-          "Capturing only React tab due to forceReactTabOnly setting"
-        );
-        await captureTabScreenshot(
-          page,
-          frameworkSection,
-          reactButtons[0],
-          "react", // Always use "react" as the identifier
-          component,
-          theme,
-          timestamp,
-          saveBaseline
-        );
-      } else {
-        console.log("Could not find React tab, but forceReactTabOnly is set");
-      }
-      return;
-    }
-
-    // Priority to capturing the Remix tab first
-    if (remixButtons.length > 0) {
-      console.log("Capturing Remix tab first (prioritized)");
-      await captureTabScreenshot(
-        page,
-        frameworkSection,
-        remixButtons[0],
-        component.forceSaveAsReact ? "react" : "remix", // Use "react" if forceSaveAsReact is true
-        component,
-        theme,
-        timestamp,
-        saveBaseline
-      );
-    }
-
-    // Then capture the other tabs
-    if (reactButtons.length > 0) {
-      await captureTabScreenshot(
-        page,
-        frameworkSection,
-        reactButtons[0],
-        "react",
-        component,
-        theme,
-        timestamp,
-        saveBaseline
-      );
-    }
-
-    if (preactButtons.length > 0) {
-      await captureTabScreenshot(
-        page,
-        frameworkSection,
-        preactButtons[0],
-        component.forceSaveAsReact ? "react" : "preact", // Use "react" if forceSaveAsReact is true
-        component,
-        theme,
-        timestamp,
-        saveBaseline
-      );
-    }
-
-    return;
-  }
-
-  console.log(`Found ${tabButtons.length} framework tabs`);
-
-  // Look for React tab first if forceReactTabOnly is true
+  // If component has forceReactTabOnly flag, only capture React tab
   if (component.forceReactTabOnly) {
-    console.log("Searching for React tab due to forceReactTabOnly setting");
-    let reactButton = null;
-    for (const button of tabButtons) {
-      const buttonText = await button.evaluate((el) => el.textContent.trim());
-      if (
-        (buttonText.includes("React") && !buttonText.includes("Preact")) ||
-        buttonText.includes("⚛️")
-      ) {
-        reactButton = button;
-        break;
-      }
+    logger.info("Capturing only React tab due to forceReactTabOnly setting");
+
+    // Select React tab
+    const reactTabSelected = await tabManager.selectTab(page, "React", 3);
+
+    if (!reactTabSelected) {
+      logger.warn(
+        "Could not select React tab, but will attempt to capture anyway"
+      );
     }
 
-    if (reactButton) {
-      console.log("Found React tab, capturing only this tab");
-      await captureTabScreenshot(
+    // Capture React tab
+    return await captureTabScreenshot(
+      page,
+      frameworkSection,
+      null, // No need for tabButton anymore
+      "react",
+      component,
+      theme,
+      timestamp,
+      saveBaseline
+    );
+  }
+
+  // Default behavior: capture multiple tabs
+  // Get available tabs
+  const tabsInfo = await tabManager.findAllTabs(page);
+
+  if (tabsInfo.length === 0) {
+    logger.error("No framework tabs found on page");
+    return false;
+  }
+
+  // Determine which tabs to capture
+  let tabsToCaptureNames = [];
+
+  if (component.captureTabs) {
+    // Specific tabs requested in component config
+    tabsToCaptureNames = component.captureTabs;
+  } else {
+    // Default: capture all tabs found
+    tabsToCaptureNames = tabsInfo.map((tab) => tab.name);
+  }
+
+  logger.info(`Will capture tabs: ${tabsToCaptureNames.join(", ")}`);
+
+  // Track success
+  let capturedAny = false;
+
+  // Prioritize Remix tab first if requested
+  if (component.captureRemixFirst && tabsToCaptureNames.includes("remix")) {
+    // Move Remix to the beginning
+    tabsToCaptureNames = [
+      "remix",
+      ...tabsToCaptureNames.filter((name) => name !== "remix"),
+    ];
+  }
+
+  // Capture each tab
+  for (const tabName of tabsToCaptureNames) {
+    try {
+      // Select the tab
+      const tabSelected = await tabManager.selectTab(page, tabName, 3);
+
+      if (!tabSelected) {
+        logger.warn(`Could not select ${tabName} tab, skipping`);
+        continue;
+      }
+
+      // Determine final tab ID for filename
+      let finalTabId = tabName;
+
+      // Apply special handling based on component config
+      if (component.forceSaveAsReact) {
+        finalTabId = "react";
+      } else if (component.name === "framework-section") {
+        // For framework section, always use 'react' as the identifier
+        finalTabId = "react";
+      }
+
+      // Capture screenshot for this tab
+      const tabSuccess = await captureTabScreenshot(
         page,
         frameworkSection,
-        reactButton,
-        "react",
+        null, // No need for tabButton anymore
+        finalTabId,
         component,
         theme,
         timestamp,
         saveBaseline
       );
-    } else {
-      console.log("Could not find React tab, but forceReactTabOnly is set");
+
+      if (tabSuccess) {
+        capturedAny = true;
+      }
+
+      // If this is the Remix tab and React tab couldn't be found, create a React file too
+      if (finalTabId === "remix" && component.simulateReactTab) {
+        const reactPath = path.join(
+          directories.unified,
+          `${component.name}-react-${theme}${
+            saveBaseline ? "" : "-" + timestamp
+          }.png`
+        );
+
+        const screenshotPath = path.join(
+          directories.unified,
+          `${component.name}-${finalTabId}-${theme}${
+            saveBaseline ? "" : "-" + timestamp
+          }.png`
+        );
+
+        try {
+          // Copy the file to create a React version
+          fs.copyFileSync(screenshotPath, reactPath);
+          logger.success(
+            `Created simulated React tab screenshot: ${reactPath}`
+          );
+        } catch (error) {
+          logger.error(`Error creating simulated React tab: ${error.message}`);
+        }
+      }
+    } catch (error) {
+      logger.error(`Error capturing ${tabName} tab: ${error.message}`);
     }
-    return;
   }
+
+  // Return true if we captured at least one tab successfully
+  return capturedAny;
 }
 
 /**
  * Helper: Capture a single framework tab screenshot
+ * @returns {boolean} Whether the capture was successful
  */
 async function captureTabScreenshot(
   page,
   frameworkSection,
-  tabButton,
+  tabButton, // This is now optional as tabManager handles selection
   tabIdentifier,
   component,
   theme,
   timestamp,
   saveBaseline
 ) {
-  const tabName = await tabButton.evaluate((el) => el.textContent.trim());
-  console.log(`Clicking on ${tabName} tab`);
+  try {
+    logger.info(`Capturing ${tabIdentifier} tab screenshot...`);
 
-  // Click the tab
-  await tabButton.click();
-
-  // Wait longer for tab content to fully load and render
-  await page.waitForTimeout(1500);
-
-  // Pause animations if specified in the component config
-  if (component.pauseAnimations) {
+    // Pause animations if specified in the component config
     await manageAnimations(page, "pause", component);
-  }
 
-  // NEW: Extra wait for dark mode if needed
-  if (theme === "dark" && component.darkModeExtraWait) {
-    console.log(
-      `Adding extra wait time for ${tabIdentifier} tab in dark mode: ${component.darkModeExtraWait}ms`
-    );
-    await page.waitForTimeout(component.darkModeExtraWait);
-  }
-
-  // Special handling for Remix tab in light mode
-  const isRemixTab =
-    tabName.includes("Remix") ||
-    tabName.includes("💿") ||
-    tabIdentifier.includes("remix");
-  if (isRemixTab && theme === "light") {
-    console.log("Special handling for Remix tab in light mode");
-
-    // First, ensure "Works with your favorite frameworks" is visible at the top
-    await page.evaluate(() => {
-      // Find the heading
-      const frameworkHeading = Array.from(document.querySelectorAll("h2")).find(
-        (h) =>
-          h.textContent.includes("Works with your favorite frameworks") ||
-          h.textContent.includes("Framework Integration")
+    // Extra wait for dark mode if needed
+    if (theme === "dark" && component.darkModeExtraWait) {
+      logger.debug(
+        `Adding extra wait time for ${tabIdentifier} tab in dark mode: ${component.darkModeExtraWait}ms`
       );
-
-      if (frameworkHeading) {
-        console.log("Found framework heading, scrolling to position it at top");
-        // Calculate position to show heading at top with more margin (increased from 100px to 250px)
-        const rect = frameworkHeading.getBoundingClientRect();
-        const scrollOffset = window.scrollY + rect.top - 250; // Increased from 100px to 250px
-        window.scrollTo(0, scrollOffset);
-        return true;
-      }
-      return false;
-    });
-
-    // Wait longer for scroll to complete (increased from 800ms to 1000ms)
-    await page.waitForTimeout(1000);
-
-    // Now try to find the Remix content but avoid scrolling too far
-    const remixContent = await page.evaluate(() => {
-      // Use standard DOM traversal instead of :has-text() selector
-      const codeBlocks = document.querySelectorAll("pre code");
-      let remixCodeBlock = null;
-
-      // Look through all code blocks for Remix-specific content
-      for (const codeBlock of codeBlocks) {
-        if (
-          codeBlock.textContent.includes("createCookieStore") ||
-          codeBlock.textContent.includes("remix") ||
-          codeBlock.textContent.includes("cookie")
-        ) {
-          remixCodeBlock = codeBlock.closest("pre");
-          break;
-        }
-      }
-
-      if (remixCodeBlock) {
-        // Check if the code block is already in view
-        const containerRect = remixCodeBlock.getBoundingClientRect();
-        if (containerRect.top > 0 && containerRect.top < window.innerHeight) {
-          console.log("Remix code block already in view");
-          return true;
-        }
-
-        // Only scroll if necessary and don't scroll too far
-        if (containerRect.top < 0 || containerRect.top > window.innerHeight) {
-          const maxScroll = 200; // Limit how far we scroll
-          const scrollOffset = Math.min(
-            maxScroll,
-            Math.max(0, containerRect.top - 300)
-          );
-          window.scrollBy(0, scrollOffset);
-          return true;
-        }
-      }
-
-      // Alternative approach - look for Remix headers
-      const remixHeaders = Array.from(
-        document.querySelectorAll("h2, h3, h4")
-      ).filter(
-        (el) =>
-          el.textContent.includes("Remix") &&
-          !el.textContent.includes("State") &&
-          !el.textContent.includes("Reimagined")
-      );
-
-      if (remixHeaders.length > 0) {
-        const header = remixHeaders[0];
-        const headerRect = header.getBoundingClientRect();
-
-        // Only scroll if needed and don't scroll too far
-        if (headerRect.top < 0 || headerRect.top > window.innerHeight) {
-          const maxScroll = 200; // Limit how far we scroll
-          const scrollOffset = Math.min(
-            maxScroll,
-            Math.max(0, headerRect.top - 200)
-          );
-          window.scrollBy(0, scrollOffset);
-          return true;
-        }
-      }
-
-      return false;
-    });
-
-    if (remixContent) {
-      console.log("Found Remix-specific content, adjusting position");
-      await page.waitForTimeout(800);
+      await page.waitForTimeout(component.darkModeExtraWait);
     }
-  }
 
-  // NEW: For React tab in dark mode, ensure code blocks are visible
-  if (!isRemixTab && theme === "dark" && component.verifyContentLoaded) {
-    console.log("Verifying React tab code blocks are visible in dark mode...");
+    // Special handling for Remix tab in light mode
+    const isRemixTab = tabIdentifier.includes("remix");
 
-    // Check for code blocks with React content
-    const reactCodeVisible = await page.evaluate((minLines) => {
-      // Look for code blocks
-      const codeBlocks = document.querySelectorAll("pre code");
+    if (isRemixTab && theme === "light") {
+      logger.debug("Special handling for Remix tab in light mode");
 
-      if (codeBlocks.length === 0) {
-        console.log("No code blocks found on React tab");
-        return false;
-      }
-
-      // Try to find React-specific content
-      const reactBlock = Array.from(codeBlocks).find(
-        (block) =>
-          block.textContent.includes("React") ||
-          block.textContent.includes("useState") ||
-          block.textContent.includes("useEffect") ||
-          block.textContent.includes("useStore")
-      );
-
-      if (reactBlock) {
-        const lineCount = reactBlock.textContent.split("\n").length;
-        console.log(`Found React code block with ${lineCount} lines`);
-
-        if (lineCount < minLines) {
-          console.log("React code block doesn't have enough visible lines");
-          // Scroll to show more
-          reactBlock.scrollIntoView({ behavior: "smooth", block: "center" });
-          return false;
-        }
-
-        return true;
-      }
-
-      // If no React-specific block found, check if any code block has enough lines
-      return Array.from(codeBlocks).some((block) => {
-        const lineCount = block.textContent.split("\n").length;
-        return lineCount >= minLines;
-      });
-    }, component.minVisibleCodeLines || 5);
-
-    if (!reactCodeVisible) {
-      console.log("React code blocks not fully visible, adjusting scroll...");
-      // Scroll down to reveal code blocks
+      // Special positioning for Remix tab
       await page.evaluate(() => {
-        const codeBlocks = document.querySelectorAll("pre code");
-        if (codeBlocks.length > 0) {
-          codeBlocks[0].scrollIntoView({ behavior: "smooth", block: "center" });
-        } else {
-          // If no code blocks found, just scroll down a bit
-          window.scrollBy(0, 300);
+        // Find the heading
+        const frameworkHeading = Array.from(
+          document.querySelectorAll("h2")
+        ).find(
+          (h) =>
+            h.textContent.includes("Works with your favorite frameworks") ||
+            h.textContent.includes("Framework Integration")
+        );
+
+        if (frameworkHeading) {
+          console.log(
+            "Found framework heading, scrolling to position it at top"
+          );
+          // Calculate position to show heading at top with more margin
+          const rect = frameworkHeading.getBoundingClientRect();
+          const scrollOffset = window.scrollY + rect.top - 250;
+          window.scrollTo(0, scrollOffset);
+          return true;
         }
+        return false;
       });
-      await page.waitForTimeout(1000);
     }
-  }
 
-  // Additional scroll for better positioning
-  await page.evaluate(
-    (params) => {
-      window.scrollBy(0, -params.offset);
-    },
-    { offset: component.extraScroll || 0 }
-  );
-  await page.waitForTimeout(500);
+    // Additional scroll for better positioning
+    await page.evaluate(
+      (params) => {
+        window.scrollBy(0, -params.offset);
+      },
+      { offset: component.extraScroll || 0 }
+    );
+    await page.waitForTimeout(500);
 
-  // Get position after scrolling
-  const updatedBoundingBox = await frameworkSection.boundingBox();
+    // Get position after scrolling
+    const updatedBoundingBox = await frameworkSection.boundingBox();
 
-  // Calculate clip area
-  const padding = component.padding || 40;
-  const clip = {
-    x: Math.max(0, updatedBoundingBox.x - padding),
-    y: Math.max(0, updatedBoundingBox.y - padding * 2), // Double the top padding
-    width: Math.min(
-      page.viewportSize().width - Math.max(0, updatedBoundingBox.x - padding),
-      updatedBoundingBox.width + padding * 2
-    ),
-    height: Math.max(
-      updatedBoundingBox.height + padding * 3, // Extra padding for the height
-      component.minHeight || 0
-    ),
-  };
-
-  // Make sure we don't exceed the page dimensions
-  if (clip.y + clip.height > page.viewportSize().height) {
-    clip.height = page.viewportSize().height - clip.y - 10;
-  }
-
-  // Clean up the tab identifier for the filename
-  const safeTabId = tabIdentifier.replace(/[^\w-]/g, "").toLowerCase();
-
-  // Simplify the filename for the Traditional Remix tab
-  let finalTabId = safeTabId;
-
-  // If forceSaveAsReact is true, always use "react" as the tab identifier
-  if (component.forceSaveAsReact) {
-    finalTabId = "react";
-  } else {
-    if (component.name === "framework-section") {
-      // For framework section, always use 'react' as the identifier
-      finalTabId = "react";
-    } else if (
-      safeTabId.includes("traditional") ||
-      safeTabId.includes("remix") ||
-      tabName.includes("💿")
-    ) {
-      finalTabId = "remix";
+    if (!updatedBoundingBox) {
+      logger.warn("Could not get framework section bounding box");
+      return false;
     }
-  }
 
-  // Take the screenshot
-  const screenshotPath = path.join(
-    directories.unified,
-    `${component.name}-${finalTabId}-${theme}${
-      saveBaseline ? "" : "-" + timestamp
-    }.png`
-  );
+    // Calculate clip area
+    const padding = component.padding || 40;
+    const clip = {
+      x: Math.max(0, updatedBoundingBox.x - padding),
+      y: Math.max(0, updatedBoundingBox.y - padding * 2),
+      width: Math.min(
+        page.viewportSize().width - Math.max(0, updatedBoundingBox.x - padding),
+        updatedBoundingBox.width + padding * 2
+      ),
+      height: Math.max(
+        updatedBoundingBox.height + padding * 3,
+        component.minHeight || 0
+      ),
+    };
 
-  await page.screenshot({
-    path: screenshotPath,
-    clip,
-  });
+    // Make sure we don't exceed the page dimensions
+    if (clip.y + clip.height > page.viewportSize().height) {
+      clip.height = page.viewportSize().height - clip.y - 10;
+    }
 
-  console.log(`Framework tab screenshot saved to: ${screenshotPath}`);
+    // Verify clip dimensions are positive
+    if (clip.width <= 0 || clip.height <= 0) {
+      logger.error(
+        `Invalid clip dimensions: width=${clip.width}, height=${clip.height}`
+      );
+      return false;
+    }
 
-  // Resume animations if they were paused
-  await manageAnimations(page, "resume", component);
-
-  // If this is the Remix tab and React tab couldn't be found, create a React file too
-  if (finalTabId === "remix" && component.simulateReactTab) {
-    const reactPath = path.join(
+    // Take the screenshot
+    const screenshotPath = path.join(
       directories.unified,
-      `${component.name}-react-${theme}${
+      `${component.name}-${tabIdentifier}-${theme}${
         saveBaseline ? "" : "-" + timestamp
       }.png`
     );
 
-    // Copy the file to create a React version
-    fs.copyFileSync(screenshotPath, reactPath);
-    console.log(`Created simulated React tab screenshot: ${reactPath}`);
+    await page.screenshot({
+      path: screenshotPath,
+      clip,
+    });
+
+    logger.success(`Framework tab screenshot saved to: ${screenshotPath}`);
+
+    // Resume animations if they were paused
+    await manageAnimations(page, "resume", component);
+
+    return true;
+  } catch (error) {
+    logger.error(`Error capturing ${tabIdentifier} tab: ${error.message}`);
+
+    // Resume animations even if the screenshot failed
+    try {
+      await manageAnimations(page, "resume", component);
+    } catch (e) {
+      // Ignore errors in animation resuming
+    }
+
+    return false;
   }
 }
 
