@@ -200,7 +200,11 @@ export default function TodosPage() {
   const lineHighlight = getLineHighlightString();
 
   return (
-    <section id="remix-integration" className={styles.container}>
+    <section
+      id="remix-integration"
+      className={styles.container}
+      data-testid="jods-remix-section"
+    >
       <div className={styles.header}>
         <h2 className={styles.title}>
           <span className={styles.remix}>

@@ -81,7 +81,11 @@ ${JSON.stringify(snapshot, null, 2)}
 */`;
 
   return (
-    <section className="features-container" id="try-jods-live">
+    <section
+      className="features-container"
+      id="try-jods-live"
+      data-testid="jods-try-live-section"
+    >
       <div className="container">
         <h2 className="section-title">
           🚀 Try jods <span className="gradient-text">live</span> 🧑‍💻

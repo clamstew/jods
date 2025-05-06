@@ -20,7 +20,11 @@ export default function HomepageHero(): React.ReactElement {
   };
 
   return (
-    <div className="hero-container" ref={containerRef}>
+    <div
+      className="hero-container"
+      ref={containerRef}
+      data-testid="jods-hero-section"
+    >
       {/* Background animations (JSON, emojis, fireflies) */}
       <BackgroundAnimations
         containerRef={containerRef}

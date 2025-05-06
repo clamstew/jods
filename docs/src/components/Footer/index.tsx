@@ -6,7 +6,7 @@ import { FooterBackground } from "./FooterBackground";
 
 export default function Footer(): React.ReactElement {
   return (
-    <footer className="footer">
+    <footer className="footer" data-testid="jods-footer">
       {/* Background effects */}
       <FooterBackground />
 

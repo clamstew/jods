@@ -114,6 +114,7 @@ function Counter() {
       className="features-container"
       id="framework-showcase"
       style={{ background: "var(--ifm-background-surface-color)" }}
+      data-testid="jods-framework-section"
     >
       <div className="container">
         <h2 className="section-title">

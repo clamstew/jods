@@ -28,7 +28,11 @@ function Feature({
 
 export default function FeatureHighlights(): React.ReactElement {
   return (
-    <section className={styles.featuresContainer} id="features">
+    <section
+      className={styles.featuresContainer}
+      id="features"
+      data-testid="jods-features-section"
+    >
       <div className="container">
         <h2 className={styles.sectionTitle}>
           ⚡️Powerful features,{" "}
