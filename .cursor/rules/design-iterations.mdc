@@ -1,11 +1,18 @@
 ---
 description: Guidelines for using the design iterations workflow for UI components
-globs: ["**/*.tsx", "**/*.jsx", "**/*.js", "**/*.ts", "**/design-iterations/**/*"]
+globs: ["docs/**/*.tsx", "docs/**/*.jsx", "docs/**/*.ts", "docs/**/*.js", "docs/**/*.md"]
 alwaysApply: false
 ---
 # Design Iterations System
 
 The Design Iterations system is a powerful workflow that combines Playwright screenshots with AI assistance to rapidly evolve UI components through multiple iterations.
+
+## Quick Start
+
+```bash
+# Generate design iterations for a specific target only
+pnpm docs:design-iterations:count-5 --target="features-section" --prompt="Reimagine with bold visual hierarchy" --skip-other-sections
+```
 
 ## AI-Driven Workflow
 
@@ -27,54 +34,60 @@ When a user asks about design iterations, you should:
    - Typography focus (improved hierarchy, readability)
    - Special elements (animations, interactions, visuals)
 
-3. **Run appropriate commands** using the consistent syntax:
+3. **Run appropriate commands** with proper prefix:
 
-   - Generate iterations: `pnpm design-iterations:count-3 --target="component-name" --prompt="design direction"`
-   - Generate refined iteration: `pnpm design-iterations:refine --target="component-name"`
-   - Apply iteration: `pnpm design-iterations:apply --iteration=N --target="component-name"`
-   - Check status: `pnpm design-iterations:status`
-   - Cleanup: `pnpm design-iterations:cleanup`
+   ```bash
+   # Generate iterations for ONLY the target component
+   pnpm docs:design-iterations:count-5 --target="component-name" --prompt="detailed design direction" --skip-other-sections
+   
+   # Refine a specific iteration
+   pnpm docs:design-iterations:refine --target="component-name"
+   
+   # Apply the chosen design
+   pnpm docs:design-iterations:apply --iteration=N --target="component-name"
+   
+   # Check status of iterations
+   pnpm docs:design-iterations:status
+   
+   # Clean up design artifacts when done
+   pnpm docs:design-iterations:cleanup
+   ```
 
-4. **Guide through the workflow**:
-   - Explain where to find screenshots (both in `static/screenshots/unified/` and `temp/design-iterations/iteration-N/screenshots/`)
-   - Help interpret the different iterations
-   - Guide on providing effective feedback
-   - Recommend refinements based on feedback
-   - Assist with applying the final design
+4. **Pre-populate design feedback** - For each iteration:
+   - Review the generated screenshots
+   - Document design observations in the feedback template
+   - Provide a summary of each variation's "vibe" and design choices
+   - Highlight key differences between iterations
 
-## Command Examples
+## Understanding Generated Artifacts
 
-```bash
-# Generate 3 initial iterations with specific design direction
-pnpm design-iterations:count-3 --target="features-section" --prompt="Create a modern design with improved spacing and subtle gradients"
+Each design iteration generates:
 
-# Generate a refined iteration based on feedback
-pnpm design-iterations:refine --target="features-section"
-
-# Apply the chosen design
-pnpm design-iterations:apply --iteration=2 --target="features-section"
-```
+- Timestamped screenshots in `docs/static/screenshots/unified/XX-component-name-{light|dark}-{timestamp}.png`
+- Copies of screenshots in `temp/design-iterations/iteration-N/screenshots/`
+- Diffs in `temp/design-iterations/iteration-N/diff.patch` and `temp/possible-diffs/`
+- Feedback template in `temp/design-iterations/iteration-N/feedback-template.md`
+- Metadata in `temp/design-iterations/iteration-N/metadata.json`
 
 ## Best Practices
 
-1. Start with 3-5 distinct design approaches
-2. Provide specific, actionable feedback for each iteration
-3. Review both light and dark mode versions
-4. Consider mobile responsiveness
-5. Use design vocabulary in feedback to clarify intentions
-6. Rate iterations numerically to track preferences
-7. Clean up old iterations periodically
+1. Only generate screenshots for the target section, not the entire page
+2. Use existing baseline images in `docs/static/screenshots/unified/` for context
+3. Review the screenshots and provide specific feedback for each iteration
+4. Consider both light and dark mode versions
+5. Apply the final design when satisfied
+6. Clean up iterations when complete
 
 ## Common Issues
 
-- If screenshots aren't generating, recommend:
+- If screenshots aren't generating correctly, try:
   - Check Playwright installation: `npx playwright install chromium`
-  - Try verbose logging: `DEBUG=1 pnpm design-iterations --count=1 --target="features-section"`
+  - Try verbose logging: `DEBUG=1 pnpm docs:design-iterations:count-1 --target="features-section"`
   - Ensure docs site is running: `pnpm start`
 
 - If applying designs fails:
   - Check for uncommitted changes: `git status`
-  - Try force flag: `pnpm design-iterations:apply --iteration=N --target="component-name" --force`
+  - Try force flag: `pnpm docs:design-iterations:apply --iteration=N --target="component-name" --force`
 
 @docs/scripts/design-iterations.mjs
 @docs/scripts/design-iterations-init.mjs
