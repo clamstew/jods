@@ -29,7 +29,7 @@ Before starting:
 Start by generating several design variations for a specific UI component:
 
 ```bash
-pnpm design-iterations --count=3 --target="features-section"
+pnpm design-iterations:count-3 --target="features-section"
 ```
 
 This command:
@@ -108,7 +108,7 @@ The overall direction is promising, but needs refinement for dark mode.
 Once you've reviewed and provided feedback, generate a refined iteration:
 
 ```bash
-pnpm design-iterations --count=1 --target="features-section" --refine
+pnpm design-iterations:refine --target="features-section"
 ```
 
 The `--refine` flag tells the system to:
@@ -124,7 +124,7 @@ You can repeat this refinement process multiple times until you're satisfied wit
 When you've found a design you're happy with, apply it to your codebase:
 
 ```bash
-pnpm design-iterations --iteration=4 --target="features-section" --apply
+pnpm design-iterations:apply --iteration=4 --target="features-section"
 ```
 
 This applies the changes from iteration 4 to your codebase. It's recommended to:
@@ -137,7 +137,7 @@ This applies the changes from iteration 4 to your codebase. It's recommended to:
 If needed, you can force the application even with uncommitted changes:
 
 ```bash
-pnpm design-iterations --iteration=4 --target="features-section" --apply --force
+pnpm design-iterations:apply --iteration=4 --target="features-section" --force
 ```
 
 ## Step 5: Cleanup
@@ -145,7 +145,7 @@ pnpm design-iterations --iteration=4 --target="features-section" --apply --force
 After finalizing your design:
 
 ```bash
-pnpm design-iterations --cleanup
+pnpm design-iterations:cleanup
 ```
 
 This removes temporary files and old screenshots to keep your workspace clean.
@@ -153,7 +153,7 @@ This removes temporary files and old screenshots to keep your workspace clean.
 You can preview what would be deleted without removing anything:
 
 ```bash
-pnpm design-iterations --cleanup --dry-run
+pnpm design-iterations:cleanup --dry-run
 ```
 
 ## 🔍 Checking Design Iteration Status
@@ -202,23 +202,23 @@ Here's a complete workflow example:
 
 ```bash
 # Generate 3 initial iterations of the features section
-pnpm design-iterations --count=3 --target="features-section"
+pnpm design-iterations:count-3 --target="features-section"
 
 # Review the screenshots and fill out feedback
 
 # Create 1 refined iteration based on feedback
-pnpm design-iterations --count=1 --target="features-section" --refine
+pnpm design-iterations:refine --target="features-section"
 
 # Review the refined design
 
 # If needed, make one more refinement
-pnpm design-iterations --count=1 --target="features-section" --refine
+pnpm design-iterations:refine --target="features-section"
 
 # Apply the final design (iteration 5)
-pnpm design-iterations --iteration=5 --target="features-section" --apply
+pnpm design-iterations:apply --iteration=5 --target="features-section"
 
 # Clean up
-pnpm design-iterations --cleanup
+pnpm design-iterations:cleanup
 ```
 
 ## 🔧 Troubleshooting

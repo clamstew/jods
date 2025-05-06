@@ -24,7 +24,7 @@ Design iterations allow you to:
 
 ```bash
 # From the /docs directory, run:
-pnpm design-iterations --count=3 --target="features-section"
+pnpm design-iterations:count-3 --target="features-section"
 ```
 
 ### Step 2: Review the Screenshots
@@ -59,14 +59,14 @@ Edit the generated feedback template in the terminal or your editor:
 
 ```bash
 # Run another iteration based on your feedback:
-pnpm design-iterations --count=2 --target="features-section" --refine
+pnpm design-iterations:refine --target="features-section"
 ```
 
 ### Step 5: Apply Your Favorite Design
 
 ```bash
 # Apply the design you prefer:
-pnpm design-iterations --iteration=2 --target="features-section" --apply
+pnpm design-iterations:apply --iteration=2 --target="features-section"
 ```
 
 <div className="workflow-diagram">
@@ -85,13 +85,13 @@ pnpm design-iterations --iteration=2 --target="features-section" --apply
 
 The following UI components can be targeted for design iterations:
 
-| Target                    | Description                   | Example Command                                                       |
-| ------------------------- | ----------------------------- | --------------------------------------------------------------------- |
-| `hero-section`            | Main hero section on homepage | `pnpm design-iterations --count=3 --target="hero-section"`            |
-| `features-section`        | Features grid on homepage     | `pnpm design-iterations --count=3 --target="features-section"`        |
-| `framework-section-react` | React framework comparison    | `pnpm design-iterations --count=3 --target="framework-section-react"` |
-| `framework-section-remix` | Remix framework section       | `pnpm design-iterations --count=3 --target="framework-section-remix"` |
-| `compare-section`         | Library comparison section    | `pnpm design-iterations --count=3 --target="compare-section"`         |
+| Target                    | Description                   | Example Command                                                     |
+| ------------------------- | ----------------------------- | ------------------------------------------------------------------- |
+| `hero-section`            | Main hero section on homepage | `pnpm design-iterations:count-3 --target="hero-section"`            |
+| `features-section`        | Features grid on homepage     | `pnpm design-iterations:count-3 --target="features-section"`        |
+| `framework-section-react` | React framework comparison    | `pnpm design-iterations:count-3 --target="framework-section-react"` |
+| `framework-section-remix` | Remix framework section       | `pnpm design-iterations:count-3 --target="framework-section-remix"` |
+| `compare-section`         | Library comparison section    | `pnpm design-iterations:count-3 --target="compare-section"`         |
 
 ## 💡 Best Practices
 

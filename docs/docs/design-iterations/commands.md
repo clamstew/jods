@@ -11,33 +11,31 @@ This guide provides a comprehensive reference for all the commands available in 
 ### Generate Design Iterations
 
 ```bash
-pnpm design-iterations --count=<number> --target="<component-name>"
+pnpm design-iterations:count-<number> --target="<component-name>"
 ```
 
 Generates design variations for the specified target component.
 
-| Parameter        | Description                                           | Default                                                      |
-| ---------------- | ----------------------------------------------------- | ------------------------------------------------------------ |
-| `--count`        | Number of iterations to generate                      | `1`                                                          |
-| `--target`       | Target component(s) to redesign (comma-separated)     | All available targets                                        |
-| `--prompt`       | Custom design prompt to guide the AI                  | "Improve the visual design while maintaining brand identity" |
-| `--compare-with` | Libraries to compare with (comma-separated)           | `[]`                                                         |
-| `--refine`       | Generate refined iteration based on previous feedback | `false`                                                      |
+| Parameter        | Description                                       | Default                                                      |
+| ---------------- | ------------------------------------------------- | ------------------------------------------------------------ |
+| `--target`       | Target component(s) to redesign (comma-separated) | All available targets                                        |
+| `--prompt`       | Custom design prompt to guide the AI              | "Improve the visual design while maintaining brand identity" |
+| `--compare-with` | Libraries to compare with (comma-separated)       | `[]`                                                         |
 
 **Examples:**
 
 ```bash
 # Generate 3 iterations of the hero section
-pnpm design-iterations --count=3 --target="hero-section"
+pnpm design-iterations:count-3 --target="hero-section"
 
-# Generate 2 iterations of multiple components
+# Generate 2 iterations with the base command and count flag
 pnpm design-iterations --count=2 --target="hero-section,features-section"
 
 # Generate iteration with custom design direction
 pnpm design-iterations --count=1 --target="hero-section" --prompt="Make it more minimal with elegant typography"
 
 # Generate refined iteration based on previous feedback
-pnpm design-iterations --count=1 --target="features-section" --refine
+pnpm design-iterations:refine --target="features-section"
 ```
 
 ### Apply Design Iteration
@@ -126,7 +124,7 @@ Clears browser cache to ensure clean screenshots in the next iteration.
 ### Rebaseline Screenshots
 
 ```bash
-pnpm design-iterations:rebaseline --iteration=<number> --target="<component-name>"
+pnpm rebaseline --iteration=<number> --target="<component-name>"
 ```
 
 Updates the baseline screenshots with a specific iteration's screenshots.
@@ -140,7 +138,7 @@ Updates the baseline screenshots with a specific iteration's screenshots.
 
 ```bash
 # Update baseline screenshots with iteration 5
-pnpm design-iterations:rebaseline --iteration=5 --target="hero-section,features-section"
+pnpm rebaseline --iteration=5 --target="hero-section,features-section"
 ```
 
 ## Command Options in Detail
