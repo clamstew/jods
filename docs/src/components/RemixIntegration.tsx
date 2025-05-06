@@ -213,7 +213,8 @@ export default function TodosPage() {
             </span>{" "}
             Remix
           </span>{" "}
-          State, Reimagined
+          <span className={styles.stateText}>State</span>,{" "}
+          <span className={styles.reimaginedText}>Reimagined</span>
         </h2>
         <p className={styles.subtitle}>
           <span className={styles.highlight}>
