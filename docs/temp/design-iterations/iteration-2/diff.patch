@@ -1,215 +1,50 @@
-diff --git a/docs/temp/design-iterations/iteration-1/diff.patch b/docs/temp/design-iterations/iteration-1/diff.patch
-index 178056c..e69de29 100644
---- a/docs/temp/design-iterations/iteration-1/diff.patch
-+++ b/docs/temp/design-iterations/iteration-1/diff.patch
-@@ -1,94 +0,0 @@
--diff --git a/docs/docs/design-iterations/index.md b/docs/docs/design-iterations/index.md
--index 5ea15ec..872a3a4 100644
----- a/docs/docs/design-iterations/index.md
--+++ b/docs/docs/design-iterations/index.md
--@@ -18,20 +18,59 @@ Design iterations allow you to:
-- - **Maintain a visual history** of your design evolution
-- - **Apply your favorite designs** with simple commands
-- 
---## 🚀 Quick Start
--+## 🚀 Quick Start Guide
--+
--+### Step 1: Generate Initial Designs
-- 
-- ```bash
-- # From the /docs directory, run:
-- pnpm design-iterations --count=3 --target="features-section"
--+```
--+
--+### Step 2: Review the Screenshots
--+
--+Screenshots are saved in `static/screenshots/design-iterations/{timestamp}/`
--+
--+Each iteration includes:
--+
--+- Light mode screenshot
--+- Dark mode screenshot
--+- Visual differences from baseline
--+
--+### Step 3: Provide Feedback
--+
--+Edit the generated feedback template in the terminal or your editor:
--+
--+```
--+# Iteration 1 Feedback
--+## Strengths
--+- Clean layout
--+- Good use of color
--+
--+## Areas for Improvement
--+- Header font size too small
--+- Spacing between cards inconsistent
--+```
--+
--+### Step 4: Generate Refined Designs
-- 
---# Review the screenshots and provide feedback in the generated template
---# Then run another iteration if needed:
---pnpm design-iterations --count=1 --target="features-section" --refine
--+```bash
--+# Run another iteration based on your feedback:
--+pnpm design-iterations --count=2 --target="features-section" --refine
-- ```
-- 
---## 📚 Guide Contents
--+### Step 5: Apply Your Favorite Design
--+
--+```bash
--+# Apply the design you prefer:
--+pnpm design-iterations --apply="iteration-2" --target="features-section"
--+```
--+
--+<div className="workflow-diagram">
--+  <img src="/jods/img/design-iteration-flow.png" alt="Design Iteration Workflow" />
--+</div>
-- 
---This guide covers the complete Design Iterations workflow:
--+## 📚 Complete Documentation
-- 
-- 1. [**Complete Workflow**](./workflow.md) - Step-by-step guide to using design iterations
-- 2. [**AI-Assisted Design**](./with-ai.md) - How AI powers the design iteration process
--@@ -39,15 +78,17 @@ This guide covers the complete Design Iterations workflow:
-- 4. [**Feedback System**](./feedback.md) - How to provide structured feedback
-- 5. [**Screenshot System**](./screenshot-system/index.md) - The foundation for capturing and comparing UI components
-- 
---## 🎯 Available Targets
--+## 🎯 Available Design Targets
-- 
-- The following UI components can be targeted for design iterations:
-- 
---- `hero-section` - The main hero section on the homepage
---- `features-section` - The features grid on the homepage
---- `framework-section-react` - The React framework comparison section
---- `framework-section-remix` - The Remix framework section
---- `compare-section` - The comparison section with other libraries
--+| Target                    | Description                   | Example Command                                                       |
--+| ------------------------- | ----------------------------- | --------------------------------------------------------------------- |
--+| `hero-section`            | Main hero section on homepage | `pnpm design-iterations --count=3 --target="hero-section"`            |
--+| `features-section`        | Features grid on homepage     | `pnpm design-iterations --count=3 --target="features-section"`        |
--+| `framework-section-react` | React framework comparison    | `pnpm design-iterations --count=3 --target="framework-section-react"` |
--+| `framework-section-remix` | Remix framework section       | `pnpm design-iterations --count=3 --target="framework-section-remix"` |
--+| `compare-section`         | Library comparison section    | `pnpm design-iterations --count=3 --target="compare-section"`         |
-- 
-- ## 💡 Best Practices
-- 
 diff --git a/docs/temp/design-iterations/iteration-1/feedback-template.md b/docs/temp/design-iterations/iteration-1/feedback-template.md
-index 03b993a..17fe9aa 100644
+index 17fe9aa..ffb4f0a 100644
 --- a/docs/temp/design-iterations/iteration-1/feedback-template.md
 +++ b/docs/temp/design-iterations/iteration-1/feedback-template.md
-@@ -4,45 +4,42 @@
+@@ -4,7 +4,7 @@
  
  - **Date:** 2025-05-06
  - **Components:** features-section
--- **Timestamp:** 20250506T190715
-+- **Timestamp:** 20250506T200909
+-- **Timestamp:** 20250506T200909
++- **Timestamp:** 20250506T202136
  
  ## Screenshots
  
- ### features-section
--
- - Light theme: [Path to light theme screenshot]
- - Dark theme: [Path to dark theme screenshot]
- 
- #### Feedback
--
- - **What works well:**
--
--  -
--  -
--  -
-+  - 
-+  - 
-+  - 
- 
- - **What could be improved:**
--
--  -
--  -
--  -
-+  - 
-+  - 
-+  - 
- 
- - **General notes:**
-+  
- 
- #### Rating: [1-10]
- 
-+
-+
- ## Summary and Decision
- 
- ### Overall Preferences
--
- - **Favorite component design:**
- - **Best visual elements:**
--  -
--  -
--  -
-+  - 
-+  - 
-+  - 
- 
- ### Implementation Plan
--
- - [ ] Proceed with current designs as is
- - [ ] Create new iterations with specific focus
- - [ ] Combine elements from different iterations
-@@ -50,7 +47,6 @@
- ### Additional Notes
- 
- ### Baseline Decision
--
- - [ ] Approved for baseline update
- - [ ] Not approved for baseline update
- - [ ] Pending additional refinements before baseline approval
 diff --git a/docs/temp/design-iterations/iteration-1/metadata.json b/docs/temp/design-iterations/iteration-1/metadata.json
-index 0d3affc..adc44a3 100644
+index adc44a3..dc27f6a 100644
 --- a/docs/temp/design-iterations/iteration-1/metadata.json
 +++ b/docs/temp/design-iterations/iteration-1/metadata.json
 @@ -1,10 +1,10 @@
  {
    "iteration": 1,
--  "timestamp": "2025-05-06T19:07:15.864Z",
-+  "timestamp": "2025-05-06T20:09:09.167Z",
+-  "timestamp": "2025-05-06T20:09:09.167Z",
++  "timestamp": "2025-05-06T20:21:36.471Z",
    "targets": [
      "features-section"
    ],
--  "screenshotTimestamp": "20250506T190715",
-+  "screenshotTimestamp": "20250506T200909",
+-  "screenshotTimestamp": "20250506T200909",
++  "screenshotTimestamp": "20250506T202136",
    "changes": [
      {
        "component": "features-section",
-@@ -16,18 +16,23 @@
-       "reasoning": "Placeholder reasoning - would come from AI"
-     }
+@@ -18,8 +18,8 @@
    ],
--  "diffInfo": {},
-+  "diffInfo": {
-+    "features-section": {
-+      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/features-section-20250506T200909.diff",
-+      "diffFileName": "features-section-20250506T200909.diff"
-+    }
-+  },
+   "diffInfo": {
+     "features-section": {
+-      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/features-section-20250506T200909.diff",
+-      "diffFileName": "features-section-20250506T200909.diff"
++      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/features-section-20250506T202136.diff",
++      "diffFileName": "features-section-20250506T202136.diff"
+     }
+   },
    "config": {
--    "count": 3,
-+    "count": 5,
-     "targets": [
+@@ -28,7 +28,7 @@
        "features-section"
      ],
      "compareWith": [],
--    "aiPrompt": "Improve the visual design while maintaining brand identity",
-+    "aiPrompt": "Reimagine the 'Powerful features, minimal API' section with bold visual hierarchy, emphasizing the Remix integration from PR #22. Consider different layout structures, typography scales, and visual elements that highlight both core features and the new Remix capabilities.",
+-    "aiPrompt": "Reimagine the 'Powerful features, minimal API' section with bold visual hierarchy, emphasizing the Remix integration from PR #22. Consider different layout structures, typography scales, and visual elements that highlight both core features and the new Remix capabilities.",
++    "aiPrompt": "Reimagine the 'Powerful features, minimal API' section with bold visual hierarchy, emphasizing the Remix integration from PR #22. Create modern layouts with improved spacing, typography, and visual elements that highlight both core features and the new Remix capabilities.",
      "requireSignoff": true,
      "apply": false,
      "iteration": null,
--    "refine": true,
-+    "refine": false,
-     "status": false,
-     "cleanup": false,
-     "force": false
