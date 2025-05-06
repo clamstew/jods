@@ -11,40 +11,74 @@ The Design Iterations system is a powerful workflow that combines Playwright scr
 
 ```bash
 # Generate design iterations for a specific target only
-pnpm docs:design-iterations:count-5 --target="features-section" --prompt="Reimagine with bold visual hierarchy" --skip-other-sections
+pnpm docs:design-iterations:count-5 --target="try-jods-section" --prompt="Reimagine with bold visual hierarchy" --skip-other-sections
 ```
+
+## Important: Component Name Formats
+
+You can use either the simple name or the full name with numeric prefix:
+
+```bash
+# These are equivalent:
+pnpm docs:design-iterations:count-5 --target="try-jods-section" --skip-other-sections
+pnpm docs:design-iterations:count-5 --target="03-try-jods-section" --skip-other-sections
+```
+
+Available component names:
+- `hero-section` or `01-hero-section`
+- `features-section` or `02-features-section`
+- `try-jods-section` or `03-try-jods-section`
+- `framework-section-react` or `04-framework-section-react`
+- `framework-section-remix` or `04-framework-section-remix`
+- `remix-section` or `05-remix-section`
+- `compare-section` or `06-compare-section`
+- `footer-section` or `07-footer-section`
+
+## Important: Using --skip-other-sections Flag
+
+The `--skip-other-sections` flag is **crucial** when you want to focus on a single component without affecting or capturing other sections:
+
+```bash
+# CORRECT: Focus ONLY on the specified target
+pnpm docs:design-iterations:count-5 --target="try-jods-section" --skip-other-sections
+
+# INCORRECT: Will generate screenshots for ALL sections
+pnpm docs:design-iterations:count-5 --target="try-jods-section"
+```
+
+This is essential to avoid the workflow generating unnecessary files for sections you're not changing.
 
 ## AI-Driven Workflow
 
 When a user asks about design iterations, you should:
 
-1. **Understand their target component** - Common targets include:
-
+1. **Understand their target component** using the simplified names:
    - `hero-section` - Main hero section on homepage
    - `features-section` - Features grid on homepage
+   - `try-jods-section` - Interactive demo section 
    - `framework-section-react` - React framework comparison
    - `framework-section-remix` - Remix framework section
+   - `remix-section` - Remix integration section
    - `compare-section` - Library comparison section
+   - `footer-section` - Footer section
 
 2. **Interpret design direction** - Extract design goals from their prompt:
-
    - Visual style (minimal, bold, modern, elegant)
    - Spacing preferences (tight, spacious, balanced)
    - Color themes (vibrant, subtle, monochrome, gradients)
    - Typography focus (improved hierarchy, readability)
    - Special elements (animations, interactions, visuals)
 
-3. **Run appropriate commands** with proper prefix:
-
+3. **Run appropriate commands** with proper flags:
    ```bash
-   # Generate iterations for ONLY the target component
-   pnpm docs:design-iterations:count-5 --target="component-name" --prompt="detailed design direction" --skip-other-sections
+   # Generate iterations for ONLY the target component (most important)
+   pnpm docs:design-iterations:count-5 --target="try-jods-section" --prompt="detailed design direction" --skip-other-sections
    
    # Refine a specific iteration
-   pnpm docs:design-iterations:refine --target="component-name"
+   pnpm docs:design-iterations:refine --target="try-jods-section"
    
    # Apply the chosen design
-   pnpm docs:design-iterations:apply --iteration=N --target="component-name"
+   pnpm docs:design-iterations:apply --iteration=N --target="try-jods-section"
    
    # Check status of iterations
    pnpm docs:design-iterations:status
@@ -59,36 +93,51 @@ When a user asks about design iterations, you should:
    - Provide a summary of each variation's "vibe" and design choices
    - Highlight key differences between iterations
 
-## Understanding Generated Artifacts
+## Expected Artifacts
 
-Each design iteration generates:
+Each design iteration generates these artifacts:
 
-- Timestamped screenshots in `docs/static/screenshots/unified/XX-component-name-{light|dark}-{timestamp}.png`
-- Copies of screenshots in `temp/design-iterations/iteration-N/screenshots/`
-- Diffs in `temp/design-iterations/iteration-N/diff.patch` and `temp/possible-diffs/`
-- Feedback template in `temp/design-iterations/iteration-N/feedback-template.md`
-- Metadata in `temp/design-iterations/iteration-N/metadata.json`
+1. **Screenshots in two places**:
+   - Primary: `docs/static/screenshots/unified/03-try-jods-section-{light|dark}-{timestamp}.png`
+   - Backup: `docs/temp/design-iterations/iteration-N/screenshots/`
+
+2. **Debug HTML** (for inspection):
+   - `docs/static/debug/03-try-jods-section-{light|dark}-debug.html`
+
+3. **Diff files** (for tracking changes):
+   - `docs/temp/design-iterations/iteration-N/diff.patch`
+   - `docs/temp/possible-diffs/03-try-jods-section-{timestamp}.diff`
+
+4. **Documentation**:
+   - `docs/temp/design-iterations/iteration-N/feedback-template.md`
+   - `docs/temp/design-iterations/iteration-N/metadata.json`
 
 ## Best Practices
 
-1. Only generate screenshots for the target section, not the entire page
-2. Use existing baseline images in `docs/static/screenshots/unified/` for context
-3. Review the screenshots and provide specific feedback for each iteration
-4. Consider both light and dark mode versions
-5. Apply the final design when satisfied
-6. Clean up iterations when complete
+1. **Always use the `--skip-other-sections` flag** when targeting specific components
+2. **Use simple component names** without number prefixes (e.g., `try-jods-section`)
+3. Generate 3-5 iterations for meaningful exploration
+4. Review both light and dark mode versions
+5. Use the debug HTML files to inspect component structure
+6. Apply chosen designs with `docs:design-iterations:apply`
+7. Clean up with `docs:design-iterations:cleanup` when finished
 
 ## Common Issues
 
-- If screenshots aren't generating correctly, try:
-  - Check Playwright installation: `npx playwright install chromium`
-  - Try verbose logging: `DEBUG=1 pnpm docs:design-iterations:count-1 --target="features-section"`
-  - Ensure docs site is running: `pnpm start`
+- **Too many screenshots generated**: Make sure to use `--skip-other-sections`
+- **Component not found**: Check the component name - use simple names without numeric prefixes
+- **Missing screenshots**: Ensure the docs site is running with `pnpm start`
+- **Apply errors**: Check for uncommitted changes with `git status`
 
-- If applying designs fails:
-  - Check for uncommitted changes: `git status`
-  - Try force flag: `pnpm docs:design-iterations:apply --iteration=N --target="component-name" --force`
+## DocuSaurus Documentation
+
+For more information on the design iterations workflow, see the [official documentation](https://docs.jods.io/design-iterations/workflow):
+
+- **Component Structure**: Each component has a structured naming system and specific selectors
+- **Workflow Process**: Step-by-step process from ideation to implementation
+- **Best Practices**: Guidelines for effective design iteration
+- **Troubleshooting**: Solutions for common issues
 
 @docs/scripts/design-iterations.mjs
-@docs/scripts/design-iterations-init.mjs
-@docs/docs/design-iterations/workflow.md
+@docs/scripts/screenshot-unified.mjs
+@docs/docs/design-iterations/index.md

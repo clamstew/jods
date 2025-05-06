@@ -36,6 +36,57 @@ const retry = setupRetry(logger);
 const config = getConfiguration();
 
 /**
+ * Map simplified component names to their full names with numeric prefixes
+ * @param {string} simpleName - Simplified component name (e.g., "try-jods-section")
+ * @param {Array} components - Available components
+ * @returns {string} Full component name with prefix or original if not found
+ */
+function mapSimplifiedName(simpleName, components) {
+  // If the name already has a numeric prefix (e.g., "03-try-jods-section"), return it as is
+  if (/^\d{2}-/.test(simpleName)) {
+    return simpleName;
+  }
+
+  // Map of simplified names to their prefixed counterparts
+  const knownMappings = {
+    "hero-section": "01-hero-section",
+    "features-section": "02-features-section",
+    "try-jods-section": "03-try-jods-section",
+    "framework-section-react": "04-framework-section-react",
+    "framework-section-remix": "04-framework-section-remix",
+    "remix-section": "05-remix-section",
+    "compare-section": "06-compare-section",
+    "footer-section": "07-footer-section",
+  };
+
+  // Check if we have a direct mapping
+  if (knownMappings[simpleName]) {
+    logger.info(
+      `Mapped simplified name "${simpleName}" to "${knownMappings[simpleName]}"`
+    );
+    return knownMappings[simpleName];
+  }
+
+  // If no direct mapping, search through components for a match
+  for (const component of components) {
+    // Strip numeric prefix from component name
+    const strippedName = component.name.replace(/^\d{2}-/, "");
+    if (strippedName === simpleName) {
+      logger.info(
+        `Mapped simplified name "${simpleName}" to "${component.name}"`
+      );
+      return component.name;
+    }
+  }
+
+  // If no mapping found, return original name
+  logger.warn(
+    `No mapping found for simplified name "${simpleName}", using as is`
+  );
+  return simpleName;
+}
+
+/**
  * Load components from available sources
  * @param {boolean} useGeneratedSelectors - Whether to use generated selectors
  * @param {boolean} mergeSelectors - Whether to merge with existing selectors
@@ -125,13 +176,18 @@ function selectComponents(
   let componentsToCapture = [];
 
   if (specificComponents && specificComponents.length > 0) {
+    // Map any simplified component names to their full names with prefixes
+    const mappedComponents = specificComponents.map((name) =>
+      mapSimplifiedName(name, components)
+    );
+
     // Specific named components take priority
     componentsToCapture = components.filter((component) =>
-      specificComponents.includes(component.name)
+      mappedComponents.includes(component.name)
     );
 
     // Check if any components weren't found
-    const missingComponents = specificComponents.filter(
+    const missingComponents = mappedComponents.filter(
       (name) => !componentsToCapture.some((comp) => comp.name === name)
     );
 
@@ -166,8 +222,9 @@ function selectComponents(
         (component) => component.name === "remix-section"
       );
     } else {
-      // Try to interpret mode as a specific component name
-      const component = getComponentByName(mode, components);
+      // Try to interpret mode as a specific component name (with prefix mapping)
+      const mappedMode = mapSimplifiedName(mode, components);
+      const component = getComponentByName(mappedMode, components);
       if (component) {
         componentsToCapture = [component];
       }

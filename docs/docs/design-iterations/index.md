@@ -101,6 +101,7 @@ pnpm design-iterations:apply --iteration=2 --target="features-section"
 3. [**Command Reference**](./commands.md) - Detailed command documentation
 4. [**Feedback System**](./feedback.md) - How to provide structured feedback
 5. [**Screenshot System**](./screenshot-system/index.md) - The foundation for capturing and comparing UI components
+6. [**Simplified Names**](./simplified-names.md) - Using component names without numeric prefixes
 
 ## 🎯 Available Design Targets
 
@@ -110,9 +111,16 @@ The following UI components can be targeted for design iterations:
 | ------------------------- | ----------------------------- | ------------------------------------------------------------------- |
 | `hero-section`            | Main hero section on homepage | `pnpm design-iterations:count-3 --target="hero-section"`            |
 | `features-section`        | Features grid on homepage     | `pnpm design-iterations:count-3 --target="features-section"`        |
+| `try-jods-section`        | Interactive demo section      | `pnpm design-iterations:count-3 --target="try-jods-section"`        |
 | `framework-section-react` | React framework comparison    | `pnpm design-iterations:count-3 --target="framework-section-react"` |
 | `framework-section-remix` | Remix framework section       | `pnpm design-iterations:count-3 --target="framework-section-remix"` |
+| `remix-section`           | Remix integration section     | `pnpm design-iterations:count-3 --target="remix-section"`           |
 | `compare-section`         | Library comparison section    | `pnpm design-iterations:count-3 --target="compare-section"`         |
+| `footer-section`          | Footer section                | `pnpm design-iterations:count-3 --target="footer-section"`          |
+
+:::tip
+You can use these simplified names directly in your commands! The system will automatically map them to their full names with numeric prefixes. See [Simplified Names](./simplified-names.md) for more details.
+:::
 
 ## 💡 Best Practices
 
