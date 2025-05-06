@@ -1,6 +1,6 @@
 ---
 description: Guidelines for refactoring DocuSaurus components with regression testing
-globs: ["docs/src/components/**/*.js", "docs/src/components/**/*.jsx", "docs/src/components/**/*.tsx"]
+globs: ["docs/src/components/**/*.{js,jsx,tsx,ts}"]
 alwaysApply: false
 ---
 
