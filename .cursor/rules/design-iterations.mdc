@@ -10,12 +10,14 @@ When working with the design iterations system for jods documentation:
 ## Command Structure
 - Basic command: `pnpm design-iterations --count=N --target="component-name"`
 - Refinement: `pnpm design-iterations --count=N --target="component-name" --refine`
-- Apply design: `pnpm design-iterations --apply="iteration-N" --target="component-name"`
+- Apply design: `pnpm design-iterations --iteration=N --target="component-name" --apply`
 
 ## Workflow Steps
 1. Generate initial design iterations (3-5 recommended)
-2. Review screenshots in `static/screenshots/design-iterations/{timestamp}`
-3. Provide feedback in the generated template
+2. Review screenshots in:
+   - Primary screenshots: `static/screenshots/unified/` with timestamp in filename
+   - Iteration copies: `temp/design-iterations/iteration-N/screenshots/`
+3. Provide feedback in the generated feedback template
 4. Run refinement iterations based on feedback
 5. Apply final design when satisfied
 

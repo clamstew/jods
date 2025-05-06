@@ -29,7 +29,10 @@ pnpm design-iterations --count=3 --target="features-section"
 
 ### Step 2: Review the Screenshots
 
-Screenshots are saved in `static/screenshots/design-iterations/{timestamp}/`
+Screenshots are saved in two locations:
+
+- Primary screenshots: `static/screenshots/unified/` with timestamp in the filename (e.g., `02-features-section-light-20250506-140608.png`)
+- Iteration copies: `temp/design-iterations/iteration-{N}/screenshots/`
 
 Each iteration includes:
 
@@ -63,7 +66,7 @@ pnpm design-iterations --count=2 --target="features-section" --refine
 
 ```bash
 # Apply the design you prefer:
-pnpm design-iterations --apply="iteration-2" --target="features-section"
+pnpm design-iterations --iteration=2 --target="features-section" --apply
 ```
 
 <div className="workflow-diagram">

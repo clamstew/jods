@@ -62,7 +62,9 @@ pnpm design-iterations --count=3 --target="compare-section" --compare-with="reac
 After generating iterations:
 
 1. Navigate to `temp/design-iterations/iteration-X/`
-2. Review screenshots in the `screenshots` directory
+2. Review screenshots in two locations:
+   - Primary screenshots: `static/screenshots/unified/` with names like `02-features-section-light-20250506-140715.png`
+   - Iteration copies: `temp/design-iterations/iteration-X/screenshots/`
 3. Open the feedback template at `feedback-template.md`
 4. Fill out the template, documenting what you like and dislike about each design aspect
 
@@ -122,7 +124,7 @@ You can repeat this refinement process multiple times until you're satisfied wit
 When you've found a design you're happy with, apply it to your codebase:
 
 ```bash
-pnpm design-iterations:apply --iteration=4 --target="features-section"
+pnpm design-iterations --iteration=4 --target="features-section" --apply
 ```
 
 This applies the changes from iteration 4 to your codebase. It's recommended to:
@@ -135,7 +137,7 @@ This applies the changes from iteration 4 to your codebase. It's recommended to:
 If needed, you can force the application even with uncommitted changes:
 
 ```bash
-pnpm design-iterations:apply --iteration=4 --target="features-section" --force
+pnpm design-iterations --iteration=4 --target="features-section" --apply --force
 ```
 
 ## Step 5: Cleanup
@@ -143,7 +145,7 @@ pnpm design-iterations:apply --iteration=4 --target="features-section" --force
 After finalizing your design:
 
 ```bash
-pnpm design-iterations:cleanup
+pnpm design-iterations --cleanup
 ```
 
 This removes temporary files and old screenshots to keep your workspace clean.
@@ -151,7 +153,7 @@ This removes temporary files and old screenshots to keep your workspace clean.
 You can preview what would be deleted without removing anything:
 
 ```bash
-pnpm design-iterations:cleanup --dry-run
+pnpm design-iterations --cleanup --dry-run
 ```
 
 ## 🔍 Checking Design Iteration Status
@@ -213,10 +215,10 @@ pnpm design-iterations --count=1 --target="features-section" --refine
 pnpm design-iterations --count=1 --target="features-section" --refine
 
 # Apply the final design (iteration 5)
-pnpm design-iterations:apply --iteration=5 --target="features-section"
+pnpm design-iterations --iteration=5 --target="features-section" --apply
 
 # Clean up
-pnpm design-iterations:cleanup
+pnpm design-iterations --cleanup
 ```
 
 ## 🔧 Troubleshooting
