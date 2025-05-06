@@ -1,6 +1,6 @@
 import { jest } from "@jest/globals";
 
-// Create mock implementations
+// Create mock implementations that will be used across test files
 const mockFS = {
   existsSync: jest.fn().mockReturnValue(true),
   statSync: jest.fn().mockReturnValue({ isDirectory: () => true }),
@@ -17,7 +17,7 @@ const mockFS = {
   }),
 };
 
-// Mock child_process
+// Mock child_process implementation
 const mockChildProcess = {
   spawn: jest.fn().mockReturnValue({
     on: jest.fn((event, callback) => {
@@ -32,19 +32,19 @@ const mockChildProcess = {
   ),
 };
 
-// Mock pixelmatch and PNG
-const mockPixelmatch = jest.fn().mockReturnValue(0);
-const mockPNG = jest.fn().mockImplementation(() => ({
-  width: 100,
-  height: 100,
-  data: Buffer.alloc(100 * 100 * 4),
-}));
+// Mock path implementation
+const mockPath = {
+  join: jest.fn((...args) => args.join("/")),
+  dirname: jest.fn((p) => p.split("/").slice(0, -1).join("/")),
+  basename: jest.fn((p) => p.split("/").pop()),
+  resolve: jest.fn((...args) => args.join("/")),
+};
 
-// Setup mocks with proper jest.mock calls
+// Use jest.mock outside any describer or it block
+// These will be hoisted to the top of the file execution
 jest.mock("fs", () => mockFS);
 jest.mock("child_process", () => mockChildProcess);
-jest.mock("pixelmatch", () => mockPixelmatch);
-jest.mock("pngjs", () => ({ PNG: mockPNG }));
+jest.mock("path", () => mockPath);
 
-// Export the mocks for direct usage in tests
-export { mockFS, mockChildProcess, mockPixelmatch, mockPNG };
+// Export all mocks so they can be used in test files
+export { mockFS, mockChildProcess, mockPath };

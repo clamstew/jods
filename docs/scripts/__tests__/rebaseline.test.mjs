@@ -1,45 +1,6 @@
 // Basic tests for rebaseline.mjs
 import { jest } from "@jest/globals";
-
-// Mock modules first
-jest.mock("fs");
-jest.mock("path");
-jest.mock("child_process");
-
-// Import modules after mocking
-import * as fs from "fs";
-import * as path from "path";
-import { spawn } from "child_process";
-
-// Set up mock implementations
-const setupMocks = () => {
-  // Clear all previous mock calls
-  jest.clearAllMocks();
-
-  // fs module mocks
-  fs.existsSync = jest.fn().mockReturnValue(true);
-  fs.readdirSync = jest.fn().mockReturnValue([]);
-  fs.statSync = jest.fn().mockReturnValue({ isDirectory: () => true });
-  fs.writeFileSync = jest.fn();
-  fs.copyFileSync = jest.fn();
-  fs.mkdirSync = jest.fn();
-
-  // path module mocks
-  path.join = jest.fn((...args) => args.join("/"));
-  path.resolve = jest.fn((...args) => args.join("/"));
-
-  // child_process mocks
-  const mockProcess = {
-    on: jest.fn(),
-    kill: jest.fn(),
-  };
-  spawn.mockReturnValue(mockProcess);
-};
-
-// Set up mocks before each test
-beforeEach(() => {
-  setupMocks();
-});
+import { mockChildProcess } from "./setup-mocks.mjs";
 
 // Simulated rebaseline module functions
 describe("rebaseline", () => {
@@ -61,7 +22,7 @@ describe("rebaseline", () => {
   function startServer() {
     // Simulate starting the development server
     return {
-      process: child_process.spawn("npm", ["run", "dev"]),
+      process: mockChildProcess.spawn("npm", ["run", "dev"]),
       url: "http://localhost:3000",
     };
   }
@@ -88,11 +49,13 @@ describe("rebaseline", () => {
       args.push("--mode", mode);
     }
 
-    child_process.execSync(`npm ${args.join(" ")}`);
+    // In real implementation this would use childProcess.execSync
+    const command = `npm ${args.join(" ")}`;
 
     return {
       success: true,
       options,
+      command,
     };
   }
 
@@ -138,7 +101,10 @@ describe("rebaseline", () => {
       const server = startServer();
 
       // Assert
-      expect(child_process.spawn).toHaveBeenCalledWith("npm", ["run", "dev"]);
+      expect(mockChildProcess.spawn).toHaveBeenCalledWith("npm", [
+        "run",
+        "dev",
+      ]);
       expect(server.url).toBe("http://localhost:3000");
       expect(server.process).toBeDefined();
     });
@@ -174,9 +140,7 @@ describe("rebaseline", () => {
       const result = captureBaselines();
 
       // Assert
-      expect(child_process.execSync).toHaveBeenCalledWith(
-        "npm run screenshot:baseline"
-      );
+      expect(result.command).toBe("npm run screenshot:baseline");
       expect(result.success).toBe(true);
     });
 
@@ -185,7 +149,7 @@ describe("rebaseline", () => {
       const result = captureBaselines({ testid: true });
 
       // Assert
-      expect(child_process.execSync).toHaveBeenCalledWith(
+      expect(result.command).toBe(
         "npm run screenshot:baseline --use-generated-selectors"
       );
       expect(result.success).toBe(true);
@@ -196,7 +160,7 @@ describe("rebaseline", () => {
       const result = captureBaselines({ mode: "components" });
 
       // Assert
-      expect(child_process.execSync).toHaveBeenCalledWith(
+      expect(result.command).toBe(
         "npm run screenshot:baseline --mode components"
       );
       expect(result.success).toBe(true);

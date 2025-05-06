@@ -15,6 +15,14 @@ describe("design-iterations", () => {
     mockFS.statSync.mockReturnValue({ isDirectory: () => true });
     mockFS.readdirSync.mockReturnValue([]);
     mockFS.readFileSync.mockReturnValue("{}");
+    // Make sure existsSync returns false for iteration directories
+    // so mkdirSync gets called
+    mockFS.existsSync.mockImplementation((path) => {
+      if (path.includes("iteration-")) {
+        return false;
+      }
+      return true;
+    });
   });
 
   // Helper to simulate finding components with templates

@@ -53,10 +53,14 @@ describe("screenshot-diff", () => {
       mockFS.writeFileSync(diffFile, Buffer.from("diff-data"));
     }
 
+    // Use threshold to determine if diff is significant
+    const isSignificant = percentDiff > threshold;
+
     return {
       isDifferent,
       percentDiff,
       diffFile: isDifferent ? diffFile : null,
+      isSignificant,
     };
   }
 
@@ -163,6 +167,7 @@ describe("screenshot-diff", () => {
       expect(result.isDifferent).toBe(false);
       expect(result.percentDiff).toBe(0);
       expect(result.diffFile).toBeNull();
+      expect(result.isSignificant).toBe(false);
       expect(mockFS.writeFileSync).not.toHaveBeenCalled();
     });
 
@@ -184,6 +189,7 @@ describe("screenshot-diff", () => {
       expect(result.isDifferent).toBe(true);
       expect(result.percentDiff).toBe(0.05); // Below threshold
       expect(result.diffFile).toBe(diffFile);
+      expect(result.isSignificant).toBe(false);
       expect(mockFS.writeFileSync).toHaveBeenCalledWith(
         diffFile,
         expect.any(Buffer)
@@ -216,6 +222,7 @@ describe("screenshot-diff", () => {
       expect(result.isDifferent).toBe(true);
       expect(result.percentDiff).toBe(0.05); // Above threshold
       expect(result.diffFile).toBe(diffFile);
+      expect(result.isSignificant).toBe(true);
       expect(mockFS.writeFileSync).toHaveBeenCalledWith(
         diffFile,
         expect.any(Buffer)

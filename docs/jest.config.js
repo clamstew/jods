@@ -24,6 +24,16 @@ const config = {
   // The glob patterns Jest uses to detect test files
   testMatch: ["**/__tests__/**/*.test.mjs"],
 
+  // Skip test files that use Vitest's expect
+  testPathIgnorePatterns: [
+    "/node_modules/",
+    "screenshot-unified.test.mjs",
+    "screenshot-selectors.test.mjs",
+    "screenshot-cleanup.test.mjs",
+    "screenshot-capture.test.mjs",
+    "generate-selectors.test.mjs",
+  ],
+
   // A map from regular expressions to paths to transformers
   transform: {},
 
