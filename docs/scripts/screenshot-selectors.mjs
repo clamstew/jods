@@ -218,8 +218,8 @@ export const COMPONENTS = [
   // Framework section - Remix tab (needs to click tab)
   {
     page: "/",
-    name: "05-framework-section-remix",
-    sectionIndex: 5, // Explicitly numbered for order (same section but different tab)
+    name: "04-framework-section-remix",
+    sectionIndex: 4, // Explicitly numbered for order (same section but different tab)
     selector:
       "section:has(h2:has-text('Works with your favorite frameworks')), section:has(h2:has-text('Framework Integration'))",
     fallbackStrategy: "keyword-context",
@@ -262,8 +262,8 @@ export const COMPONENTS = [
   // Remix section - MOVED UP before compare section
   {
     page: "/",
-    name: "06-remix-section",
-    sectionIndex: 6, // Explicitly numbered for order
+    name: "05-remix-section",
+    sectionIndex: 5, // Explicitly numbered for order
     selector:
       "section#remix-integration, section:has(h2:has-text('Remix Integration'))",
     fallbackStrategy: "keyword-context",
@@ -294,8 +294,8 @@ export const COMPONENTS = [
   // Compare section - MOVED DOWN after remix section
   {
     page: "/",
-    name: "07-compare-section",
-    sectionIndex: 7, // Explicitly numbered for order
+    name: "06-compare-section",
+    sectionIndex: 6, // Explicitly numbered for order
     selector:
       "section:has(h2:has-text('Compare')), section:has(h2:has-text('How jods compares'))",
     fallbackStrategy: "section-index",
@@ -327,8 +327,8 @@ export const COMPONENTS = [
   // Footer section
   {
     page: "/",
-    name: "08-footer-section",
-    sectionIndex: 8, // Explicitly numbered for order
+    name: "07-footer-section",
+    sectionIndex: 7, // Explicitly numbered for order
     selector: "footer",
     fallbackStrategy: "last-element",
     padding: 30,
