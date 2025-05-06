@@ -22,9 +22,30 @@ Design iterations allow you to:
 
 ### Step 1: Generate Initial Designs
 
+#### AI-Driven Approach (Recommended)
+
+Use Cursor's AI chat with Claude 3.7 Sonnet or stronger model with thinking enabled:
+
+```
+Hey, I want to do a design iteration on the features-section. I'd like it to have a more modern look with improved spacing and subtle gradients. Can you help me generate 3 design variations?
+```
+
+The AI will:
+
+1. Understand your target component (`features-section`)
+2. Interpret your design direction (modern look, improved spacing, subtle gradients)
+3. Run the appropriate commands
+4. Guide you through the iterations process
+
+This approach leverages AI's full capabilities to understand your design goals and implement them effectively.
+
+#### Command-Line Alternative
+
+If you prefer direct command usage:
+
 ```bash
 # From the /docs directory, run:
-pnpm design-iterations:count-3 --target="features-section"
+pnpm design-iterations:count-3 --target="features-section" --prompt="Create a more modern look with improved spacing and subtle gradients"
 ```
 
 ### Step 2: Review the Screenshots

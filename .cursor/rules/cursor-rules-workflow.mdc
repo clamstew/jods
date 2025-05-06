@@ -1,0 +1,40 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Cursor Rules Workflow
+
+When working with Cursor rules in this project:
+
+## Rule Structure
+
+- Cursor rules are stored in `.cursor/rules/` directory as `.mdc` files
+- Each rule must have proper MDC metadata at the top:
+  ```
+  ---
+  description: Brief description of what this rule does
+  globs: optional/glob/patterns/*.ts
+  alwaysApply: true or false
+  ---
+  ```
+
+## Best Practices
+
+1. **NEVER create new markdown files** in the docs directory as a substitute for editing rule files
+2. **Always check if a rule exists** in `.cursor/rules/*.mdc` before creating a new one
+3. **Update existing rules** rather than duplicating content
+4. **Use the `@filename` syntax** to reference supporting files
+5. **Keep rules focused** on a specific aspect of the codebase
+
+## Common Issues
+
+- If you can't locate a rule, use `find .cursor -name "*.mdc"` to see all rule files
+- Use proper MDC format with the metadata section (the part between `---` lines)
+- If updating a rule with the editor doesn't work, you can use terminal commands to recreate the file
+
+## References
+
+For more information on Cursor rules, see the [official documentation](https://docs.cursor.com/context/rules).
+
+@docs/docs/design-iterations/index.md
