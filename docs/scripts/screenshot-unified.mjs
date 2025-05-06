@@ -729,6 +729,28 @@ async function captureSpecificElement(
   await elementHandle.scrollIntoViewIfNeeded();
   await page.waitForTimeout(600);
 
+  // If this component has a clickSelector, click it
+  if (component.clickSelector) {
+    console.log(
+      `Clicking element matching selector: ${component.clickSelector}`
+    );
+    try {
+      // Try to find and click the element
+      await page.click(component.clickSelector);
+
+      // Wait for content to update after clicking
+      const waitTime = component.clickWaitTime || 1000;
+      console.log(`Waiting ${waitTime}ms for content to update after click...`);
+      await page.waitForTimeout(waitTime);
+
+      // Re-scroll to ensure element is still in view after click
+      await elementHandle.scrollIntoViewIfNeeded();
+      await page.waitForTimeout(400);
+    } catch (error) {
+      console.log(`Error clicking element: ${error.message}`);
+    }
+  }
+
   // For tall sections, scroll up a bit to ensure full visibility
   if (component.name.includes("section") || boundingBox.height > 500) {
     // Apply extra scroll if specified in the component config

@@ -59,10 +59,10 @@ export const COMPONENTS = [
     excludeElements: [".bottom-links", ".pagination"],
   },
 
-  // Framework section
+  // Framework section - React tab (default on load)
   {
     page: "/",
-    name: "framework-section",
+    name: "framework-section-react",
     selector:
       "section:has(h2:has-text('Works with your favorite frameworks')), section:has(h2:has-text('Framework Integration'))",
     fallbackStrategy: "keyword-context",
@@ -71,14 +71,10 @@ export const COMPONENTS = [
     waitForSelector:
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
     minHeight: 1200,
-    captureFrameworkTabs: true,
-    frameworkTabs: ["⚛️ React"],
+    captureFrameworkTabs: false, // Don't need to handle tabs, just screenshot the default React tab
     testId: "jods-framework-section",
     extraScroll: 250,
-    simulateReactTab: false,
     captureHtmlDebug: true,
-    forceReactTabOnly: true,
-    forceSaveAsReact: true,
     alternativeSelectors: [
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
       "button:has-text('React'), button:has-text('Preact'), button:has-text('Remix')",
@@ -101,6 +97,37 @@ export const COMPONENTS = [
       "h3:has-text('Reimagined')",
       "[class*='heading']:has-text('Remix')",
       "[class*='heading']:has-text('Reimagined')",
+    ],
+  },
+
+  // Framework section - Remix tab (needs to click tab)
+  {
+    page: "/",
+    name: "framework-section-remix",
+    selector:
+      "section:has(h2:has-text('Works with your favorite frameworks')), section:has(h2:has-text('Framework Integration'))",
+    fallbackStrategy: "keyword-context",
+    keywords: ["favorite frameworks", "Framework Integration"],
+    padding: 150,
+    waitForSelector:
+      "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
+    minHeight: 1600, // More height for Remix tab which has more code
+    clickSelector: "button:has-text('Remix'), button:has-text('💿')", // Click Remix tab
+    clickWaitTime: 1500, // Wait for tab to switch
+    testId: "jods-framework-section",
+    extraScroll: 250,
+    captureHtmlDebug: true,
+    alternativeSelectors: [
+      "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
+      "button:has-text('React'), button:has-text('Preact'), button:has-text('Remix')",
+      ".framework-tabs, [class*='tabs_'], [role='tablist']",
+      "h2:has-text('Works with your favorite frameworks')",
+      "div:has(h2:has-text('Works with your favorite frameworks'))",
+    ],
+    // Fewer exclusions for the Remix tab since we want to show the Remix-specific content
+    excludeElements: [
+      "[class*='subtitle']:has-text('reimagined')",
+      ".subtitle, .feature-subtitle",
     ],
   },
 
