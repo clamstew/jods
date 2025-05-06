@@ -5,7 +5,29 @@ alwaysApply: false
 ---
 # Design Iterations System
 
-The Design Iterations system is a powerful workflow that combines Playwright screenshots with AI assistance to rapidly evolve UI components through multiple iterations.
+## <critical> Clarify Before Initiating </critical>
+
+**IMPORTANT**: The design iterations workflow is a formal, structured process for creating multiple design variations. Before initiating this workflow:
+
+1. **Only activate for explicit design iteration requests**, distinguished by these trigger phrases:
+   - "Run a full design iteration" 
+   - "Create multiple design versions"
+   - "Generate design variations"
+   - "Compare different designs"
+   - "Design iteration workflow"
+   - "Formal design process"
+
+2. **For casual/minor design updates** (where the full iteration process isn't needed):
+   - Simply make the requested changes
+   - Do NOT use the design iterations workflow
+   - Do NOT generate multiple designs unless explicitly requested
+
+3. **When uncertain, ask a clarifying question**:
+   ```
+   Are you looking to:
+   1. Make a quick, one-time update to this component (I'll just implement the changes)
+   2. Run a full design iteration process with multiple variations (I'll use the design iterations workflow)
+   ```
 
 ## Quick Start
 
@@ -142,7 +164,7 @@ This is essential to avoid the workflow generating unnecessary files for section
 
 ## AI-Driven Workflow
 
-When a user asks about design iterations, you should:
+When a user explicitly requests design iterations, you should:
 
 1. **Understand their target component** and where the code is located:
    - `try-jods-section` - Interactive demo section → `docs/src/components/InteractiveDemo.tsx`
