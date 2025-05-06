@@ -24,7 +24,7 @@
     "rebaseline": "node scripts/rebaseline.mjs",
     "rebaseline:full": "node scripts/rebaseline.mjs --full",
     "rebaseline:testid": "node scripts/rebaseline.mjs --testid",
-    "dev": "npm run start"
+    "dev": "docusaurus start"
   },
   "dependencies": {
     "@docusaurus/core": "3.7.0",

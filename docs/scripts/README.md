@@ -1,295 +1,97 @@
-# Playwright Screenshot Scripts
+# jods Documentation Scripts
 
-This directory contains scripts for automated screenshots of the jods documentation site.
+This directory contains scripts for automating various aspects of the jods documentation site, particularly related to screenshot testing, design iteration, and visual regression testing.
 
-## Quick Overview
+## Vision
 
-These scripts handle:
-
-- Full page screenshots
-- Component screenshots
-- Section screenshots using content-based selection and CSS selectors
-- Screenshot batch cleanup and management
-- Automated rebaselining of screenshots
-
-## 📚 Documentation
-
-For complete documentation on the screenshot system, please refer to the [Playwright Screenshots](../docs/playwright-screenshots.md) guide in the docs directory.
+jods aims to be the definitive active record model for the Remix ecosystem, providing a minimal but opinionated approach to state management. Our documentation and tooling reflect this philosophy - we prefer offering **one good way** to do something rather than endless configuration options.
 
 ## Available Scripts
 
-- `screenshot-selectors.mjs` - Unified selectors registry for all components
-- `screenshot-unified.mjs` - Consolidated screenshot script with multiple modes (RECOMMENDED)
-- `screenshot-cleanup.mjs` - Tool for managing screenshot batches
-- `rebaseline.mjs` - All-in-one script for rebaselining screenshots
+### Screenshot System
 
-## Rebaselining Screenshots
-
-The rebaseline script handles the entire rebaselining workflow including starting the development server, capturing baseline screenshots, and shutting down automatically:
+The screenshot system allows capturing consistent screenshots of documentation components for visual regression testing and design iteration.
 
 ```bash
-# From docs directory
-npm run rebaseline            # Simple rebaseline (cleanup + baseline)
-npm run rebaseline:full       # Full rebaseline (cleanup + baseline + test IDs)
-npm run rebaseline:testid     # TestID-specific rebaseline
+# Capture screenshots of all components
+pnpm screenshot
 
-# Direct script usage with more options
-node scripts/rebaseline.mjs --help
+# Set new baseline images
+pnpm screenshot:baseline
+
+# Compare against production site
+pnpm screenshot:production
+
+# Focus on specific component mode
+pnpm screenshot:components
+
+# Use TestID-based selectors (recommended)
+pnpm screenshot:testid
+
+# Generate selectors from TestIDs
+pnpm generate-selectors
+
+# Run the complete rebaseline process
+pnpm rebaseline
 ```
 
-The rebaseline script:
+### Visual Diffing
 
-1. Creates necessary directories
-2. Starts a Docusaurus server
-3. Waits for the server to be ready
-4. Cleans up old screenshots
-5. Captures new baseline screenshots
-6. Optionally generates test ID selectors and captures those
-7. Shuts down the server when complete
-
-## Unified Screenshot Approach
-
-The unified screenshot approach consists of:
-
-1. **Unified Selectors Registry** (`screenshot-selectors.mjs`)
-
-   - Central registry of all components and sections
-   - Includes primary selectors and multiple alternative selectors for triangulation
-   - Provides fallback strategies for each component
-   - **Uses data-testid attributes as the preferred identification method**
-   - Supports element exclusion for fine-tuned screenshots
-
-2. **Unified Screenshot Script** (`screenshot-unified.mjs`)
-
-   - Supports multiple modes via simple command-line arguments
-   - Uses triangulation of multiple elements for reliable section capture
-   - Intelligently excludes specified elements while capturing sections
-   - Uses consistent padding, naming, and screenshot logic
-   - Supports both light and dark themes
-   - Handles complex components like tabbed interfaces
-
-3. **Single Output Directory**
-   - All screenshots are saved to `docs/static/screenshots/unified/`
-   - Consistent naming format: `component-name-theme[-timestamp].png`
-
-### Command-Line Arguments
-
-The screenshot script supports these arguments:
-
-```
---baseline           Save as baseline (no timestamp)
---mode=MODENAME      Set mode: all, components, sections, remix
---components=C1,C2   Capture specific components by name
---use-generated-selectors  Use auto-generated selectors from data-testids
-```
-
-### Recommended Usage
-
-When running screenshot scripts:
+The visual diffing system enables comparing screenshots for changes:
 
 ```bash
-# From docs directory
-npm run screenshot                    # All components
-npm run screenshot -- --mode=sections # Just homepage sections
-npm run screenshot -- --mode=remix    # Just Remix section
+# Compare current screenshots against baseline
+pnpm screenshot:diff
 
-# Capture specific components by name
-npm run screenshot -- --components=framework-section-react
-npm run screenshot -- --components=framework-section-react,framework-section-remix
-
-# Create baseline screenshots (without timestamp)
-npm run screenshot:baseline
-
-# Rebaseline screenshots (fully automated)
-npm run rebaseline                   # Simple rebaseline
-npm run rebaseline:full              # Full rebaseline
-npm run rebaseline:testid            # TestID rebaseline
-
-# From root directory
-npm run docs:screenshot
-npm run docs:screenshot:baseline
-npm run docs:screenshot:diff
-npm run docs:screenshot:cleanup
+# Clean up old screenshots
+pnpm screenshot:cleanup
 ```
 
-## Framework Tabs
+## TestID-Driven Approach
 
-The system supports capturing different tabs of the framework showcase section:
+Our screenshot system uses a TestID-driven approach, as detailed in [screenshot-testid-guidelines.md](./screenshot-testid-guidelines.md). This provides a consistent way to identify and test components.
 
-- `framework-section-react` - Captures the React tab (default tab, no click needed)
-- `framework-section-remix` - Captures the Remix tab (automatically clicks the Remix tab)
+## Long-Term Vision
 
-These are configured as separate components in the selectors registry, allowing dedicated screenshots with appropriate heights and element exclusions for each tab.
+See [long-term-ai-vision.md](./long-term-ai-vision.md) for details on our AI-driven design iteration system and active record model vision for jods.
 
-### Special Configuration for Tabs
+## Implementation Files
 
-Framework tabs use these properties for reliable capturing:
+- `screenshot-unified.mjs` - Core screenshot capture system
+- `screenshot-diff.mjs` - Visual comparison tool
+- `screenshot-cleanup.mjs` - Cleanup utilities
+- `screenshot-selectors.mjs` - Component selectors
+- `testid-helpers.mjs` - TestID utility functions
+- `screenshot-utils.mjs` - Shared utilities
+- `generate-selectors.mjs` - TestID discovery
+- `rebaseline.mjs` - Unified rebaseline process
+- `design-iterations.mjs` - Design iteration system
 
-```js
-// React tab (default on load)
-{
-  name: "framework-section-react",
-  // ...other properties
-}
+## Workflow Examples
 
-// Remix tab (needs to click tab)
-{
-  name: "framework-section-remix",
-  // ...other properties
-  clickSelector: "button:has-text('Remix'), button:has-text('💿')", // Click Remix tab
-  clickWaitTime: 1500, // Wait for tab to switch
-}
-```
-
-## Screenshot Cleanup
-
-The screenshot cleanup script helps manage stored screenshot batches:
-
-### Features
-
-- Detects and organizes screenshots by timestamp batches
-- Preserves baseline screenshots (non-timestamped)
-- Selectively keeps recent batches while removing older ones
-- Supports dry run mode to preview deletion without removing files
-
-### Usage
+### Rebaselining Process
 
 ```bash
-# From docs directory
-pnpm screenshot:cleanup              # Keep only latest batch
-pnpm screenshot:cleanup -- --dry-run # Preview what would be deleted
+# Full rebaseline process including server lifecycle management
+pnpm rebaseline:full
+
+# Focus on TestID-based elements
+pnpm rebaseline:testid
 ```
 
-### How It Works
+### Design Iteration (Experimental)
 
-The cleanup script:
+```bash
+# Run 3 design iterations
+node scripts/design-iterations.mjs --count=3
 
-1. Scans the unified screenshots directory
-2. Identifies timestamped batches by parsing filenames
-3. Sorts batches chronologically
-4. Keeps the N most recent batches based on parameters
-5. Removes older timestamped screenshots
-6. Always preserves baseline (non-timestamped) screenshots
-
-Use this script regularly to prevent the screenshots directory from growing too large.
-
-## How It Works
-
-The unified approach:
-
-1. **Defining Components**
-
-   - Components are defined in `screenshot-selectors.mjs`
-   - Each component has a name, selector, and other properties
-   - Special handling for complex cases like framework tabs
-
-2. **Taking Screenshots**
-   - The unified script loads component definitions
-   - Navigates to the appropriate page for each component
-   - **First tries to locate elements by data-testid attribute**
-   - Falls back to CSS selectors and triangulation strategies if needed
-   - Captures screenshots in both light and dark modes
-
-## Using Test IDs
-
-The preferred way to identify sections is using the `data-testid` attribute:
-
-1. Each section component in the site adds a `data-testid` attribute to its root element
-2. The screenshot script attempts to locate elements by this ID first
-3. This provides the most reliable element selection method
-4. CSS selectors and triangulation are used as fallbacks
-
-Example:
-
-```jsx
-// In your React component
-<section className="features-container" data-testid="jods-features-section">
-  {/* section content */}
-</section>
-
-// In screenshot-selectors.mjs
-{
-  name: "features-section",
-  selector: "section.features-container",
-  testId: "jods-features-section", // This is the preferred selector
-  // other properties...
-}
+# Focus on specific components
+node scripts/design-iterations.mjs --target="hero-section"
 ```
 
-## Adding New Screenshot Features
+## Future Development
 
-When adding new screenshot capabilities:
-
-1. Update the component definitions in `screenshot-selectors.mjs`
-2. **Add the data-testid attribute to the component in the source code**
-3. Add npm scripts to package.json if needed
-4. Update the documentation in `docs/docs/playwright-screenshots.md`
-
-## Advanced Features
-
-### Element Exclusion
-
-The script supports fine-tuned control over what appears in screenshots:
-
-- Use `excludeElements` to specify elements that should be excluded from the screenshot
-- Elements are still used for triangulation and section identification
-- The script automatically adjusts clip boundaries to exclude these elements
-- Useful for removing navigation bars, footers, or other elements that shouldn't be in the final screenshot
-
-Example:
-
-```js
-{
-  name: "hero-section",
-  // primary selector and other properties...
-  alternativeSelectors: [
-    "h1:has-text('jods')",
-    ".hero-subtitle"
-  ],
-  excludeElements: [
-    "nav",
-    ".navbar"
-  ]
-}
-```
-
-### Animation Control
-
-The script automatically pauses animations and transitions during screenshots for more consistent results:
-
-```js
-{
-  name: "hero-section",
-  // other properties...
-  pauseAnimations: true, // Controls whether animations should be paused (default: true)
-}
-```
-
-### Click Before Screenshot
-
-Some components need interaction before capturing:
-
-```js
-{
-  name: "framework-section-remix",
-  // other properties...
-  clickSelector: "button:has-text('Remix')", // Element to click before screenshot
-  clickWaitTime: 1500, // Wait time after clicking (milliseconds)
-}
-```
-
-This feature enables:
-
-- Capturing different tab states
-- Showing expanded sections
-- Interacting with components before screenshot
-
-## Troubleshooting
-
-If screenshots aren't capturing the right sections:
-
-1. Check if the component has a `data-testid` attribute in the source code
-2. Check the component definitions in `screenshot-selectors.mjs`
-3. Add more specific alternative selectors to help with triangulation
-4. Use `excludeElements` to remove unwanted parts from screenshots
-5. Run with debug mode for detailed logging: `DEBUG=true pnpm screenshot`
+- Complete active record model implementation for Remix
+- Enhance design iteration system
+- Further improve TestID coverage
+- Connect with AI-driven design suggestions

@@ -2,9 +2,20 @@
 
 ## Overview
 
-This document outlines the vision for an AI-powered design iteration system that leverages our screenshot infrastructure to create a feedback loop for continuous design improvements to the jods documentation site.
+This document outlines the vision for an AI-powered design iteration system that leverages our screenshot infrastructure to create a feedback loop for continuous design improvements to the jods documentation site. Additionally, it sets forth the vision for jods as the "active record model of the Remix world."
 
-## The Vision
+## Core Product Vision
+
+**jods aims to become the definitive active record model for the Remix ecosystem** by:
+
+1. Providing a minimal but opinionated approach to state management
+2. Offering framework-specific adapters that follow convention over configuration
+3. Simplifying common data patterns in Remix applications
+4. Creating a seamless developer experience with zero dependencies
+
+This vision is reflected in our design approach - we prefer offering **one good way** to do something rather than endless configuration options, while maintaining flexibility for consumers.
+
+## The Design Vision
 
 Create an AI-powered workflow that:
 
@@ -104,7 +115,15 @@ The AI design iteration system should test changes across multiple dimensions:
 
 ## Implementation Strategy
 
-### Phase 1: Foundations
+### Phase 1: Foundations (Active Record Model for Remix)
+
+- Develop core schema definitions with TypeScript
+- Implement active record pattern adapters for Remix
+- Build basic CRUD operations on models
+- Define opinionated conventions for data access
+- Create example models for common Remix patterns
+
+### Phase 2: Documentation and Testing
 
 - Create storage structure for design iterations
 - Build script to automate change-screenshot-store cycle
@@ -112,7 +131,7 @@ The AI design iteration system should test changes across multiple dimensions:
 - Define metadata schema for iterations
 - **Implement pixel diff tool** for automated visual testing (✅ completed)
 
-### Phase 2: AI Integration
+### Phase 3: AI Integration
 
 - Connect Cursor+Claude to design change process
 - Teach AI to understand CSS and component structure
@@ -120,7 +139,7 @@ The AI design iteration system should test changes across multiple dimensions:
 - Create evaluation metrics for design changes
 - Integrate AI with pixel diff results for objective evaluation
 
-### Phase 3: Advanced Features
+### Phase 4: Advanced Features
 
 - Multi-path branching of design iterations
 - Automated A/B testing of design variations
@@ -128,7 +147,7 @@ The AI design iteration system should test changes across multiple dimensions:
 - Design version control system
 - Weighted evaluation based on diff metrics and AI judgment
 
-### Phase 4: Autonomous Improvements
+### Phase 5: Autonomous Improvements
 
 - Scheduled design refresh runs
 - Self-guided design exploration
@@ -167,6 +186,30 @@ The AI design iteration system should test changes across multiple dimensions:
                                             │     Engine      │
                                             │                 │
                                             └─────────────────┘
+```
+
+## Active Record Model for Remix
+
+```
+┌───────────────────────────────────────────────────────────┐
+│                                                           │
+│                   jods Active Record Model                 │
+│                                                           │
+├───────────────┬─────────────────┬─────────────────────────┤
+│               │                 │                         │
+│  Schema       │  CRUD           │  Remix                  │
+│  Definition   │  Operations     │  Integration            │
+│               │                 │                         │
+└───────────────┴─────────────────┴─────────────────────────┘
+        │                │                    │
+        │                │                    │
+        v                v                    v
+┌───────────────┬─────────────────┬─────────────────────────┐
+│               │                 │                         │
+│  TypeScript   │  DB Adapter     │  Remix Loader/Action    │
+│  Types        │  Interface      │  Integration            │
+│               │                 │                         │
+└───────────────┴─────────────────┴─────────────────────────┘
 ```
 
 ## Command Examples
@@ -271,9 +314,10 @@ The user can:
 
 ## Next Steps
 
-1. Create basic iteration storage structure
-2. Implement design change capture mechanism
-3. Build first version of the iteration script
-4. Develop visual comparison tools - ✅ Completed with pixel diff tool
-5. Connect with AI-driven design suggestions
-6. Enhance pixel diffing with component-specific importance weighting
+1. Complete the active record model implementation for Remix ⏳
+2. Create basic iteration storage structure
+3. Implement design change capture mechanism
+4. Build first version of the iteration script
+5. Develop visual comparison tools - ✅ Completed with pixel diff tool
+6. Connect with AI-driven design suggestions
+7. Enhance pixel diffing with component-specific importance weighting
