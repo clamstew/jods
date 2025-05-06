@@ -309,5 +309,7 @@ Now that the documentation consolidation is complete, here are the recommended n
 5. **Integrate CI/CD pipeline** to run screenshot testing automatically on PRs
 6. **Create a gallery of successful iterations** to showcase the evolution of the UI components
 7. **Develop a training program** for new contributors to learn the design iterations workflow
+8. **Implement design-from-screenshot** - Allow users to upload Figma screenshots and have the system automatically implement them in code, serving as a powerful bridge between design and implementation
+9. **Add Figma MCP integration** - Future enhancement to directly import Model Context Protocols from Figma, providing even more precise design implementation
 
 With the consolidated documentation structure, new team members can now easily understand and use the design iterations system to improve the documentation site's UI.

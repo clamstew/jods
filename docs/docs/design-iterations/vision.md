@@ -113,6 +113,29 @@ The design iteration system will evolve to include:
 4. **Automated A/B Testing** of design variations
 5. **User Feedback Collection** integrated into the documentation site
 6. **Design System Documentation** generated from successful iterations
+7. **Design-from-Screenshot Implementation**:
+   - Allow designers to upload screenshots from Figma
+   - Use AI to analyze the visual design and generate corresponding code
+   - Bridge the gap between design and implementation
+   - Reduce the time from mockup to working code
+   - Create initial iteration based directly on designer's vision
+8. **Figma MCP Integration**:
+   - Import Model Control Points directly from design tools
+   - Use precise layout coordinates and styles from the design file
+   - Maintain pixel-perfect implementation of designs
+   - Enable real-time sync between design updates and code
+
+### Design-from-Screenshot: Bridging Design and Implementation
+
+The Design-from-Screenshot feature represents a significant evolution in our workflow, allowing:
+
+- **Direct translation** of visual designs into functional components
+- **Faster implementation** of designer-created mockups
+- **Greater accuracy** between design intent and code output
+- **Reduced communication overhead** between designers and developers
+- **More design iterations** in less time
+
+This capability will enable a true design-to-code pipeline where designers can contribute directly to the implementation process without needing to write code themselves.
 
 ## 🌐 Broader Impact
 
@@ -122,5 +145,6 @@ Beyond the documentation site, this system demonstrates:
 - The potential for **AI-augmented design workflows** in web development
 - The value of **systematic visual iteration** for user interfaces
 - A blueprint for **evidence-based design decisions** in open source projects
+- A new paradigm for **design-to-code collaboration** through screenshot analysis and MCP integration
 
 By embracing this vision, we aim to create not just better documentation for jods, but a better model for how design can evolve systematically in open source projects.
