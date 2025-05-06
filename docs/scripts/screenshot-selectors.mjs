@@ -77,6 +77,8 @@ export const COMPONENTS = [
     extraScroll: 250,
     simulateReactTab: false,
     captureHtmlDebug: true,
+    forceReactTabOnly: true,
+    forceSaveAsReact: true,
     alternativeSelectors: [
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
       "button:has-text('React'), button:has-text('Preact'), button:has-text('Remix')",

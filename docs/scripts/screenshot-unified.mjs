@@ -1033,18 +1033,45 @@ async function captureFrameworkTabs(
           );
           let framework = "unknown";
 
-          if (buttonText.includes("React") && !buttonText.includes("Preact")) {
-            framework = "react";
-          } else if (buttonText.includes("Preact")) {
-            framework = "preact";
-          } else if (
-            buttonText.includes("Remix") ||
-            buttonText.includes("💿")
-          ) {
-            framework = "remix";
+          // Check if we should force React tab only
+          if (component.forceReactTabOnly) {
+            if (
+              buttonText.includes("React") &&
+              !buttonText.includes("Preact")
+            ) {
+              framework = "react";
+            } else if (
+              buttonText.includes("⚛️") &&
+              !buttonText.includes("Preact")
+            ) {
+              framework = "react";
+            } else {
+              // Skip non-React tabs if forceReactTabOnly is true
+              continue;
+            }
+          } else {
+            // Standard framework determination
+            if (
+              buttonText.includes("React") &&
+              !buttonText.includes("Preact")
+            ) {
+              framework = "react";
+            } else if (buttonText.includes("Preact")) {
+              framework = "preact";
+            } else if (
+              buttonText.includes("Remix") ||
+              buttonText.includes("💿")
+            ) {
+              framework = "remix";
+            }
           }
 
           if (framework !== "unknown") {
+            // If forceSaveAsReact is true, always save as "react"
+            if (component.forceSaveAsReact) {
+              framework = "react";
+            }
+
             await captureTabScreenshot(
               page,
               frameworkSection,
@@ -1055,6 +1082,11 @@ async function captureFrameworkTabs(
               timestamp,
               saveBaseline
             );
+
+            // If we found a React tab and forceReactTabOnly is true, we're done
+            if (component.forceReactTabOnly && framework === "react") {
+              break;
+            }
           }
         }
       } else {
@@ -1097,6 +1129,28 @@ async function captureFrameworkTabs(
       }
     }
 
+    // If forceReactTabOnly is true, only capture React tab
+    if (component.forceReactTabOnly) {
+      if (reactButtons.length > 0) {
+        console.log(
+          "Capturing only React tab due to forceReactTabOnly setting"
+        );
+        await captureTabScreenshot(
+          page,
+          frameworkSection,
+          reactButtons[0],
+          "react", // Always use "react" as the identifier
+          component,
+          theme,
+          timestamp,
+          saveBaseline
+        );
+      } else {
+        console.log("Could not find React tab, but forceReactTabOnly is set");
+      }
+      return;
+    }
+
     // Priority to capturing the Remix tab first
     if (remixButtons.length > 0) {
       console.log("Capturing Remix tab first (prioritized)");
@@ -1104,7 +1158,7 @@ async function captureFrameworkTabs(
         page,
         frameworkSection,
         remixButtons[0],
-        "remix",
+        component.forceSaveAsReact ? "react" : "remix", // Use "react" if forceSaveAsReact is true
         component,
         theme,
         timestamp,
@@ -1131,7 +1185,7 @@ async function captureFrameworkTabs(
         page,
         frameworkSection,
         preactButtons[0],
-        "preact",
+        component.forceSaveAsReact ? "react" : "preact", // Use "react" if forceSaveAsReact is true
         component,
         theme,
         timestamp,
@@ -1143,6 +1197,39 @@ async function captureFrameworkTabs(
   }
 
   console.log(`Found ${tabButtons.length} framework tabs`);
+
+  // Look for React tab first if forceReactTabOnly is true
+  if (component.forceReactTabOnly) {
+    console.log("Searching for React tab due to forceReactTabOnly setting");
+    let reactButton = null;
+    for (const button of tabButtons) {
+      const buttonText = await button.evaluate((el) => el.textContent.trim());
+      if (
+        (buttonText.includes("React") && !buttonText.includes("Preact")) ||
+        buttonText.includes("⚛️")
+      ) {
+        reactButton = button;
+        break;
+      }
+    }
+
+    if (reactButton) {
+      console.log("Found React tab, capturing only this tab");
+      await captureTabScreenshot(
+        page,
+        frameworkSection,
+        reactButton,
+        "react",
+        component,
+        theme,
+        timestamp,
+        saveBaseline
+      );
+    } else {
+      console.log("Could not find React tab, but forceReactTabOnly is set");
+    }
+    return;
+  }
 
   // Look for Remix/Traditional tab first and prioritize capturing it
   let remixButton = null;
@@ -1165,7 +1252,7 @@ async function captureFrameworkTabs(
       page,
       frameworkSection,
       remixButton,
-      "remix",
+      component.forceSaveAsReact ? "react" : "remix",
       component,
       theme,
       timestamp,
@@ -1199,11 +1286,18 @@ async function captureFrameworkTabs(
     }
 
     if (matchingButton) {
+      let tabIdentifier = tabName.toLowerCase().replace(/[^a-z0-9]/g, "-");
+
+      // If forceSaveAsReact is true, always use "react"
+      if (component.forceSaveAsReact) {
+        tabIdentifier = "react";
+      }
+
       await captureTabScreenshot(
         page,
         frameworkSection,
         matchingButton,
-        tabName.toLowerCase().replace(/[^a-z0-9]/g, "-"),
+        tabIdentifier,
         component,
         theme,
         timestamp,
@@ -1378,15 +1472,21 @@ async function captureTabScreenshot(
 
   // Simplify the filename for the Traditional Remix tab
   let finalTabId = safeTabId;
-  if (component.name === "framework-section") {
-    // For framework section, always use 'react' as the identifier
+
+  // If forceSaveAsReact is true, always use "react" as the tab identifier
+  if (component.forceSaveAsReact) {
     finalTabId = "react";
-  } else if (
-    safeTabId.includes("traditional") ||
-    safeTabId.includes("remix") ||
-    tabName.includes("💿")
-  ) {
-    finalTabId = "remix";
+  } else {
+    if (component.name === "framework-section") {
+      // For framework section, always use 'react' as the identifier
+      finalTabId = "react";
+    } else if (
+      safeTabId.includes("traditional") ||
+      safeTabId.includes("remix") ||
+      tabName.includes("💿")
+    ) {
+      finalTabId = "remix";
+    }
   }
 
   // Take the screenshot

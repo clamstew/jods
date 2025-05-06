@@ -53,6 +53,8 @@
     "docs:screenshot:unified:components": "node docs/scripts/screenshot-unified.mjs --mode=components",
     "docs:screenshot:unified:sections": "node docs/scripts/screenshot-unified.mjs --mode=sections",
     "docs:screenshot:unified:remix": "node docs/scripts/screenshot-unified.mjs --mode=remix",
+    "docs:screenshot:framework-react": "node docs/scripts/screenshot-unified.mjs --mode=framework-section",
+    "docs:screenshot:framework-react:baseline": "node docs/scripts/screenshot-unified.mjs --mode=framework-section --baseline",
     "docs:screenshot:cleanup": "node docs/scripts/screenshot-cleanup.mjs",
     "docs:screenshot:cleanup:dry-run": "node docs/scripts/screenshot-cleanup.mjs --dry-run",
     "docs:screenshot:cleanup:keep-latest": "node docs/scripts/screenshot-cleanup.mjs --keep-latest --keep=3",
