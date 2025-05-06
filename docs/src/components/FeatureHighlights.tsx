@@ -99,10 +99,10 @@ export default function FeatureHighlights(): React.ReactElement {
             link="/api-reference#-computedfn"
           />
           <Feature
-            icon="🪞"
-            title="JSON Snapshots"
-            description="Get serializable state snapshots on demand with json() - perfect for APIs, persistence, and time-travel debugging."
-            link="/api-reference#-jsonstore"
+            icon="🔄"
+            title="Fine-grained Reactivity"
+            description="Signal-based tracking for optimal performance, updating only what changed, with automatic dependency tracking."
+            link="/dynamics-system"
           />
         </div>
 
@@ -141,10 +141,16 @@ export default function FeatureHighlights(): React.ReactElement {
             link="/intro"
           />
           <Feature
-            icon="🔄"
-            title="Fine-grained Reactivity"
-            description="Signal-based tracking for optimal performance, updating only what changed, with automatic dependency tracking."
-            link="/dynamics-system"
+            icon="🪞"
+            title="JSON Snapshots"
+            description="Get serializable state snapshots on demand with json() - perfect for APIs, persistence, and time-travel debugging."
+            link="/api-reference#-jsonstore"
+          />
+          <Feature
+            icon="🔍"
+            title="Transparent Debugging"
+            description="Inspect your state at any time, with built-in history tracking and time-travel debugging capabilities."
+            link="/debugging"
           />
         </div>
       </div>
