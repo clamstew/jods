@@ -82,6 +82,16 @@ const sidebars: SidebarsConfig = {
       id: "maintainers-guide",
       label: "🛠️ Maintainer's Guide",
     },
+    {
+      type: "doc",
+      id: "playwright-screenshots",
+      label: "📸 Documentation Screenshots",
+    },
+    {
+      type: "doc",
+      id: "design-iterations-with-ai",
+      label: "🎨 Design Iterations with AI",
+    },
   ],
 };
 
