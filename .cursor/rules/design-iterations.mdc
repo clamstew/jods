@@ -1,6 +1,6 @@
 ---
 description: Guidelines for using the design iterations workflow for UI components
-globs: ["docs/src/components/*.tsx", "docs/src/components/*.css", "docs/scripts/*.mjs"]
+globs: ["**/*.{tsx,jsx,js,ts}", "**/*.css", "**/*.md"]
 alwaysApply: false
 ---
 # Design Iterations System
@@ -48,6 +48,8 @@ Only run cleanup after the user has:
 1. Reviewed all design iterations
 2. Applied their chosen design
 3. Explicitly requested cleanup with `pnpm docs:design-iterations:cleanup`
+
+The agent CANNOT know when the user is done reviewing design iterations. Premature cleanup could cause loss of valuable information. Cleanup should ONLY happen when explicitly requested, not automatically.
 
 ## Styling Approach: Follow Component Conventions
 
