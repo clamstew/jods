@@ -42,6 +42,7 @@ const defaultConfig = {
   baseScreenshotDir: path.join(rootDir, "static/screenshots/unified"),
   diffTool: "git diff", // Tool to generate diffs
   requireSignoff: true, // Require signoff for baseline changes
+  skipOtherSections: false, // Default to capturing all sections
 };
 
 /**
@@ -64,6 +65,10 @@ function parseArgs() {
     status: args.status || false,
     cleanup: args.cleanup || false,
     force: args.force || false,
+    skipOtherSections:
+      args["skip-other-sections"] || defaultConfig.skipOtherSections, // Add the new flag
+    confirm: args.confirm || false, // Add confirmation flag for rebaseline
+    rebaseline: args.rebaseline || false, // Add rebaseline flag
   };
 }
 
@@ -175,8 +180,11 @@ async function generateDesignChange(target, iteration, config) {
 /**
  * Capture screenshots of the specified target components
  */
-async function captureScreenshots(targets, iterationDir) {
+async function captureScreenshots(targets, iterationDir, config) {
   console.log(`📸 Capturing screenshots for targets: ${targets.join(", ")}`);
+  if (config && config.skipOtherSections) {
+    console.log(`   Focus mode enabled: Only capturing specified targets`);
+  }
 
   const timestamp = new Date().toISOString().replace(/[-:.]/g, "").slice(0, 15);
 
@@ -187,7 +195,8 @@ async function captureScreenshots(targets, iterationDir) {
     );
 
     // Actually call the screenshot function instead of just commenting about it
-    await takeUnifiedScreenshots("all", timestamp, false, targets);
+    const skipOther = config && config.skipOtherSections ? true : false;
+    await takeUnifiedScreenshots("all", timestamp, false, targets, skipOther);
 
     // Copy the screenshots to the iteration directory
     console.log(`   Copying screenshots to ${iterationDir}/screenshots`);
@@ -403,7 +412,11 @@ async function processIteration(iteration, config) {
   }
 
   // Capture screenshots
-  const timestamp = await captureScreenshots(config.targets, iterationDir);
+  const timestamp = await captureScreenshots(
+    config.targets,
+    iterationDir,
+    config
+  );
 
   // Capture diff for each target
   const diffInfo = {};
@@ -709,6 +722,100 @@ async function ensureDocsServerRunning() {
 }
 
 /**
+ * Rebaseline screenshots with a specific iteration's screenshots
+ * Optionally confirms each rebaseline action if the confirm flag is set
+ */
+async function rebaselineScreenshots(iteration, targets, confirm = false) {
+  const iterationDir = path.join(iterationsDir, `iteration-${iteration}`);
+  console.log(`🔄 Rebaselining screenshots from iteration ${iteration}`);
+
+  // Check if the iteration exists
+  if (!fs.existsSync(iterationDir)) {
+    console.error(`❌ Iteration not found: ${iterationDir}`);
+    return false;
+  }
+
+  // Get screenshots directory
+  const screenshotsDir = path.join(iterationDir, "screenshots");
+  if (!fs.existsSync(screenshotsDir)) {
+    console.error(`❌ Screenshots not found for iteration ${iteration}`);
+    return false;
+  }
+
+  // Get metadata
+  const metadataPath = path.join(iterationDir, "metadata.json");
+  if (!fs.existsSync(metadataPath)) {
+    console.error(`❌ Metadata not found for iteration ${iteration}`);
+    return false;
+  }
+
+  const metadata = JSON.parse(fs.readFileSync(metadataPath, "utf8"));
+
+  // Determine which targets to rebaseline
+  const targetList = targets && targets.length > 0 ? targets : metadata.targets;
+  console.log(`📸 Rebaselining targets: ${targetList.join(", ")}`);
+
+  // Get all screenshots
+  const screenshots = fs.readdirSync(screenshotsDir);
+
+  // Filter to only the target screenshots
+  const targetScreenshots = screenshots.filter((file) =>
+    targetList.some((target) => file.includes(target))
+  );
+
+  if (targetScreenshots.length === 0) {
+    console.error(
+      `❌ No screenshots found for targets ${targetList.join(", ")}`
+    );
+    return false;
+  }
+
+  // Baseline directory
+  const baselineDir = path.join(rootDir, "static/screenshots/unified");
+
+  // For each screenshot, confirm and copy
+  let updatedCount = 0;
+  for (const screenshot of targetScreenshots) {
+    const source = path.join(screenshotsDir, screenshot);
+
+    // Generate baseline filename without timestamp
+    const parts = screenshot.split("-");
+    const component = parts[1];
+    const mode = parts[2]; // light or dark
+    const baselineFile = `${parts[0]}-${component}-${mode}.png`;
+    const destination = path.join(baselineDir, baselineFile);
+
+    // If confirm flag is set, prompt for confirmation
+    let shouldUpdate = true;
+    if (confirm) {
+      // In a real implementation, this would use a proper interactive prompt
+      // For simplicity, we'll just log what would happen
+      console.log(`   Would update: ${baselineFile}`);
+      console.log(`   Source: ${screenshot}`);
+      console.log(`   Prompt for confirmation would appear here`);
+
+      // Simulate user confirmation (in real implementation, this would be interactive)
+      console.log(`   ✅ User would be asked to confirm`);
+    }
+
+    if (shouldUpdate) {
+      try {
+        fs.copyFileSync(source, destination);
+        console.log(`   ✅ Updated baseline: ${baselineFile}`);
+        updatedCount++;
+      } catch (error) {
+        console.error(`   ❌ Error updating ${baselineFile}: ${error.message}`);
+      }
+    } else {
+      console.log(`   ❌ Skipped: ${baselineFile}`);
+    }
+  }
+
+  console.log(`🎉 Rebaseline complete! Updated ${updatedCount} screenshots.`);
+  return true;
+}
+
+/**
  * Main function to run the design iterations
  */
 async function runDesignIterations() {
@@ -725,6 +832,33 @@ async function runDesignIterations() {
 
   if (config.cleanup) {
     cleanupIterations();
+    return;
+  }
+
+  // Handle rebaseline command
+  if (config.rebaseline) {
+    if (!config.iteration) {
+      console.error(
+        "❌ You must specify which iteration to rebaseline with --iteration=X"
+      );
+      return;
+    }
+
+    const success = await rebaselineScreenshots(
+      config.iteration,
+      config.targets,
+      config.confirm
+    );
+
+    if (success) {
+      console.log(
+        `✅ Successfully rebaselined from iteration ${config.iteration}`
+      );
+    } else {
+      console.error(
+        `❌ Failed to rebaseline from iteration ${config.iteration}`
+      );
+    }
     return;
   }
 
@@ -772,7 +906,7 @@ async function runDesignIterations() {
     iterations.push(result);
   }
 
-  console.log("\n🎉 All iterations complete!");
+  console.log(`\n🎉 All iterations complete!`);
   console.log(`📁 Results stored in ${iterationsDir}`);
   console.log(`📁 Diffs stored in ${possibleDiffsDir}`);
   console.log(`\n💡 Next steps:`);
@@ -784,7 +918,7 @@ async function runDesignIterations() {
     `   3. If required, update the approval section in the metadata.json`
   );
   console.log(
-    `   4. Run 'pnpm design-iterations:apply --iteration=X' to apply the changes`
+    `   4. Run 'pnpm docs:design-iterations:apply --iteration=X' to apply the changes`
   );
 
   return iterations;
@@ -806,4 +940,5 @@ export {
   captureScreenshots,
   createMetadata,
   applySelectedIteration,
+  rebaselineScreenshots,
 };

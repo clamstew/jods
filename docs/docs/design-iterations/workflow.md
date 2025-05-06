@@ -29,7 +29,7 @@ Before starting:
 Start by generating several design variations for a specific UI component:
 
 ```bash
-pnpm design-iterations:count-3 --target="features-section"
+pnpm docs:design-iterations:count-3 --target="features-section" --skip-other-sections
 ```
 
 This command:
@@ -42,7 +42,7 @@ This command:
 You can target multiple components at once by separating them with commas:
 
 ```bash
-pnpm design-iterations --count=2 --target="hero-section,features-section"
+pnpm docs:design-iterations --count=2 --target="hero-section,features-section" --skip-other-sections
 ```
 
 ### Advanced Generation Options
@@ -51,10 +51,10 @@ For more control over the design generation:
 
 ```bash
 # Custom design prompt
-pnpm design-iterations --count=2 --target="hero-section" --prompt="Make it more minimal with increased whitespace"
+pnpm docs:design-iterations --count=2 --target="hero-section" --prompt="Make it more minimal with increased whitespace" --skip-other-sections
 
 # Compare with other libraries
-pnpm design-iterations --count=3 --target="compare-section" --compare-with="react,zustand,redux"
+pnpm docs:design-iterations --count=3 --target="compare-section" --compare-with="react,zustand,redux" --skip-other-sections
 ```
 
 ## Step 2: Review and Provide Feedback
@@ -108,7 +108,7 @@ The overall direction is promising, but needs refinement for dark mode.
 Once you've reviewed and provided feedback, generate a refined iteration:
 
 ```bash
-pnpm design-iterations:refine --target="features-section"
+pnpm docs:design-iterations:refine --target="features-section" --skip-other-sections
 ```
 
 The `--refine` flag tells the system to:
@@ -124,7 +124,7 @@ You can repeat this refinement process multiple times until you're satisfied wit
 When you've found a design you're happy with, apply it to your codebase:
 
 ```bash
-pnpm design-iterations:apply --iteration=4 --target="features-section"
+pnpm docs:design-iterations:apply --iteration=4 --target="features-section"
 ```
 
 This applies the changes from iteration 4 to your codebase. It's recommended to:
@@ -137,7 +137,7 @@ This applies the changes from iteration 4 to your codebase. It's recommended to:
 If needed, you can force the application even with uncommitted changes:
 
 ```bash
-pnpm design-iterations:apply --iteration=4 --target="features-section" --force
+pnpm docs:design-iterations:apply --iteration=4 --target="features-section" --force
 ```
 
 ## Step 5: Cleanup
@@ -145,7 +145,7 @@ pnpm design-iterations:apply --iteration=4 --target="features-section" --force
 After finalizing your design:
 
 ```bash
-pnpm design-iterations:cleanup
+pnpm docs:design-iterations:cleanup
 ```
 
 This removes temporary files and old screenshots to keep your workspace clean.
@@ -153,7 +153,7 @@ This removes temporary files and old screenshots to keep your workspace clean.
 You can preview what would be deleted without removing anything:
 
 ```bash
-pnpm design-iterations:cleanup --dry-run
+pnpm docs:design-iterations:cleanup --dry-run
 ```
 
 ## 🔍 Checking Design Iteration Status
@@ -161,7 +161,7 @@ pnpm design-iterations:cleanup --dry-run
 At any point, you can check the status of your current design iterations:
 
 ```bash
-pnpm design-iterations:status
+pnpm docs:design-iterations:status
 ```
 
 This shows:
@@ -202,23 +202,23 @@ Here's a complete workflow example:
 
 ```bash
 # Generate 3 initial iterations of the features section
-pnpm design-iterations:count-3 --target="features-section"
+pnpm docs:design-iterations:count-3 --target="features-section" --skip-other-sections
 
 # Review the screenshots and fill out feedback
 
 # Create 1 refined iteration based on feedback
-pnpm design-iterations:refine --target="features-section"
+pnpm docs:design-iterations:refine --target="features-section" --skip-other-sections
 
 # Review the refined design
 
 # If needed, make one more refinement
-pnpm design-iterations:refine --target="features-section"
+pnpm docs:design-iterations:refine --target="features-section" --skip-other-sections
 
 # Apply the final design (iteration 5)
-pnpm design-iterations:apply --iteration=5 --target="features-section"
+pnpm docs:design-iterations:apply --iteration=5 --target="features-section"
 
 # Clean up
-pnpm design-iterations:cleanup
+pnpm docs:design-iterations:cleanup
 ```
 
 ## 🔧 Troubleshooting
@@ -227,19 +227,19 @@ pnpm design-iterations:cleanup
 
 - Make sure Playwright is installed: `pnpm install`
 - Check browser installation: `npx playwright install chromium`
-- Try running with verbose logging: `DEBUG=1 pnpm design-iterations --count=1 --target="features-section"`
+- Try running with verbose logging: `DEBUG=1 pnpm docs:design-iterations --count=1 --target="features-section" --skip-other-sections`
 - Ensure the documentation site is running (the script will attempt to start it if not)
 
 ### Can't see changes in screenshots
 
-- Try clearing browser cache: `pnpm design-iterations:clear-cache`
+- Try clearing browser cache: `pnpm docs:design-iterations:clear-cache`
 - Ensure changes are significant enough to be visible
 - Check the diff.patch file to verify changes were captured
 
 ### Error applying iteration
 
 - Make sure you have no uncommitted changes: `git status`
-- Try with the force flag: `pnpm design-iterations:apply --iteration=X --target="section" --force`
+- Try with the force flag: `pnpm docs:design-iterations:apply --iteration=X --target="section" --force`
 - Check if the iteration exists in the expected directory
 
 ## 📚 Related Guides
