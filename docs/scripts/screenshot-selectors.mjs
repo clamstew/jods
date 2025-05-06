@@ -92,6 +92,9 @@ export const COMPONENTS = [
     retryTabSelection: 2, // Number of retries if tab isn't selected
     forceReactTabSelected: true, // Force the React tab to be selected even if it's not the default
     pauseAnimations: true, // Pause animations during screenshot
+    clickSelector:
+      "[data-testid='framework-tab-react'], [data-testid='jods-framework-tab-react'], button:has-text('React'), .framework-tabs button:nth-child(1), button:has-text('⚛️')", // Added explicit click for React tab
+    clickWaitTime: 1500, // Wait after clicking tab
     alternativeSelectors: [
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
       "button:has-text('React'), button:has-text('Preact'), button:has-text('Remix')",
@@ -201,11 +204,11 @@ export const COMPONENTS = [
       "section#remix-integration, section:has(h2:has-text('Remix Integration'))",
     fallbackStrategy: "keyword-context",
     keywords: ["Remix", "Integration"],
-    padding: 200,
+    padding: 250, // Increased from 200 to capture more of the surrounding area
     waitForSelector: "h2:has-text('Remix Integration')",
     minHeight: 1600,
     testId: "jods-remix-section",
-    extraScroll: -100, // Changed from 40 to -100 to scroll up and show more of the title
+    extraScroll: -200, // Changed from -100 to -200 to scroll up more and show the full header
     pauseAnimations: true, // Flag to pause animations during screenshot
     diffThreshold: 0.05, // Higher threshold for this animated component
     alternativeSelectors: [
