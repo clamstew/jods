@@ -1,130 +1,112 @@
 // Basic tests for testid-helpers.mjs
 import { jest } from "@jest/globals";
 
-// Import functions from the module we want to test
-// Note: For a real implementation, the script would be refactored to export these functions
+// Import the module being tested
+import {
+  findByTestId,
+  clickByTestId,
+  convertComponentToTestIdFirst,
+  convertAllComponentsToTestIdFirst,
+} from "../testid-helpers.mjs";
 
+// Define mock data and setup
 describe("testid-helpers", () => {
-  // Helper functions to simulate what should be in the testid-helpers module
-  function formatTestId(component, element, options = {}) {
-    const { prefix = "jods-", delimiter = "-" } = options;
-    return `${prefix}${component}${delimiter}${element}`;
-  }
+  // Mock page object
+  const mockPage = {
+    $: jest.fn(),
+    click: jest.fn(),
+    evaluate: jest.fn(),
+    waitForTimeout: jest.fn(),
+  };
 
-  function parseTestId(testId, options = {}) {
-    const { prefix = "jods-", delimiter = "-" } = options;
-    if (!testId.startsWith(prefix)) {
-      return null;
-    }
-
-    const withoutPrefix = testId.slice(prefix.length);
-    const parts = withoutPrefix.split(delimiter);
-
-    if (parts.length < 2) {
-      return null;
-    }
-
-    return {
-      component: parts[0],
-      element: parts[1],
-      variants: parts.slice(2),
-    };
-  }
-
-  function generateSelector(testId) {
-    return `[data-testid="${testId}"]`;
-  }
-
-  function createTestIdMatcher(component, options = {}) {
-    const { prefix = "jods-", delimiter = "-" } = options;
-    const pattern = `^${prefix}${component}${delimiter}`;
-    const regex = new RegExp(pattern);
-
-    return (testId) => regex.test(testId);
-  }
+  // Mock element
+  const mockElement = {
+    click: jest.fn(),
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // Console methods are used in the actual module
+    console.log = jest.fn();
   });
 
-  describe("formatTestId", () => {
-    test("formats standard testID with default options", () => {
+  describe("findByTestId", () => {
+    test("finds element by testId", async () => {
+      // Setup
+      mockPage.$.mockResolvedValueOnce(mockElement);
+
       // Execute
-      const testId = formatTestId("button", "primary");
+      const result = await findByTestId(mockPage, "test-id");
 
       // Assert
-      expect(testId).toBe("jods-button-primary");
+      expect(mockPage.$).toHaveBeenCalledWith('[data-testid="test-id"]');
+      expect(result).toBe(mockElement);
     });
 
-    test("formats testID with custom prefix", () => {
+    test("tries variants if base testId not found", async () => {
+      // Setup
+      mockPage.$.mockResolvedValueOnce(null);
+      mockPage.$.mockResolvedValueOnce(mockElement);
+
       // Execute
-      const testId = formatTestId("button", "primary", { prefix: "custom-" });
+      const result = await findByTestId(mockPage, "test-id", ["variant"]);
 
       // Assert
-      expect(testId).toBe("custom-button-primary");
-    });
-
-    test("formats testID with custom delimiter", () => {
-      // Execute
-      const testId = formatTestId("button", "primary", { delimiter: ":" });
-
-      // Assert
-      expect(testId).toBe("jods-button:primary");
-    });
-  });
-
-  describe("parseTestId", () => {
-    test("parses standard testID with default options", () => {
-      // Execute
-      const result = parseTestId("jods-button-primary");
-
-      // Assert
-      expect(result).toEqual({
-        component: "button",
-        element: "primary",
-        variants: [],
-      });
-    });
-
-    test("parses testID with variants", () => {
-      // Execute
-      const result = parseTestId("jods-button-primary-large-disabled");
-
-      // Assert
-      expect(result).toEqual({
-        component: "button",
-        element: "primary",
-        variants: ["large", "disabled"],
-      });
-    });
-
-    test("returns null for invalid testID format", () => {
-      // Execute
-      const result = parseTestId("invalid-format");
-
-      // Assert
-      expect(result).toBeNull();
+      expect(mockPage.$).toHaveBeenCalledWith('[data-testid="test-id"]');
+      expect(mockPage.$).toHaveBeenCalledWith(
+        '[data-testid="test-id-variant"]'
+      );
+      expect(result).toBe(mockElement);
     });
   });
 
-  describe("generateSelector", () => {
-    test("generates CSS selector for a testID", () => {
+  describe("clickByTestId", () => {
+    test("clicks element found by testId", async () => {
+      // Setup
+      mockPage.$.mockResolvedValueOnce(mockElement);
+
       // Execute
-      const selector = generateSelector("jods-button-primary");
+      const result = await clickByTestId(mockPage, "test-id", [], [], 100);
 
       // Assert
-      expect(selector).toBe('[data-testid="jods-button-primary"]');
+      expect(mockPage.$).toHaveBeenCalledWith('[data-testid="test-id"]');
+      expect(mockElement.click).toHaveBeenCalled();
+      expect(mockPage.waitForTimeout).toHaveBeenCalledWith(100);
+      expect(result).toBe(true);
     });
   });
 
-  describe("createTestIdMatcher", () => {
-    test("creates matcher function for a component", () => {
+  describe("convertComponentToTestIdFirst", () => {
+    test("converts component to use testId selectors", () => {
+      // Setup
+      const component = {
+        name: "button-section",
+        selector: ".button-component",
+      };
+
       // Execute
-      const matcher = createTestIdMatcher("button");
+      const result = convertComponentToTestIdFirst(component);
 
       // Assert
-      expect(matcher("jods-button-primary")).toBe(true);
-      expect(matcher("jods-form-input")).toBe(false);
+      expect(result.testId).toBe("jods-button-section");
+      expect(result.alternativeSelectors[0]).toBe(
+        '[data-testid="jods-button-section"]'
+      );
+    });
+  });
+
+  describe("convertAllComponentsToTestIdFirst", () => {
+    test("converts all components in array", () => {
+      // Setup
+      const components = [{ name: "button-section" }, { name: "card-section" }];
+
+      // Execute
+      const result = convertAllComponentsToTestIdFirst(components);
+
+      // Assert
+      expect(result).toHaveLength(2);
+      expect(result[0].testId).toBe("jods-button-section");
+      expect(result[1].testId).toBe("jods-card-section");
     });
   });
 });

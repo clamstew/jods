@@ -1,30 +1,14 @@
 // Basic tests for screenshot-diff.mjs
-import { jest } from "@jest/globals";
-import * as fs from "fs";
-import * as path from "path";
-
-// Mock fs module
-jest.mock("fs", () => ({
-  existsSync: jest.fn(),
-  mkdirSync: jest.fn(),
-  readdirSync: jest.fn(),
-  readFileSync: jest.fn(),
-  writeFileSync: jest.fn(),
-  statSync: jest.fn(),
-}));
-
-// Mock path module
-jest.mock("path", () => ({
-  ...jest.requireActual("path"),
-  join: jest.fn((...args) => args.join("/")),
-  basename: jest.fn((path) => path.split("/").pop()),
-  dirname: jest.fn((dir) => dir.split("/").slice(0, -1).join("/")),
-}));
+import { setupMocks, fs, path } from "./setup-mocks.mjs";
 
 // In a real implementation, we would import actual functions
 // For now, we'll simulate key functionality we expect from screenshot-diff.mjs
 
 describe("screenshot-diff", () => {
+  beforeEach(() => {
+    setupMocks();
+  });
+
   // Mock implementation of key functions we expect in the module
 
   function findScreenshotPairs(baselineDir, currentDir) {
@@ -102,15 +86,6 @@ describe("screenshot-diff", () => {
       details: results,
     };
   }
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-
-    // Setup default mocks
-    fs.existsSync.mockReturnValue(true);
-    fs.readdirSync.mockReturnValue([]);
-    fs.statSync.mockReturnValue({ isDirectory: () => true });
-  });
 
   describe("findScreenshotPairs", () => {
     test("finds matching screenshot pairs between directories", () => {

@@ -1,30 +1,45 @@
 // Basic tests for rebaseline.mjs
 import { jest } from "@jest/globals";
+
+// Mock modules first
+jest.mock("fs");
+jest.mock("path");
+jest.mock("child_process");
+
+// Import modules after mocking
 import * as fs from "fs";
 import * as path from "path";
-import * as child_process from "child_process";
+import { spawn } from "child_process";
 
-// Mock fs module
-jest.mock("fs", () => ({
-  existsSync: jest.fn(),
-  copyFileSync: jest.fn(),
-  mkdirSync: jest.fn(),
-  readdirSync: jest.fn(),
-  statSync: jest.fn(),
-}));
+// Set up mock implementations
+const setupMocks = () => {
+  // Clear all previous mock calls
+  jest.clearAllMocks();
 
-// Mock path module
-jest.mock("path", () => ({
-  ...jest.requireActual("path"),
-  join: jest.fn((...args) => args.join("/")),
-  resolve: jest.fn((...args) => args.join("/")),
-}));
+  // fs module mocks
+  fs.existsSync = jest.fn().mockReturnValue(true);
+  fs.readdirSync = jest.fn().mockReturnValue([]);
+  fs.statSync = jest.fn().mockReturnValue({ isDirectory: () => true });
+  fs.writeFileSync = jest.fn();
+  fs.copyFileSync = jest.fn();
+  fs.mkdirSync = jest.fn();
 
-// Mock child_process module
-jest.mock("child_process", () => ({
-  spawn: jest.fn(),
-  execSync: jest.fn(),
-}));
+  // path module mocks
+  path.join = jest.fn((...args) => args.join("/"));
+  path.resolve = jest.fn((...args) => args.join("/"));
+
+  // child_process mocks
+  const mockProcess = {
+    on: jest.fn(),
+    kill: jest.fn(),
+  };
+  spawn.mockReturnValue(mockProcess);
+};
+
+// Set up mocks before each test
+beforeEach(() => {
+  setupMocks();
+});
 
 // Simulated rebaseline module functions
 describe("rebaseline", () => {
@@ -80,28 +95,6 @@ describe("rebaseline", () => {
       options,
     };
   }
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-
-    // Setup default mocks
-    fs.existsSync.mockReturnValue(true);
-    fs.readdirSync.mockReturnValue([]);
-    fs.statSync.mockReturnValue({ isDirectory: () => true });
-
-    // Setup child_process mock for spawn
-    child_process.spawn.mockImplementation(() => {
-      return {
-        on: jest.fn(),
-        stdout: { on: jest.fn() },
-        stderr: { on: jest.fn() },
-        kill: jest.fn(() => true),
-      };
-    });
-
-    // Setup child_process mock for execSync
-    child_process.execSync.mockReturnValue(Buffer.from("success"));
-  });
 
   describe("parseArgs", () => {
     test("parses full flag correctly", () => {

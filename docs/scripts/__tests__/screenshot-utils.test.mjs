@@ -1,14 +1,8 @@
 // Basic tests for screenshot-utils.mjs
 import { jest } from "@jest/globals";
-import * as fs from "fs";
+import { mockFS, setupMocks } from "./mock-setup.mjs";
 
-// Mock fs module
-jest.mock("fs", () => ({
-  existsSync: jest.fn(),
-  mkdirSync: jest.fn(),
-}));
-
-// Import the module under test
+// Import the module under test - we'll mock its dependencies in our tests
 import {
   setupEnvironment,
   setupLogger,
@@ -17,34 +11,37 @@ import {
   measureTime,
 } from "../screenshot-utils.mjs";
 
+// Mock the fs module that the tested module will import
+jest.mock("fs", () => mockFS);
+
 describe("screenshot-utils", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    setupMocks();
   });
 
   describe("setupEnvironment", () => {
     test("creates screenshot directories if they do not exist", () => {
       // Setup
-      fs.existsSync.mockReturnValue(false);
+      mockFS.existsSync.mockReturnValue(false);
 
       // Execute
       const env = setupEnvironment();
 
       // Assert
-      expect(fs.mkdirSync).toHaveBeenCalledTimes(3); // unified, diffs, iterations dirs
+      expect(mockFS.mkdirSync).toHaveBeenCalledTimes(3); // unified, diffs, iterations dirs
       expect(env.BASE_URL).toBeDefined();
       expect(env.THEMES).toEqual(["light", "dark"]);
     });
 
     test("does not create directories that already exist", () => {
       // Setup
-      fs.existsSync.mockReturnValue(true);
+      mockFS.existsSync.mockReturnValue(true);
 
       // Execute
       setupEnvironment();
 
       // Assert
-      expect(fs.mkdirSync).not.toHaveBeenCalled();
+      expect(mockFS.mkdirSync).not.toHaveBeenCalled();
     });
   });
 
@@ -113,7 +110,11 @@ describe("screenshot-utils", () => {
 
     test("retries failed operations up to max retries", async () => {
       // Setup
-      const mockLogger = { warn: jest.fn(), error: jest.fn() };
+      const mockLogger = {
+        warn: jest.fn(),
+        error: jest.fn(),
+        success: jest.fn(),
+      };
       const retry = setupRetry(mockLogger);
       const mockOperation = jest
         .fn()

@@ -67,20 +67,5 @@
     "node": ">=18.0",
     "pnpm": ">=8.0.0"
   },
-  "packageManager": "pnpm@10.8.0",
-  "jest": {
-    "transform": {},
-    "extensionsToTreatAsEsm": [],
-    "moduleNameMapper": {
-      "^(\\.{1,2}/.*)\\.js$": "$1"
-    },
-    "testEnvironment": "node",
-    "testMatch": [
-      "**/__tests__/**/*.test.mjs"
-    ],
-    "collectCoverageFrom": [
-      "scripts/**/*.mjs",
-      "!scripts/__tests__/**/*"
-    ]
-  }
+  "packageManager": "pnpm@10.8.0"
 }

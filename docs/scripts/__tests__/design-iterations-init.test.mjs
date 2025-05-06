@@ -1,23 +1,34 @@
 // Basic tests for design-iterations-init.mjs
 import { jest } from "@jest/globals";
+
+// Mock modules first
+jest.mock("fs");
+jest.mock("path");
+
+// Import modules after mocking
 import * as fs from "fs";
 import * as path from "path";
 
-// Mock fs module
-jest.mock("fs", () => ({
-  existsSync: jest.fn(),
-  mkdirSync: jest.fn(),
-  writeFileSync: jest.fn(),
-  readdirSync: jest.fn(),
-  readFileSync: jest.fn(),
-}));
+// Set up mock implementations
+const setupMocks = () => {
+  // Clear all previous mock calls
+  jest.clearAllMocks();
 
-// Mock path module
-jest.mock("path", () => ({
-  ...jest.requireActual("path"),
-  join: jest.fn((...args) => args.join("/")),
-  dirname: jest.fn((dir) => dir.split("/").slice(0, -1).join("/")),
-}));
+  // fs module mocks
+  fs.existsSync = jest.fn().mockReturnValue(false);
+  fs.readdirSync = jest.fn().mockReturnValue([]);
+  fs.writeFileSync = jest.fn();
+  fs.mkdirSync = jest.fn();
+
+  // path module mocks
+  path.join = jest.fn((...args) => args.join("/"));
+  path.dirname = jest.fn((p) => p.split("/").slice(0, -1).join("/"));
+};
+
+// Initialize mocks before each test
+beforeEach(() => {
+  setupMocks();
+});
 
 // Import functions from the module we want to test
 // Note: We're not importing the module directly to avoid executing its main code
@@ -46,13 +57,6 @@ describe("design-iterations-init", () => {
 
     return filePath;
   }
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    // Set up default mock behaviors
-    fs.existsSync.mockReturnValue(false);
-    fs.readdirSync.mockReturnValue([]);
-  });
 
   describe("createTemplateFile", () => {
     test("creates directory if it does not exist", () => {
