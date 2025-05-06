@@ -138,6 +138,15 @@ export const COMPONENTS = [
     testId: "jods-framework-section",
     extraScroll: 150, // Reduced from 250 to show more of the section
     captureHtmlDebug: true,
+    // Fixing diff highlight selectors to use valid CSS
+    diffHighlightSelectors: [
+      // The Remix tab itself - use data-testid only
+      "[data-testid='framework-tab-remix']",
+      "[data-testid='jods-framework-tab-remix']",
+      // Remix-specific code elements - using more generic selectors
+      "pre code",
+      ".remix-code-block",
+    ],
     // Adding the same dark mode handling as for React tab
     darkModeExtraWait: 2000, // Extra wait time specifically for dark mode (even longer for Remix)
     verifyContentLoaded: true, // Verify that code blocks are visible

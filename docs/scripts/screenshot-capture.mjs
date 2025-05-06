@@ -147,6 +147,19 @@ const tabManager = {
     return (async () => {
       console.log(`Attempting to select ${tabName} tab...`);
 
+      // Special handling for Remix tab in light mode
+      const isRemixTab = tabName.toLowerCase() === "remix";
+      const isDarkMode = await page.evaluate(() => {
+        return document.documentElement.dataset.theme === "dark";
+      });
+
+      // For Remix in light mode, we need to be more aggressive with selection
+      const actualRetries =
+        isRemixTab && !isDarkMode ? maxRetries + 2 : maxRetries;
+      console.log(
+        `Using ${actualRetries} retries for ${tabName} tab selection`
+      );
+
       // Find all tabs first
       const tabs = await this.findAllTabs(page);
       const targetTab = tabs.find((tab) => tab.name === tabName.toLowerCase());
@@ -160,7 +173,12 @@ const tabManager = {
       let attempt = 0;
       let success = false;
 
-      while (attempt < maxRetries && !success) {
+      // Add specific direct click selector for light mode Remix tab as a last resort
+      const directRemixSelector = isRemixTab
+        ? '[data-testid="jods-framework-tab-remix"], button:has-text("Remix"), button:has-text("💿"), .framework-card:has-text("Remix")'
+        : null;
+
+      while (attempt < actualRetries && !success) {
         attempt++;
         try {
           // First check if already selected
@@ -171,53 +189,141 @@ const tabManager = {
           }
 
           console.log(
-            `Clicking ${tabName} tab using selector: ${targetTab.selector}`
+            `Clicking ${tabName} tab using selector: ${targetTab.selector} (attempt ${attempt}/${actualRetries})`
           );
 
-          // Use evaluate for more reliable clicking
-          const clickResult = await page.evaluate((selector) => {
-            const element = document.querySelector(selector);
-            if (!element) return { success: false, error: "Element not found" };
-
+          // For Remix tab in light mode, use direct evaluation for more reliable clicking
+          if (isRemixTab && !isDarkMode) {
+            // First try a direct click with Playwright
             try {
-              element.click();
-              return { success: true };
-            } catch (error) {
-              return { success: false, error: error.message };
+              await page.click(targetTab.selector, {
+                timeout: 1000,
+                force: true,
+              });
+              console.log(`Direct click on ${tabName} tab`);
+            } catch (directClickError) {
+              console.warn(`Direct click failed: ${directClickError.message}`);
+
+              // Fall back to evaluate method
+              await page.evaluate((selector) => {
+                const elements = document.querySelectorAll(selector);
+                console.log(
+                  `Found ${elements.length} elements matching ${selector}`
+                );
+
+                if (elements.length > 0) {
+                  // Try clicking all matching elements to increase chances
+                  elements.forEach((el) => {
+                    try {
+                      console.log(
+                        `Clicking element: ${el.tagName}${
+                          el.className ? "." + el.className : ""
+                        }`
+                      );
+                      el.click();
+                    } catch (e) {
+                      console.warn(`Click failed on element: ${e.message}`);
+                    }
+                  });
+                } else if (selector.includes(",")) {
+                  // Try each part of the selector individually
+                  const selectorParts = selector
+                    .split(",")
+                    .map((s) => s.trim());
+                  for (const part of selectorParts) {
+                    const partElements = document.querySelectorAll(part);
+                    console.log(
+                      `Found ${partElements.length} elements matching ${part}`
+                    );
+
+                    for (const el of partElements) {
+                      try {
+                        el.click();
+                        console.log("Clicked element with selector part");
+                        break;
+                      } catch (e) {}
+                    }
+                  }
+                }
+              }, targetTab.selector);
             }
-          }, targetTab.selector);
 
-          if (!clickResult.success) {
-            console.warn(
-              `Failed to click tab in DOM: ${
-                clickResult.error || "unknown error"
-              }`
-            );
+            // For Remix in light mode, add an extra forced delay for the tab change to take effect
+            await page.waitForTimeout(2000);
+          } else {
+            // Standard click process for other tabs or dark mode
+            // Use evaluate for more reliable clicking
+            const clickResult = await page.evaluate((selector) => {
+              const element = document.querySelector(selector);
+              if (!element)
+                return { success: false, error: "Element not found" };
 
-            // Fall back to Playwright click
-            await page.click(targetTab.selector);
+              try {
+                element.click();
+                return { success: true };
+              } catch (error) {
+                return { success: false, error: error.message };
+              }
+            }, targetTab.selector);
+
+            if (!clickResult.success) {
+              console.warn(
+                `Failed to click tab in DOM: ${
+                  clickResult.error || "unknown error"
+                }`
+              );
+
+              // Fall back to Playwright click
+              await page.click(targetTab.selector);
+            }
+
+            // Wait for tab change to take effect
+            await page.waitForTimeout(1500);
           }
-
-          // Wait for tab change to take effect
-          await page.waitForTimeout(1500);
 
           // Verify tab selection
           const selected = await this.isTabSelected(page, tabName);
           if (!selected) {
+            // Try one last direct attempt with a hardcoded selector for Remix tab in light mode
+            if (
+              isRemixTab &&
+              !isDarkMode &&
+              directRemixSelector &&
+              attempt === actualRetries - 1
+            ) {
+              console.log(
+                `Last resort click for Remix tab with direct selector: ${directRemixSelector}`
+              );
+              await page.click(directRemixSelector, { force: true });
+              await page.waitForTimeout(2500);
+
+              const finalCheck = await this.isTabSelected(page, tabName);
+              if (finalCheck) {
+                console.log(
+                  `Successfully selected ${tabName} tab after direct selector click`
+                );
+                return true;
+              }
+            }
+
             throw new Error(`${tabName} tab still not selected after clicking`);
           }
 
-          console.log(`Successfully selected ${tabName} tab`);
+          console.log(
+            `Successfully selected ${tabName} tab after ${attempt} attempts`
+          );
           success = true;
         } catch (error) {
-          if (attempt < maxRetries) {
+          if (attempt < actualRetries) {
             console.warn(
-              `Attempt ${attempt}/${maxRetries} to select ${tabName} tab failed: ${error.message}`
+              `Attempt ${attempt}/${actualRetries} to select ${tabName} tab failed: ${error.message}`
             );
+
+            // Increase wait time with each attempt
             await page.waitForTimeout(800 * attempt);
           } else {
             console.error(
-              `Failed to select ${tabName} tab after ${maxRetries} attempts: ${error.message}`
+              `Failed to select ${tabName} tab after ${actualRetries} attempts: ${error.message}`
             );
           }
         }
@@ -235,8 +341,10 @@ const tabManager = {
    */
   isTabSelected: function (page, tabName) {
     return page.evaluate((name) => {
+      console.log(`Checking if ${name} tab is selected...`);
+
       // First check by data-testid with aria-selected
-      const dataTestIdSelector = `[data-testid='framework-tab-${name.toLowerCase()}'][aria-selected='true'], [data-testid='framework-tab-${name.toLowerCase()}'].active`;
+      const dataTestIdSelector = `[data-testid='framework-tab-${name.toLowerCase()}'][aria-selected='true'], [data-testid='framework-tab-${name.toLowerCase()}'].active, [data-testid='jods-framework-tab-${name.toLowerCase()}'][aria-selected='true']`;
       const selectedByTestId = document.querySelector(dataTestIdSelector);
       if (selectedByTestId) {
         console.log(
@@ -247,6 +355,54 @@ const tabManager = {
         return true;
       }
 
+      // Special case for Remix: check active class on remix items directly
+      if (name.toLowerCase() === "remix") {
+        const remixSpecificSelectors = [
+          '.framework-card:has-text("Remix").active',
+          '.framework-card:has-text("💿").active',
+          'button:has-text("Remix").active',
+          'button:has-text("💿").active',
+          '[data-testid*="remix" i][aria-selected="true"]',
+          '[data-testid*="remix" i].active',
+        ];
+
+        for (const selector of remixSpecificSelectors) {
+          try {
+            const element = document.querySelector(selector);
+            if (element) {
+              console.log(
+                `Remix tab selected via specific selector: ${selector}`
+              );
+              return true;
+            }
+          } catch (e) {}
+        }
+
+        // Special case - check for visible content that's only shown when Remix tab is active
+        const remixSpecificContent = [
+          'code:has-text("createCookieStore")',
+          'code:has-text("loader")',
+          'code:has-text("createSessionStorage")',
+          'code:has-text("loaderStore")',
+          'div:has-text("Remix state reimagined")',
+          'h3:has-text("Remix state")',
+        ];
+
+        for (const contentSelector of remixSpecificContent) {
+          try {
+            const element = document.querySelector(contentSelector);
+            if (element && element.offsetParent !== null) {
+              // Check if visible
+              console.log(
+                `Remix tab appears to be selected based on visible content: ${contentSelector}`
+              );
+              return true;
+            }
+          } catch (e) {}
+        }
+      }
+
+      // Continue with the regular checks...
       // Method 1: Check for aria-selected attribute
       const buttons = Array.from(
         document.querySelectorAll('button[role="tab"], [role="tab"], button')
@@ -828,6 +984,88 @@ export const captureManager = {
   },
 
   /**
+   * Highlight elements for diffing by adding temporary visual markers
+   * @param {Page} page - Playwright page
+   * @param {string[]} selectors - Array of selectors to highlight
+   * @param {string} action - 'add' or 'remove'
+   */
+  highlightElementsForDiff: async function (page, selectors, action = "add") {
+    if (!selectors || selectors.length === 0) return;
+
+    console.log(
+      `${action === "add" ? "Adding" : "Removing"} diff markers to ${
+        selectors.length
+      } elements`
+    );
+
+    await page.evaluate(
+      (params) => {
+        // Create or get the style element
+        let style = document.getElementById("diff-highlight-style");
+        if (!style && params.action === "add") {
+          style = document.createElement("style");
+          style.id = "diff-highlight-style";
+          document.head.appendChild(style);
+
+          // Add the highlight styles
+          style.textContent = `
+          [data-diff-highlight="true"] {
+            outline: 3px solid rgba(255, 0, 0, 0.7) !important;
+            outline-offset: 2px !important;
+            position: relative !important;
+          }
+          [data-diff-highlight="true"]::after {
+            content: "📊 DIFF" !important;
+            position: absolute !important;
+            top: 0 !important;
+            right: 0 !important;
+            background: rgba(255, 0, 0, 0.7) !important;
+            color: white !important;
+            font-size: 10px !important;
+            padding: 2px 5px !important;
+            border-radius: 3px !important;
+            z-index: 10000 !important;
+            pointer-events: none !important;
+          }
+        `;
+        } else if (style && params.action === "remove") {
+          style.remove();
+        }
+
+        // Apply or remove highlight for each selector
+        if (params.action === "add") {
+          for (const selector of params.selectors) {
+            const elements = document.querySelectorAll(selector);
+            for (const el of elements) {
+              el.setAttribute("data-diff-highlight", "true");
+
+              // Store original outline if any
+              if (el.style.outline) {
+                el.setAttribute("data-original-outline", el.style.outline);
+              }
+            }
+          }
+        } else {
+          // Remove all highlights
+          const highlightedElements = document.querySelectorAll(
+            '[data-diff-highlight="true"]'
+          );
+          for (const el of highlightedElements) {
+            el.removeAttribute("data-diff-highlight");
+
+            // Restore original outline if any
+            if (el.hasAttribute("data-original-outline")) {
+              el.style.outline = el.getAttribute("data-original-outline");
+              el.removeAttribute("data-original-outline");
+            }
+          }
+        }
+      },
+      { selectors, action }
+    );
+  },
+
+  /**
    * Capture a specific element with appropriate clipping
    * @returns {boolean} Whether the capture was successful
    */
@@ -843,6 +1081,15 @@ export const captureManager = {
     try {
       // Pause animations if specified
       await this.manageAnimations(page, "pause", component);
+
+      // Add diff markers if component has diff highlights defined
+      if (component.diffHighlightSelectors) {
+        await this.highlightElementsForDiff(
+          page,
+          component.diffHighlightSelectors,
+          "add"
+        );
+      }
 
       // Create the screenshot filename
       const screenshotPath = path.join(
@@ -1001,10 +1248,30 @@ export const captureManager = {
       }
 
       console.log(`Screenshot saved to: ${screenshotPath}`);
+
+      // Remove diff markers if they were added
+      if (component.diffHighlightSelectors) {
+        await this.highlightElementsForDiff(
+          page,
+          component.diffHighlightSelectors,
+          "remove"
+        );
+      }
+
       await this.manageAnimations(page, "resume", component);
       return true;
     } catch (error) {
       console.error(`Error capturing ${component.name}: ${error.message}`);
+
+      // Clean up in case of error
+      if (component.diffHighlightSelectors) {
+        await this.highlightElementsForDiff(
+          page,
+          component.diffHighlightSelectors,
+          "remove"
+        );
+      }
+
       await this.manageAnimations(page, "resume", component);
       return false;
     }
