@@ -200,7 +200,7 @@ If I could distill what we've learned into a few key points:
 
 ## 🔮 What's Next?
 
-We're continuing to refine this process. Some exciting developments on the horizon:
+So how do you follow up reinventing automated design iterations? With more automation of course! 😅 Here's what we're cooking up:
 
 - **Visual regression testing** - Automatically detect when designs change from baselines
 - **Design system documentation** - Generating living style guides from our components
