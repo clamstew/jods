@@ -130,25 +130,18 @@ export const COMPONENTS = [
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
     minHeight: 1800, // Increased from 1600 to capture more content
     clickSelector:
-      "[data-testid='framework-tab-remix'], div.framework-card.active:has-text('Remix'), div.framework-card:has(h3:has-text('Remix')), div:has-text('💿'):has(h3:has-text('Remix')), button:has-text('Remix'), button:has-text('💿')", // Updated to first try data-testid
-    clickWaitTime: 1800, // Increased from 1500 to ensure tab content is fully loaded
+      "[data-testid='framework-tab-remix'], [data-testid='jods-framework-tab-remix'], button:has-text('Remix'), button.remix-tab, button:has-text('💿'), div.framework-card:has-text('Remix'), .framework-tabs button:nth-child(3)", // Enhanced selector
+    clickWaitTime: 2500, // Increased from 1800 to ensure tab content is fully loaded
     verifyTabSelected: true, // Verify the Remix tab is visibly selected
     verifyTabName: "Remix", // The tab name to verify as selected
-    retryTabSelection: 3, // Number of retries if tab isn't selected
+    retryTabSelection: 5, // Increased from 3 to 5 for more retries
     testId: "jods-framework-section",
     extraScroll: 150, // Reduced from 250 to show more of the section
     captureHtmlDebug: true,
-    // Fixing diff highlight selectors to use valid CSS
-    diffHighlightSelectors: [
-      // The Remix tab itself - use data-testid only
-      "[data-testid='framework-tab-remix']",
-      "[data-testid='jods-framework-tab-remix']",
-      // Remix-specific code elements - using more generic selectors
-      "pre code",
-      ".remix-code-block",
-    ],
+    // Disable diff highlighting to remove red boxes
+    diffHighlightSelectors: [], // Removed all diffHighlightSelectors
     // Adding the same dark mode handling as for React tab
-    darkModeExtraWait: 2000, // Extra wait time specifically for dark mode (even longer for Remix)
+    darkModeExtraWait: 2500, // Increased from 2000 to give more time to load
     verifyContentLoaded: true, // Verify that code blocks are visible
     minVisibleCodeLines: 5, // Ensure at least 5 lines of code are visible
     pauseAnimations: true, // Pause animations during screenshot
@@ -212,7 +205,7 @@ export const COMPONENTS = [
     waitForSelector: "h2:has-text('Remix Integration')",
     minHeight: 1600,
     testId: "jods-remix-section",
-    extraScroll: 40, // Reduced to prevent scrolling too far down
+    extraScroll: -100, // Changed from 40 to -100 to scroll up and show more of the title
     pauseAnimations: true, // Flag to pause animations during screenshot
     diffThreshold: 0.05, // Higher threshold for this animated component
     alternativeSelectors: [
@@ -221,7 +214,14 @@ export const COMPONENTS = [
       "[id='remix-integration'], #remix-integration",
       "section:has(code:has-text('createCookieStore'))",
     ],
-    excludeElements: [".footer-cta", ".next-section-navigator"],
+    excludeElements: [
+      ".footer-cta",
+      ".next-section-navigator",
+      "section:has(h2:has-text('Compare'))", // Added to exclude compare section
+      "[data-testid='jods-compare-section']",
+      "section:has(h2:has-text('How jods compares'))",
+      "table, .comparison-table",
+    ],
   },
 
   // Footer section
