@@ -196,3 +196,49 @@ This approach represents a new paradigm that combines human creativity with AI a
 As we continue to improve this system, we're finding that it enables designers and developers to collaborate more effectively and iterate much faster than traditional approaches.
 
 Give it a try on your next UI improvement project - you might be surprised at how quickly you can evolve towards great designs!
+
+## 🎯 Design Principles That Guide AI
+
+The AI-assisted design iterations are guided by a core set of principles that ensure all design explorations remain aligned with jods' overall design philosophy:
+
+### User-Centric Focus 👥
+
+- Prioritizing developer experience as the primary consideration
+- Emphasizing clarity and readability over aesthetic complexity
+- Ensuring documentation remains accessible and inclusive for all users
+
+### Brand Consistency 🏆
+
+- Maintaining visual coherence with the jods brand identity
+- Using consistent color schemes, typography, and design patterns
+- Ensuring both dark and light themes reflect core brand values
+
+### Purposeful Innovation ✨
+
+- Introducing design changes that solve specific usability problems
+- Balancing innovation with predictability and learnability
+- Validating design decisions through user feedback and testing
+
+### Visual Hierarchy 🏢
+
+- Structuring content with clear, intuitive heading relationships
+- Using whitespace effectively to guide the eye and separate concerns
+- Distinguishing between primary and supporting content visually
+
+### Code Presentation 💻
+
+- Ensuring code examples are readable and correctly highlighted
+- Providing sufficient context for code snippets
+- Maintaining balanced contrast in both light and dark themes
+
+### Evaluation Criteria 📊
+
+When evaluating design iterations created by AI, consider:
+
+1. How well does it serve the target audience?
+2. Does it maintain brand consistency?
+3. Is it accessible to all users?
+4. Does it solve a specific problem?
+5. Is it sustainable and maintainable?
+
+These principles are embedded in the prompts and context provided to the AI, ensuring that even as it explores creative design variations, each iteration remains true to our core design philosophy.

@@ -246,3 +246,94 @@ pnpm design-iterations:cleanup
 - [Command Reference](./commands.md)
 - [Feedback System](./feedback.md)
 - [Screenshot System](../playwright-screenshots.md)
+
+## 🤖 Guidelines for AI Collaborators
+
+When working with AI assistants to create design iterations, the following guidelines help ensure consistency and quality:
+
+1. **Do not change the baseline** without explicit maintainer approval
+2. Save all Git diffs after each screenshot to preserve implementation details
+3. Maintain a separate markdown file that collects feedback on each iteration
+4. When presenting iterations to maintainers, include details about:
+   - What design elements were changed
+   - The reasoning behind each change
+   - How the change aligns with jods branding and developer experience goals
+5. Keep track of all screenshots discussed during review conversations
+
+AI assistants working with the design iterations system should be familiar with:
+
+- The jods documentation site branding and visual language
+- Web accessibility standards
+- Modern CSS practices
+- The technical constraints of a Docusaurus-based site
+- The importance of maintaining both light and dark themes
+
+These guidelines help ensure that AI collaborators contribute effectively to the design iteration process while maintaining brand consistency and developer focus.
+
+## 📋 Design Iteration Checklist
+
+Use this comprehensive checklist to ensure you're following best practices throughout the design iteration process.
+
+### Before Starting Iterations ✅
+
+- [ ] Define clear goals for the design improvement 🎯
+- [ ] Identify specific components or sections to focus on 🔍
+- [ ] Review existing design documentation 📚
+- [ ] Check for related previous iterations 🕰️
+- [ ] Set up screenshots of current state as baseline 📸
+- [ ] Plan for at least 3 distinct design approaches 🔢
+
+### For Each Iteration 🔄
+
+- [ ] Create a new Git branch for this iteration (handled automatically) 🌿
+- [ ] Implement focused CSS/HTML changes (handled by the tool) 🛠️
+- [ ] Capture screenshot in light mode ☀️
+- [ ] Capture screenshot in dark mode 🌙
+- [ ] Save Git diff of changes 💾
+- [ ] Document specific changes made 📝
+- [ ] Provide commentary on design intent 💭
+
+### Review Process 🔍
+
+- [ ] Compare iterations side by side 👀
+- [ ] Consider all target audiences 👨‍💻👩‍💻
+- [ ] Check performance impact ⚡
+- [ ] Verify accessibility standards ♿
+- [ ] Test responsive behavior 📱
+- [ ] Document strengths and weaknesses of each approach ⚖️
+- [ ] Rate each iteration (1-10) ⭐
+
+### Implementation 🚀
+
+- [ ] Select the best iteration or combination 🏆
+- [ ] Get maintainer approval before finalizing ✅
+- [ ] Clean up implementation code 🧹
+- [ ] Create new baseline screenshots 📸
+- [ ] Update relevant documentation 📚
+- [ ] Commit final changes 💾
+
+### Post-Implementation 🏁
+
+- [ ] Archive iteration materials 🗃️
+- [ ] Update design system documentation if needed 📋
+- [ ] Share learnings with the team 🤝
+- [ ] Create template for similar future iterations 📑
+- [ ] Add to design pattern library if appropriate 📚
+
+### Technical Requirements 🔧
+
+- [ ] Screenshots captured at standard resolution 📏
+- [ ] Git diffs saved properly 💾
+- [ ] Feedback document follows template structure 📋
+- [ ] Iterations clearly labeled and timestamped ⏱️
+- [ ] Code changes well-commented 💬
+- [ ] Changes are maintainable long-term ⚙️
+
+### Common Issues to Check ⚠️
+
+- [ ] Text contrast meets WCAG standards 👁️
+- [ ] Interactive elements have appropriate states 🖱️
+- [ ] Elements align properly on all screen sizes 📏
+- [ ] Animation/transitions are not distracting ✨
+- [ ] Font sizes are consistent and readable 📊
+- [ ] Color usage follows design system 🎨
