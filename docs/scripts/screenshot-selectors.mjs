@@ -79,8 +79,18 @@ export const COMPONENTS = [
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
       "button:has-text('React'), button:has-text('Preact'), button:has-text('Remix')",
       ".framework-tabs, [class*='tabs_'], [role='tablist']",
+      "h2:has-text('Works with your favorite frameworks')",
+      "div:has(h2:has-text('Works with your favorite frameworks'))",
     ],
-    excludeElements: [],
+    excludeElements: [
+      "p:has-text('Remix state reimagined')",
+      "div:has(p:has-text('Remix state reimagined'))",
+      "*:has-text('Remix state reimagined')",
+      "[class*='description']",
+      ".remix-description",
+      "[class*='subtitle']:has-text('reimagined')",
+      ".subtitle, .feature-subtitle",
+    ],
   },
 
   // Compare section
