@@ -17,8 +17,9 @@ import path from "path";
 import { execSync } from "child_process";
 import { fileURLToPath } from "url";
 import minimist from "minimist";
-// Import will be used to call screenshot function once implemented
-// import { takeUnifiedScreenshots } from "./screenshot-unified.mjs";
+// Import screenshot function - UNCOMMENTED
+import { takeUnifiedScreenshots } from "./screenshot-unified.mjs";
+import http from "http";
 
 // Get directory paths
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -57,6 +58,12 @@ function parseArgs() {
       : defaultConfig.compareWith,
     aiPrompt: args.prompt || defaultConfig.aiPrompt,
     requireSignoff: args.signoff !== false, // Default to requiring signoff
+    apply: args.apply || false,
+    iteration: args.iteration ? parseInt(args.iteration) : null,
+    refine: args.refine || false,
+    status: args.status || false,
+    cleanup: args.cleanup || false,
+    force: args.force || false,
   };
 }
 
@@ -175,19 +182,42 @@ async function captureScreenshots(targets, iterationDir) {
 
   // Use the existing screenshot infrastructure
   try {
-    // We import the takeUnifiedScreenshots function from screenshot-unified.mjs
-    // But for now, let's just simulate the call
     console.log(
       `   Calling takeUnifiedScreenshots with mode 'all' and timestamp ${timestamp}`
     );
 
-    // This is a placeholder - in the actual implementation, we would call:
-    // await takeUnifiedScreenshots('all', timestamp, false, targets);
+    // Actually call the screenshot function instead of just commenting about it
+    await takeUnifiedScreenshots("all", timestamp, false, targets);
 
     // Copy the screenshots to the iteration directory
     console.log(`   Copying screenshots to ${iterationDir}/screenshots`);
 
-    // TODO: Implement actual screenshot copying
+    // Copy screenshots from unified directory to iteration directory
+    const baseScreenshotDir = path.join(rootDir, "static/screenshots/unified");
+    const destDir = path.join(iterationDir, "screenshots");
+
+    // Ensure destination directory exists
+    if (!fs.existsSync(destDir)) {
+      fs.mkdirSync(destDir, { recursive: true });
+    }
+
+    // Find relevant screenshots containing the timestamp
+    const files = fs
+      .readdirSync(baseScreenshotDir)
+      .filter(
+        (file) =>
+          file.includes(timestamp) &&
+          targets.some((target) => file.includes(target))
+      );
+
+    // Copy files to iteration directory
+    for (const file of files) {
+      fs.copyFileSync(
+        path.join(baseScreenshotDir, file),
+        path.join(destDir, file)
+      );
+      console.log(`   Copied ${file} to iteration directory`);
+    }
 
     return timestamp;
   } catch (error) {
@@ -469,6 +499,216 @@ async function applySelectedIteration(iterationPath, requireSignoff = true) {
 }
 
 /**
+ * Display status of all design iterations
+ */
+function showStatus() {
+  console.log("📊 Design Iterations Status");
+
+  // Check if iterations directory exists
+  if (!fs.existsSync(iterationsDir)) {
+    console.log("   No iterations found.");
+    return;
+  }
+
+  // Get all iteration directories
+  const iterationDirs = fs
+    .readdirSync(iterationsDir)
+    .filter((dir) => dir.startsWith("iteration-"))
+    .sort((a, b) => {
+      const numA = parseInt(a.split("-")[1]);
+      const numB = parseInt(b.split("-")[1]);
+      return numA - numB;
+    });
+
+  if (iterationDirs.length === 0) {
+    console.log("   No iterations found.");
+    return;
+  }
+
+  console.log(`   Found ${iterationDirs.length} iterations:`);
+
+  // Display info for each iteration
+  for (const dir of iterationDirs) {
+    const iterationPath = path.join(iterationsDir, dir);
+    const metadataPath = path.join(iterationPath, "metadata.json");
+
+    if (fs.existsSync(metadataPath)) {
+      const metadata = JSON.parse(fs.readFileSync(metadataPath, "utf8"));
+      const iteration = metadata.iteration;
+      const targets = metadata.targets.join(", ");
+      const screenshotTimestamp = metadata.screenshotTimestamp || "Unknown";
+      const isApproved =
+        metadata.approval && metadata.approval.isApproved
+          ? "✅ Approved"
+          : "❌ Not approved";
+
+      console.log(
+        `   - Iteration ${iteration}: ${targets} [${screenshotTimestamp}] ${isApproved}`
+      );
+    } else {
+      console.log(`   - ${dir}: No metadata found`);
+    }
+  }
+}
+
+/**
+ * Clean up old iterations and temporary files
+ */
+function cleanupIterations() {
+  console.log("🧹 Cleaning up old iterations and temporary files");
+
+  // Check if iterations directory exists
+  if (!fs.existsSync(iterationsDir)) {
+    console.log("   No iterations to clean up.");
+    return;
+  }
+
+  // Get iteration directories
+  const iterationDirs = fs
+    .readdirSync(iterationsDir)
+    .filter((dir) => dir.startsWith("iteration-"));
+
+  if (iterationDirs.length === 0) {
+    console.log("   No iterations to clean up.");
+  } else {
+    console.log(`   Found ${iterationDirs.length} iterations.`);
+
+    // Offer to keep the latest iteration
+    const latestIteration = iterationDirs
+      .map((dir) => parseInt(dir.split("-")[1]))
+      .sort((a, b) => b - a)[0];
+
+    // Save latest iteration's metadata
+    const latestDir = `iteration-${latestIteration}`;
+    const latestPath = path.join(iterationsDir, latestDir);
+    const latestMetadataPath = path.join(latestPath, "metadata.json");
+
+    if (fs.existsSync(latestMetadataPath)) {
+      const backupPath = path.join(tempDir, `latest-iteration-backup.json`);
+      fs.copyFileSync(latestMetadataPath, backupPath);
+      console.log(`   ✅ Backed up latest iteration metadata to ${backupPath}`);
+    }
+
+    // Clean up iteration directories
+    let deletedCount = 0;
+    for (const dir of iterationDirs) {
+      const iterationPath = path.join(iterationsDir, dir);
+      try {
+        // Recursively delete directory
+        fs.rmSync(iterationPath, { recursive: true, force: true });
+        deletedCount++;
+      } catch (error) {
+        console.error(`   ❌ Error deleting ${dir}: ${error.message}`);
+      }
+    }
+
+    console.log(`   ✅ Deleted ${deletedCount} iteration directories`);
+  }
+
+  // Clean up possible diffs
+  if (fs.existsSync(possibleDiffsDir)) {
+    const diffFiles = fs
+      .readdirSync(possibleDiffsDir)
+      .filter((file) => file.endsWith(".diff") || file.endsWith(".patch"));
+
+    if (diffFiles.length > 0) {
+      let deletedCount = 0;
+      for (const file of diffFiles) {
+        try {
+          fs.unlinkSync(path.join(possibleDiffsDir, file));
+          deletedCount++;
+        } catch (error) {
+          console.error(`   ❌ Error deleting ${file}: ${error.message}`);
+        }
+      }
+
+      console.log(`   ✅ Deleted ${deletedCount} diff files`);
+    } else {
+      console.log("   No diff files to clean up.");
+    }
+  }
+
+  console.log("🎉 Cleanup complete!");
+}
+
+/**
+ * Check if the docs server is running, and start it if not
+ */
+async function ensureDocsServerRunning() {
+  console.log("🔍 Checking if docs server is running...");
+
+  // Try to connect to the docs server (default port 3000)
+  try {
+    // Check if server is running by attempting to connect
+    await new Promise((resolve, reject) => {
+      const req = http.get("http://localhost:3000", (res) => {
+        res.on("data", () => {});
+        res.on("end", () => {
+          if (res.statusCode === 200) {
+            resolve();
+          } else {
+            reject(new Error(`Server returned status code ${res.statusCode}`));
+          }
+        });
+      });
+
+      req.on("error", () => {
+        // Server not running, start it
+        console.log("📡 Docs server not running. Starting server...");
+
+        try {
+          // Start the server in the background
+          execSync("cd .. && pnpm start", {
+            stdio: ["ignore", "pipe", "pipe"],
+            detached: true,
+            encoding: "utf8",
+          });
+
+          // Wait for server to start
+          console.log("🚀 Server starting. Waiting for it to be ready...");
+
+          // Check every second if server is running
+          let attempts = 0;
+          const checkInterval = setInterval(() => {
+            const req = http.get("http://localhost:3000", (res) => {
+              if (res.statusCode === 200) {
+                clearInterval(checkInterval);
+                console.log("✅ Docs server is now running!");
+                resolve();
+              }
+              res.on("data", () => {});
+            });
+
+            req.on("error", () => {
+              attempts++;
+              if (attempts > 30) {
+                // 30 second timeout
+                clearInterval(checkInterval);
+                console.error(
+                  "❌ Failed to start docs server after 30 seconds"
+                );
+                reject(new Error("Failed to start docs server"));
+              }
+            });
+          }, 1000);
+        } catch (error) {
+          console.error(`❌ Error starting docs server: ${error.message}`);
+          reject(error);
+        }
+      });
+    });
+
+    console.log("✅ Docs server is running");
+    return true;
+  } catch (error) {
+    console.error(
+      `❌ Error checking or starting docs server: ${error.message}`
+    );
+    return false;
+  }
+}
+
+/**
  * Main function to run the design iterations
  */
 async function runDesignIterations() {
@@ -476,6 +716,43 @@ async function runDesignIterations() {
 
   // Parse command line arguments
   const config = parseArgs();
+
+  // Handle special commands
+  if (config.status) {
+    showStatus();
+    return;
+  }
+
+  if (config.cleanup) {
+    cleanupIterations();
+    return;
+  }
+
+  if (config.apply) {
+    if (!config.iteration) {
+      console.error(
+        "❌ You must specify which iteration to apply with --iteration=X"
+      );
+      return;
+    }
+
+    const iterationDir = path.join(
+      iterationsDir,
+      `iteration-${config.iteration}`
+    );
+    const success = await applySelectedIteration(iterationDir, !config.force);
+
+    if (success) {
+      console.log(`✅ Successfully applied iteration ${config.iteration}`);
+    } else {
+      console.error(`❌ Failed to apply iteration ${config.iteration}`);
+    }
+    return;
+  }
+
+  // Ensure docs server is running before taking screenshots
+  await ensureDocsServerRunning();
+
   console.log(
     `⚙️ Configuration: ${
       config.count
@@ -506,7 +783,9 @@ async function runDesignIterations() {
   console.log(
     `   3. If required, update the approval section in the metadata.json`
   );
-  console.log(`   4. Run 'applySelectedIteration()' to apply the changes`);
+  console.log(
+    `   4. Run 'pnpm design-iterations:apply --iteration=X' to apply the changes`
+  );
 
   return iterations;
 }

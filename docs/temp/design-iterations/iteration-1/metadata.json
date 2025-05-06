@@ -1,23 +1,11 @@
 {
   "iteration": 1,
-  "timestamp": "2025-05-06T08:36:42.472Z",
+  "timestamp": "2025-05-06T17:20:28.623Z",
   "targets": [
-    "hero-section",
-    "features-section",
-    "framework-section-react",
-    "framework-section-remix"
+    "features-section"
   ],
-  "screenshotTimestamp": "20250506T083642",
+  "screenshotTimestamp": "20250506T172028",
   "changes": [
-    {
-      "component": "hero-section",
-      "description": "Adjust hero section padding; Increase hero text contrast",
-      "files": [
-        "src/css/custom.css",
-        "src/components/HomepageHero.js"
-      ],
-      "reasoning": "Placeholder reasoning - would come from AI"
-    },
     {
       "component": "features-section",
       "description": "Refine features card styling; Improve features layout",
@@ -26,51 +14,18 @@
         "src/components/HomepageFeatures.js"
       ],
       "reasoning": "Placeholder reasoning - would come from AI"
-    },
-    {
-      "component": "framework-section-react",
-      "description": "Enhance framework tabs appearance; Refine React tab content",
-      "files": [
-        "src/css/custom.css",
-        "src/components/HomepageFrameworks.js"
-      ],
-      "reasoning": "Placeholder reasoning - would come from AI"
-    },
-    {
-      "component": "framework-section-remix",
-      "description": "Enhance framework tabs appearance; Refine Remix tab content",
-      "files": [
-        "src/css/custom.css",
-        "src/components/HomepageFrameworks.js"
-      ],
-      "reasoning": "Placeholder reasoning - would come from AI"
     }
   ],
   "diffInfo": {
-    "hero-section": {
-      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/hero-section-20250506T083642.diff",
-      "diffFileName": "hero-section-20250506T083642.diff"
-    },
     "features-section": {
-      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/features-section-20250506T083642.diff",
-      "diffFileName": "features-section-20250506T083642.diff"
-    },
-    "framework-section-react": {
-      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/framework-section-react-20250506T083642.diff",
-      "diffFileName": "framework-section-react-20250506T083642.diff"
-    },
-    "framework-section-remix": {
-      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/framework-section-remix-20250506T083642.diff",
-      "diffFileName": "framework-section-remix-20250506T083642.diff"
+      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/features-section-20250506T172028.diff",
+      "diffFileName": "features-section-20250506T172028.diff"
     }
   },
   "config": {
-    "count": 1,
+    "count": 3,
     "targets": [
-      "hero-section",
-      "features-section",
-      "framework-section-react",
-      "framework-section-remix"
+      "features-section"
     ],
     "compareWith": [],
     "aiPrompt": "Improve the visual design while maintaining brand identity",

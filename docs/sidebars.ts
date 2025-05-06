@@ -88,9 +88,36 @@ const sidebars: SidebarsConfig = {
       label: "📸 Documentation Screenshots",
     },
     {
-      type: "doc",
-      id: "design-iterations-with-ai",
-      label: "🎨 Design Iterations with AI",
+      type: "category",
+      label: "🎨 Design Iterations",
+      collapsed: false,
+      items: [
+        {
+          type: "doc",
+          id: "design-iterations/index",
+          label: "🌟 Overview",
+        },
+        {
+          type: "doc",
+          id: "design-iterations/workflow",
+          label: "🔄 Complete Workflow",
+        },
+        {
+          type: "doc",
+          id: "design-iterations/with-ai",
+          label: "✨ With AI",
+        },
+        {
+          type: "doc",
+          id: "design-iterations/commands",
+          label: "🔍 Command Reference",
+        },
+        {
+          type: "doc",
+          id: "design-iterations/feedback",
+          label: "📝 Feedback System",
+        },
+      ],
     },
   ],
 };

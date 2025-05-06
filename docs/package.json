@@ -29,6 +29,13 @@
     "design-iterations:init": "node scripts/design-iterations-init.mjs",
     "design-iterations": "node scripts/design-iterations.mjs",
     "design-iterations:count-5": "node scripts/design-iterations.mjs --count=5",
+    "design-iterations:count-3": "node scripts/design-iterations.mjs --count=3",
+    "design-iterations:count-1": "node scripts/design-iterations.mjs --count=1",
+    "design-iterations:apply": "node scripts/design-iterations.mjs --apply",
+    "design-iterations:refine": "node scripts/design-iterations.mjs --count=1 --refine",
+    "design-iterations:status": "node scripts/design-iterations.mjs --status",
+    "design-iterations:cleanup": "node scripts/design-iterations.mjs --cleanup",
+    "design-iterations:clear-cache": "rm -rf ./node_modules/.cache/playwright-cache",
     "dev": "docusaurus start",
     "postinstall": "echo 'jods docs installed with pnpm!'"
   },

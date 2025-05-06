@@ -46,7 +46,13 @@
     "docs:screenshot": "cd docs && pnpm screenshot",
     "docs:screenshot:baseline": "cd docs && pnpm screenshot:baseline",
     "docs:screenshot:diff": "cd docs && pnpm screenshot:diff",
-    "docs:screenshot:cleanup": "cd docs && pnpm screenshot:cleanup"
+    "docs:screenshot:cleanup": "cd docs && pnpm screenshot:cleanup",
+    "docs:design-iterations": "cd docs && pnpm design-iterations",
+    "docs:design-iterations:count-3": "cd docs && pnpm design-iterations:count-3",
+    "docs:design-iterations:count-5": "cd docs && pnpm design-iterations:count-5",
+    "docs:design-iterations:apply": "cd docs && pnpm design-iterations:apply",
+    "docs:design-iterations:status": "cd docs && pnpm design-iterations:status",
+    "docs:design-iterations:cleanup": "cd docs && pnpm design-iterations:cleanup"
   },
   "keywords": [
     "state",

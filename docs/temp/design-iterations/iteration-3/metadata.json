@@ -1,6 +1,6 @@
 {
-  "iteration": 2,
-  "timestamp": "2025-05-06T17:20:28.644Z",
+  "iteration": 3,
+  "timestamp": "2025-05-06T17:20:28.666Z",
   "targets": [
     "features-section"
   ],
@@ -42,5 +42,5 @@
     "approvedAt": null,
     "notes": null
   },
-  "feedbackTemplatePath": "/Users/clay/Projects/npmjs/jods/docs/temp/design-iterations/iteration-2/feedback-template.md"
+  "feedbackTemplatePath": "/Users/clay/Projects/npmjs/jods/docs/temp/design-iterations/iteration-3/feedback-template.md"
 }
