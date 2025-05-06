@@ -864,3 +864,29 @@ html[data-theme="light"] .featureItem:nth-child(4) {
 html[data-theme="light"] .featureItem:nth-child(5) {
   border-left: 3px solid rgba(236, 72, 153, 0.5); /* Pink */
 }
+
+/* Add hot pink borders to feature boxes in dark mode with glow effect */
+html[data-theme="dark"] .featureItem:nth-child(1) {
+  border-left: 4px solid #ff2d70; /* Brighter hot pink */
+  box-shadow: -3px 0 10px rgba(255, 45, 112, 0.4); /* Add glow effect */
+}
+
+html[data-theme="dark"] .featureItem:nth-child(2) {
+  border-left: 4px solid #ff2d70; /* Brighter hot pink */
+  box-shadow: -3px 0 10px rgba(255, 45, 112, 0.4); /* Add glow effect */
+}
+
+html[data-theme="dark"] .featureItem:nth-child(3) {
+  border-left: 4px solid #ff2d70; /* Brighter hot pink */
+  box-shadow: -3px 0 10px rgba(255, 45, 112, 0.4); /* Add glow effect */
+}
+
+html[data-theme="dark"] .featureItem:nth-child(4) {
+  border-left: 4px solid #ff2d70; /* Brighter hot pink */
+  box-shadow: -3px 0 10px rgba(255, 45, 112, 0.4); /* Add glow effect */
+}
+
+html[data-theme="dark"] .featureItem:nth-child(5) {
+  border-left: 4px solid #ff2d70; /* Brighter hot pink */
+  box-shadow: -3px 0 10px rgba(255, 45, 112, 0.4); /* Add glow effect */
+}
