@@ -332,16 +332,16 @@ export async function findRemixSection(page) {
 }
 
 // Utility function to extract all component names for a given page
-export function getComponentsForPage(pagePath) {
-  return COMPONENTS.filter((component) => component.page === pagePath);
+export function getComponentsForPage(pagePath, components = COMPONENTS) {
+  return components.filter((component) => component.page === pagePath);
 }
 
 // Get a component by name
-export function getComponentByName(name) {
-  return COMPONENTS.find((component) => component.name === name);
+export function getComponentByName(name, components = COMPONENTS) {
+  return components.find((component) => component.name === name);
 }
 
 // Get all available component names
-export function getAllComponentNames() {
-  return COMPONENTS.map((component) => component.name);
+export function getAllComponentNames(components = COMPONENTS) {
+  return components.map((component) => component.name);
 }

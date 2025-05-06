@@ -37,6 +37,43 @@ const PATH_PREFIX = BASE_URL.includes("localhost") ? "/jods" : "";
 // Theme modes to capture
 const THEMES = ["light", "dark"];
 
+// Add code to import generated selectors if they exist and the flag is set
+let componentsToUse = COMPONENTS;
+
+try {
+  // Check if the generated selectors file exists and if the --use-generated-selectors flag is used
+  if (process.argv.includes("--use-generated-selectors")) {
+    // Try to import the generated selectors
+    const { GENERATED_COMPONENTS, mergeWithExisting } = await import(
+      "./screenshot-selectors.generated.mjs"
+    );
+
+    console.log(
+      `🔄 Loading ${GENERATED_COMPONENTS.length} generated selectors from data-testids`
+    );
+
+    // Decide if we should merge or replace
+    if (process.argv.includes("--merge-selectors")) {
+      // Merge with existing selectors
+      componentsToUse = mergeWithExisting(COMPONENTS);
+      console.log(
+        `🔄 Merged with existing selectors - ${componentsToUse.length} total components`
+      );
+    } else {
+      // Just use the generated selectors
+      componentsToUse = GENERATED_COMPONENTS;
+      console.log(
+        `🔄 Using ${componentsToUse.length} generated selectors exclusively`
+      );
+    }
+  }
+} catch (error) {
+  console.warn(
+    `⚠️ No generated selectors found or error loading them: ${error.message}`
+  );
+  console.log(`ℹ️ Using default component selectors`);
+}
+
 // Generate a timestamp in the format YYYYMMDD-HHMMSS
 function getTimestamp() {
   const now = new Date();
@@ -80,15 +117,15 @@ async function takeUnifiedScreenshots(
     console.log(
       `Filtering to specific components: ${specificComponents.join(", ")}`
     );
-    componentsToCapture = COMPONENTS.filter((component) =>
+    componentsToCapture = componentsToUse.filter((component) =>
       specificComponents.includes(component.name)
     );
   } else if (mode === "all" || mode === "components") {
     // Capture all components (both "all" and "components" modes do the same thing)
-    componentsToCapture = COMPONENTS;
+    componentsToCapture = componentsToUse;
   } else if (mode === "sections") {
     // Sections mode - filter only homepage sections
-    componentsToCapture = COMPONENTS.filter(
+    componentsToCapture = componentsToUse.filter(
       (component) =>
         component.page === "/" &&
         !component.name.includes("framework-") &&
@@ -96,18 +133,22 @@ async function takeUnifiedScreenshots(
     );
   } else if (mode === "remix") {
     // Only the Remix section
-    componentsToCapture = COMPONENTS.filter(
+    componentsToCapture = componentsToUse.filter(
       (component) => component.name === "remix-section"
     );
   } else {
     // Try to interpret mode as a specific component name
-    const component = getComponentByName(mode);
+    const component = getComponentByName(mode, componentsToUse);
     if (component) {
       componentsToCapture = [component];
     } else {
       console.error(`Unknown mode or component: ${mode}`);
       console.log(`Available modes: all, components, sections, remix`);
-      console.log(`Available components: ${getAllComponentNames().join(", ")}`);
+      console.log(
+        `Available components: ${getAllComponentNames(componentsToUse).join(
+          ", "
+        )}`
+      );
       return;
     }
   }

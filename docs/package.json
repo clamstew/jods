@@ -32,7 +32,13 @@
     "screenshot:cleanup": "node scripts/screenshot-cleanup.mjs",
     "screenshot:cleanup:dry-run": "node scripts/screenshot-cleanup.mjs --dry-run",
     "screenshot:cleanup:keep-latest": "node scripts/screenshot-cleanup.mjs --keep-latest --keep=3",
-    "screenshot:cleanup:keep": "node scripts/screenshot-cleanup.mjs --keep-latest"
+    "screenshot:cleanup:keep": "node scripts/screenshot-cleanup.mjs --keep-latest",
+    "generate-selectors": "node scripts/generate-selectors.mjs",
+    "generate-selectors:localhost": "BASE_URL=http://localhost:3000 node scripts/generate-selectors.mjs",
+    "generate-selectors:production": "BASE_URL=https://jods.dev node scripts/generate-selectors.mjs",
+    "screenshot:testid": "node scripts/screenshot-unified.mjs --use-generated-selectors",
+    "screenshot:testid:baseline": "node scripts/screenshot-unified.mjs --use-generated-selectors --baseline",
+    "screenshot:auto": "npm run generate-selectors && npm run screenshot:testid"
   },
   "dependencies": {
     "@docusaurus/core": "3.7.0",
