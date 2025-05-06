@@ -34,15 +34,14 @@
   z-index: 1;
 }
 
-/* Light mode header styling from 024938 */
+/* Light mode header styling from 025110.png */
 html[data-theme="light"] .header {
   background: linear-gradient(
     135deg,
-    #1e40af 0%,
-    #3730a3 30%,
-    #6d28d9 50%,
-    #9d174d 70%,
-    #be123c 100%
+    #3b82f6 0%,
+    #4f46e5 30%,
+    #7e22ce 60%,
+    #be185d 100%
   );
   background-size: 200% 200%;
   animation: shimmerBackground 15s ease infinite;
@@ -233,23 +232,25 @@ html[data-theme="light"] .reimaginedText {
   opacity: 0.9;
 }
 
-/* Enhance subtitle in light mode */
+/* Enhance subtitle in light mode to be readable on gradient */
 html[data-theme="light"] .subtitle {
-  color: #1e293b;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 html[data-theme="light"] .highlight {
   background: linear-gradient(
     135deg,
-    rgba(236, 72, 153, 0.1) 0%,
-    rgba(79, 70, 229, 0.1) 100%
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0.15) 100%
   );
-  color: #1e293b;
-  font-weight: 600;
-  padding: 0.2rem 0.5rem;
+  color: white;
+  font-weight: 700;
+  padding: 0.3rem 0.8rem;
   border-radius: 8px;
-  text-shadow: none;
-  border: 1px solid rgba(79, 70, 229, 0.1);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Highlight and ruby icon in light mode */
@@ -1312,6 +1313,11 @@ html[data-theme="dark"] .featureItem:hover {
 
 /* Essential code that was removed - need to restore */
 html[data-theme="light"] .tabsContainer::before {
+  display: none;
+}
+
+/* Hide window controls in dark mode */
+html[data-theme="dark"] .tabsContainer::before {
   display: none;
 }
 
