@@ -46,11 +46,11 @@ export const COMPONENTS = [
     selector: "section:has(h2:has-text('Try jods live'))",
     fallbackStrategy: "section-index",
     sectionIndex: 2,
-    padding: 200, // Increased for more space all around
+    padding: 150,
     waitForSelector: "h2:has-text('Try jods live')",
-    minHeight: 1100, // Increased to ensure editor is fully captured
+    minHeight: 700,
     testId: "jods-try-live-section",
-    extraScroll: 40, // Reduced to prevent scrolling too far down
+    extraScroll: 100,
     // New properties for better dark mode handling
     darkModeExtraWait: 2500, // Extra long wait for dark mode
     editorLoadVerification: true, // Verify editor is loaded before screenshot
@@ -72,7 +72,7 @@ export const COMPONENTS = [
       "section:has(h2:has-text('Works with your favorite frameworks')), section:has(h2:has-text('Framework Integration'))",
     fallbackStrategy: "keyword-context",
     keywords: ["favorite frameworks", "Framework Integration"],
-    padding: 200, // Increased for more space all around
+    padding: 150,
     waitForSelector:
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
     minHeight: 1200,
@@ -121,7 +121,7 @@ export const COMPONENTS = [
       "section:has(h2:has-text('Works with your favorite frameworks')), section:has(h2:has-text('Framework Integration'))",
     fallbackStrategy: "keyword-context",
     keywords: ["favorite frameworks", "Framework Integration"],
-    padding: 200, // Increased for more space all around
+    padding: 150,
     waitForSelector:
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
     minHeight: 1800, // Increased from 1600 to capture more content
@@ -197,7 +197,7 @@ export const COMPONENTS = [
     waitForSelector: "h2:has-text('Remix Integration')",
     minHeight: 1600,
     testId: "jods-remix-section",
-    extraScroll: 40, // Reduced to prevent scrolling too far down
+    extraScroll: 100,
     alternativeSelectors: [
       "h2:has-text('Remix Integration')",
       "h3:has-text('Remix')",
