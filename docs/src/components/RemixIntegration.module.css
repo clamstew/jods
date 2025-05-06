@@ -157,10 +157,10 @@ html[data-theme="light"] .header::before {
 
 @keyframes shimmerActiveFeature {
   0% {
-    background-position: -100% 0;
+    left: -100%;
   }
   100% {
-    background-position: 200% 0;
+    left: 100%;
   }
 }
 
@@ -191,8 +191,11 @@ html[data-theme="light"] .remix {
 
 /* Light mode styling */
 html[data-theme="light"] .stateText {
-  color: #fb923c; /* Medium orange for better contrast */
-  text-shadow: 0 0 10px rgba(251, 146, 60, 0.5);
+  background: linear-gradient(to right, #3b82f6, #8b5cf6);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 10px rgba(139, 92, 246, 0.3);
 }
 
 /* Reimagined text with animation delay */
@@ -205,8 +208,11 @@ html[data-theme="light"] .stateText {
 
 /* Light mode styling */
 html[data-theme="light"] .reimaginedText {
-  color: #c084fc; /* Medium purple for better contrast */
-  text-shadow: 0 0 10px rgba(192, 132, 252, 0.5);
+  background: linear-gradient(to right, #f43f5e, #a855f7, #3b82f6);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 10px rgba(168, 85, 247, 0.3);
 }
 
 /* Redesigned tagline with glass effect */
@@ -225,6 +231,31 @@ html[data-theme="light"] .reimaginedText {
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   letter-spacing: 0.01em;
   opacity: 0.9;
+}
+
+/* Enhance subtitle in light mode */
+html[data-theme="light"] .subtitle {
+  color: #1e293b;
+}
+
+html[data-theme="light"] .highlight {
+  background: linear-gradient(
+    135deg,
+    rgba(236, 72, 153, 0.1) 0%,
+    rgba(79, 70, 229, 0.1) 100%
+  );
+  color: #1e293b;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 8px;
+  text-shadow: none;
+  border: 1px solid rgba(79, 70, 229, 0.1);
+}
+
+/* Highlight and ruby icon in light mode */
+html[data-theme="light"] .rubyIcon {
+  color: #f43f5e;
+  filter: drop-shadow(0 0 5px rgba(236, 72, 153, 0.3));
 }
 
 /* Glass effect highlight */
@@ -361,8 +392,63 @@ html[data-theme="light"] .reimaginedText {
 
 /* Enhanced feature item styling for light mode */
 html[data-theme="light"] .featureItem {
-  border: 1px solid rgba(16, 185, 129, 0.1);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03), 0 0 0 1px rgba(16, 185, 129, 0.05);
+  background: #ffffff;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+html[data-theme="light"] .featureItem:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(79, 70, 229, 0.1),
+    0 0 0 1px rgba(79, 70, 229, 0.1);
+  border-left-width: 4px;
+}
+
+/* Light mode active feature with gradient and glow */
+html[data-theme="light"] .activeFeature {
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9ff 100%);
+  box-shadow: 0 15px 30px rgba(79, 70, 229, 0.15),
+    0 0 0 1px rgba(79, 70, 229, 0.1);
+  transform: translateY(-3px);
+  border-left-width: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Add shimmer effect to active feature in light mode */
+html[data-theme="light"] .activeFeature::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(236, 72, 153, 0.1) 50%,
+    transparent 100%
+  );
+  animation: shimmerActiveFeature 2s infinite;
+}
+
+/* Enhance feature item icon in light mode */
+html[data-theme="light"] .activeFeature .featureIcon {
+  background: linear-gradient(135deg, #f43f5e, #a855f7, #3b82f6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 5px rgba(236, 72, 153, 0.5));
+}
+
+/* Add rainbow background to feature items on hover in light mode */
+html[data-theme="light"] .featureItem:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(79, 70, 229, 0.1),
+    0 0 0 1px rgba(79, 70, 229, 0.1);
+  border-left-width: 4px;
+  background: linear-gradient(145deg, #ffffff 0%, #f8fbff 100%);
 }
 
 /* Restore regular active feature styling with more distinct highlighting */
@@ -552,18 +638,37 @@ html[data-theme="light"] .activeFeature .featureIcon {
   pointer-events: none;
 }
 
+/* Improved light mode code container with subtle gradient accents */
 html[data-theme="light"] .codeContainer {
-  background: #111827;
-  color: #e4e4e7;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.08);
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  border-radius: 0 12px 12px 12px;
+  position: relative;
+  overflow: hidden;
 }
 
+/* Rainbow accent in top-right corner */
 html[data-theme="light"] .codeContainer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 180px;
+  height: 180px;
   background: radial-gradient(
-    circle,
-    rgba(225, 29, 72, 0.3) 0%,
-    rgba(225, 29, 72, 0) 70%
+    circle at top right,
+    rgba(236, 72, 153, 0.15) 0%,
+    rgba(168, 85, 247, 0.1) 40%,
+    rgba(59, 130, 246, 0.05) 70%,
+    transparent 100%
   );
+  border-radius: 0 0 0 100%;
+  pointer-events: none;
+}
+
+/* Remove inner shadow at the bottom */
+html[data-theme="light"] .codeContainer::after {
+  display: none;
 }
 
 /* Enhanced tab design */
@@ -588,11 +693,34 @@ html[data-theme="light"] .codeContainer::before {
   z-index: 2;
 }
 
+/* Enhanced tab container styling for light mode */
 html[data-theme="light"] .tabsContainer {
-  background: #1e293b;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(to right, #1e293b, #334155);
+  border-bottom: 1px solid rgba(79, 70, 229, 0.3);
+  padding: 0.5rem 0.5rem 0;
+  position: relative;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
 }
 
+html[data-theme="light"] .tabsContainer::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #f87171;
+  box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.3),
+    0 0 8px rgba(248, 113, 113, 0.5), 20px 0 0 #fbbf24,
+    20px 0 0 1px rgba(251, 191, 36, 0.3), 20px 0 8px rgba(251, 191, 36, 0.5),
+    40px 0 0 #4ade80, 40px 0 0 1px rgba(74, 222, 128, 0.3),
+    40px 0 8px rgba(74, 222, 128, 0.5);
+  z-index: 2;
+}
+
+/* Base tab styling */
 .tab {
   flex: 1;
   padding: 0.9rem 1.25rem;
@@ -617,10 +745,6 @@ html[data-theme="light"] .tabsContainer {
   margin-left: 10px;
 }
 
-html[data-theme="light"] .tab {
-  color: rgba(255, 255, 255, 0.8);
-}
-
 .tabIcon {
   font-size: 1.1rem;
   margin-right: 8px;
@@ -633,12 +757,7 @@ html[data-theme="light"] .tab {
   color: rgba(255, 255, 255, 0.9);
 }
 
-html[data-theme="light"] .tab:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.95);
-}
-
-/* Remix-inspired tab indicator */
+/* Remix-inspired tab indicator for dark mode */
 .activeTab {
   background: #0d1424;
   color: #fb7185;
@@ -659,11 +778,93 @@ html[data-theme="light"] .tab:hover {
   border-radius: 3px 3px 0 0;
 }
 
-html[data-theme="light"] .activeTab {
-  background: #111827;
-  color: #fb7185;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+/* Enhanced tab styling for light mode */
+html[data-theme="light"] .tab {
+  color: rgba(0, 0, 0, 0.7);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  background: rgba(255, 255, 255, 0.8);
+  margin-right: 5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05);
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
   border-bottom: none;
+}
+
+html[data-theme="light"] .tab:hover {
+  background: rgba(79, 70, 229, 0.1);
+  color: rgba(0, 0, 0, 0.9);
+  box-shadow: 0 -5px 15px rgba(79, 70, 229, 0.1);
+}
+
+/* Enhanced light mode active tab with rainbow indicator and shimmer */
+html[data-theme="light"] .activeTab {
+  background: #ffffff;
+  color: #f43f5e;
+  font-weight: 600;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: none;
+  position: relative;
+}
+
+html[data-theme="light"] .activeTab::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(to right, #f43f5e 0%, #a855f7 50%, #3b82f6 100%);
+  background-size: 200% 100%;
+  border-radius: 3px 3px 0 0;
+  animation: shimmerBackground 3s infinite;
+  box-shadow: 0 0 10px rgba(236, 72, 153, 0.3);
+}
+
+/* Enhance code editor tabs area in light mode */
+html[data-theme="light"] .codeTabs {
+  background: linear-gradient(
+    to right,
+    rgba(243, 244, 246, 0.8),
+    rgba(249, 250, 251, 0.8)
+  );
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  border-bottom: none;
+  padding: 0.5rem 0.5rem 0;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: none;
+}
+
+/* Window controls in light mode */
+html[data-theme="light"] .windowControls {
+  background: rgba(249, 250, 251, 0.7);
+  border-radius: 10px;
+  padding: 0 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.03);
+}
+
+html[data-theme="light"] .windowControl {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1) inset;
+}
+
+html[data-theme="light"] .windowControl.close {
+  background-color: #f87171;
+}
+
+html[data-theme="light"] .windowControl.minimize {
+  background-color: #fbbf24;
+}
+
+html[data-theme="light"] .windowControl.maximize {
+  background-color: #34d399;
 }
 
 /* Code sections display fix */
