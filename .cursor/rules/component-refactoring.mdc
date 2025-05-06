@@ -1,9 +1,8 @@
 ---
 description: Guidelines for refactoring DocuSaurus components with regression testing
-globs: ["docs/src/components/**/*.{js,jsx,tsx,ts}"]
+globs: ["docs/src/components/**/*.{js,jsx,tsx,ts}", "docs/src/**/*.css"]
 alwaysApply: false
 ---
-
 # Component Refactoring with Regression Testing
 
 This guide explains how to safely refactor DocuSaurus UI components while using the screenshot and test systems to ensure nothing regresses visually or functionally.
