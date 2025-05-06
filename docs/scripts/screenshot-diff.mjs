@@ -80,151 +80,191 @@ async function pixelDiffScreenshots() {
     const newPath = path.join(screenshotsDir, newFile);
     const diffPath = path.join(diffOutputDir, `diff-${newFile}`);
 
-    // Compare images using Playwright
-    const diffPercentage = await page.evaluate(
-      async ({ baseline, current }) => {
-        // Load both images
-        const loadImage = (src) => {
-          return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.onload = () => resolve(img);
-            img.onerror = reject;
-            img.src = src;
-          });
-        };
+    try {
+      // Read both images and convert to base64
+      const baselineBuffer = fs.readFileSync(baselinePath);
+      const newBuffer = fs.readFileSync(newPath);
 
-        // Convert image to pixel data
-        const imageToData = (img) => {
-          const canvas = document.createElement("canvas");
-          canvas.width = img.width;
-          canvas.height = img.height;
+      const baselineBase64 = `data:image/png;base64,${baselineBuffer.toString(
+        "base64"
+      )}`;
+      const newBase64 = `data:image/png;base64,${newBuffer.toString("base64")}`;
 
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0);
-
-          return {
-            width: img.width,
-            height: img.height,
-            data: ctx.getImageData(0, 0, img.width, img.height).data,
+      // Compare images using Playwright
+      const diffResult = await page.evaluate(
+        async ({ baseline, current }) => {
+          // Load both images
+          const loadImage = (dataUrl) => {
+            return new Promise((resolve, reject) => {
+              const img = new Image();
+              img.onload = () => resolve(img);
+              img.onerror = (_e) => {
+                console.error("Failed to load image");
+                reject(new Error("Failed to load image"));
+              };
+              img.src = dataUrl;
+            });
           };
-        };
 
-        const baselineImg = await loadImage(`file://${baseline}`);
-        const currentImg = await loadImage(`file://${current}`);
+          // Convert image to pixel data
+          const imageToData = (img) => {
+            const canvas = document.createElement("canvas");
+            canvas.width = img.width;
+            canvas.height = img.height;
 
-        // Handle different sized images
-        if (
-          baselineImg.width !== currentImg.width ||
-          baselineImg.height !== currentImg.height
-        ) {
-          return {
-            diffPercentage: 1.0, // 100% different
-            message: `Size mismatch: Baseline (${baselineImg.width}x${baselineImg.height}) vs Current (${currentImg.width}x${currentImg.height})`,
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0);
+
+            return {
+              width: img.width,
+              height: img.height,
+              data: ctx.getImageData(0, 0, img.width, img.height).data,
+            };
           };
+
+          try {
+            const baselineImg = await loadImage(baseline);
+            const currentImg = await loadImage(current);
+
+            // Handle different sized images
+            if (
+              baselineImg.width !== currentImg.width ||
+              baselineImg.height !== currentImg.height
+            ) {
+              return {
+                diffPercentage: 1.0, // 100% different
+                message: `Size mismatch: Baseline (${baselineImg.width}x${baselineImg.height}) vs Current (${currentImg.width}x${currentImg.height})`,
+                diffImage: null,
+              };
+            }
+
+            // Get pixel data
+            const baseData = imageToData(baselineImg);
+            const currentData = imageToData(currentImg);
+
+            // Create diff image
+            const canvas = document.createElement("canvas");
+            canvas.width = baselineImg.width;
+            canvas.height = baselineImg.height;
+            const ctx = canvas.getContext("2d");
+
+            // Draw the current image
+            ctx.drawImage(currentImg, 0, 0);
+
+            // Get image data for manipulation
+            const diffImageData = ctx.getImageData(
+              0,
+              0,
+              canvas.width,
+              canvas.height
+            );
+            const diffData = diffImageData.data;
+
+            // Compare pixels and highlight differences
+            let differentPixels = 0;
+            const totalPixels = baseData.width * baseData.height;
+
+            for (let i = 0; i < baseData.data.length; i += 4) {
+              const rDiff = Math.abs(baseData.data[i] - currentData.data[i]);
+              const gDiff = Math.abs(
+                baseData.data[i + 1] - currentData.data[i + 1]
+              );
+              const bDiff = Math.abs(
+                baseData.data[i + 2] - currentData.data[i + 2]
+              );
+
+              // If any channel has significant difference
+              if (rDiff > 5 || gDiff > 5 || bDiff > 5) {
+                // Mark the different pixel as magenta
+                diffData[i] = 255; // R
+                diffData[i + 1] = 0; // G
+                diffData[i + 2] = 255; // B
+
+                differentPixels++;
+              }
+            }
+
+            // Calculate percentage of different pixels
+            const diffPercentage = differentPixels / totalPixels;
+
+            // Put the modified image data back
+            ctx.putImageData(diffImageData, 0, 0);
+
+            // Return the diff image as base64 and the percentage
+            return {
+              diffPercentage,
+              diffImage: canvas.toDataURL(),
+              differentPixels,
+              totalPixels,
+              success: true,
+            };
+          } catch (error) {
+            return {
+              diffPercentage: 1.0,
+              diffImage: null,
+              error:
+                "Failed to process images: " +
+                (error.message || "Unknown error"),
+              success: false,
+            };
+          }
+        },
+        { baseline: baselineBase64, current: newBase64 }
+      );
+
+      if (!diffResult.success) {
+        console.log(`❌ Error processing images: ${diffResult.error}`);
+        failedScreenshots++;
+        continue;
+      }
+
+      // Save the diff image if there are differences
+      if (diffResult.diffPercentage > 0) {
+        // Convert base64 to image file
+        if (diffResult.diffImage) {
+          const base64Data = diffResult.diffImage.replace(
+            /^data:image\/png;base64,/,
+            ""
+          );
+          fs.writeFileSync(diffPath, Buffer.from(base64Data, "base64"));
         }
 
-        // Get pixel data
-        const baseData = imageToData(baselineImg);
-        const currentData = imageToData(currentImg);
-
-        // Create diff image
-        const canvas = document.createElement("canvas");
-        canvas.width = baselineImg.width;
-        canvas.height = baselineImg.height;
-        const ctx = canvas.getContext("2d");
-
-        // Draw the current image
-        ctx.drawImage(currentImg, 0, 0);
-
-        // Get image data for manipulation
-        const diffImageData = ctx.getImageData(
-          0,
-          0,
-          canvas.width,
-          canvas.height
+        console.log(
+          `📊 Diff: ${(diffResult.diffPercentage * 100).toFixed(
+            2
+          )}% different ` +
+            `(${diffResult.differentPixels} of ${diffResult.totalPixels} pixels)`
         );
-        const diffData = diffImageData.data;
 
-        // Compare pixels and highlight differences
-        let differentPixels = 0;
-        const totalPixels = baseData.width * baseData.height;
-
-        for (let i = 0; i < baseData.data.length; i += 4) {
-          const rDiff = Math.abs(baseData.data[i] - currentData.data[i]);
-          const gDiff = Math.abs(
-            baseData.data[i + 1] - currentData.data[i + 1]
+        if (diffResult.diffPercentage > threshold) {
+          console.log(
+            `❌ FAILED: Diff exceeds threshold of ${threshold * 100}%`
           );
-          const bDiff = Math.abs(
-            baseData.data[i + 2] - currentData.data[i + 2]
-          );
+          console.log(`📄 Diff image saved to: ${diffPath}`);
+          failedScreenshots++;
+        } else {
+          console.log(`✅ PASSED: Diff below threshold`);
 
-          // If any channel has significant difference
-          if (rDiff > 5 || gDiff > 5 || bDiff > 5) {
-            // Mark the different pixel as magenta
-            diffData[i] = 255; // R
-            diffData[i + 1] = 0; // G
-            diffData[i + 2] = 255; // B
-
-            differentPixels++;
+          // Remove diff image if it passed and we're not in verbose mode
+          if (!process.argv.includes("--verbose") && fs.existsSync(diffPath)) {
+            fs.unlinkSync(diffPath);
           }
         }
-
-        // Calculate percentage of different pixels
-        const diffPercentage = differentPixels / totalPixels;
-
-        // Put the modified image data back
-        ctx.putImageData(diffImageData, 0, 0);
-
-        // Return the diff image as base64 and the percentage
-        return {
-          diffPercentage,
-          diffImage: canvas.toDataURL(),
-          differentPixels,
-          totalPixels,
-        };
-      },
-      { baseline: baselinePath, current: newPath }
-    );
-
-    // Save the diff image if there are differences
-    if (diffPercentage.diffPercentage > 0) {
-      // Convert base64 to image file
-      const base64Data = diffPercentage.diffImage.replace(
-        /^data:image\/png;base64,/,
-        ""
-      );
-      fs.writeFileSync(diffPath, Buffer.from(base64Data, "base64"));
-
-      console.log(
-        `📊 Diff: ${(diffPercentage.diffPercentage * 100).toFixed(
-          2
-        )}% different ` +
-          `(${diffPercentage.differentPixels} of ${diffPercentage.totalPixels} pixels)`
-      );
-
-      if (diffPercentage.diffPercentage > threshold) {
-        console.log(`❌ FAILED: Diff exceeds threshold of ${threshold * 100}%`);
-        console.log(`📄 Diff image saved to: ${diffPath}`);
-        failedScreenshots++;
       } else {
-        console.log(`✅ PASSED: Diff below threshold`);
-
-        // Remove diff image if it passed and we're not in verbose mode
-        if (!process.argv.includes("--verbose")) {
-          fs.unlinkSync(diffPath);
-        }
+        console.log(`✅ PERFECT MATCH: No differences detected`);
       }
-    } else {
-      console.log(`✅ PERFECT MATCH: No differences detected`);
-    }
 
-    // Save result for summary
-    diffResults.push({
-      newFile,
-      baseFile,
-      diffPercentage: diffPercentage.diffPercentage,
-      passed: diffPercentage.diffPercentage <= threshold,
-    });
+      // Save result for summary
+      diffResults.push({
+        newFile,
+        baseFile,
+        diffPercentage: diffResult.diffPercentage,
+        passed: diffResult.diffPercentage <= threshold,
+      });
+    } catch (error) {
+      console.log(`❌ Error comparing images: ${error.message}`);
+      failedScreenshots++;
+    }
   }
 
   await browser.close();
