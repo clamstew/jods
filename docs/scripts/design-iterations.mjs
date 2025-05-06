@@ -13,8 +13,8 @@
 
 import fs from "fs";
 import path from "path";
-// Import will be used for git operations once implemented
-// import { execSync } from "child_process";
+// Import child_process for git operations
+import { execSync } from "child_process";
 import { fileURLToPath } from "url";
 import minimist from "minimist";
 // Import will be used to call screenshot function once implemented
@@ -25,6 +25,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.join(__dirname, "..");
 const tempDir = path.join(rootDir, "temp");
 const iterationsDir = path.join(tempDir, "design-iterations");
+const possibleDiffsDir = path.join(tempDir, "possible-diffs"); // Directory for storing diffs
 
 // Default configuration
 const defaultConfig = {
@@ -39,6 +40,7 @@ const defaultConfig = {
   aiPrompt: "Improve the visual design while maintaining brand identity",
   baseScreenshotDir: path.join(rootDir, "static/screenshots/unified"),
   diffTool: "git diff", // Tool to generate diffs
+  requireSignoff: true, // Require signoff for baseline changes
 };
 
 /**
@@ -54,6 +56,7 @@ function parseArgs() {
       ? args.compareWith.split(",")
       : defaultConfig.compareWith,
     aiPrompt: args.prompt || defaultConfig.aiPrompt,
+    requireSignoff: args.signoff !== false, // Default to requiring signoff
   };
 }
 
@@ -71,7 +74,14 @@ function createDirectoryStructure() {
     fs.mkdirSync(iterationsDir, { recursive: true });
   }
 
-  console.log(`📁 Created directory structure at ${iterationsDir}`);
+  // Create possible-diffs directory if it doesn't exist
+  if (!fs.existsSync(possibleDiffsDir)) {
+    fs.mkdirSync(possibleDiffsDir, { recursive: true });
+  }
+
+  console.log(`📁 Created directory structure at ${tempDir}`);
+  console.log(`   - Iterations: ${iterationsDir}`);
+  console.log(`   - Possible diffs: ${possibleDiffsDir}`);
 }
 
 /**
@@ -189,20 +199,31 @@ async function captureScreenshots(targets, iterationDir) {
 /**
  * Capture the diff of changes made in this iteration
  */
-function captureDiff(iterationDir) {
+function captureDiff(iterationDir, timestamp, target) {
   console.log("💾 Capturing diff of changes");
 
   // Generate diff using git
   try {
-    // This is a placeholder - in the actual implementation:
-    // const diff = execSync('git diff', { encoding: 'utf8' });
-    const diff = "--- Placeholder diff ---\n+++ Mock changes for demonstration";
+    // Create unique identifier for this diff
+    const diffFileName = `${target}-${timestamp}.diff`;
+    const diffPath = path.join(possibleDiffsDir, diffFileName);
 
-    // Save diff to the iteration directory
+    // Execute git diff command and capture output
+    const diff = execSync("git diff", { encoding: "utf8" });
+
+    // Save diff to the possible-diffs directory
+    fs.writeFileSync(diffPath, diff);
+
+    // Also save a copy to the iteration directory for completeness
     fs.writeFileSync(path.join(iterationDir, "diff.patch"), diff);
 
-    console.log("   Diff saved successfully");
-    return diff;
+    console.log(`   Diff saved to temporary location: ${diffPath}`);
+    console.log("   This diff can be applied later if this design is selected");
+
+    return {
+      diffPath,
+      diffFileName,
+    };
   } catch (error) {
     console.error(`Error capturing diff: ${error.message}`);
     return null;
@@ -212,7 +233,14 @@ function captureDiff(iterationDir) {
 /**
  * Create metadata for the iteration
  */
-function createMetadata(iteration, targets, changes, timestamp, config) {
+function createMetadata(
+  iteration,
+  targets,
+  changes,
+  timestamp,
+  diffInfo,
+  config
+) {
   console.log("📝 Creating metadata for iteration");
 
   const metadata = {
@@ -226,12 +254,19 @@ function createMetadata(iteration, targets, changes, timestamp, config) {
       files: change.changes.map((c) => c.file),
       reasoning: "Placeholder reasoning - would come from AI",
     })),
+    diffInfo: diffInfo,
     config,
     evaluation: {
       // These would be filled in by the evaluation process
       aesthetic_score: null,
       readability_score: null,
       accessibility_score: null,
+    },
+    approval: {
+      isApproved: false,
+      approvedBy: null,
+      approvedAt: null,
+      notes: null,
     },
   };
 
@@ -245,6 +280,78 @@ function saveMetadata(metadata, iterationDir) {
   const metadataPath = path.join(iterationDir, "metadata.json");
   fs.writeFileSync(metadataPath, JSON.stringify(metadata, null, 2));
   console.log(`   Metadata saved to ${metadataPath}`);
+}
+
+/**
+ * Create a feedback markdown file template
+ */
+function createFeedbackTemplate(iteration, targets, timestamp, iterationDir) {
+  const templatePath = path.join(iterationDir, "feedback-template.md");
+
+  const template = `# Design Iteration Feedback (Iteration ${iteration})
+
+## Session Information
+
+- **Date:** ${new Date().toISOString().split("T")[0]}
+- **Components:** ${targets.join(", ")}
+- **Timestamp:** ${timestamp}
+
+## Screenshots
+
+${targets
+  .map(
+    (target) => `### ${target}
+- Light theme: [Path to light theme screenshot]
+- Dark theme: [Path to dark theme screenshot]
+
+#### Feedback
+- **What works well:**
+  - 
+  - 
+  - 
+
+- **What could be improved:**
+  - 
+  - 
+  - 
+
+- **General notes:**
+  
+
+#### Rating: [1-10]
+
+`
+  )
+  .join("\n")}
+
+## Summary and Decision
+
+### Overall Preferences
+- **Favorite component design:**
+- **Best visual elements:**
+  - 
+  - 
+  - 
+
+### Implementation Plan
+- [ ] Proceed with current designs as is
+- [ ] Create new iterations with specific focus
+- [ ] Combine elements from different iterations
+
+### Additional Notes
+
+### Baseline Decision
+- [ ] Approved for baseline update
+- [ ] Not approved for baseline update
+- [ ] Pending additional refinements before baseline approval
+
+_Note: Baseline changes require maintainer signoff_
+`;
+
+  fs.writeFileSync(templatePath, template);
+  console.log(`   Feedback template created at ${templatePath}`);
+
+  return templatePath;
 }
 
 /**
@@ -268,11 +375,22 @@ async function processIteration(iteration, config) {
   // Capture screenshots
   const timestamp = await captureScreenshots(config.targets, iterationDir);
 
-  // Capture diff
-  const diff = captureDiff(iterationDir);
+  // Capture diff for each target
+  const diffInfo = {};
+  for (const target of config.targets) {
+    const targetDiffInfo = captureDiff(iterationDir, timestamp, target);
+    if (targetDiffInfo) {
+      diffInfo[target] = targetDiffInfo;
+    }
+  }
 
-  // Include the diff file path in metadata
-  const diffPath = diff ? path.join(iterationDir, "diff.patch") : null;
+  // Create feedback template
+  const feedbackTemplatePath = createFeedbackTemplate(
+    iteration,
+    config.targets,
+    timestamp,
+    iterationDir
+  );
 
   // Create and save metadata
   const metadata = createMetadata(
@@ -280,14 +398,74 @@ async function processIteration(iteration, config) {
     config.targets,
     allChanges,
     timestamp,
+    diffInfo,
     config
   );
-  metadata.diffPath = diffPath; // Add diff path to metadata
+  metadata.feedbackTemplatePath = feedbackTemplatePath;
   saveMetadata(metadata, iterationDir);
 
   console.log(`✅ Iteration ${iteration} complete`);
+  console.log(`   - Screenshots captured with timestamp: ${timestamp}`);
+  console.log(`   - Diffs saved to: ${possibleDiffsDir}`);
+  console.log(`   - Feedback template created: ${feedbackTemplatePath}`);
 
   return { iterationDir, metadata };
+}
+
+/**
+ * Apply the selected design iteration
+ */
+async function applySelectedIteration(iterationPath, requireSignoff = true) {
+  console.log(`🔄 Applying selected design iteration from: ${iterationPath}`);
+
+  // Check if the iteration exists
+  if (!fs.existsSync(iterationPath)) {
+    console.error(`❌ Iteration not found: ${iterationPath}`);
+    return false;
+  }
+
+  // Load metadata
+  const metadataPath = path.join(iterationPath, "metadata.json");
+  if (!fs.existsSync(metadataPath)) {
+    console.error(`❌ Metadata not found: ${metadataPath}`);
+    return false;
+  }
+
+  const metadata = JSON.parse(fs.readFileSync(metadataPath, "utf8"));
+
+  // Check if signoff is required and provided
+  if (requireSignoff && !metadata.approval.isApproved) {
+    console.error(
+      `❌ This iteration requires maintainer signoff before applying as baseline`
+    );
+    console.log(`   Please update the approval section in: ${metadataPath}`);
+    return false;
+  }
+
+  // Apply the changes using the saved diff
+  try {
+    // We could apply the diff directly with git apply, but for safety,
+    // let's just indicate what we would do
+    console.log(`🔄 Would apply the following diffs:`);
+
+    for (const target in metadata.diffInfo) {
+      const diffPath = metadata.diffInfo[target].diffPath;
+      console.log(`   - ${diffPath}`);
+
+      // In the actual implementation, we would do:
+      // execSync(`git apply ${diffPath}`, { encoding: 'utf8' });
+    }
+
+    console.log(`✅ Design changes would be applied`);
+    console.log(
+      `   To actually apply changes, update this function to execute the git apply commands`
+    );
+
+    return true;
+  } catch (error) {
+    console.error(`❌ Error applying design changes: ${error.message}`);
+    return false;
+  }
 }
 
 /**
@@ -303,6 +481,9 @@ async function runDesignIterations() {
       config.count
     } iterations, targets: ${config.targets.join(", ")}`
   );
+  console.log(
+    `   Maintainer signoff required: ${config.requireSignoff ? "Yes" : "No"}`
+  );
 
   // Create directory structure
   createDirectoryStructure();
@@ -316,6 +497,16 @@ async function runDesignIterations() {
 
   console.log("\n🎉 All iterations complete!");
   console.log(`📁 Results stored in ${iterationsDir}`);
+  console.log(`📁 Diffs stored in ${possibleDiffsDir}`);
+  console.log(`\n💡 Next steps:`);
+  console.log(
+    `   1. Review the screenshots and provide feedback using the feedback templates`
+  );
+  console.log(`   2. Select a design iteration to apply`);
+  console.log(
+    `   3. If required, update the approval section in the metadata.json`
+  );
+  console.log(`   4. Run 'applySelectedIteration()' to apply the changes`);
 
   return iterations;
 }
@@ -335,4 +526,5 @@ export {
   createIterationDirectory,
   captureScreenshots,
   createMetadata,
+  applySelectedIteration,
 };
