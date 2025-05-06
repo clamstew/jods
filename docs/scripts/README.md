@@ -30,7 +30,7 @@ The unified screenshot approach consists of:
    - Central registry of all components and sections
    - Includes primary selectors and multiple alternative selectors for triangulation
    - Provides fallback strategies for each component
-   - Includes optional test IDs
+   - **Uses data-testid attributes as the preferred identification method**
    - Supports element exclusion for fine-tuned screenshots
 
 2. **Unified Screenshot Script** (`screenshot-unified.mjs`)
@@ -56,10 +56,49 @@ pnpm screenshot:unified            # All components
 pnpm screenshot:unified:sections   # Just homepage sections
 pnpm screenshot:unified:remix      # Just Remix section
 
+# Capture specific components by name
+pnpm screenshot:component=framework-section-react    # Just React tab
+pnpm screenshot:component=framework-section-remix    # Just Remix tab
+
+# Capture multiple components at once
+pnpm screenshot:unified --components=framework-section-react,framework-section-remix
+
 # From root directory
 pnpm docs:screenshot:unified
 pnpm docs:screenshot:unified:sections
 pnpm docs:screenshot:unified:remix
+pnpm docs:screenshot:react-tab
+pnpm docs:screenshot:remix-tab
+pnpm docs:screenshot:framework-tabs    # Both React and Remix tabs
+```
+
+## Framework Tabs
+
+The system supports capturing different tabs of the framework showcase section:
+
+- `framework-section-react` - Captures the React tab (default tab, no click needed)
+- `framework-section-remix` - Captures the Remix tab (automatically clicks the Remix tab)
+
+These are configured as separate components in the selectors registry, allowing dedicated screenshots with appropriate heights and element exclusions for each tab.
+
+### Special Configuration for Tabs
+
+Framework tabs use these properties for reliable capturing:
+
+```js
+// React tab (default on load)
+{
+  name: "framework-section-react",
+  // ...other properties
+}
+
+// Remix tab (needs to click tab)
+{
+  name: "framework-section-remix",
+  // ...other properties
+  clickSelector: "button:has-text('Remix'), button:has-text('💿')", // Click Remix tab
+  clickWaitTime: 1500, // Wait for tab to switch
+}
 ```
 
 ## Screenshot Cleanup
@@ -115,16 +154,44 @@ The unified approach:
 2. **Taking Screenshots**
    - The unified script loads component definitions
    - Navigates to the appropriate page for each component
-   - Locates elements using CSS selectors and fallback strategies
+   - **First tries to locate elements by data-testid attribute**
+   - Falls back to CSS selectors and triangulation strategies if needed
    - Captures screenshots in both light and dark modes
+
+## Using Test IDs
+
+The preferred way to identify sections is using the `data-testid` attribute:
+
+1. Each section component in the site adds a `data-testid` attribute to its root element
+2. The screenshot script attempts to locate elements by this ID first
+3. This provides the most reliable element selection method
+4. CSS selectors and triangulation are used as fallbacks
+
+Example:
+
+```jsx
+// In your React component
+<section className="features-container" data-testid="jods-features-section">
+  {/* section content */}
+</section>
+
+// In screenshot-selectors.mjs
+{
+  name: "features-section",
+  selector: "section.features-container",
+  testId: "jods-features-section", // This is the preferred selector
+  // other properties...
+}
+```
 
 ## Adding New Screenshot Features
 
 When adding new screenshot capabilities:
 
 1. Update the component definitions in `screenshot-selectors.mjs`
-2. Add npm scripts to package.json if needed
-3. Update the documentation in `docs/docs/playwright-screenshots.md`
+2. **Add the data-testid attribute to the component in the source code**
+3. Add npm scripts to package.json if needed
+4. Update the documentation in `docs/docs/playwright-screenshots.md`
 
 ## Advanced Features
 
@@ -154,11 +221,31 @@ Example:
 }
 ```
 
+### Click Before Screenshot
+
+Some components need interaction before capturing:
+
+```js
+{
+  name: "framework-section-remix",
+  // other properties...
+  clickSelector: "button:has-text('Remix')", // Element to click before screenshot
+  clickWaitTime: 1500, // Wait time after clicking (milliseconds)
+}
+```
+
+This feature enables:
+
+- Capturing different tab states
+- Showing expanded sections
+- Interacting with components before screenshot
+
 ## Troubleshooting
 
 If screenshots aren't capturing the right sections:
 
-1. Check the component definitions in `screenshot-selectors.mjs`
-2. Add more specific alternative selectors to help with triangulation
-3. Use `excludeElements` to remove unwanted parts from screenshots
-4. Run with debug mode for detailed logging: `DEBUG=true pnpm screenshot:unified`
+1. Check if the component has a `data-testid` attribute in the source code
+2. Check the component definitions in `screenshot-selectors.mjs`
+3. Add more specific alternative selectors to help with triangulation
+4. Use `excludeElements` to remove unwanted parts from screenshots
+5. Run with debug mode for detailed logging: `DEBUG=true pnpm screenshot:unified`

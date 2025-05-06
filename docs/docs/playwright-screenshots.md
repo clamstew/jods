@@ -32,6 +32,11 @@ pnpm docs:screenshot:unified:components   # Only UI components
 pnpm docs:screenshot:unified:sections     # Only homepage sections
 pnpm docs:screenshot:unified:remix        # Only Remix section
 
+# Capture React and Remix tabs of the framework section
+pnpm docs:screenshot:react-tab            # Only React tab
+pnpm docs:screenshot:remix-tab            # Only Remix tab
+pnpm docs:screenshot:framework-tabs       # Both tabs
+
 # From docs directory
 pnpm screenshot:unified
 pnpm screenshot:unified:baseline
@@ -45,7 +50,7 @@ Advanced options:
 
 ```bash
 # Capture specific named components
-node scripts/screenshot-unified.mjs --components=hero-section,framework-section
+node scripts/screenshot-unified.mjs --components=hero-section,framework-section-react
 
 # Run with debug mode for detailed logs
 DEBUG=true pnpm screenshot:unified
@@ -92,14 +97,69 @@ The unified screenshot approach provides a consistent, flexible system for captu
 1. **Consistent Output** - All screenshots use the same selectors, padding rules, and filename conventions
 2. **Single Source of Truth** - Component definitions are defined once in `screenshot-selectors.mjs`
 3. **Flexible Modes** - Run the script with different modes for components, sections, or specific items
-4. **Smart Element Triangulation** - Uses multiple selectors to reliably locate sections
+4. **Reliable Element Location** - Uses data-testid attributes as the preferred location method
 5. **Element Exclusion** - Allows excluding specific elements from screenshots
+
+### Element Identification Hierarchy
+
+The system uses the following hierarchy to identify elements:
+
+1. **data-testid Attribute** (Preferred Method)
+
+   ```jsx
+   <section data-testid="jods-hero-section">...</section>
+   ```
+
+2. **CSS Selectors**
+
+   ```js
+   selector: "div.heroBanner_UJgQ, div.hero-container, .hero";
+   ```
+
+3. **Triangulation with Alternative Selectors**
+
+   ```js
+   alternativeSelectors: [
+     "h1:has-text('jods')",
+     ".hero-subtitle, .hero-description",
+   ];
+   ```
+
+4. **Fallback Strategies**
+   ```js
+   fallbackStrategy: "first-heading";
+   ```
 
 ### Advanced Features
 
+#### Data TestID Attributes
+
+The most reliable way to identify elements is using the `data-testid` attribute:
+
+```jsx
+// In the React component
+<section className="features-container" data-testid="jods-features-section">
+  {/* section content */}
+</section>
+
+// In screenshot-selectors.mjs
+{
+  name: "features-section",
+  // ...
+  testId: "jods-features-section"
+}
+```
+
+Benefits of using testIDs:
+
+- More resilient to CSS class changes
+- Clearer intent with explicit IDs
+- Less prone to breakage from content changes
+- Works even when content differs between themes
+
 #### Element Triangulation
 
-The unified script uses multiple selectors to find elements more reliably:
+The unified script uses multiple selectors to find elements more reliably as a fallback when testIDs aren't available:
 
 ```js
 {
@@ -121,6 +181,38 @@ If the primary selector doesn't find the element, the script will:
 1. Try each alternative selector individually
 2. If multiple alternative selectors match, find their common parent
 3. Use triangulation to determine the correct section boundaries
+
+#### Framework Tabs
+
+The system supports capturing different tabs of the framework showcase section:
+
+```js
+// React tab (default tab on load)
+{
+  name: "framework-section-react",
+  selector: "section:has(h2:has-text('Works with your favorite frameworks'))",
+  testId: "jods-framework-section",
+  // other properties...
+},
+
+// Remix tab (requires clicking the tab)
+{
+  name: "framework-section-remix",
+  selector: "section:has(h2:has-text('Works with your favorite frameworks'))",
+  testId: "jods-framework-section",
+  clickSelector: "button:has-text('Remix'), button:has-text('💿')", // Clicks Remix tab
+  clickWaitTime: 1500, // Wait for tab content to load
+  minHeight: 1600, // Taller to accommodate Remix content
+  // other properties...
+}
+```
+
+This approach:
+
+- Treats each tab as a separate component
+- Automatically clicks the Remix tab when needed
+- Uses appropriate heights for each tab's content
+- Maintains separate screenshots for React and Remix tabs
 
 #### Element Exclusion
 
@@ -167,10 +259,10 @@ export const COMPONENTS = [
     page: "/",
     name: "hero-section",
     selector: "div.heroBanner_UJgQ, div.hero-container",
+    testId: "jods-hero-section", // Preferred way to identify the section
     fallbackStrategy: "first-heading",
     padding: 50,
     waitForSelector: "h1",
-    testId: "jods-hero-section",
     alternativeSelectors: [
       "h1:has-text('jods')",
       ".hero-subtitle, .hero-description",
@@ -187,15 +279,36 @@ Each component definition can include:
 | ---------------------- | ---------------------------------------------------------------------------- |
 | `page`                 | Page path where the component appears                                        |
 | `name`                 | Unique identifier for the component                                          |
-| `selector`             | Primary CSS selector to find the element                                     |
+| `testId`               | **Test ID attribute for primary identification (recommended)**               |
+| `selector`             | CSS selector to find the element (fallback when testId not found)            |
 | `fallbackStrategy`     | Strategy to use when selector fails (e.g., "first-heading", "section-index") |
 | `padding`              | Extra padding around element in pixels                                       |
 | `waitForSelector`      | Selector to wait for before capturing (ensures content is loaded)            |
-| `testId`               | Test ID attribute for fallback identification                                |
 | `alternativeSelectors` | Array of alternative selectors for triangulation                             |
 | `excludeElements`      | Array of selectors for elements to exclude from screenshot                   |
 | `minHeight`            | Minimum height for the screenshot (useful for tall sections)                 |
 | `extraScroll`          | Extra scroll amount to better position the section                           |
+| `clickSelector`        | Selector for element to click before taking screenshot                       |
+| `clickWaitTime`        | Time to wait after clicking (milliseconds)                                   |
+
+### Interactive Elements
+
+Some components require interaction before capturing:
+
+```js
+{
+  name: "framework-section-remix",
+  // other properties...
+  clickSelector: "button:has-text('Remix')", // Element to click before screenshot
+  clickWaitTime: 1500, // Wait time after clicking (milliseconds)
+}
+```
+
+This enables:
+
+- Capturing different tab states
+- Showing expanded sections
+- Interacting with components before screenshot
 
 ### Path Handling
 
@@ -262,19 +375,21 @@ pnpm docs:screenshot:cleanup:keep-latest -- --keep=5
 
 If the screenshot system encounters issues:
 
-1. **Connection Issues**: Make sure the documentation site is running locally before taking screenshots
-2. **Theme Toggle Issues**: The system uses multiple selectors to find the theme toggle button, but if the site structure changes, you may need to update the selectors in the screenshot scripts
-3. **Missing Pages/Components**: Verify that the URLs and selectors match the actual site structure
-4. **Disk Space**: If you have many timestamped screenshots, use `pnpm docs:screenshot:cleanup` to free up space
+1. **Missing Test IDs**: Check if the `data-testid` attributes are correctly added to components in the source code
+2. **Connection Issues**: Make sure the documentation site is running locally before taking screenshots
+3. **Theme Toggle Issues**: The system uses multiple selectors to find the theme toggle button, but if the site structure changes, you may need to update the selectors in the screenshot scripts
+4. **Missing Pages/Components**: Verify that the URLs and selectors match the actual site structure
+5. **Disk Space**: If you have many timestamped screenshots, use `pnpm docs:screenshot:cleanup` to free up space
 
 ### Section Screenshot Issues
 
 If section screenshots aren't capturing the right elements:
 
-1. **Add more specific alternative selectors** in `screenshot-selectors.mjs` for better triangulation
-2. **Use element exclusion** to remove unwanted elements while keeping useful ones for triangulation
-3. **Run with debug mode** for detailed logs: `DEBUG=true pnpm screenshot:unified`
-4. **Adjust padding settings** for specific sections that need more context
+1. **Add data-testid attributes** to the components in source code
+2. **Add more specific alternative selectors** in `screenshot-selectors.mjs` for better triangulation
+3. **Use element exclusion** to remove unwanted elements while keeping useful ones for triangulation
+4. **Run with debug mode** for detailed logs: `DEBUG=true pnpm screenshot:unified`
+5. **Adjust padding settings** for specific sections that need more context
 
 ## 🔄 Design Versioning and Comparison
 
@@ -295,15 +410,16 @@ To compare design changes with the baselines:
 
 ## 🧠 Best Practices
 
-1. Take screenshots after significant UI changes
-2. Use component screenshots for focused testing of specific UI elements
-3. Use section screenshots for marketing and documentation materials
-4. Create baseline screenshots before major redesigns for reference
-5. Include screenshots in PR descriptions for visual reviews
-6. Use screenshots for marketing materials and documentation updates
-7. Store screenshot sets for each major release for reference
-8. When comparing design changes, always use timestamped versions against baselines
-9. Clean up older timestamped screenshots periodically to save space
+1. **Add data-testid attributes** to all major section components
+2. Take screenshots after significant UI changes
+3. Use component screenshots for focused testing of specific UI elements
+4. Use section screenshots for marketing and documentation materials
+5. Create baseline screenshots before major redesigns for reference
+6. Include screenshots in PR descriptions for visual reviews
+7. Use screenshots for marketing materials and documentation updates
+8. Store screenshot sets for each major release for reference
+9. When comparing design changes, always use timestamped versions against baselines
+10. Clean up older timestamped screenshots periodically to save space
 
 ## 🔗 Related Resources
 
