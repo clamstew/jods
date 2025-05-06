@@ -2,24 +2,25 @@
 
 This directory contains scripts for automating various aspects of the jods documentation site, particularly related to screenshot testing, design iteration, and visual regression testing.
 
-## Vision
-
-jods aims to be the definitive active record model for the Remix ecosystem, providing a minimal but opinionated approach to state management. Our documentation and tooling reflect this philosophy - we prefer offering **one good way** to do something rather than endless configuration options.
-
 ## Documentation
 
-Comprehensive documentation for the screenshot system is now available in the [guides](./guides/) directory:
+Comprehensive documentation for the design iterations and screenshot system is now available in the documentation site:
 
-- **[Getting Started](./guides/getting-started.md)** - Learn the basics of the screenshot system
-- **[Screenshot System for Dummies](./guides/screenshot-system-for-dummies.md)** - Simplified explanation for beginners
-- **[API Reference](./guides/api-reference.md)** - Detailed reference of all available options
-- **[Advanced Features](./guides/advanced-features.md)** - Explore powerful features for advanced users
+- **[Design Iterations Overview](../docs/design-iterations/index.md)** - Overview of the design iterations system
+- **[Vision](../docs/design-iterations/vision.md)** - The long-term vision and philosophy
+- **[Complete Workflow](../docs/design-iterations/workflow.md)** - Step-by-step guide to using design iterations
+- **[With AI](../docs/design-iterations/with-ai.md)** - How AI powers the design iteration process
+- **[Command Reference](../docs/design-iterations/commands.md)** - Detailed command documentation
+- **[Feedback System](../docs/design-iterations/feedback.md)** - How to provide structured feedback
 
-## Examples
+### Screenshot System Documentation
 
-Practical examples and walkthroughs are available in the [examples](./examples/) directory:
+The screenshot system documentation is available in:
 
-- **[Design Iteration Walkthrough](./examples/design-iteration-example.md)** - How to use design iterations to track UI changes
+- **[Screenshot System Overview](../docs/design-iterations/screenshot-system/index.md)** - Overview of the screenshot system
+- **[Getting Started](../docs/design-iterations/screenshot-system/getting-started.md)** - Learn the basics
+- **[TestID Guidelines](../docs/design-iterations/screenshot-system/testid-guidelines.md)** - Best practices for testIDs
+- **[Advanced Usage](../docs/design-iterations/screenshot-system/advanced.md)** - Advanced techniques and optimizations
 
 ## Available Scripts
 
@@ -62,13 +63,17 @@ pnpm screenshot:diff
 pnpm screenshot:cleanup
 ```
 
-## TestID-Driven Approach
+### Design Iterations
 
-Our screenshot system uses a TestID-driven approach, as detailed in [screenshot-testid-guidelines.md](./screenshot-testid-guidelines.md). This provides a consistent way to identify and test components.
+The design iterations system helps track UI changes over time:
 
-## Long-Term Vision
+```bash
+# Run 3 design iterations
+pnpm design-iterations --count=3
 
-See [long-term-ai-vision.md](./long-term-ai-vision.md) for details on our AI-driven design iteration system and active record model vision for jods.
+# Focus on specific components
+pnpm design-iterations --target="hero-section"
+```
 
 ## Implementation Files
 
@@ -81,28 +86,10 @@ See [long-term-ai-vision.md](./long-term-ai-vision.md) for details on our AI-dri
 - `generate-selectors.mjs` - TestID discovery
 - `rebaseline.mjs` - Unified rebaseline process
 - `design-iterations.mjs` - Design iteration system
-
-## Workflow Examples
-
-### Rebaselining Process
-
-```bash
-# Full rebaseline process including server lifecycle management
-pnpm rebaseline:full
-
-# Focus on TestID-based elements
-pnpm rebaseline:testid
-```
-
-### Design Iteration (Experimental)
-
-```bash
-# Run 3 design iterations
-node scripts/design-iterations.mjs --count=3
-
-# Focus on specific components
-node scripts/design-iterations.mjs --target="hero-section"
-```
+- `design-iterations-init.mjs` - Initialization helper
+- `force-react-tab.mjs` - Tab-specific screenshot helper
+- `fix-react-framework.mjs` - Framework section screenshot helper
+- `capture-diff.mjs` - Immediate screenshot diffing
 
 ## Future Development
 
@@ -116,13 +103,13 @@ node scripts/design-iterations.mjs --target="hero-section"
 The screenshot framework now includes test coverage for key utilities. The tests are located in the `__tests__` directory and can be run with:
 
 ```bash
-npm test
+pnpm test
 ```
 
 Or in watch mode during development:
 
 ```bash
-npm run test:watch
+pnpm run test:watch
 ```
 
 The tests focus on core utilities and helper functions. When adding new scripts or refactoring existing ones, consider:
@@ -130,8 +117,6 @@ The tests focus on core utilities and helper functions. When adding new scripts 
 1. Extracting pure functions that can be tested independently
 2. Using dependency injection for external modules to enable mocking
 3. Adding tests for complex logic and edge cases
-
-For more details on the testing approach, see the [testing README](__tests__/README.md).
 
 ```
 

@@ -94,6 +94,11 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: "doc",
+          id: "design-iterations/vision",
+          label: "🔮 Vision",
+        },
+        {
+          type: "doc",
           id: "design-iterations/workflow",
           label: "🔄 Complete Workflow",
         },
