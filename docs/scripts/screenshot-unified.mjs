@@ -20,6 +20,7 @@ import {
   ensureDirectoryExists,
 } from "./screenshot-utils.mjs";
 import { captureManager } from "./screenshot-capture.mjs";
+import { fileURLToPath } from "url";
 
 // Initialize environment and utilities with memoization
 const { directories, BASE_URL, PATH_PREFIX, THEMES, getTimestamp, DEBUG } =
@@ -112,9 +113,15 @@ async function loadComponents(
  * @param {Array} components - Available components
  * @param {string} mode - Capture mode
  * @param {Array} specificComponents - Specific component names to capture
+ * @param {boolean} skipOtherSections - Whether to skip sections not specified
  * @returns {Array} Components to capture
  */
-function selectComponents(components, mode, specificComponents = []) {
+function selectComponents(
+  components,
+  mode,
+  specificComponents = [],
+  skipOtherSections = false
+) {
   let componentsToCapture = [];
 
   if (specificComponents && specificComponents.length > 0) {
@@ -133,27 +140,37 @@ function selectComponents(components, mode, specificComponents = []) {
         `Could not find these components: ${missingComponents.join(", ")}`
       );
     }
-  } else if (mode === "all" || mode === "components") {
-    // Capture all components
-    componentsToCapture = components;
-  } else if (mode === "sections") {
-    // Sections mode - filter only homepage sections
-    componentsToCapture = components.filter(
-      (component) =>
-        component.page === "/" &&
-        !component.name.includes("framework-") &&
-        component.name !== "footer-section"
-    );
-  } else if (mode === "remix") {
-    // Only the Remix section
-    componentsToCapture = components.filter(
-      (component) => component.name === "remix-section"
-    );
-  } else {
-    // Try to interpret mode as a specific component name
-    const component = getComponentByName(mode, components);
-    if (component) {
-      componentsToCapture = [component];
+
+    // If skipOtherSections is true, we're done - only return the specified components
+    if (skipOtherSections) {
+      return componentsToCapture;
+    }
+  }
+
+  // Only continue to these other modes if we haven't found specific components or skipOtherSections is false
+  if (componentsToCapture.length === 0) {
+    if (mode === "all" || mode === "components") {
+      // Capture all components
+      componentsToCapture = components;
+    } else if (mode === "sections") {
+      // Sections mode - filter only homepage sections
+      componentsToCapture = components.filter(
+        (component) =>
+          component.page === "/" &&
+          !component.name.includes("framework-") &&
+          component.name !== "footer-section"
+      );
+    } else if (mode === "remix") {
+      // Only the Remix section
+      componentsToCapture = components.filter(
+        (component) => component.name === "remix-section"
+      );
+    } else {
+      // Try to interpret mode as a specific component name
+      const component = getComponentByName(mode, components);
+      if (component) {
+        componentsToCapture = [component];
+      }
     }
   }
 
@@ -572,6 +589,7 @@ async function processComponentForTheme(
  * @param {string} timestamp - Timestamp to use for filenames
  * @param {boolean} saveBaseline - Whether to save as baseline (no timestamp)
  * @param {string[]} specificComponents - Array of specific component names to screenshot (optional)
+ * @param {boolean} skipOtherSections - Whether to skip sections not specified in specificComponents
  * @param {boolean} useGeneratedSelectors - Whether to use generated selectors
  * @param {boolean} mergeSelectors - Whether to merge selectors with existing ones
  * @returns {Promise<string|null>} Timestamp used or null if failed
@@ -581,6 +599,7 @@ async function takeUnifiedScreenshots(
   timestamp = getTimestamp(),
   saveBaseline = false,
   specificComponents = [],
+  skipOtherSections = false,
   useGeneratedSelectors = false,
   mergeSelectors = false
 ) {
@@ -605,6 +624,14 @@ async function takeUnifiedScreenshots(
   logger.info(`Saving to ${directories.unified}`);
   logger.info(`Capturing themes: ${THEMES.join(", ")}`);
 
+  if (skipOtherSections && specificComponents.length > 0) {
+    logger.info(
+      `Focus mode enabled: Only capturing specified targets: ${specificComponents.join(
+        ", "
+      )}`
+    );
+  }
+
   try {
     // Load components
     const componentsToUse = await loadComponents(
@@ -616,7 +643,8 @@ async function takeUnifiedScreenshots(
     const componentsToCapture = selectComponents(
       componentsToUse,
       mode,
-      specificComponents
+      specificComponents,
+      skipOtherSections
     );
 
     if (componentsToCapture.length === 0) {
@@ -802,6 +830,7 @@ function parseCliArgs() {
     saveBaseline: args.includes("--baseline"),
     useGeneratedSelectors: args.includes("--use-generated-selectors"),
     mergeSelectors: args.includes("--merge-selectors"),
+    skipOtherSections: args.includes("--skip-other-sections"),
     mode: args.find((arg) => arg.startsWith("--mode="))?.split("=")[1] || "all",
     specificComponents: args.find((arg) => arg.startsWith("--components="))
       ? args
@@ -816,17 +845,20 @@ function parseCliArgs() {
 // Use the CLI args at the bottom of the file
 const cliArgs = parseCliArgs();
 
-// Run the screenshot function
-takeUnifiedScreenshots(
-  cliArgs.mode,
-  getTimestamp(),
-  cliArgs.saveBaseline,
-  cliArgs.specificComponents,
-  cliArgs.useGeneratedSelectors,
-  cliArgs.mergeSelectors
-).catch((error) => {
-  console.error("Error taking screenshots:", error);
-  process.exit(1);
-});
+// Run the screenshot function only if this file is executed directly, not when imported
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  takeUnifiedScreenshots(
+    cliArgs.mode,
+    getTimestamp(),
+    cliArgs.saveBaseline,
+    cliArgs.specificComponents,
+    cliArgs.skipOtherSections,
+    cliArgs.useGeneratedSelectors,
+    cliArgs.mergeSelectors
+  ).catch((error) => {
+    console.error("Error taking screenshots:", error);
+    process.exit(1);
+  });
+}
 
 export { takeUnifiedScreenshots };
