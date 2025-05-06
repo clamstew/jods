@@ -75,26 +75,62 @@ export const COMPONENTS = [
       "section:has(h2:has-text('Works with your favorite frameworks')), section:has(h2:has-text('Framework Integration'))",
     fallbackStrategy: "keyword-context",
     keywords: ["favorite frameworks", "Framework Integration"],
-    padding: 200, // Increased for more space all around
+    padding: 200,
     waitForSelector:
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
     minHeight: 1200,
-    captureFrameworkTabs: false, // Don't need to handle tabs, just screenshot the default React tab
+    captureFrameworkTabs: false,
     testId: "jods-framework-section",
     extraScroll: 250,
     captureHtmlDebug: true,
-    // New properties for better handling
-    darkModeExtraWait: 1800, // Extra wait time specifically for dark mode
-    verifyContentLoaded: true, // Verify that code blocks are visible before taking screenshot
-    minVisibleCodeLines: 5, // Ensure at least 5 lines of code are visible
-    verifyTabName: "React", // Verify the React tab is selected
-    verifyTabSelected: true, // Check if tab is properly selected
-    retryTabSelection: 2, // Number of retries if tab isn't selected
-    forceReactTabSelected: true, // Force the React tab to be selected even if it's not the default
-    pauseAnimations: true, // Pause animations during screenshot
-    clickSelector:
-      "[data-testid='framework-tab-react'], [data-testid='jods-framework-tab-react'], button:has-text('React'), .framework-tabs button:nth-child(1), button:has-text('⚛️')", // Added explicit click for React tab
-    clickWaitTime: 1500, // Wait after clicking tab
+    darkModeExtraWait: 1800,
+    verifyContentLoaded: true,
+    minVisibleCodeLines: 5,
+    pauseAnimations: true,
+    beforeScreenshot: async (page) => {
+      try {
+        await page.evaluate(() => {
+          const buttons = Array.from(document.querySelectorAll("button"));
+          const reactButton = buttons.find(
+            (btn) =>
+              btn.textContent &&
+              btn.textContent.includes("React") &&
+              !btn.textContent.includes("Preact")
+          );
+
+          if (reactButton) {
+            reactButton.click();
+            console.log("Clicked React tab via JavaScript");
+          }
+        });
+        await page.waitForTimeout(1000);
+      } catch (e) {
+        console.log("Error in React tab selection:", e);
+      }
+
+      try {
+        await page.evaluate(() => {
+          const allElements = document.querySelectorAll(
+            'h3, h4, pre, code, .remix-tab, [data-tab="remix"]'
+          );
+          for (const el of allElements) {
+            if (
+              el.textContent &&
+              (el.textContent.includes("Remix") ||
+                el.textContent.includes("createCookieStore"))
+            ) {
+              if (el.closest(".framework-tab-content, .tab-content")) {
+                el.closest(
+                  ".framework-tab-content, .tab-content"
+                ).style.display = "none";
+              }
+            }
+          }
+        });
+      } catch (e) {
+        console.log("Error hiding Remix content:", e);
+      }
+    },
     alternativeSelectors: [
       "h2:has-text('Works with your favorite frameworks'), h2:has-text('Framework Integration')",
       "button:has-text('React'), button:has-text('Preact'), button:has-text('Remix')",
@@ -103,17 +139,20 @@ export const COMPONENTS = [
       "div:has(h2:has-text('Works with your favorite frameworks'))",
     ],
     excludeElements: [
+      "div.remix-content",
+      "[data-framework='remix']",
+      ".remix-content",
+      "[data-testid='remix-example']",
       "p:has-text('Remix state reimagined')",
       "div:has(p:has-text('Remix state reimagined'))",
       "*:has-text('Remix state reimagined')",
-      "[class*='description']",
+      "[class*='description']:has-text('Remix')",
       ".remix-description",
       "[class*='subtitle']:has-text('reimagined')",
-      ".subtitle, .feature-subtitle",
+      ".subtitle:has-text('Remix')",
+      ".feature-subtitle:has-text('Remix')",
       "h3:has-text('Remix state')",
-      "div:has(h3:has-text('Remix state'))",
       "h3:has-text('Remix State, Reimagined')",
-      "div:has(h3:has-text('Remix State, Reimagined'))",
       "h3:has-text('Reimagined')",
       "[class*='heading']:has-text('Remix')",
       "[class*='heading']:has-text('Reimagined')",

@@ -1082,6 +1082,59 @@ export const captureManager = {
       // Pause animations if specified
       await this.manageAnimations(page, "pause", component);
 
+      // Special handling for Remix section to ensure header is visible
+      if (component.name === "remix-section") {
+        console.log("Applying special positioning for Remix section");
+        await page.evaluate(() => {
+          // Find the closest heading using standard DOM operations
+          // First try with ID
+          const section = document.querySelector("#remix-integration");
+          let heading = null;
+
+          if (section) {
+            // Try to find the heading inside the section
+            heading = section.querySelector("h2");
+          }
+
+          // If not found, try to find by heading text content
+          if (!heading) {
+            const allHeadings = document.querySelectorAll("h2");
+            for (const h of allHeadings) {
+              if (
+                h.textContent &&
+                h.textContent.includes("Remix Integration")
+              ) {
+                heading = h;
+                break;
+              }
+            }
+          }
+
+          if (heading) {
+            // Scroll to position header at the top with more margin
+            const scrollTop =
+              window.pageYOffset || document.documentElement.scrollTop;
+            const headingTop = heading.getBoundingClientRect().top + scrollTop;
+            window.scrollTo({
+              top: Math.max(0, headingTop - 250), // Extra space above the heading
+              behavior: "smooth",
+            });
+          } else if (section) {
+            // Fallback to section if heading not found
+            const scrollTop =
+              window.pageYOffset || document.documentElement.scrollTop;
+            const sectionTop = section.getBoundingClientRect().top + scrollTop;
+            window.scrollTo({
+              top: Math.max(0, sectionTop - 250),
+              behavior: "smooth",
+            });
+          }
+        });
+
+        // Wait for scroll to complete
+        await page.waitForTimeout(500);
+      }
+
       // Add diff markers if component has diff highlights defined
       if (component.diffHighlightSelectors) {
         await this.highlightElementsForDiff(
@@ -1089,6 +1142,32 @@ export const captureManager = {
           component.diffHighlightSelectors,
           "add"
         );
+      }
+
+      // Execute beforeScreenshot hook if defined
+      if (
+        component.beforeScreenshot &&
+        typeof component.beforeScreenshot === "function"
+      ) {
+        console.log(`Executing beforeScreenshot hook for ${component.name}`);
+        try {
+          await component.beforeScreenshot(page, elementHandle, theme);
+          // Allow time for changes to take effect if needed
+          await page.waitForTimeout(500);
+
+          // Re-get element handle in case DOM has changed
+          if (component.selector) {
+            const newElementHandle = await page.$(component.selector);
+            if (newElementHandle) {
+              elementHandle = newElementHandle;
+              // Re-scroll into view after potential changes
+              await elementHandle.scrollIntoViewIfNeeded();
+              await page.waitForTimeout(300);
+            }
+          }
+        } catch (hookError) {
+          console.warn(`Error in beforeScreenshot hook: ${hookError.message}`);
+        }
       }
 
       // Create the screenshot filename
