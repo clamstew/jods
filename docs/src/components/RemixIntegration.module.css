@@ -13,11 +13,12 @@
 .header {
   margin-bottom: 3rem;
   text-align: center;
-  background: #0f172a;
+  /* Enhanced Ruby-inspired gradient that transitions to Remix blue */
+  background: linear-gradient(135deg, #bc1142 0%, #9d0d35 40%, #0066b1 100%);
   padding: 4rem 2.5rem;
   border-radius: 20px;
   margin: -5rem -2rem 3rem;
-  box-shadow: 0 15px 35px rgba(15, 23, 42, 0.25);
+  box-shadow: 0 15px 35px rgba(165, 4, 60, 0.3);
   position: relative;
   overflow: hidden;
   will-change: transform;
@@ -25,10 +26,10 @@
   z-index: 1;
 }
 
-/* Light mode specific styling */
+/* Light mode specific styling with improved contrast */
 html[data-theme="light"] .header {
-  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+  background: linear-gradient(135deg, #dd2542 0%, #b91c1c 40%, #2563eb 100%);
+  box-shadow: 0 15px 30px rgba(185, 28, 28, 0.2);
 }
 
 /* Add subtle glass effect to header */
@@ -41,23 +42,44 @@ html[data-theme="light"] .header {
   bottom: 0;
   background: radial-gradient(
     circle at top right,
-    rgba(101, 163, 246, 0.1) 0%,
-    rgba(34, 211, 238, 0.05) 50%,
-    rgba(15, 23, 42, 0.02) 100%
+    rgba(220, 38, 38, 0.15) 0%,
+    rgba(244, 63, 94, 0.08) 50%,
+    rgba(15, 23, 42, 0.04) 100%
   );
   z-index: 1;
-  opacity: 0.6;
+  opacity: 0.75;
   mix-blend-mode: overlay;
 }
 
 html[data-theme="light"] .header::before {
   background: radial-gradient(
     circle at top right,
-    rgba(79, 70, 229, 0.08) 0%,
-    rgba(34, 211, 238, 0.05) 50%,
-    rgba(255, 255, 255, 0.02) 100%
+    rgba(239, 68, 68, 0.12) 0%,
+    rgba(220, 38, 38, 0.08) 50%,
+    rgba(255, 255, 255, 0.05) 100%
   );
   mix-blend-mode: multiply;
+}
+
+/* Add gem-like pattern to header */
+.header::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.03) 25%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0.03) 75%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 20px 20px;
+  z-index: 2;
+  opacity: 0.4;
 }
 
 .title {
@@ -69,16 +91,18 @@ html[data-theme="light"] .header::before {
   z-index: 3;
   letter-spacing: -0.02em;
   line-height: 1.1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 html[data-theme="light"] .title {
-  color: #020617;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
 .subtitle {
   font-size: 1.5rem;
   margin-bottom: 2.5rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.95);
   max-width: 680px;
   margin-left: auto;
   margin-right: auto;
@@ -90,18 +114,18 @@ html[data-theme="light"] .title {
 }
 
 html[data-theme="light"] .subtitle {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .highlight {
-  background: #38bdf8;
+  background: #f43f5e;
   padding: 0.4rem 1rem;
   border-radius: 8px;
-  color: #0f172a;
+  color: white;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
-  box-shadow: 0 4px 16px rgba(56, 189, 248, 0.35);
+  box-shadow: 0 4px 16px rgba(244, 63, 94, 0.35);
   margin: 0 0.3rem;
   transition: all 0.3s ease;
   position: relative;
@@ -110,20 +134,21 @@ html[data-theme="light"] .subtitle {
 
 /* Light mode specific styling */
 html[data-theme="light"] .highlight {
-  background: #0284c7;
+  background: #e11d48;
   color: white;
-  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
 }
 
 .highlight:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(56, 189, 248, 0.4);
+  box-shadow: 0 8px 20px rgba(244, 63, 94, 0.45);
 }
 
 html[data-theme="light"] .highlight:hover {
-  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.35);
+  box-shadow: 0 8px 20px rgba(225, 29, 72, 0.4);
 }
 
+/* Enhanced Ruby icon with more realistic gem effect */
 .rubyIcon {
   position: relative;
   display: inline-flex;
@@ -139,7 +164,7 @@ html[data-theme="light"] .highlight:hover {
   height: 140%;
   background: radial-gradient(
     circle,
-    rgba(249, 115, 22, 0.3) 0%,
+    rgba(255, 92, 92, 0.4) 0%,
     rgba(249, 115, 22, 0) 70%
   );
   border-radius: 50%;
@@ -149,33 +174,49 @@ html[data-theme="light"] .highlight:hover {
 html[data-theme="light"] .rubyIcon::before {
   background: radial-gradient(
     circle,
-    rgba(234, 88, 12, 0.2) 0%,
+    rgba(234, 88, 12, 0.35) 0%,
     rgba(234, 88, 12, 0) 70%
   );
 }
 
-/* Ruby gem styling */
+/* Refined Ruby gem styling with enhanced facets */
 .rubyGem {
   display: inline-block;
   margin-right: 0.5rem;
   font-size: 1.3em;
   transform-origin: center;
-  filter: drop-shadow(0 0 4px rgba(249, 115, 22, 0.5));
+  filter: drop-shadow(0 0 8px rgba(252, 165, 165, 0.8));
+  animation: gemShine 6s infinite;
+}
+
+@keyframes gemShine {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 8px rgba(252, 165, 165, 0.7));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 12px rgba(252, 165, 165, 0.9));
+    transform: scale(1.05);
+  }
 }
 
 html[data-theme="light"] .rubyGem {
-  filter: drop-shadow(0 0 3px rgba(234, 88, 12, 0.5));
+  filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.8));
 }
 
 .remix {
   font-weight: 800;
   color: #93c5fd;
+  text-shadow: 0 0 10px rgba(147, 197, 253, 0.6);
 }
 
 html[data-theme="light"] .remix {
-  color: #2563eb;
+  color: white;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
 }
 
+/* Enhanced Remix icon with disc animation */
 .remixIconWrapper {
   position: relative;
   display: inline-flex;
@@ -187,23 +228,50 @@ html[data-theme="light"] .remix {
 .remixIconWrapper::before {
   content: "";
   position: absolute;
-  width: 140%;
-  height: 140%;
+  width: 150%;
+  height: 150%;
   background: radial-gradient(
     circle,
-    rgba(147, 197, 253, 0.3) 0%,
+    rgba(147, 197, 253, 0.5) 0%,
     rgba(147, 197, 253, 0) 70%
   );
   border-radius: 50%;
   z-index: -1;
+  animation: pulse 3s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
 }
 
 html[data-theme="light"] .remixIconWrapper::before {
   background: radial-gradient(
     circle,
-    rgba(37, 99, 235, 0.2) 0%,
-    rgba(37, 99, 235, 0) 70%
+    rgba(219, 234, 254, 0.7) 0%,
+    rgba(219, 234, 254, 0) 70%
   );
+}
+
+.remixIcon {
+  display: inline-block;
+  animation: spinSlowly 10s linear infinite;
+}
+
+@keyframes spinSlowly {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Content layout with depth */
@@ -225,38 +293,71 @@ html[data-theme="light"] .remixIconWrapper::before {
   top: 100px;
 }
 
+/* Improved feature cards with Active Record inspired design */
 .featureItem {
   display: flex;
   align-items: center;
   background: var(--ifm-color-emphasis-0);
   padding: 1.5rem;
   border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  border: 1px solid rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.05);
   cursor: pointer;
   position: relative;
   overflow: hidden;
 }
 
-.featureItem:hover {
-  transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
-  border-color: rgba(56, 189, 248, 0.1);
+/* Enhanced facet effect for cards */
+.featureItem::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
 }
 
-/* Active feature styling */
+.featureItem:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+  border-color: rgba(244, 63, 94, 0.2);
+}
+
+html[data-theme="light"] .featureItem:hover {
+  border-color: rgba(225, 29, 72, 0.2);
+}
+
+/* Enhanced active feature styling with more distinct highlighting */
 .activeFeature {
   transform: translateY(-5px) scale(1.02);
-  border-color: #38bdf8;
+  border-color: #f43f5e;
   border-width: 2px;
-  box-shadow: 0 12px 28px rgba(56, 189, 248, 0.15);
+  box-shadow: 0 12px 28px rgba(244, 63, 94, 0.2);
   position: relative;
+  background: linear-gradient(
+    to right,
+    rgba(244, 63, 94, 0.05),
+    rgba(244, 63, 94, 0)
+  );
 }
 
 html[data-theme="light"] .activeFeature {
-  border-color: #0284c7;
-  box-shadow: 0 12px 28px rgba(2, 132, 199, 0.1);
+  border-color: #e11d48;
+  box-shadow: 0 12px 28px rgba(225, 29, 72, 0.2);
+  background: linear-gradient(
+    to right,
+    rgba(225, 29, 72, 0.05),
+    rgba(225, 29, 72, 0)
+  );
 }
 
 .activeFeature::after {
@@ -268,25 +369,13 @@ html[data-theme="light"] .activeFeature {
   height: 0;
   border-top: 10px solid transparent;
   border-bottom: 10px solid transparent;
-  border-left: 10px solid #38bdf8;
+  border-left: 10px solid #f43f5e;
   transform: translateY(-50%);
   animation: pulse 2s infinite;
 }
 
 html[data-theme="light"] .activeFeature::after {
-  border-left-color: #0284c7;
-}
-
-@keyframes pulse {
-  0% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.5;
-  }
+  border-left-color: #e11d48;
 }
 
 .featureIcon {
@@ -309,14 +398,14 @@ html[data-theme="dark"] .featureIcon {
 }
 
 .activeFeature .featureIcon {
-  background: rgba(56, 189, 248, 0.15);
+  background: rgba(244, 63, 94, 0.15);
   transform: scale(1.05);
-  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.2);
+  box-shadow: 0 0 0 1px rgba(244, 63, 94, 0.2);
 }
 
 html[data-theme="light"] .activeFeature .featureIcon {
-  background: rgba(2, 132, 199, 0.1);
-  box-shadow: 0 0 0 1px rgba(2, 132, 199, 0.1);
+  background: rgba(225, 29, 72, 0.12);
+  box-shadow: 0 0 0 1px rgba(225, 29, 72, 0.15);
 }
 
 .featureContent h3 {
@@ -334,13 +423,13 @@ html[data-theme="light"] .activeFeature .featureIcon {
   opacity: 0.9;
 }
 
-/* Enhanced code container */
+/* Code container with improved terminal styling */
 .codeContainer {
   flex: 1;
   min-width: 0;
-  background: #0f172a;
+  background: #0d1424;
   border-radius: 16px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15),
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2),
     0 0 0 1px rgba(255, 255, 255, 0.05);
   overflow: hidden;
   position: relative;
@@ -351,35 +440,37 @@ html[data-theme="light"] .activeFeature .featureIcon {
   position: absolute;
   top: 0;
   right: 0;
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   background: radial-gradient(
     circle,
-    rgba(56, 189, 248, 0.3) 0%,
-    rgba(56, 189, 248, 0) 70%
+    rgba(244, 63, 94, 0.35) 0%,
+    rgba(244, 63, 94, 0) 70%
   );
   z-index: 1;
-  opacity: 0.4;
+  opacity: 0.5;
   pointer-events: none;
 }
 
 html[data-theme="light"] .codeContainer {
-  background: #ffffff;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.03);
+  background: #111827;
+  color: #e4e4e7;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 
 html[data-theme="light"] .codeContainer::before {
   background: radial-gradient(
     circle,
-    rgba(2, 132, 199, 0.2) 0%,
-    rgba(2, 132, 199, 0) 70%
+    rgba(225, 29, 72, 0.3) 0%,
+    rgba(225, 29, 72, 0) 70%
   );
 }
 
+/* Enhanced tab design */
 .tabsContainer {
   display: flex;
-  background: #1e293b;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: #2a3347;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   padding: 0.5rem 0.5rem 0;
   position: relative;
 }
@@ -398,8 +489,8 @@ html[data-theme="light"] .codeContainer::before {
 }
 
 html[data-theme="light"] .tabsContainer {
-  background: #f8fafc;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  background: #1e293b;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .tab {
@@ -414,7 +505,7 @@ html[data-theme="light"] .tabsContainer {
   font-weight: 500;
   transition: all 0.2s ease;
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.7);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -427,38 +518,31 @@ html[data-theme="light"] .tabsContainer {
 }
 
 html[data-theme="light"] .tab {
-  color: rgba(0, 0, 0, 0.6);
-}
-
-.tabIcon {
-  font-size: 1.1rem;
-  margin-right: 8px;
-  display: inline-flex;
-  align-items: center;
-}
-
-.tab:hover {
-  background: rgba(255, 255, 255, 0.05);
   color: rgba(255, 255, 255, 0.8);
 }
 
+.tab:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
+}
+
 html[data-theme="light"] .tab:hover {
-  background: rgba(0, 0, 0, 0.03);
-  color: rgba(0, 0, 0, 0.8);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .activeTab {
-  background: #0f172a;
-  color: #38bdf8;
+  background: #0d1424;
+  color: #fb7185;
   font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-bottom: none;
 }
 
 html[data-theme="light"] .activeTab {
-  background: #ffffff;
-  color: #0284c7;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  background: #111827;
+  color: #fb7185;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-bottom: none;
 }
 
@@ -477,13 +561,13 @@ html[data-theme="light"] .activeTab {
   padding: 0 1rem;
 }
 
-/* Enhanced remix button styling */
+/* Enhanced remix button styling with ruby effect */
 .remixButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: linear-gradient(to right, #0284c7, #38bdf8);
+  background: linear-gradient(to right, #2563eb, #3b82f6);
   color: white;
   padding: 1rem 2rem;
   border-radius: 12px;
@@ -491,8 +575,8 @@ html[data-theme="light"] .activeTab {
   font-size: 1.1rem;
   text-decoration: none;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 10px 25px rgba(2, 132, 199, 0.25),
-    0 0 0 1px rgba(2, 132, 199, 0.1);
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25),
+    0 0 0 1px rgba(37, 99, 235, 0.1);
   position: relative;
   overflow: hidden;
   letter-spacing: 0.01em;
@@ -516,12 +600,34 @@ html[data-theme="light"] .activeTab {
   animation: shimmer 3s infinite;
 }
 
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
 .remixButton:hover {
   transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 15px 30px rgba(2, 132, 199, 0.3),
-    0 0 0 2px rgba(2, 132, 199, 0.2);
+  box-shadow: 0 15px 30px rgba(37, 99, 235, 0.3),
+    0 0 0 2px rgba(37, 99, 235, 0.2);
   text-decoration: none;
   color: white;
+}
+
+.remixButtonIcon {
+  animation: spinSlow 10s linear infinite;
+}
+
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .railsButton {
@@ -529,7 +635,7 @@ html[data-theme="light"] .activeTab {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: linear-gradient(to right, #c2410c, #f97316);
+  background: linear-gradient(to right, #be123c, #e11d48);
   color: white;
   padding: 1rem 2rem;
   border-radius: 12px;
@@ -537,8 +643,8 @@ html[data-theme="light"] .activeTab {
   font-size: 1.1rem;
   text-decoration: none;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 10px 25px rgba(234, 88, 12, 0.25),
-    0 0 0 1px rgba(234, 88, 12, 0.1);
+  box-shadow: 0 10px 25px rgba(225, 29, 72, 0.25),
+    0 0 0 1px rgba(225, 29, 72, 0.1);
   position: relative;
   overflow: hidden;
   letter-spacing: 0.01em;
@@ -564,10 +670,24 @@ html[data-theme="light"] .activeTab {
 
 .railsButton:hover {
   transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 15px 30px rgba(234, 88, 12, 0.3),
-    0 0 0 2px rgba(234, 88, 12, 0.2);
+  box-shadow: 0 15px 30px rgba(225, 29, 72, 0.3),
+    0 0 0 2px rgba(225, 29, 72, 0.2);
   text-decoration: none;
   color: white;
+}
+
+.railsButtonIcon {
+  animation: gemGlow 3s ease-in-out infinite;
+}
+
+@keyframes gemGlow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.7));
+  }
+  50% {
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.9));
+  }
 }
 
 @media (max-width: 996px) {
