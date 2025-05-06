@@ -6,6 +6,21 @@ This directory contains scripts for automating various aspects of the jods docum
 
 jods aims to be the definitive active record model for the Remix ecosystem, providing a minimal but opinionated approach to state management. Our documentation and tooling reflect this philosophy - we prefer offering **one good way** to do something rather than endless configuration options.
 
+## Documentation
+
+Comprehensive documentation for the screenshot system is now available in the [guides](./guides/) directory:
+
+- **[Getting Started](./guides/getting-started.md)** - Learn the basics of the screenshot system
+- **[Screenshot System for Dummies](./guides/screenshot-system-for-dummies.md)** - Simplified explanation for beginners
+- **[API Reference](./guides/api-reference.md)** - Detailed reference of all available options
+- **[Advanced Features](./guides/advanced-features.md)** - Explore powerful features for advanced users
+
+## Examples
+
+Practical examples and walkthroughs are available in the [examples](./examples/) directory:
+
+- **[Design Iteration Walkthrough](./examples/design-iteration-example.md)** - How to use design iterations to track UI changes
+
 ## Available Scripts
 
 ### Screenshot System
@@ -117,3 +132,7 @@ The tests focus on core utilities and helper functions. When adding new scripts 
 3. Adding tests for complex logic and edge cases
 
 For more details on the testing approach, see the [testing README](__tests__/README.md).
+
+```
+
+```
