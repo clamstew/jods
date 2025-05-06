@@ -127,19 +127,12 @@ html[data-theme="light"] .header::before {
   }
 }
 
+/* Override the light mode title styling to ensure the colorful text shows properly */
 html[data-theme="light"] .title {
-  background: linear-gradient(
-    120deg,
-    #ffffff 0%,
-    #bfdbfe 25%,
-    #ffffff 50%,
-    #c7d2fe 75%,
-    #ffffff 100%
-  ); /* Enhanced gradient with more color */
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 0 30px rgba(147, 197, 253, 0.3);
+  background: none;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: initial;
+  text-shadow: none;
 }
 
 .subtitle {
@@ -255,23 +248,43 @@ html[data-theme="light"] .rubyGem {
 /* Remix - styled like the official Remix logo */
 .remix {
   font-weight: 800;
-  color: white;
-  text-shadow: 0 0 1px #000, 0 0 2px #000, 0 0 3px #000; /* Black outline effect */
+  color: #10b981; /* Changed to green as requested */
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.5), 0 0 2px rgba(0, 0, 0, 0.3); /* Softened black outline effect */
   position: relative;
   z-index: 3;
   letter-spacing: -0.01em;
 }
 
-/* Style for "State" in kelly green */
+/* Light mode - more vibrant styling */
+html[data-theme="light"] .remix {
+  color: #059669; /* Slightly deeper green for better contrast in light mode */
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 0 2px rgba(0, 0, 0, 0.2),
+    0 0 5px rgba(16, 185, 129, 0.4); /* Added color glow */
+  position: relative;
+}
+
+/* Style for "State" in orange */
 .stateText {
-  color: #10b981; /* Kelly green from bottom right of gradient */
+  color: #f97316; /* Changed to orange from kelly green */
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-/* Style for "Reimagined" in orange */
+/* Light mode - more vibrant styling */
+html[data-theme="light"] .stateText {
+  color: #ea580c; /* Deeper orange for better contrast in light mode */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 0 5px rgba(249, 115, 22, 0.4); /* Added color glow */
+}
+
+/* Style for "Reimagined" in purple */
 .reimaginedText {
-  color: #fb923c; /* Pastel orange */
+  color: #a855f7; /* Changed to purple from orange */
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Light mode - more vibrant styling */
+html[data-theme="light"] .reimaginedText {
+  color: #9333ea; /* Deeper purple for better contrast in light mode */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 0 5px rgba(168, 85, 247, 0.4); /* Added color glow */
 }
 
 /* Enhanced Remix icon with rainbow animation */
@@ -311,12 +324,15 @@ html[data-theme="light"] .rubyGem {
   }
 }
 
+/* Enhanced CD icon in light mode */
 html[data-theme="light"] .remixIconWrapper::before {
   background: radial-gradient(
     circle,
-    rgba(219, 234, 254, 0.7) 0%,
-    rgba(219, 234, 254, 0) 70%
+    rgba(147, 197, 253, 0.7) 0%,
+    rgba(79, 70, 229, 0.4) 50%,
+    rgba(147, 197, 253, 0) 100%
   );
+  opacity: 0.8;
 }
 
 .remixIcon {
@@ -377,9 +393,9 @@ html[data-theme="light"] .remixIconWrapper::before {
   bottom: 0;
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.1) 0%,
     rgba(255, 255, 255, 0) 50%,
-    rgba(255, 255, 255, 0.05) 100%
+    rgba(255, 255, 255, 0.08) 100%
   );
   z-index: 1;
   pointer-events: none;
@@ -387,35 +403,42 @@ html[data-theme="light"] .remixIconWrapper::before {
 
 .featureItem:hover {
   transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
-  border-color: rgba(244, 63, 94, 0.2);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+  border-color: rgba(
+    16,
+    185,
+    129,
+    0.3
+  ); /* Green border on hover to match Remix text */
 }
 
-html[data-theme="light"] .featureItem:hover {
-  border-color: rgba(225, 29, 72, 0.2);
+/* Enhanced feature item styling for light mode */
+html[data-theme="light"] .featureItem {
+  border: 1px solid rgba(16, 185, 129, 0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03), 0 0 0 1px rgba(16, 185, 129, 0.05);
 }
 
 /* Enhanced active feature styling with more distinct highlighting */
 .activeFeature {
   transform: translateY(-5px) scale(1.02);
-  border-color: #f43f5e;
+  border-color: #10b981; /* Green border to match Remix text */
   border-width: 2px;
-  box-shadow: 0 12px 28px rgba(244, 63, 94, 0.2);
+  box-shadow: 0 12px 28px rgba(16, 185, 129, 0.2);
   position: relative;
   background: linear-gradient(
     to right,
-    rgba(244, 63, 94, 0.05),
-    rgba(244, 63, 94, 0)
+    rgba(16, 185, 129, 0.08),
+    rgba(16, 185, 129, 0)
   );
 }
 
 html[data-theme="light"] .activeFeature {
-  border-color: #e11d48;
-  box-shadow: 0 12px 28px rgba(225, 29, 72, 0.2);
+  border-color: #10b981; /* Green border to match Remix text */
+  box-shadow: 0 12px 28px rgba(16, 185, 129, 0.2);
   background: linear-gradient(
     to right,
-    rgba(225, 29, 72, 0.05),
-    rgba(225, 29, 72, 0)
+    rgba(16, 185, 129, 0.08),
+    rgba(16, 185, 129, 0)
   );
 }
 
@@ -428,13 +451,13 @@ html[data-theme="light"] .activeFeature {
   height: 0;
   border-top: 10px solid transparent;
   border-bottom: 10px solid transparent;
-  border-left: 10px solid #f43f5e;
+  border-left: 10px solid #10b981; /* Green arrow to match Remix text */
   transform: translateY(-50%);
   animation: pulse 2s infinite;
 }
 
 html[data-theme="light"] .activeFeature::after {
-  border-left-color: #e11d48;
+  border-left-color: #10b981; /* Green arrow to match Remix text */
 }
 
 .featureIcon {
@@ -447,24 +470,44 @@ html[data-theme="light"] .activeFeature::after {
   border-radius: 16px;
   margin-right: 1.25rem;
   font-size: 1.5rem;
-  background: rgba(15, 23, 42, 0.04);
+  background: rgba(15, 23, 42, 0.06);
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
+  /* Add subtle gradient to icons */
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.1),
+    rgba(168, 85, 247, 0.05)
+  );
 }
 
 html[data-theme="dark"] .featureIcon {
-  background: rgba(255, 255, 255, 0.05);
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.15),
+    rgba(168, 85, 247, 0.1)
+  );
 }
 
 .activeFeature .featureIcon {
-  background: rgba(244, 63, 94, 0.15);
+  background: rgba(
+    16,
+    185,
+    129,
+    0.2
+  ); /* Green background to match Remix text */
   transform: scale(1.05);
-  box-shadow: 0 0 0 1px rgba(244, 63, 94, 0.2);
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.3);
 }
 
 html[data-theme="light"] .activeFeature .featureIcon {
-  background: rgba(225, 29, 72, 0.12);
-  box-shadow: 0 0 0 1px rgba(225, 29, 72, 0.15);
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.15),
+    rgba(168, 85, 247, 0.1)
+  );
+  transform: scale(1.05);
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.2);
 }
 
 .featureContent h3 {
@@ -472,6 +515,7 @@ html[data-theme="light"] .activeFeature .featureIcon {
   font-size: 1.15rem;
   font-weight: 600;
   letter-spacing: -0.01em;
+  color: var(--ifm-color-primary); /* Use theme primary color for headings */
 }
 
 .featureContent p {
@@ -878,4 +922,25 @@ html[data-theme="light"] .activeTab {
   .featureItem {
     padding: 1.2rem;
   }
+}
+
+/* Add subtle colorful border to each feature in light mode */
+html[data-theme="light"] .featureItem:nth-child(1) {
+  border-left: 3px solid rgba(16, 185, 129, 0.5); /* Green */
+}
+
+html[data-theme="light"] .featureItem:nth-child(2) {
+  border-left: 3px solid rgba(249, 115, 22, 0.5); /* Orange */
+}
+
+html[data-theme="light"] .featureItem:nth-child(3) {
+  border-left: 3px solid rgba(168, 85, 247, 0.5); /* Purple */
+}
+
+html[data-theme="light"] .featureItem:nth-child(4) {
+  border-left: 3px solid rgba(59, 130, 246, 0.5); /* Blue */
+}
+
+html[data-theme="light"] .featureItem:nth-child(5) {
+  border-left: 3px solid rgba(236, 72, 153, 0.5); /* Pink */
 }
