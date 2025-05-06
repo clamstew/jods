@@ -1,236 +1,201 @@
-diff --git a/docs/docs/design-iterations/index.md b/docs/docs/design-iterations/index.md
-index 5ea15ec..872a3a4 100644
---- a/docs/docs/design-iterations/index.md
-+++ b/docs/docs/design-iterations/index.md
-@@ -18,20 +18,59 @@ Design iterations allow you to:
- - **Maintain a visual history** of your design evolution
- - **Apply your favorite designs** with simple commands
- 
--## 🚀 Quick Start
-+## 🚀 Quick Start Guide
-+
-+### Step 1: Generate Initial Designs
- 
- ```bash
- # From the /docs directory, run:
- pnpm design-iterations --count=3 --target="features-section"
-+```
-+
-+### Step 2: Review the Screenshots
-+
-+Screenshots are saved in `static/screenshots/design-iterations/{timestamp}/`
-+
-+Each iteration includes:
-+
-+- Light mode screenshot
-+- Dark mode screenshot
-+- Visual differences from baseline
-+
-+### Step 3: Provide Feedback
-+
-+Edit the generated feedback template in the terminal or your editor:
-+
-+```
-+# Iteration 1 Feedback
-+## Strengths
-+- Clean layout
-+- Good use of color
-+
-+## Areas for Improvement
-+- Header font size too small
-+- Spacing between cards inconsistent
-+```
-+
-+### Step 4: Generate Refined Designs
- 
--# Review the screenshots and provide feedback in the generated template
--# Then run another iteration if needed:
--pnpm design-iterations --count=1 --target="features-section" --refine
-+```bash
-+# Run another iteration based on your feedback:
-+pnpm design-iterations --count=2 --target="features-section" --refine
- ```
- 
--## 📚 Guide Contents
-+### Step 5: Apply Your Favorite Design
-+
-+```bash
-+# Apply the design you prefer:
-+pnpm design-iterations --apply="iteration-2" --target="features-section"
-+```
-+
-+<div className="workflow-diagram">
-+  <img src="/jods/img/design-iteration-flow.png" alt="Design Iteration Workflow" />
-+</div>
- 
--This guide covers the complete Design Iterations workflow:
-+## 📚 Complete Documentation
- 
- 1. [**Complete Workflow**](./workflow.md) - Step-by-step guide to using design iterations
- 2. [**AI-Assisted Design**](./with-ai.md) - How AI powers the design iteration process
-@@ -39,15 +78,17 @@ This guide covers the complete Design Iterations workflow:
- 4. [**Feedback System**](./feedback.md) - How to provide structured feedback
- 5. [**Screenshot System**](./screenshot-system/index.md) - The foundation for capturing and comparing UI components
- 
--## 🎯 Available Targets
-+## 🎯 Available Design Targets
- 
- The following UI components can be targeted for design iterations:
- 
--- `hero-section` - The main hero section on the homepage
--- `features-section` - The features grid on the homepage
--- `framework-section-react` - The React framework comparison section
--- `framework-section-remix` - The Remix framework section
--- `compare-section` - The comparison section with other libraries
-+| Target                    | Description                   | Example Command                                                       |
-+| ------------------------- | ----------------------------- | --------------------------------------------------------------------- |
-+| `hero-section`            | Main hero section on homepage | `pnpm design-iterations --count=3 --target="hero-section"`            |
-+| `features-section`        | Features grid on homepage     | `pnpm design-iterations --count=3 --target="features-section"`        |
-+| `framework-section-react` | React framework comparison    | `pnpm design-iterations --count=3 --target="framework-section-react"` |
-+| `framework-section-remix` | Remix framework section       | `pnpm design-iterations --count=3 --target="framework-section-remix"` |
-+| `compare-section`         | Library comparison section    | `pnpm design-iterations --count=3 --target="compare-section"`         |
- 
- ## 💡 Best Practices
- 
 diff --git a/docs/temp/design-iterations/iteration-1/diff.patch b/docs/temp/design-iterations/iteration-1/diff.patch
-index e69de29..178056c 100644
+index 178056c..e69de29 100644
 --- a/docs/temp/design-iterations/iteration-1/diff.patch
 +++ b/docs/temp/design-iterations/iteration-1/diff.patch
-@@ -0,0 +1,94 @@
-+diff --git a/docs/docs/design-iterations/index.md b/docs/docs/design-iterations/index.md
-+index 5ea15ec..872a3a4 100644
-+--- a/docs/docs/design-iterations/index.md
-++++ b/docs/docs/design-iterations/index.md
-+@@ -18,20 +18,59 @@ Design iterations allow you to:
-+ - **Maintain a visual history** of your design evolution
-+ - **Apply your favorite designs** with simple commands
-+ 
-+-## 🚀 Quick Start
-++## 🚀 Quick Start Guide
-++
-++### Step 1: Generate Initial Designs
-+ 
-+ ```bash
-+ # From the /docs directory, run:
-+ pnpm design-iterations --count=3 --target="features-section"
-++```
-++
-++### Step 2: Review the Screenshots
-++
-++Screenshots are saved in `static/screenshots/design-iterations/{timestamp}/`
-++
-++Each iteration includes:
-++
-++- Light mode screenshot
-++- Dark mode screenshot
-++- Visual differences from baseline
-++
-++### Step 3: Provide Feedback
-++
-++Edit the generated feedback template in the terminal or your editor:
-++
-++```
-++# Iteration 1 Feedback
-++## Strengths
-++- Clean layout
-++- Good use of color
-++
-++## Areas for Improvement
-++- Header font size too small
-++- Spacing between cards inconsistent
-++```
-++
-++### Step 4: Generate Refined Designs
-+ 
-+-# Review the screenshots and provide feedback in the generated template
-+-# Then run another iteration if needed:
-+-pnpm design-iterations --count=1 --target="features-section" --refine
-++```bash
-++# Run another iteration based on your feedback:
-++pnpm design-iterations --count=2 --target="features-section" --refine
-+ ```
-+ 
-+-## 📚 Guide Contents
-++### Step 5: Apply Your Favorite Design
-++
-++```bash
-++# Apply the design you prefer:
-++pnpm design-iterations --apply="iteration-2" --target="features-section"
-++```
-++
-++<div className="workflow-diagram">
-++  <img src="/jods/img/design-iteration-flow.png" alt="Design Iteration Workflow" />
-++</div>
-+ 
-+-This guide covers the complete Design Iterations workflow:
-++## 📚 Complete Documentation
-+ 
-+ 1. [**Complete Workflow**](./workflow.md) - Step-by-step guide to using design iterations
-+ 2. [**AI-Assisted Design**](./with-ai.md) - How AI powers the design iteration process
-+@@ -39,15 +78,17 @@ This guide covers the complete Design Iterations workflow:
-+ 4. [**Feedback System**](./feedback.md) - How to provide structured feedback
-+ 5. [**Screenshot System**](./screenshot-system/index.md) - The foundation for capturing and comparing UI components
-+ 
-+-## 🎯 Available Targets
-++## 🎯 Available Design Targets
-+ 
-+ The following UI components can be targeted for design iterations:
-+ 
-+-- `hero-section` - The main hero section on the homepage
-+-- `features-section` - The features grid on the homepage
-+-- `framework-section-react` - The React framework comparison section
-+-- `framework-section-remix` - The Remix framework section
-+-- `compare-section` - The comparison section with other libraries
-++| Target                    | Description                   | Example Command                                                       |
-++| ------------------------- | ----------------------------- | --------------------------------------------------------------------- |
-++| `hero-section`            | Main hero section on homepage | `pnpm design-iterations --count=3 --target="hero-section"`            |
-++| `features-section`        | Features grid on homepage     | `pnpm design-iterations --count=3 --target="features-section"`        |
-++| `framework-section-react` | React framework comparison    | `pnpm design-iterations --count=3 --target="framework-section-react"` |
-++| `framework-section-remix` | Remix framework section       | `pnpm design-iterations --count=3 --target="framework-section-remix"` |
-++| `compare-section`         | Library comparison section    | `pnpm design-iterations --count=3 --target="compare-section"`         |
-+ 
-+ ## 💡 Best Practices
-+ 
+@@ -1,94 +0,0 @@
+-diff --git a/docs/docs/design-iterations/index.md b/docs/docs/design-iterations/index.md
+-index 5ea15ec..872a3a4 100644
+---- a/docs/docs/design-iterations/index.md
+-+++ b/docs/docs/design-iterations/index.md
+-@@ -18,20 +18,59 @@ Design iterations allow you to:
+- - **Maintain a visual history** of your design evolution
+- - **Apply your favorite designs** with simple commands
+- 
+--## 🚀 Quick Start
+-+## 🚀 Quick Start Guide
+-+
+-+### Step 1: Generate Initial Designs
+- 
+- ```bash
+- # From the /docs directory, run:
+- pnpm design-iterations --count=3 --target="features-section"
+-+```
+-+
+-+### Step 2: Review the Screenshots
+-+
+-+Screenshots are saved in `static/screenshots/design-iterations/{timestamp}/`
+-+
+-+Each iteration includes:
+-+
+-+- Light mode screenshot
+-+- Dark mode screenshot
+-+- Visual differences from baseline
+-+
+-+### Step 3: Provide Feedback
+-+
+-+Edit the generated feedback template in the terminal or your editor:
+-+
+-+```
+-+# Iteration 1 Feedback
+-+## Strengths
+-+- Clean layout
+-+- Good use of color
+-+
+-+## Areas for Improvement
+-+- Header font size too small
+-+- Spacing between cards inconsistent
+-+```
+-+
+-+### Step 4: Generate Refined Designs
+- 
+--# Review the screenshots and provide feedback in the generated template
+--# Then run another iteration if needed:
+--pnpm design-iterations --count=1 --target="features-section" --refine
+-+```bash
+-+# Run another iteration based on your feedback:
+-+pnpm design-iterations --count=2 --target="features-section" --refine
+- ```
+- 
+--## 📚 Guide Contents
+-+### Step 5: Apply Your Favorite Design
+-+
+-+```bash
+-+# Apply the design you prefer:
+-+pnpm design-iterations --apply="iteration-2" --target="features-section"
+-+```
+-+
+-+<div className="workflow-diagram">
+-+  <img src="/jods/img/design-iteration-flow.png" alt="Design Iteration Workflow" />
+-+</div>
+- 
+--This guide covers the complete Design Iterations workflow:
+-+## 📚 Complete Documentation
+- 
+- 1. [**Complete Workflow**](./workflow.md) - Step-by-step guide to using design iterations
+- 2. [**AI-Assisted Design**](./with-ai.md) - How AI powers the design iteration process
+-@@ -39,15 +78,17 @@ This guide covers the complete Design Iterations workflow:
+- 4. [**Feedback System**](./feedback.md) - How to provide structured feedback
+- 5. [**Screenshot System**](./screenshot-system/index.md) - The foundation for capturing and comparing UI components
+- 
+--## 🎯 Available Targets
+-+## 🎯 Available Design Targets
+- 
+- The following UI components can be targeted for design iterations:
+- 
+--- `hero-section` - The main hero section on the homepage
+--- `features-section` - The features grid on the homepage
+--- `framework-section-react` - The React framework comparison section
+--- `framework-section-remix` - The Remix framework section
+--- `compare-section` - The comparison section with other libraries
+-+| Target                    | Description                   | Example Command                                                       |
+-+| ------------------------- | ----------------------------- | --------------------------------------------------------------------- |
+-+| `hero-section`            | Main hero section on homepage | `pnpm design-iterations --count=3 --target="hero-section"`            |
+-+| `features-section`        | Features grid on homepage     | `pnpm design-iterations --count=3 --target="features-section"`        |
+-+| `framework-section-react` | React framework comparison    | `pnpm design-iterations --count=3 --target="framework-section-react"` |
+-+| `framework-section-remix` | Remix framework section       | `pnpm design-iterations --count=3 --target="framework-section-remix"` |
+-+| `compare-section`         | Library comparison section    | `pnpm design-iterations --count=3 --target="compare-section"`         |
+- 
+- ## 💡 Best Practices
+- 
 diff --git a/docs/temp/design-iterations/iteration-1/feedback-template.md b/docs/temp/design-iterations/iteration-1/feedback-template.md
-index 791b7c6..022f088 100644
+index 03b993a..17fe9aa 100644
 --- a/docs/temp/design-iterations/iteration-1/feedback-template.md
 +++ b/docs/temp/design-iterations/iteration-1/feedback-template.md
-@@ -4,7 +4,7 @@
+@@ -4,45 +4,42 @@
  
  - **Date:** 2025-05-06
  - **Components:** features-section
--- **Timestamp:** 20250506T172028
-+- **Timestamp:** 20250506T190608
+-- **Timestamp:** 20250506T190715
++- **Timestamp:** 20250506T200909
  
  ## Screenshots
  
+ ### features-section
+-
+ - Light theme: [Path to light theme screenshot]
+ - Dark theme: [Path to dark theme screenshot]
+ 
+ #### Feedback
+-
+ - **What works well:**
+-
+-  -
+-  -
+-  -
++  - 
++  - 
++  - 
+ 
+ - **What could be improved:**
+-
+-  -
+-  -
+-  -
++  - 
++  - 
++  - 
+ 
+ - **General notes:**
++  
+ 
+ #### Rating: [1-10]
+ 
++
++
+ ## Summary and Decision
+ 
+ ### Overall Preferences
+-
+ - **Favorite component design:**
+ - **Best visual elements:**
+-  -
+-  -
+-  -
++  - 
++  - 
++  - 
+ 
+ ### Implementation Plan
+-
+ - [ ] Proceed with current designs as is
+ - [ ] Create new iterations with specific focus
+ - [ ] Combine elements from different iterations
+@@ -50,7 +47,6 @@
+ ### Additional Notes
+ 
+ ### Baseline Decision
+-
+ - [ ] Approved for baseline update
+ - [ ] Not approved for baseline update
+ - [ ] Pending additional refinements before baseline approval
 diff --git a/docs/temp/design-iterations/iteration-1/metadata.json b/docs/temp/design-iterations/iteration-1/metadata.json
-index 5b17b1b..0438bde 100644
+index 0d3affc..adc44a3 100644
 --- a/docs/temp/design-iterations/iteration-1/metadata.json
 +++ b/docs/temp/design-iterations/iteration-1/metadata.json
 @@ -1,10 +1,10 @@
  {
    "iteration": 1,
--  "timestamp": "2025-05-06T17:20:28.623Z",
-+  "timestamp": "2025-05-06T19:06:08.740Z",
+-  "timestamp": "2025-05-06T19:07:15.864Z",
++  "timestamp": "2025-05-06T20:09:09.167Z",
    "targets": [
      "features-section"
    ],
--  "screenshotTimestamp": "20250506T172028",
-+  "screenshotTimestamp": "20250506T190608",
+-  "screenshotTimestamp": "20250506T190715",
++  "screenshotTimestamp": "20250506T200909",
    "changes": [
      {
        "component": "features-section",
-@@ -18,18 +18,24 @@
-   ],
-   "diffInfo": {
-     "features-section": {
--      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/features-section-20250506T172028.diff",
--      "diffFileName": "features-section-20250506T172028.diff"
-+      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/features-section-20250506T190608.diff",
-+      "diffFileName": "features-section-20250506T190608.diff"
+@@ -16,18 +16,23 @@
+       "reasoning": "Placeholder reasoning - would come from AI"
      }
-   },
+   ],
+-  "diffInfo": {},
++  "diffInfo": {
++    "features-section": {
++      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/features-section-20250506T200909.diff",
++      "diffFileName": "features-section-20250506T200909.diff"
++    }
++  },
    "config": {
 -    "count": 3,
 +    "count": 5,
@@ -238,826 +203,496 @@ index 5b17b1b..0438bde 100644
        "features-section"
      ],
      "compareWith": [],
-     "aiPrompt": "Improve the visual design while maintaining brand identity",
--    "requireSignoff": true
-+    "requireSignoff": true,
-+    "apply": false,
-+    "iteration": null,
+-    "aiPrompt": "Improve the visual design while maintaining brand identity",
++    "aiPrompt": "Reimagine the 'Powerful features, minimal API' section with bold visual hierarchy, emphasizing the Remix integration from PR #22. Consider different layout structures, typography scales, and visual elements that highlight both core features and the new Remix capabilities.",
+     "requireSignoff": true,
+     "apply": false,
+     "iteration": null,
+-    "refine": true,
 +    "refine": false,
-+    "status": false,
-+    "cleanup": false,
-+    "force": false
-   },
-   "evaluation": {
-     "aesthetic_score": null,
+     "status": false,
+     "cleanup": false,
+     "force": false
 diff --git a/docs/temp/design-iterations/iteration-2/diff.patch b/docs/temp/design-iterations/iteration-2/diff.patch
-index 0edcef6..5a96df0 100644
+index 5a96df0..3811a98 100644
 --- a/docs/temp/design-iterations/iteration-2/diff.patch
 +++ b/docs/temp/design-iterations/iteration-2/diff.patch
-@@ -1,542 +1,252 @@
-+diff --git a/docs/docs/design-iterations/index.md b/docs/docs/design-iterations/index.md
-+index 5ea15ec..872a3a4 100644
-+--- a/docs/docs/design-iterations/index.md
-++++ b/docs/docs/design-iterations/index.md
-+@@ -18,20 +18,59 @@ Design iterations allow you to:
-+ - **Maintain a visual history** of your design evolution
-+ - **Apply your favorite designs** with simple commands
-+ 
-+-## 🚀 Quick Start
-++## 🚀 Quick Start Guide
-++
-++### Step 1: Generate Initial Designs
-+ 
-+ ```bash
-+ # From the /docs directory, run:
-+ pnpm design-iterations --count=3 --target="features-section"
-++```
-++
-++### Step 2: Review the Screenshots
-++
-++Screenshots are saved in `static/screenshots/design-iterations/{timestamp}/`
-++
-++Each iteration includes:
-++
-++- Light mode screenshot
-++- Dark mode screenshot
-++- Visual differences from baseline
-++
-++### Step 3: Provide Feedback
-++
-++Edit the generated feedback template in the terminal or your editor:
-++
-++```
-++# Iteration 1 Feedback
-++## Strengths
-++- Clean layout
-++- Good use of color
-++
-++## Areas for Improvement
-++- Header font size too small
-++- Spacing between cards inconsistent
-++```
-++
-++### Step 4: Generate Refined Designs
-+ 
-+-# Review the screenshots and provide feedback in the generated template
-+-# Then run another iteration if needed:
-+-pnpm design-iterations --count=1 --target="features-section" --refine
-++```bash
-++# Run another iteration based on your feedback:
-++pnpm design-iterations --count=2 --target="features-section" --refine
-+ ```
-+ 
-+-## 📚 Guide Contents
-++### Step 5: Apply Your Favorite Design
-++
-++```bash
-++# Apply the design you prefer:
-++pnpm design-iterations --apply="iteration-2" --target="features-section"
-++```
-++
-++<div className="workflow-diagram">
-++  <img src="/jods/img/design-iteration-flow.png" alt="Design Iteration Workflow" />
-++</div>
-+ 
-+-This guide covers the complete Design Iterations workflow:
-++## 📚 Complete Documentation
-+ 
-+ 1. [**Complete Workflow**](./workflow.md) - Step-by-step guide to using design iterations
-+ 2. [**AI-Assisted Design**](./with-ai.md) - How AI powers the design iteration process
-+@@ -39,15 +78,17 @@ This guide covers the complete Design Iterations workflow:
-+ 4. [**Feedback System**](./feedback.md) - How to provide structured feedback
-+ 5. [**Screenshot System**](./screenshot-system/index.md) - The foundation for capturing and comparing UI components
-+ 
-+-## 🎯 Available Targets
-++## 🎯 Available Design Targets
-+ 
-+ The following UI components can be targeted for design iterations:
-+ 
-+-- `hero-section` - The main hero section on the homepage
-+-- `features-section` - The features grid on the homepage
-+-- `framework-section-react` - The React framework comparison section
-+-- `framework-section-remix` - The Remix framework section
-+-- `compare-section` - The comparison section with other libraries
-++| Target                    | Description                   | Example Command                                                       |
-++| ------------------------- | ----------------------------- | --------------------------------------------------------------------- |
-++| `hero-section`            | Main hero section on homepage | `pnpm design-iterations --count=3 --target="hero-section"`            |
-++| `features-section`        | Features grid on homepage     | `pnpm design-iterations --count=3 --target="features-section"`        |
-++| `framework-section-react` | React framework comparison    | `pnpm design-iterations --count=3 --target="framework-section-react"` |
-++| `framework-section-remix` | Remix framework section       | `pnpm design-iterations --count=3 --target="framework-section-remix"` |
-++| `compare-section`         | Library comparison section    | `pnpm design-iterations --count=3 --target="compare-section"`         |
-+ 
-+ ## 💡 Best Practices
-+ 
+@@ -1,236 +1,201 @@
+-diff --git a/docs/docs/design-iterations/index.md b/docs/docs/design-iterations/index.md
+-index 5ea15ec..872a3a4 100644
+---- a/docs/docs/design-iterations/index.md
+-+++ b/docs/docs/design-iterations/index.md
+-@@ -18,20 +18,59 @@ Design iterations allow you to:
+- - **Maintain a visual history** of your design evolution
+- - **Apply your favorite designs** with simple commands
+- 
+--## 🚀 Quick Start
+-+## 🚀 Quick Start Guide
+-+
+-+### Step 1: Generate Initial Designs
+- 
+- ```bash
+- # From the /docs directory, run:
+- pnpm design-iterations --count=3 --target="features-section"
+-+```
+-+
+-+### Step 2: Review the Screenshots
+-+
+-+Screenshots are saved in `static/screenshots/design-iterations/{timestamp}/`
+-+
+-+Each iteration includes:
+-+
+-+- Light mode screenshot
+-+- Dark mode screenshot
+-+- Visual differences from baseline
+-+
+-+### Step 3: Provide Feedback
+-+
+-+Edit the generated feedback template in the terminal or your editor:
+-+
+-+```
+-+# Iteration 1 Feedback
+-+## Strengths
+-+- Clean layout
+-+- Good use of color
+-+
+-+## Areas for Improvement
+-+- Header font size too small
+-+- Spacing between cards inconsistent
+-+```
+-+
+-+### Step 4: Generate Refined Designs
+- 
+--# Review the screenshots and provide feedback in the generated template
+--# Then run another iteration if needed:
+--pnpm design-iterations --count=1 --target="features-section" --refine
+-+```bash
+-+# Run another iteration based on your feedback:
+-+pnpm design-iterations --count=2 --target="features-section" --refine
+- ```
+- 
+--## 📚 Guide Contents
+-+### Step 5: Apply Your Favorite Design
+-+
+-+```bash
+-+# Apply the design you prefer:
+-+pnpm design-iterations --apply="iteration-2" --target="features-section"
+-+```
+-+
+-+<div className="workflow-diagram">
+-+  <img src="/jods/img/design-iteration-flow.png" alt="Design Iteration Workflow" />
+-+</div>
+- 
+--This guide covers the complete Design Iterations workflow:
+-+## 📚 Complete Documentation
+- 
+- 1. [**Complete Workflow**](./workflow.md) - Step-by-step guide to using design iterations
+- 2. [**AI-Assisted Design**](./with-ai.md) - How AI powers the design iteration process
+-@@ -39,15 +78,17 @@ This guide covers the complete Design Iterations workflow:
+- 4. [**Feedback System**](./feedback.md) - How to provide structured feedback
+- 5. [**Screenshot System**](./screenshot-system/index.md) - The foundation for capturing and comparing UI components
+- 
+--## 🎯 Available Targets
+-+## 🎯 Available Design Targets
+- 
+- The following UI components can be targeted for design iterations:
+- 
+--- `hero-section` - The main hero section on the homepage
+--- `features-section` - The features grid on the homepage
+--- `framework-section-react` - The React framework comparison section
+--- `framework-section-remix` - The Remix framework section
+--- `compare-section` - The comparison section with other libraries
+-+| Target                    | Description                   | Example Command                                                       |
+-+| ------------------------- | ----------------------------- | --------------------------------------------------------------------- |
+-+| `hero-section`            | Main hero section on homepage | `pnpm design-iterations --count=3 --target="hero-section"`            |
+-+| `features-section`        | Features grid on homepage     | `pnpm design-iterations --count=3 --target="features-section"`        |
+-+| `framework-section-react` | React framework comparison    | `pnpm design-iterations --count=3 --target="framework-section-react"` |
+-+| `framework-section-remix` | Remix framework section       | `pnpm design-iterations --count=3 --target="framework-section-remix"` |
+-+| `compare-section`         | Library comparison section    | `pnpm design-iterations --count=3 --target="compare-section"`         |
+- 
+- ## 💡 Best Practices
+- 
  diff --git a/docs/temp/design-iterations/iteration-1/diff.patch b/docs/temp/design-iterations/iteration-1/diff.patch
--index d75e0e8..e69de29 100644
-+index e69de29..178056c 100644
+-index e69de29..178056c 100644
++index 178056c..e69de29 100644
  --- a/docs/temp/design-iterations/iteration-1/diff.patch
  +++ b/docs/temp/design-iterations/iteration-1/diff.patch
--@@ -1,362 +0,0 @@
---diff --git a/docs/src/components/RemixIntegration.module.css b/docs/src/components/RemixIntegration.module.css
---index db0d345..6b71155 100644
------ a/docs/src/components/RemixIntegration.module.css
---+++ b/docs/src/components/RemixIntegration.module.css
---@@ -638,15 +638,84 @@ html[data-theme="light"] .activeFeature .featureIcon {
---   pointer-events: none;
--- }
--- 
----/* Improved light mode code container with subtle gradient accents */
---+/* Enhanced tab container for light mode */
---+html[data-theme="light"] .tabsContainer {
---+  background: linear-gradient(to right, #f1f5f9, #f8fafc);
---+  border-top-left-radius: 12px;
---+  border-top-right-radius: 12px;
---+  border: 1px solid rgba(226, 232, 240, 0.8);
---+  border-bottom: none;
---+  padding: 0.75rem 0.75rem 0;
---+  position: relative;
---+  overflow: hidden;
---+}
---+
---+html[data-theme="light"] .tabsContainer::before {
---+  display: none;
---+}
---+
---+/* Enhanced code editor tabs area in light mode */
---+html[data-theme="light"] .codeTabs {
---+  background: transparent;
---+  padding: 0;
---+  border: none;
---+  box-shadow: none;
---+}
---+
---+/* Improved light mode code container to match tabs */
--- html[data-theme="light"] .codeContainer {
----  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
----  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05);
----  border-radius: 0 12px 12px 12px;
---+  background: white;
---+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.03);
---+  border-radius: 0 0 12px 12px;
---+  border: 1px solid rgba(226, 232, 240, 0.8);
---+  border-top: none;
---   position: relative;
---   overflow: hidden;
--- }
--- 
---+/* Rainbow gradient background accent in the code container */
---+html[data-theme="light"] .codeContainer::before {
---+  content: "";
---+  position: absolute;
---+  top: 0;
---+  right: 0;
---+  width: 220px;
---+  height: 220px;
---+  background: radial-gradient(
---+    circle at top right,
---+    rgba(236, 72, 153, 0.08) 0%,
---+    rgba(168, 85, 247, 0.06) 30%,
---+    rgba(59, 130, 246, 0.04) 60%,
---+    transparent 90%
---+  );
---+  pointer-events: none;
---+}
---+
---+/* Remove any extra decorations */
---+html[data-theme="light"] .codeContainer::after {
---+  display: none;
---+}
---+
---+/* Remove window controls in light mode */
---+html[data-theme="light"] .windowControls {
---+  display: none;
---+}
---+
---+/* Style for tab icon in light mode with better contrast */
---+html[data-theme="light"] .tabIcon {
---+  color: #4f46e5;
---+  opacity: 0.8;
---+  margin-right: 8px;
---+  transition: all 0.2s ease;
---+}
---+
---+html[data-theme="light"] .tab:hover .tabIcon,
---+html[data-theme="light"] .activeTab .tabIcon {
---+  opacity: 1;
---+  transform: scale(1.1);
---+  color: #6366f1;
---+}
---+
--- /* Rainbow accent in top-right corner */
--- html[data-theme="light"] .codeContainer::before {
---   content: "";
---@@ -693,33 +762,6 @@ html[data-theme="light"] .codeContainer::after {
---   z-index: 2;
--- }
--- 
----/* Enhanced tab container styling for light mode */
----html[data-theme="light"] .tabsContainer {
----  background: linear-gradient(to right, #1e293b, #334155);
----  border-bottom: 1px solid rgba(79, 70, 229, 0.3);
----  padding: 0.5rem 0.5rem 0;
----  position: relative;
----  border-top-left-radius: 16px;
----  border-top-right-radius: 16px;
----}
----
----html[data-theme="light"] .tabsContainer::before {
----  content: "";
----  position: absolute;
----  top: 10px;
----  left: 12px;
----  width: 12px;
----  height: 12px;
----  border-radius: 50%;
----  background: #f87171;
----  box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.3),
----    0 0 8px rgba(248, 113, 113, 0.5), 20px 0 0 #fbbf24,
----    20px 0 0 1px rgba(251, 191, 36, 0.3), 20px 0 8px rgba(251, 191, 36, 0.5),
----    40px 0 0 #4ade80, 40px 0 0 1px rgba(74, 222, 128, 0.3),
----    40px 0 8px rgba(74, 222, 128, 0.5);
----  z-index: 2;
----}
----
--- /* Base tab styling */
--- .tab {
---   flex: 1;
---@@ -752,11 +794,24 @@ html[data-theme="light"] .tabsContainer::before {
---   align-items: center;
--- }
--- 
----.tab:hover {
---+/* Dark mode tab hover */
---+html[data-theme="dark"] .tab:hover {
---   background: rgba(255, 255, 255, 0.08);
---   color: rgba(255, 255, 255, 0.9);
--- }
--- 
---+/* Light mode tab hover */
---+html[data-theme="light"] .tab:hover {
---+  background: white;
---+  color: #0f172a;
---+  transform: translateY(-2px);
---+  box-shadow: 0 -4px 15px rgba(79, 70, 229, 0.15);
---+}
---+
---+html[data-theme="light"] .tab:hover::after {
---+  opacity: 1;
---+}
---+
--- /* Remix-inspired tab indicator for dark mode */
--- .activeTab {
---   background: #0d1424;
---@@ -778,93 +833,87 @@ html[data-theme="light"] .tabsContainer::before {
---   border-radius: 3px 3px 0 0;
--- }
--- 
----/* Enhanced tab styling for light mode */
---+/* Fun and practical light mode tab styling */
--- html[data-theme="light"] .tab {
----  color: rgba(0, 0, 0, 0.7);
----  font-weight: 500;
---+  color: #1e293b;
---+  font-weight: 600;
---   letter-spacing: 0.01em;
----  background: rgba(255, 255, 255, 0.8);
----  margin-right: 5px;
----  transition: all 0.3s ease;
----  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05);
---+  background: rgba(241, 245, 249, 0.9);
---+  margin-right: 8px;
---+  transition: all 0.2s ease;
---+  padding: 0.9rem 1.25rem;
---+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03);
---   border-top-left-radius: 12px;
---   border-top-right-radius: 12px;
----  border: 1px solid rgba(0, 0, 0, 0.05);
---+  border: 1px solid rgba(226, 232, 240, 0.8);
---   border-bottom: none;
---+  position: relative;
---+  overflow: hidden;
---+  z-index: 1;
--- }
--- 
----html[data-theme="light"] .tab:hover {
----  background: rgba(79, 70, 229, 0.1);
----  color: rgba(0, 0, 0, 0.9);
----  box-shadow: 0 -5px 15px rgba(79, 70, 229, 0.1);
---+/* Enhanced accent on tab with subtle rainbow colors */
---+html[data-theme="light"] .tab::after {
---+  content: "";
---+  position: absolute;
---+  top: 0;
---+  left: 0;
---+  width: 100%;
---+  height: 3px;
---+  background: linear-gradient(
---+    to right,
---+    rgba(236, 72, 153, 0.4),
---+    rgba(168, 85, 247, 0.4),
---+    rgba(59, 130, 246, 0.4)
---+  );
---+  opacity: 0;
---+  transition: opacity 0.2s ease;
--- }
--- 
----/* Enhanced light mode active tab with rainbow indicator and shimmer */
---+/* Enhanced active tab with cleaner design */
--- html[data-theme="light"] .activeTab {
----  background: #ffffff;
----  color: #f43f5e;
----  font-weight: 600;
----  border: 1px solid rgba(0, 0, 0, 0.1);
----  border-bottom: none;
---+  background: white;
---+  color: #4f46e5;
---+  font-weight: 700;
---+  border: 1px solid rgba(226, 232, 240, 0.8);
---+  border-bottom: 1px solid white;
---+  margin-bottom: -1px;
---+  box-shadow: 0 -4px 12px rgba(79, 70, 229, 0.1);
---   position: relative;
---+  z-index: 2;
--- }
--- 
--- html[data-theme="light"] .activeTab::before {
---   content: "";
---   position: absolute;
----  top: -2px;
---+  top: 0;
---   left: 0;
---   right: 0;
---   height: 3px;
---   background: linear-gradient(to right, #f43f5e 0%, #a855f7 50%, #3b82f6 100%);
---   background-size: 200% 100%;
----  border-radius: 3px 3px 0 0;
---   animation: shimmerBackground 3s infinite;
----  box-shadow: 0 0 10px rgba(236, 72, 153, 0.3);
--- }
--- 
----/* Enhance code editor tabs area in light mode */
----html[data-theme="light"] .codeTabs {
----  background: linear-gradient(
----    to right,
----    rgba(243, 244, 246, 0.8),
----    rgba(249, 250, 251, 0.8)
---+/* Add subtle stripe pattern to light mode code container */
---+html[data-theme="light"] .codeContainer::after {
---+  content: "";
---+  position: absolute;
---+  top: 0;
---+  left: 0;
---+  right: 0;
---+  bottom: 0;
---+  background-image: repeating-linear-gradient(
---+    -45deg,
---+    transparent,
---+    transparent 2px,
---+    rgba(241, 245, 249, 0.5) 2px,
---+    rgba(241, 245, 249, 0.5) 4px
---   );
----  border-top-left-radius: 12px;
----  border-top-right-radius: 12px;
----  border-bottom: none;
----  padding: 0.5rem 0.5rem 0;
----  backdrop-filter: blur(5px);
----  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.03);
----  border: 1px solid rgba(0, 0, 0, 0.05);
----  border-bottom: none;
----}
----
----/* Window controls in light mode */
----html[data-theme="light"] .windowControls {
----  background: rgba(249, 250, 251, 0.7);
----  border-radius: 10px;
----  padding: 0 8px;
----  box-shadow: 0 0 10px rgba(0, 0, 0, 0.03);
----}
----
----html[data-theme="light"] .windowControl {
----  width: 12px;
----  height: 12px;
----  border-radius: 50%;
----  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1) inset;
----}
----
----html[data-theme="light"] .windowControl.close {
----  background-color: #f87171;
----}
----
----html[data-theme="light"] .windowControl.minimize {
----  background-color: #fbbf24;
----}
----
----html[data-theme="light"] .windowControl.maximize {
----  background-color: #34d399;
---+  opacity: 0.3;
---+  pointer-events: none;
---+  z-index: 0;
---+  display: block;
--- }
--- 
--- /* Code sections display fix */
---diff --git a/docs/temp/design-iterations/iteration-1/feedback-template.md b/docs/temp/design-iterations/iteration-1/feedback-template.md
---index 6ac8468..f379a95 100644
------ a/docs/temp/design-iterations/iteration-1/feedback-template.md
---+++ b/docs/temp/design-iterations/iteration-1/feedback-template.md
---@@ -4,7 +4,7 @@
--- 
--- - **Date:** 2025-05-06
--- - **Components:** hero-section, features-section, framework-section-react, framework-section-remix
----- **Timestamp:** 20250506T075158
---+- **Timestamp:** 20250506T083634
--- 
--- ## Screenshots
--- 
---diff --git a/docs/temp/design-iterations/iteration-1/metadata.json b/docs/temp/design-iterations/iteration-1/metadata.json
---index eb286ed..2928404 100644
------ a/docs/temp/design-iterations/iteration-1/metadata.json
---+++ b/docs/temp/design-iterations/iteration-1/metadata.json
---@@ -1,13 +1,13 @@
--- {
---   "iteration": 1,
----  "timestamp": "2025-05-06T07:51:59.094Z",
---+  "timestamp": "2025-05-06T08:36:34.248Z",
---   "targets": [
---     "hero-section",
---     "features-section",
---     "framework-section-react",
---     "framework-section-remix"
---   ],
----  "screenshotTimestamp": "20250506T075158",
---+  "screenshotTimestamp": "20250506T083634",
---   "changes": [
---     {
---       "component": "hero-section",
---@@ -46,7 +46,24 @@
---       "reasoning": "Placeholder reasoning - would come from AI"
---     }
---   ],
----  "diffInfo": {},
---+  "diffInfo": {
---+    "hero-section": {
---+      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/hero-section-20250506T083634.diff",
---+      "diffFileName": "hero-section-20250506T083634.diff"
---+    },
---+    "features-section": {
---+      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/features-section-20250506T083634.diff",
---+      "diffFileName": "features-section-20250506T083634.diff"
---+    },
---+    "framework-section-react": {
---+      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/framework-section-react-20250506T083634.diff",
---+      "diffFileName": "framework-section-react-20250506T083634.diff"
---+    },
---+    "framework-section-remix": {
---+      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/framework-section-remix-20250506T083634.diff",
---+      "diffFileName": "framework-section-remix-20250506T083634.diff"
---+    }
---+  },
---   "config": {
---     "count": 1,
---     "targets": [
-+@@ -0,0 +1,94 @@
-++diff --git a/docs/docs/design-iterations/index.md b/docs/docs/design-iterations/index.md
-++index 5ea15ec..872a3a4 100644
-++--- a/docs/docs/design-iterations/index.md
-+++++ b/docs/docs/design-iterations/index.md
-++@@ -18,20 +18,59 @@ Design iterations allow you to:
-++ - **Maintain a visual history** of your design evolution
-++ - **Apply your favorite designs** with simple commands
-++ 
-++-## 🚀 Quick Start
-+++## 🚀 Quick Start Guide
-+++
-+++### Step 1: Generate Initial Designs
-++ 
-++ ```bash
-++ # From the /docs directory, run:
-++ pnpm design-iterations --count=3 --target="features-section"
-+++```
-+++
-+++### Step 2: Review the Screenshots
-+++
-+++Screenshots are saved in `static/screenshots/design-iterations/{timestamp}/`
-+++
-+++Each iteration includes:
-+++
-+++- Light mode screenshot
-+++- Dark mode screenshot
-+++- Visual differences from baseline
-+++
-+++### Step 3: Provide Feedback
-+++
-+++Edit the generated feedback template in the terminal or your editor:
-+++
-+++```
-+++# Iteration 1 Feedback
-+++## Strengths
-+++- Clean layout
-+++- Good use of color
-+++
-+++## Areas for Improvement
-+++- Header font size too small
-+++- Spacing between cards inconsistent
-+++```
-+++
-+++### Step 4: Generate Refined Designs
-++ 
-++-# Review the screenshots and provide feedback in the generated template
-++-# Then run another iteration if needed:
-++-pnpm design-iterations --count=1 --target="features-section" --refine
-+++```bash
-+++# Run another iteration based on your feedback:
-+++pnpm design-iterations --count=2 --target="features-section" --refine
-++ ```
-++ 
-++-## 📚 Guide Contents
-+++### Step 5: Apply Your Favorite Design
-+++
-+++```bash
-+++# Apply the design you prefer:
-+++pnpm design-iterations --apply="iteration-2" --target="features-section"
-+++```
-+++
-+++<div className="workflow-diagram">
-+++  <img src="/jods/img/design-iteration-flow.png" alt="Design Iteration Workflow" />
-+++</div>
-++ 
-++-This guide covers the complete Design Iterations workflow:
-+++## 📚 Complete Documentation
-++ 
-++ 1. [**Complete Workflow**](./workflow.md) - Step-by-step guide to using design iterations
-++ 2. [**AI-Assisted Design**](./with-ai.md) - How AI powers the design iteration process
-++@@ -39,15 +78,17 @@ This guide covers the complete Design Iterations workflow:
-++ 4. [**Feedback System**](./feedback.md) - How to provide structured feedback
-++ 5. [**Screenshot System**](./screenshot-system/index.md) - The foundation for capturing and comparing UI components
-++ 
-++-## 🎯 Available Targets
-+++## 🎯 Available Design Targets
-++ 
-++ The following UI components can be targeted for design iterations:
-++ 
-++-- `hero-section` - The main hero section on the homepage
-++-- `features-section` - The features grid on the homepage
-++-- `framework-section-react` - The React framework comparison section
-++-- `framework-section-remix` - The Remix framework section
-++-- `compare-section` - The comparison section with other libraries
-+++| Target                    | Description                   | Example Command                                                       |
-+++| ------------------------- | ----------------------------- | --------------------------------------------------------------------- |
-+++| `hero-section`            | Main hero section on homepage | `pnpm design-iterations --count=3 --target="hero-section"`            |
-+++| `features-section`        | Features grid on homepage     | `pnpm design-iterations --count=3 --target="features-section"`        |
-+++| `framework-section-react` | React framework comparison    | `pnpm design-iterations --count=3 --target="framework-section-react"` |
-+++| `framework-section-remix` | Remix framework section       | `pnpm design-iterations --count=3 --target="framework-section-remix"` |
-+++| `compare-section`         | Library comparison section    | `pnpm design-iterations --count=3 --target="compare-section"`         |
-++ 
-++ ## 💡 Best Practices
-++ 
+-@@ -0,0 +1,94 @@
+-+diff --git a/docs/docs/design-iterations/index.md b/docs/docs/design-iterations/index.md
+-+index 5ea15ec..872a3a4 100644
+-+--- a/docs/docs/design-iterations/index.md
+-++++ b/docs/docs/design-iterations/index.md
+-+@@ -18,20 +18,59 @@ Design iterations allow you to:
+-+ - **Maintain a visual history** of your design evolution
+-+ - **Apply your favorite designs** with simple commands
+-+ 
+-+-## 🚀 Quick Start
+-++## 🚀 Quick Start Guide
+-++
+-++### Step 1: Generate Initial Designs
+-+ 
+-+ ```bash
+-+ # From the /docs directory, run:
+-+ pnpm design-iterations --count=3 --target="features-section"
+-++```
+-++
+-++### Step 2: Review the Screenshots
+-++
+-++Screenshots are saved in `static/screenshots/design-iterations/{timestamp}/`
+-++
+-++Each iteration includes:
+-++
+-++- Light mode screenshot
+-++- Dark mode screenshot
+-++- Visual differences from baseline
+-++
+-++### Step 3: Provide Feedback
+-++
+-++Edit the generated feedback template in the terminal or your editor:
+-++
+-++```
+-++# Iteration 1 Feedback
+-++## Strengths
+-++- Clean layout
+-++- Good use of color
+-++
+-++## Areas for Improvement
+-++- Header font size too small
+-++- Spacing between cards inconsistent
+-++```
+-++
+-++### Step 4: Generate Refined Designs
+-+ 
+-+-# Review the screenshots and provide feedback in the generated template
+-+-# Then run another iteration if needed:
+-+-pnpm design-iterations --count=1 --target="features-section" --refine
+-++```bash
+-++# Run another iteration based on your feedback:
+-++pnpm design-iterations --count=2 --target="features-section" --refine
+-+ ```
+-+ 
+-+-## 📚 Guide Contents
+-++### Step 5: Apply Your Favorite Design
+-++
+-++```bash
+-++# Apply the design you prefer:
+-++pnpm design-iterations --apply="iteration-2" --target="features-section"
+-++```
+-++
+-++<div className="workflow-diagram">
+-++  <img src="/jods/img/design-iteration-flow.png" alt="Design Iteration Workflow" />
+-++</div>
+-+ 
+-+-This guide covers the complete Design Iterations workflow:
+-++## 📚 Complete Documentation
+-+ 
+-+ 1. [**Complete Workflow**](./workflow.md) - Step-by-step guide to using design iterations
+-+ 2. [**AI-Assisted Design**](./with-ai.md) - How AI powers the design iteration process
+-+@@ -39,15 +78,17 @@ This guide covers the complete Design Iterations workflow:
+-+ 4. [**Feedback System**](./feedback.md) - How to provide structured feedback
+-+ 5. [**Screenshot System**](./screenshot-system/index.md) - The foundation for capturing and comparing UI components
+-+ 
+-+-## 🎯 Available Targets
+-++## 🎯 Available Design Targets
+-+ 
+-+ The following UI components can be targeted for design iterations:
+-+ 
+-+-- `hero-section` - The main hero section on the homepage
+-+-- `features-section` - The features grid on the homepage
+-+-- `framework-section-react` - The React framework comparison section
+-+-- `framework-section-remix` - The Remix framework section
+-+-- `compare-section` - The comparison section with other libraries
+-++| Target                    | Description                   | Example Command                                                       |
+-++| ------------------------- | ----------------------------- | --------------------------------------------------------------------- |
+-++| `hero-section`            | Main hero section on homepage | `pnpm design-iterations --count=3 --target="hero-section"`            |
+-++| `features-section`        | Features grid on homepage     | `pnpm design-iterations --count=3 --target="features-section"`        |
+-++| `framework-section-react` | React framework comparison    | `pnpm design-iterations --count=3 --target="framework-section-react"` |
+-++| `framework-section-remix` | Remix framework section       | `pnpm design-iterations --count=3 --target="framework-section-remix"` |
+-++| `compare-section`         | Library comparison section    | `pnpm design-iterations --count=3 --target="compare-section"`         |
+-+ 
+-+ ## 💡 Best Practices
+-+ 
++@@ -1,94 +0,0 @@
++-diff --git a/docs/docs/design-iterations/index.md b/docs/docs/design-iterations/index.md
++-index 5ea15ec..872a3a4 100644
++---- a/docs/docs/design-iterations/index.md
++-+++ b/docs/docs/design-iterations/index.md
++-@@ -18,20 +18,59 @@ Design iterations allow you to:
++- - **Maintain a visual history** of your design evolution
++- - **Apply your favorite designs** with simple commands
++- 
++--## 🚀 Quick Start
++-+## 🚀 Quick Start Guide
++-+
++-+### Step 1: Generate Initial Designs
++- 
++- ```bash
++- # From the /docs directory, run:
++- pnpm design-iterations --count=3 --target="features-section"
++-+```
++-+
++-+### Step 2: Review the Screenshots
++-+
++-+Screenshots are saved in `static/screenshots/design-iterations/{timestamp}/`
++-+
++-+Each iteration includes:
++-+
++-+- Light mode screenshot
++-+- Dark mode screenshot
++-+- Visual differences from baseline
++-+
++-+### Step 3: Provide Feedback
++-+
++-+Edit the generated feedback template in the terminal or your editor:
++-+
++-+```
++-+# Iteration 1 Feedback
++-+## Strengths
++-+- Clean layout
++-+- Good use of color
++-+
++-+## Areas for Improvement
++-+- Header font size too small
++-+- Spacing between cards inconsistent
++-+```
++-+
++-+### Step 4: Generate Refined Designs
++- 
++--# Review the screenshots and provide feedback in the generated template
++--# Then run another iteration if needed:
++--pnpm design-iterations --count=1 --target="features-section" --refine
++-+```bash
++-+# Run another iteration based on your feedback:
++-+pnpm design-iterations --count=2 --target="features-section" --refine
++- ```
++- 
++--## 📚 Guide Contents
++-+### Step 5: Apply Your Favorite Design
++-+
++-+```bash
++-+# Apply the design you prefer:
++-+pnpm design-iterations --apply="iteration-2" --target="features-section"
++-+```
++-+
++-+<div className="workflow-diagram">
++-+  <img src="/jods/img/design-iteration-flow.png" alt="Design Iteration Workflow" />
++-+</div>
++- 
++--This guide covers the complete Design Iterations workflow:
++-+## 📚 Complete Documentation
++- 
++- 1. [**Complete Workflow**](./workflow.md) - Step-by-step guide to using design iterations
++- 2. [**AI-Assisted Design**](./with-ai.md) - How AI powers the design iteration process
++-@@ -39,15 +78,17 @@ This guide covers the complete Design Iterations workflow:
++- 4. [**Feedback System**](./feedback.md) - How to provide structured feedback
++- 5. [**Screenshot System**](./screenshot-system/index.md) - The foundation for capturing and comparing UI components
++- 
++--## 🎯 Available Targets
++-+## 🎯 Available Design Targets
++- 
++- The following UI components can be targeted for design iterations:
++- 
++--- `hero-section` - The main hero section on the homepage
++--- `features-section` - The features grid on the homepage
++--- `framework-section-react` - The React framework comparison section
++--- `framework-section-remix` - The Remix framework section
++--- `compare-section` - The comparison section with other libraries
++-+| Target                    | Description                   | Example Command                                                       |
++-+| ------------------------- | ----------------------------- | --------------------------------------------------------------------- |
++-+| `hero-section`            | Main hero section on homepage | `pnpm design-iterations --count=3 --target="hero-section"`            |
++-+| `features-section`        | Features grid on homepage     | `pnpm design-iterations --count=3 --target="features-section"`        |
++-+| `framework-section-react` | React framework comparison    | `pnpm design-iterations --count=3 --target="framework-section-react"` |
++-+| `framework-section-remix` | Remix framework section       | `pnpm design-iterations --count=3 --target="framework-section-remix"` |
++-+| `compare-section`         | Library comparison section    | `pnpm design-iterations --count=3 --target="compare-section"`         |
++- 
++- ## 💡 Best Practices
++- 
  diff --git a/docs/temp/design-iterations/iteration-1/feedback-template.md b/docs/temp/design-iterations/iteration-1/feedback-template.md
--index a90a9b6..791b7c6 100644
-+index 791b7c6..022f088 100644
+-index 791b7c6..022f088 100644
++index 03b993a..17fe9aa 100644
  --- a/docs/temp/design-iterations/iteration-1/feedback-template.md
  +++ b/docs/temp/design-iterations/iteration-1/feedback-template.md
--@@ -3,32 +3,11 @@
-- ## Session Information
-+@@ -4,7 +4,7 @@
+-@@ -4,7 +4,7 @@
++@@ -4,45 +4,42 @@
   
   - **Date:** 2025-05-06
---- **Components:** hero-section, features-section, framework-section-react, framework-section-remix
---- **Timestamp:** 20250506T083642
--+- **Components:** features-section
--+- **Timestamp:** 20250506T172028
-+ - **Components:** features-section
-+-- **Timestamp:** 20250506T172028
-++- **Timestamp:** 20250506T190608
+  - **Components:** features-section
+--- **Timestamp:** 20250506T172028
+-+- **Timestamp:** 20250506T190608
++-- **Timestamp:** 20250506T190715
+++- **Timestamp:** 20250506T200909
   
   ## Screenshots
   
---### hero-section
---- Light theme: [Path to light theme screenshot]
---- Dark theme: [Path to dark theme screenshot]
---
---#### Feedback
---- **What works well:**
---  - 
---  - 
---  - 
---
---- **What could be improved:**
---  - 
---  - 
---  - 
---
---- **General notes:**
---  
---
---#### Rating: [1-10]
---
---
-- ### features-section
-- - Light theme: [Path to light theme screenshot]
-- - Dark theme: [Path to dark theme screenshot]
--@@ -50,48 +29,6 @@
-- #### Rating: [1-10]
-- 
-- 
---### framework-section-react
---- Light theme: [Path to light theme screenshot]
---- Dark theme: [Path to dark theme screenshot]
---
---#### Feedback
---- **What works well:**
---  - 
---  - 
---  - 
---
---- **What could be improved:**
---  - 
---  - 
---  - 
---
---- **General notes:**
---  
---
---#### Rating: [1-10]
---
---
---### framework-section-remix
---- Light theme: [Path to light theme screenshot]
---- Dark theme: [Path to dark theme screenshot]
---
---#### Feedback
---- **What works well:**
---  - 
---  - 
---  - 
---
---- **What could be improved:**
---  - 
---  - 
---  - 
---
---- **General notes:**
---  
---
---#### Rating: [1-10]
---
---
-- 
-- ## Summary and Decision
-- 
++ ### features-section
++-
++ - Light theme: [Path to light theme screenshot]
++ - Dark theme: [Path to dark theme screenshot]
++ 
++ #### Feedback
++-
++ - **What works well:**
++-
++-  -
++-  -
++-  -
+++  - 
+++  - 
+++  - 
++ 
++ - **What could be improved:**
++-
++-  -
++-  -
++-  -
+++  - 
+++  - 
+++  - 
++ 
++ - **General notes:**
+++  
++ 
++ #### Rating: [1-10]
++ 
+++
+++
++ ## Summary and Decision
++ 
++ ### Overall Preferences
++-
++ - **Favorite component design:**
++ - **Best visual elements:**
++-  -
++-  -
++-  -
+++  - 
+++  - 
+++  - 
++ 
++ ### Implementation Plan
++-
++ - [ ] Proceed with current designs as is
++ - [ ] Create new iterations with specific focus
++ - [ ] Combine elements from different iterations
++@@ -50,7 +47,6 @@
++ ### Additional Notes
++ 
++ ### Baseline Decision
++-
++ - [ ] Approved for baseline update
++ - [ ] Not approved for baseline update
++ - [ ] Pending additional refinements before baseline approval
  diff --git a/docs/temp/design-iterations/iteration-1/metadata.json b/docs/temp/design-iterations/iteration-1/metadata.json
--index 79cdd98..5b17b1b 100644
-+index 5b17b1b..0438bde 100644
+-index 5b17b1b..0438bde 100644
++index 0d3affc..adc44a3 100644
  --- a/docs/temp/design-iterations/iteration-1/metadata.json
  +++ b/docs/temp/design-iterations/iteration-1/metadata.json
--@@ -1,23 +1,11 @@
-+@@ -1,10 +1,10 @@
+ @@ -1,10 +1,10 @@
   {
     "iteration": 1,
---  "timestamp": "2025-05-06T08:36:42.472Z",
--+  "timestamp": "2025-05-06T17:20:28.623Z",
-+-  "timestamp": "2025-05-06T17:20:28.623Z",
-++  "timestamp": "2025-05-06T19:06:08.740Z",
+--  "timestamp": "2025-05-06T17:20:28.623Z",
+-+  "timestamp": "2025-05-06T19:06:08.740Z",
++-  "timestamp": "2025-05-06T19:07:15.864Z",
+++  "timestamp": "2025-05-06T20:09:09.167Z",
     "targets": [
---    "hero-section",
---    "features-section",
---    "framework-section-react",
---    "framework-section-remix"
--+    "features-section"
-+     "features-section"
+      "features-section"
     ],
---  "screenshotTimestamp": "20250506T083642",
--+  "screenshotTimestamp": "20250506T172028",
-+-  "screenshotTimestamp": "20250506T172028",
-++  "screenshotTimestamp": "20250506T190608",
+--  "screenshotTimestamp": "20250506T172028",
+-+  "screenshotTimestamp": "20250506T190608",
++-  "screenshotTimestamp": "20250506T190715",
+++  "screenshotTimestamp": "20250506T200909",
     "changes": [
---    {
---      "component": "hero-section",
---      "description": "Adjust hero section padding; Increase hero text contrast",
---      "files": [
---        "src/css/custom.css",
---        "src/components/HomepageHero.js"
---      ],
---      "reasoning": "Placeholder reasoning - would come from AI"
---    },
       {
         "component": "features-section",
--       "description": "Refine features card styling; Improve features layout",
--@@ -26,51 +14,18 @@
--         "src/components/HomepageFeatures.js"
--       ],
--       "reasoning": "Placeholder reasoning - would come from AI"
---    },
---    {
---      "component": "framework-section-react",
---      "description": "Enhance framework tabs appearance; Refine React tab content",
---      "files": [
---        "src/css/custom.css",
---        "src/components/HomepageFrameworks.js"
---      ],
---      "reasoning": "Placeholder reasoning - would come from AI"
---    },
---    {
---      "component": "framework-section-remix",
---      "description": "Enhance framework tabs appearance; Refine Remix tab content",
---      "files": [
---        "src/css/custom.css",
---        "src/components/HomepageFrameworks.js"
---      ],
---      "reasoning": "Placeholder reasoning - would come from AI"
--     }
-+@@ -18,18 +18,24 @@
-    ],
-    "diffInfo": {
---    "hero-section": {
---      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/hero-section-20250506T083642.diff",
---      "diffFileName": "hero-section-20250506T083642.diff"
---    },
-      "features-section": {
---      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/features-section-20250506T083642.diff",
---      "diffFileName": "features-section-20250506T083642.diff"
---    },
---    "framework-section-react": {
---      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/framework-section-react-20250506T083642.diff",
---      "diffFileName": "framework-section-react-20250506T083642.diff"
---    },
---    "framework-section-remix": {
---      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/framework-section-remix-20250506T083642.diff",
---      "diffFileName": "framework-section-remix-20250506T083642.diff"
--+      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/features-section-20250506T172028.diff",
--+      "diffFileName": "features-section-20250506T172028.diff"
-+-      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/features-section-20250506T172028.diff",
-+-      "diffFileName": "features-section-20250506T172028.diff"
-++      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/features-section-20250506T190608.diff",
-++      "diffFileName": "features-section-20250506T190608.diff"
+-@@ -18,18 +18,24 @@
+-   ],
+-   "diffInfo": {
+-     "features-section": {
+--      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/features-section-20250506T172028.diff",
+--      "diffFileName": "features-section-20250506T172028.diff"
+-+      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/features-section-20250506T190608.diff",
+-+      "diffFileName": "features-section-20250506T190608.diff"
++@@ -16,18 +16,23 @@
++       "reasoning": "Placeholder reasoning - would come from AI"
       }
-    },
+-   },
++   ],
++-  "diffInfo": {},
+++  "diffInfo": {
+++    "features-section": {
+++      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/features-section-20250506T200909.diff",
+++      "diffFileName": "features-section-20250506T200909.diff"
+++    }
+++  },
     "config": {
---    "count": 1,
--+    "count": 3,
-+-    "count": 3,
-++    "count": 5,
-      "targets": [
---      "hero-section",
---      "features-section",
---      "framework-section-react",
---      "framework-section-remix"
--+      "features-section"
-+       "features-section"
+ -    "count": 3,
+ +    "count": 5,
+@@ -238,15 +203,13 @@ index 5b17b1b..0438bde 100644
+        "features-section"
       ],
       "compareWith": [],
-      "aiPrompt": "Improve the visual design while maintaining brand identity",
-+-    "requireSignoff": true
-++    "requireSignoff": true,
-++    "apply": false,
-++    "iteration": null,
-++    "refine": false,
-++    "status": false,
-++    "cleanup": false,
-++    "force": false
-+   },
-+   "evaluation": {
-+     "aesthetic_score": null,
+-     "aiPrompt": "Improve the visual design while maintaining brand identity",
+--    "requireSignoff": true
+-+    "requireSignoff": true,
+-+    "apply": false,
+-+    "iteration": null,
++-    "aiPrompt": "Improve the visual design while maintaining brand identity",
+++    "aiPrompt": "Reimagine the 'Powerful features, minimal API' section with bold visual hierarchy, emphasizing the Remix integration from PR #22. Consider different layout structures, typography scales, and visual elements that highlight both core features and the new Remix capabilities.",
++     "requireSignoff": true,
++     "apply": false,
++     "iteration": null,
++-    "refine": true,
+ +    "refine": false,
+-+    "status": false,
+-+    "cleanup": false,
+-+    "force": false
+-   },
+-   "evaluation": {
+-     "aesthetic_score": null,
++     "status": false,
++     "cleanup": false,
++     "force": false
 diff --git a/docs/temp/design-iterations/iteration-2/feedback-template.md b/docs/temp/design-iterations/iteration-2/feedback-template.md
-index 5d1b858..571f896 100644
+index d81806c..e29f154 100644
 --- a/docs/temp/design-iterations/iteration-2/feedback-template.md
 +++ b/docs/temp/design-iterations/iteration-2/feedback-template.md
 @@ -4,7 +4,7 @@
  
  - **Date:** 2025-05-06
  - **Components:** features-section
--- **Timestamp:** 20250506T172028
-+- **Timestamp:** 20250506T190608
+-- **Timestamp:** 20250506T190715
++- **Timestamp:** 20250506T200909
  
  ## Screenshots
  
 diff --git a/docs/temp/design-iterations/iteration-2/metadata.json b/docs/temp/design-iterations/iteration-2/metadata.json
-index 2c950f2..7f479c0 100644
+index 1a4bbd8..6c32e4b 100644
 --- a/docs/temp/design-iterations/iteration-2/metadata.json
 +++ b/docs/temp/design-iterations/iteration-2/metadata.json
 @@ -1,10 +1,10 @@
  {
    "iteration": 2,
--  "timestamp": "2025-05-06T17:20:28.644Z",
-+  "timestamp": "2025-05-06T19:06:08.763Z",
+-  "timestamp": "2025-05-06T19:07:15.889Z",
++  "timestamp": "2025-05-06T20:09:09.188Z",
    "targets": [
      "features-section"
    ],
--  "screenshotTimestamp": "20250506T172028",
-+  "screenshotTimestamp": "20250506T190608",
+-  "screenshotTimestamp": "20250506T190715",
++  "screenshotTimestamp": "20250506T200909",
    "changes": [
      {
        "component": "features-section",
-@@ -18,18 +18,24 @@
-   ],
-   "diffInfo": {
-     "features-section": {
--      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/features-section-20250506T172028.diff",
--      "diffFileName": "features-section-20250506T172028.diff"
-+      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/features-section-20250506T190608.diff",
-+      "diffFileName": "features-section-20250506T190608.diff"
+@@ -16,18 +16,23 @@
+       "reasoning": "Placeholder reasoning - would come from AI"
      }
-   },
+   ],
+-  "diffInfo": {},
++  "diffInfo": {
++    "features-section": {
++      "diffPath": "/Users/clay/Projects/npmjs/jods/docs/temp/possible-diffs/features-section-20250506T200909.diff",
++      "diffFileName": "features-section-20250506T200909.diff"
++    }
++  },
    "config": {
 -    "count": 3,
 +    "count": 5,
@@ -1065,15 +700,13 @@ index 2c950f2..7f479c0 100644
        "features-section"
      ],
      "compareWith": [],
-     "aiPrompt": "Improve the visual design while maintaining brand identity",
--    "requireSignoff": true
-+    "requireSignoff": true,
-+    "apply": false,
-+    "iteration": null,
+-    "aiPrompt": "Improve the visual design while maintaining brand identity",
++    "aiPrompt": "Reimagine the 'Powerful features, minimal API' section with bold visual hierarchy, emphasizing the Remix integration from PR #22. Consider different layout structures, typography scales, and visual elements that highlight both core features and the new Remix capabilities.",
+     "requireSignoff": true,
+     "apply": false,
+     "iteration": null,
+-    "refine": true,
 +    "refine": false,
-+    "status": false,
-+    "cleanup": false,
-+    "force": false
-   },
-   "evaluation": {
-     "aesthetic_score": null,
+     "status": false,
+     "cleanup": false,
+     "force": false
