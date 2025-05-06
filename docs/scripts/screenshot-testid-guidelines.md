@@ -67,54 +67,19 @@ Here's how it works:
 3. It **generates a configuration file** with optimized selectors for each element
 4. Additional settings (padding, min-height, etc.) can be applied based on component type
 
-### Example Generator Script
+### Using Generated Selectors
 
-```js
-// pseudocode for the generator
-async function generateScreenshotSelectors() {
-  const browser = await chromium.launch();
-  const page = await browser.newPage();
+After running the generator script, you can use the generated selectors with the simplified CLI:
 
-  // Visit the site
-  await page.goto("http://localhost:3000");
+```bash
+# Generate selectors from testIDs
+pnpm generate-selectors
 
-  // Find all elements with data-testid that match our patterns
-  const elements = await page.$$('[data-testid^="jods-"]');
+# Use generated selectors with screenshot command
+pnpm screenshot -- --use-generated-selectors
 
-  // Build component configurations
-  const components = [];
-
-  for (const element of elements) {
-    const testId = await element.getAttribute("data-testid");
-    const rect = await element.boundingBox();
-
-    // Analyze the element type and structure
-    const component = {
-      name: testIdToName(testId),
-      selector: `[data-testid="${testId}"]`,
-      testId,
-      padding: calculatePadding(testId, rect),
-      minHeight: calculateMinHeight(testId, rect),
-      // Additional smart defaults based on element type
-    };
-
-    // For framework tabs, add special click handling
-    if (testId.includes("framework-tab")) {
-      component.clickSelector = `[data-testid="${testId}"]`;
-      component.clickWaitTime = 1500;
-    }
-
-    components.push(component);
-  }
-
-  // Write the components to a file
-  fs.writeFileSync(
-    "./screenshot-selectors.generated.mjs",
-    generateCode(components)
-  );
-
-  await browser.close();
-}
+# You can combine with other options
+pnpm screenshot -- --use-generated-selectors --baseline
 ```
 
 ## Updating Screenshot Selectors
@@ -135,9 +100,9 @@ In `screenshot-selectors.mjs`, prioritize testIDs:
 
 ## Testing Workflow
 
-1. Add testIDs to key components
+1. Add testIDs to key components in your React/Preact/UI code
 2. Run the generator to discover and create selectors
-3. Execute the screenshot tests
+3. Execute the screenshot tests with the `--use-generated-selectors` flag
 4. Review and manually adjust generated selectors if needed
 
 ## Benefits
@@ -166,19 +131,10 @@ The unified screenshot script is enhanced to:
 4. **Phase 4**: Integrate with existing screenshot workflows
 5. **Phase 5**: Migrate entirely to testID-driven approach
 
-## Practical Example Command
+## Best Practices
 
-Example of running the generator and screenshot tests:
-
-```bash
-# Generate selectors from testIDs
-npm run docs:generate-selectors
-
-# Run tests using generated selectors
-npm run docs:screenshot:testid
-
-# Combined command for CI
-npm run docs:screenshot:auto
-```
-
-This provides a gradual migration path without breaking existing tests while moving toward a fully automated, testID-driven screenshot testing framework.
+1. **Be Consistent**: Follow the naming convention strictly for all components
+2. **Be Explicit**: Use meaningful names that clearly identify the component's purpose
+3. **Be Hierarchical**: Use parent/child relationships in testID naming
+4. **Be Comprehensive**: Add testIDs to all important UI elements
+5. **Generate Often**: Run the generator script whenever components change

@@ -35,8 +35,8 @@ The unified screenshot approach consists of:
 
 2. **Unified Screenshot Script** (`screenshot-unified.mjs`)
 
-   - Supports multiple modes (all, components, sections, remix)
-   - Uses triangulation of multiple elements for more reliable section capture
+   - Supports multiple modes via simple command-line arguments
+   - Uses triangulation of multiple elements for reliable section capture
    - Intelligently excludes specified elements while capturing sections
    - Uses consistent padding, naming, and screenshot logic
    - Supports both light and dark themes
@@ -46,30 +46,39 @@ The unified screenshot approach consists of:
    - All screenshots are saved to `docs/static/screenshots/unified/`
    - Consistent naming format: `component-name-theme[-timestamp].png`
 
+### Command-Line Arguments
+
+The screenshot script supports these arguments:
+
+```
+--baseline           Save as baseline (no timestamp)
+--mode=MODENAME      Set mode: all, components, sections, remix
+--components=C1,C2   Capture specific components by name
+--use-generated-selectors  Use auto-generated selectors from data-testids
+```
+
 ### Recommended Usage
 
 When running screenshot scripts:
 
 ```bash
 # From docs directory
-pnpm screenshot:unified            # All components
-pnpm screenshot:unified:sections   # Just homepage sections
-pnpm screenshot:unified:remix      # Just Remix section
+pnpm screenshot                    # All components
+pnpm screenshot -- --mode=sections # Just homepage sections
+pnpm screenshot -- --mode=remix    # Just Remix section
 
 # Capture specific components by name
-pnpm screenshot:component=framework-section-react    # Just React tab
-pnpm screenshot:component=framework-section-remix    # Just Remix tab
+pnpm screenshot -- --components=framework-section-react
+pnpm screenshot -- --components=framework-section-react,framework-section-remix
 
-# Capture multiple components at once
-pnpm screenshot:unified --components=framework-section-react,framework-section-remix
+# Create baseline screenshots (without timestamp)
+pnpm screenshot:baseline
 
 # From root directory
-pnpm docs:screenshot:unified
-pnpm docs:screenshot:unified:sections
-pnpm docs:screenshot:unified:remix
-pnpm docs:screenshot:react-tab
-pnpm docs:screenshot:remix-tab
-pnpm docs:screenshot:framework-tabs    # Both React and Remix tabs
+pnpm docs:screenshot
+pnpm docs:screenshot:baseline
+pnpm docs:screenshot:diff
+pnpm docs:screenshot:cleanup
 ```
 
 ## Framework Tabs
@@ -117,15 +126,7 @@ The screenshot cleanup script helps manage stored screenshot batches:
 ```bash
 # From docs directory
 pnpm screenshot:cleanup              # Keep only latest batch
-pnpm screenshot:cleanup:dry-run      # Preview what would be deleted
-pnpm screenshot:cleanup:keep 4       # Keep 4 most recent batches (flexible)
-pnpm screenshot:cleanup:keep-latest  # Keep 3 most recent batches (fixed)
-
-# From root directory
-pnpm docs:screenshot:cleanup
-pnpm docs:screenshot:cleanup:dry-run
-pnpm docs:screenshot:cleanup:keep 4
-pnpm docs:screenshot:cleanup:keep-latest
+pnpm screenshot:cleanup -- --dry-run # Preview what would be deleted
 ```
 
 ### How It Works
@@ -221,6 +222,18 @@ Example:
 }
 ```
 
+### Animation Control
+
+The script automatically pauses animations and transitions during screenshots for more consistent results:
+
+```js
+{
+  name: "hero-section",
+  // other properties...
+  pauseAnimations: true, // Controls whether animations should be paused (default: true)
+}
+```
+
 ### Click Before Screenshot
 
 Some components need interaction before capturing:
@@ -248,4 +261,4 @@ If screenshots aren't capturing the right sections:
 2. Check the component definitions in `screenshot-selectors.mjs`
 3. Add more specific alternative selectors to help with triangulation
 4. Use `excludeElements` to remove unwanted parts from screenshots
-5. Run with debug mode for detailed logging: `DEBUG=true pnpm screenshot:unified`
+5. Run with debug mode for detailed logging: `DEBUG=true pnpm screenshot`

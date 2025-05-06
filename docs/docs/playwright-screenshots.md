@@ -26,42 +26,38 @@ The unified screenshot approach is the recommended way to capture screenshots:
 
 ```bash
 # From root directory
-pnpm docs:screenshot:unified              # All components
-pnpm docs:screenshot:unified:baseline     # Create baseline screenshots (no timestamp)
-pnpm docs:screenshot:unified:localhost    # Use localhost URL
-pnpm docs:screenshot:unified:components   # Only UI components
-pnpm docs:screenshot:unified:sections     # Only homepage sections
-pnpm docs:screenshot:unified:remix        # Only Remix section
-
-# Capture React and Remix tabs of the framework section
-pnpm docs:screenshot:react-tab            # Only React tab
-pnpm docs:screenshot:remix-tab            # Only Remix tab
-pnpm docs:screenshot:framework-tabs       # Both tabs
-
-# Visual regression testing
-pnpm docs:screenshot:diff                 # Compare against baselines with 2% threshold
-pnpm docs:screenshot:diff:verbose         # Keep all diff images, even when passed
-pnpm docs:screenshot:diff:components      # Test specific components
-pnpm docs:screenshot:diff:threshold       # Use custom 5% threshold
+pnpm docs:screenshot                            # All components
+pnpm docs:screenshot:baseline                   # Create baseline screenshots (no timestamp)
+pnpm docs:screenshot:diff                       # Compare against baselines with 2% threshold
+pnpm docs:screenshot:cleanup                    # Clean up old screenshots
 
 # From docs directory
-pnpm screenshot:unified
-pnpm screenshot:unified:baseline
-pnpm screenshot:unified:localhost
-pnpm screenshot:unified:components
-pnpm screenshot:unified:sections
-pnpm screenshot:unified:remix
-pnpm screenshot:diff
+pnpm screenshot                                 # All components
+pnpm screenshot:baseline                        # Create baseline screenshots
+pnpm screenshot:diff                            # Compare against baselines
+pnpm screenshot:cleanup                         # Clean up old screenshots
 ```
 
-Advanced options:
+Advanced options (using command-line arguments):
 
 ```bash
+# Capture specific types of components
+pnpm screenshot -- --mode=sections              # Only homepage sections
+pnpm screenshot -- --mode=components            # Only UI components
+pnpm screenshot -- --mode=remix                 # Only Remix section
+
 # Capture specific named components
-node scripts/screenshot-unified.mjs --components=hero-section,framework-section-react
+pnpm screenshot -- --components=hero-section,framework-section-react
+
+# Use auto-generated selectors from data-testids
+pnpm screenshot -- --use-generated-selectors
+
+# Combine multiple options
+pnpm screenshot -- --use-generated-selectors --mode=sections
+pnpm screenshot -- --components=framework-section-react --baseline
 
 # Run with debug mode for detailed logs
-DEBUG=true pnpm screenshot:unified
+DEBUG=true pnpm screenshot
 ```
 
 ### 📁 Screenshot Output
@@ -298,6 +294,7 @@ Each component definition can include:
 | `extraScroll`          | Extra scroll amount to better position the section                           |
 | `clickSelector`        | Selector for element to click before taking screenshot                       |
 | `clickWaitTime`        | Time to wait after clicking (milliseconds)                                   |
+| `pauseAnimations`      | Whether to pause animations during the screenshot (default: true)            |
 
 ### Interactive Elements
 
@@ -341,7 +338,7 @@ Baseline screenshots are the reference images without timestamps used for compar
 
 ```bash
 # Create baseline screenshots (no timestamp)
-pnpm docs:screenshot:unified:baseline
+pnpm screenshot:baseline
 ```
 
 ### Cleaning Up Screenshots
@@ -349,17 +346,11 @@ pnpm docs:screenshot:unified:baseline
 To prevent accumulating too many screenshots, you can clean up old ones:
 
 ```bash
-# From root directory
-pnpm docs:screenshot:cleanup              # Keep only the most recent batch
-pnpm docs:screenshot:cleanup:dry-run      # Preview what would be deleted (no actual deletion)
-pnpm docs:screenshot:cleanup:keep 4       # Keep 4 most recent batches (flexible number)
-pnpm docs:screenshot:cleanup:keep-latest  # Keep the 3 most recent batches (fixed at 3)
-
-# From docs directory
+# Keep only the most recent batch
 pnpm screenshot:cleanup
-pnpm screenshot:cleanup:dry-run
-pnpm screenshot:cleanup:keep 4
-pnpm screenshot:cleanup:keep-latest
+
+# Preview what would be deleted (no actual deletion)
+pnpm screenshot:cleanup -- --dry-run
 ```
 
 The cleanup script automatically:
@@ -369,16 +360,6 @@ The cleanup script automatically:
 3. Keeps only the most recent batch(es) of timestamped screenshots
 4. Provides detailed reporting about what was deleted
 
-You can specify the number of batches to keep in two ways:
-
-```bash
-# Using the flexible keep command (recommended)
-pnpm docs:screenshot:cleanup:keep 5      # Keep the 5 most recent batches
-
-# Using the parameter format (legacy)
-pnpm docs:screenshot:cleanup:keep-latest -- --keep=5
-```
-
 ## 🤔 Troubleshooting
 
 If the screenshot system encounters issues:
@@ -387,7 +368,7 @@ If the screenshot system encounters issues:
 2. **Connection Issues**: Make sure the documentation site is running locally before taking screenshots
 3. **Theme Toggle Issues**: The system uses multiple selectors to find the theme toggle button, but if the site structure changes, you may need to update the selectors in the screenshot scripts
 4. **Missing Pages/Components**: Verify that the URLs and selectors match the actual site structure
-5. **Disk Space**: If you have many timestamped screenshots, use `pnpm docs:screenshot:cleanup` to free up space
+5. **Disk Space**: If you have many timestamped screenshots, use `pnpm screenshot:cleanup` to free up space
 
 ### Section Screenshot Issues
 
@@ -396,7 +377,7 @@ If section screenshots aren't capturing the right elements:
 1. **Add data-testid attributes** to the components in source code
 2. **Add more specific alternative selectors** in `screenshot-selectors.mjs` for better triangulation
 3. **Use element exclusion** to remove unwanted elements while keeping useful ones for triangulation
-4. **Run with debug mode** for detailed logs: `DEBUG=true pnpm screenshot:unified`
+4. **Run with debug mode** for detailed logs: `DEBUG=true pnpm screenshot`
 5. **Adjust padding settings** for specific sections that need more context
 
 ## 🔄 Design Versioning and Comparison
@@ -415,16 +396,12 @@ The screenshot system includes an automated pixel diff tool for visual regressio
 
 ```bash
 # Basic diff test (uses 2% threshold)
-pnpm docs:screenshot:diff
+pnpm screenshot:diff
 
-# Keep all diff images (even passed tests)
-pnpm docs:screenshot:diff:verbose
-
-# Test specific components
-pnpm docs:screenshot:diff:components=try-jods-section,framework-section-react
-
-# Custom threshold (5% by default)
-pnpm docs:screenshot:diff:threshold=0.05
+# Test with custom options
+pnpm screenshot:diff -- --verbose               # Keep all diff images
+pnpm screenshot:diff -- --components=try-jods-section,framework-section-react
+pnpm screenshot:diff -- --threshold=0.05        # Use 5% threshold
 ```
 
 The pixel diff tool:
@@ -438,9 +415,9 @@ The pixel diff tool:
 
 This creates a powerful workflow:
 
-1. Establish baseline screenshots with `pnpm docs:screenshot:unified:baseline`
+1. Establish baseline screenshots with `pnpm screenshot:baseline`
 2. Make design changes or code updates
-3. Run `pnpm docs:screenshot:diff` to detect visual regressions
+3. Run `pnpm screenshot:diff` to detect visual regressions
 4. Review diff images in the `diffs` folder to see highlighted changes
 5. Only update baselines when intentionally changing designs
 
