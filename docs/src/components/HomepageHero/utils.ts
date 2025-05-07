@@ -62,7 +62,7 @@ export const themeEmojis = [
   "🕰️", // time-travel
   "📦", // package/store
   "⚡", // lightning/speed
-  "🪞", // snapshot/json
+  "📷", // snapshot/json
   "💾", // disk/persistence
   "🏝️", // tanstack reference
   "🐻", // bear/zustand reference

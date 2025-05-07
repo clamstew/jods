@@ -27,7 +27,7 @@ At its core, a Dynamics System:
 1. **📱 Feels Natural**: Uses direct mutations (`user.name = "Burt"`) instead of verbose action dispatchers
 2. **🔄 Reacts Intelligently**: Automatically tracks dependencies and triggers updates
 3. **🧮 Computes Effortlessly**: Handles derived values through simple function declarations
-4. **🪞 Snapshots Seamlessly**: Creates consistent, serializable snapshots of application state
+4. **📷 Snapshots Seamlessly**: Creates consistent, serializable snapshots of application state
 5. **🧬 Bridges Environments**: Works the same way on client, server, or any JavaScript environment
 
 ## 🔍 How is a Dynamics System Different?

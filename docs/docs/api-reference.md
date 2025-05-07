@@ -32,7 +32,7 @@ counter.count = 1; // Updates the store
 console.log(counter.count); // 1
 ```
 
-### 🪞 `json(store)`
+### 📷 `json(store)`
 
 Returns a deep-cloned plain JSON snapshot of the store, evaluating all computed properties.
 

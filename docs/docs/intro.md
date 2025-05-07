@@ -21,7 +21,7 @@ jods is a tiny state management library designed to be simple, flexible, and pow
 - ☁️ Zero dependencies
 - 🧠 Computed values are built-in
 - ⚡ Works with React/Preact via useSyncExternalStore
-- 🪞 Built-in deep cloning with json()
+- 📷 Built-in deep cloning with json()
 - 🧬 Minimal API, no boilerplate actions or reducers
 - 🧪 Diff detection baked in
 - 🧩 Framework agnostic, but integrates well with React/Preact

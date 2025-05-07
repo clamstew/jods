@@ -18,7 +18,7 @@ A fun, intuitive reactive state library that makes JavaScript objects come alive
 - ☁️ Zero dependencies
 - 🧠 Computed values are built-in
 - ⚡ Works with React/Preact via useSyncExternalStore
-- 🪞 Built-in deep cloning with json()
+- 📷 Built-in deep cloning with json()
 - 🧬 Minimal API, no boilerplate actions or reducers
 - 🔍 Diff detection baked in
 - 🧩 Framework agnostic, but integrates well with React/Preact
@@ -175,7 +175,7 @@ user.mood = "sneaky";
 
 Creates a reactive store object. Direct mutations are tracked.
 
-### 🪞 `json(store)`
+### 📷 `json(store)`
 
 Returns a deep-cloned plain JSON snapshot of the store.
 

@@ -161,7 +161,7 @@ export default function FeatureHighlights(): React.ReactElement {
             link="/intro"
           />
           <Feature
-            icon="🪞"
+            icon="📷"
             title="JSON Snapshots"
             description="Get serializable state snapshots on demand with json() - perfect for APIs, persistence, and time-travel debugging."
             link="/api-reference#-jsonstore"

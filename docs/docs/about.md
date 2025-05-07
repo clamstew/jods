@@ -35,7 +35,7 @@ The project went from concept to implementation in under two weeks, with the add
 
 With so many state management options available, you might wonder why jods needed to exist. The answer lies in its unique combination of features:
 
-- 🪞 **JSON Snapshots**: First-class support for getting serializable snapshots
+- 📷 **JSON Snapshots**: First-class support for getting serializable snapshots
 - 🧮 **Computed Values**: Built-in support for reactive computed properties
 - ✏️ **Direct Mutations**: No actions, reducers, or immutable patterns required
 - 🔌 **Framework Integration**: Deep integrations with React, Preact, and Remix
