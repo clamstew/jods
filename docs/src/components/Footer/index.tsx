@@ -3,10 +3,11 @@ import { FooterLinks } from "./FooterLinks";
 import { FooterMascots } from "./FooterMascots";
 import { FooterCopyright } from "./FooterCopyright";
 import { FooterBackground } from "./FooterBackground";
+import styles from "./Footer.module.css";
 
 export default function Footer(): React.ReactElement {
   return (
-    <footer className="footer" data-testid="jods-footer">
+    <footer className={styles.footer} data-testid="jods-footer">
       {/* Background effects */}
       <FooterBackground />
 
@@ -14,7 +15,7 @@ export default function Footer(): React.ReactElement {
       <FooterLinks />
 
       {/* Signature section */}
-      <div className="footer__signature">
+      <div className={styles.signature}>
         <FooterMascots />
         <FooterCopyright />
       </div>

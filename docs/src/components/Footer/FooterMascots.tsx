@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import styles from "./FooterMascots.module.css";
 
 export function FooterMascots(): React.ReactElement {
   const [interacting, setInteracting] = useState(false);
@@ -8,14 +9,18 @@ export function FooterMascots(): React.ReactElement {
   };
 
   return (
-    <div className={`footer__mascots ${interacting ? "interacting" : ""}`}>
+    <div
+      className={`${styles.mascots} ${interacting ? styles.interacting : ""}`}
+    >
       <span
+        className={styles.mascot}
         onClick={handleInteraction}
         title="Click to make friends with the duck!"
       >
         🐿️
       </span>
       <span
+        className={styles.mascot}
         onClick={handleInteraction}
         title="Click to make friends with the squirrel!"
       >
@@ -24,7 +29,7 @@ export function FooterMascots(): React.ReactElement {
 
       {/* Show sparkle emoji when interacting */}
       {interacting && (
-        <span className="footer__mascots-sparkle" aria-hidden="true">
+        <span className={styles.sparkle} aria-hidden="true">
           ✨
         </span>
       )}

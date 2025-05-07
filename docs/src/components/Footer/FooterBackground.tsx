@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useAnimationState } from "../AnimationPauseControl";
+import styles from "./FooterBackground.module.css";
 
 interface Firefly {
   id: number;
@@ -75,12 +76,12 @@ export function FooterBackground(): React.ReactElement {
   };
 
   return (
-    <div className="footer-background" ref={containerRef} style={{ zIndex: 2 }}>
+    <div className={styles.background} ref={containerRef} style={{ zIndex: 2 }}>
       {/* Actual fireflies */}
       {fireflies.map((fly) => (
         <div
           key={fly.id}
-          className="footer-firefly"
+          className={styles.firefly}
           style={{
             left: `${fly.x}%`,
             top: `${fly.y}%`,
@@ -98,7 +99,7 @@ export function FooterBackground(): React.ReactElement {
       {/* Accessibility: Animation control */}
       <button
         onClick={toggleAnimation}
-        className="footer-animation-control"
+        className={styles.animationControl}
         aria-label={isPaused ? "Play animations" : "Pause animations"}
         title={isPaused ? "Play animations" : "Pause animations"}
       >

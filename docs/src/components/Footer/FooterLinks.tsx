@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "@docusaurus/Link";
 import useBaseUrl from "@docusaurus/useBaseUrl";
+import styles from "./FooterLinks.module.css";
 
 interface FooterColumn {
   title: string;
@@ -60,15 +61,15 @@ const footerColumns: FooterColumn[] = [
 
 export function FooterLinks(): React.ReactElement {
   return (
-    <div className="footer__links">
+    <div className={styles.links}>
       <div className="container">
         <div className="row">
           {footerColumns.map((column, i) => (
             <div key={i} className="col footer__col">
-              <div className="footer__title">{column.title}</div>
-              <ul className="footer__items">
+              <div className={styles.title}>{column.title}</div>
+              <ul className={styles.items}>
                 {column.items.map((item, j) => (
-                  <li key={j} className="footer__item">
+                  <li key={j} className={styles.item}>
                     {item.isExternal ? (
                       <a
                         href={item.to}

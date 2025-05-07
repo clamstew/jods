@@ -5,7 +5,7 @@
  */
 
 /* Import component-specific CSS */
-@import url("./footer.css");
+/* Footer CSS moved to CSS modules */
 @import url("./design-iterations.css");
 /* No need to import HomepageHero styles here as they're imported directly in the component */
 

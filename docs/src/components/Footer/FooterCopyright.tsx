@@ -1,12 +1,13 @@
 import React from "react";
+import styles from "./FooterCopyright.module.css";
 
 export function FooterCopyright(): React.ReactElement {
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="footer__copyright">
+    <div className={styles.copyright}>
       <div>
-        Built with <span className="footer__heart">💚</span> by{" "}
+        Built with <span className={styles.heart}>💚</span> by{" "}
         <a
           href="https://github.com/clamstew"
           target="_blank"
