@@ -83,7 +83,7 @@ function Counter() {
       icon: "💿",
       color: "#e91e63",
       description: "Specialized integration for Remix applications",
-      code: `import { defineStore, withJods, useJodsStore } from 'jods/remix';
+      code: `import { defineStore, withJods, useJodsStore, useJodsForm } from 'jods/remix';
 
 export const counter = defineStore({
   name: 'counter',
@@ -231,6 +231,7 @@ function Counter() {
               width: "auto",
               maxWidth: "100%",
               textAlign: "left",
+              lineHeight: 1,
             }}
           >
             {isBrowser && (
