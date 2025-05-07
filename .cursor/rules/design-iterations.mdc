@@ -91,8 +91,14 @@ open static/screenshots/unified/03-try-jods-section-light-20250507T121424.png
 # View dark theme screenshot
 open static/screenshots/unified/03-try-jods-section-dark-20250507T121424.png
 
-# View code changes in diff file
+# View code changes in diff file - IMPORTANT: Always check both component (.tsx/.jsx) and CSS changes
 cat temp/possible-diffs/03-try-jods-section-20250507T121424.diff
+
+# To specifically examine component code changes only
+grep -A 50 ".tsx\|.jsx" temp/possible-diffs/03-try-jods-section-20250507T121424.diff
+
+# To specifically examine CSS changes only
+grep -A 50 ".css" temp/possible-diffs/03-try-jods-section-20250507T121424.diff
 
 # View the feedback template for the iteration
 open temp/design-iterations/iteration-N/feedback-template.md
