@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import CodeBlock from "@theme/CodeBlock";
+import styles from "./InteractiveDemo.module.css";
 
 // Import only jods core
 import { store, json, computed, onUpdate } from "jods";
@@ -82,28 +83,22 @@ ${JSON.stringify(snapshot, null, 2)}
 
   return (
     <section
-      className="features-container"
+      className={styles.sectionContainer}
       id="try-jods-live"
       data-testid="jods-try-live-section"
     >
       <div className="container">
-        <h2 className="section-title">
+        <h2 className={styles.sectionTitle}>
           🚀 Try jods <span className="gradient-text">live</span> 🧑‍💻
         </h2>
-        <p
-          style={{
-            textAlign: "center",
-            maxWidth: "700px",
-            margin: "0 auto 1rem",
-          }}
-        >
+        <p className={styles.sectionDescription}>
           Edit the values below and see how jods reactively updates with the
           built-in React integration
         </p>
 
-        <div className="demo-container">
-          <div className="controls">
-            <div className="control-group">
+        <div className={styles.demoContainer}>
+          <div className={styles.controls}>
+            <div className={styles.controlGroup}>
               <label>👤 First Name</label>
               <input
                 type="text"
@@ -112,7 +107,7 @@ ${JSON.stringify(snapshot, null, 2)}
               />
             </div>
 
-            <div className="control-group">
+            <div className={styles.controlGroup}>
               <label>👪 Last Name</label>
               <input
                 type="text"
@@ -121,7 +116,7 @@ ${JSON.stringify(snapshot, null, 2)}
               />
             </div>
 
-            <div className="control-group">
+            <div className={styles.controlGroup}>
               <label>🎭 Mood</label>
               <select
                 value={user.mood}
@@ -134,54 +129,25 @@ ${JSON.stringify(snapshot, null, 2)}
               </select>
             </div>
 
-            <div className="instruction-box">
-              <p
-                className="instruction-text"
-                style={{
-                  margin: 0,
-                  fontSize: "1.1rem",
-                  fontWeight: 500,
-                  lineHeight: 1.7,
-                  textAlign: "left",
-                }}
-              >
-                <span
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginBottom: "12px",
-                    fontWeight: 700,
-                  }}
-                >
-                  <span className="instruction-icon">✨</span>
+            <div className={styles.instructionBox}>
+              <p className={styles.instructionText}>
+                <span className={styles.instructionIconWrapper}>
+                  <span className={styles.instructionIcon}>✨</span>
                   <span>Go ahead and change these values!</span>
                 </span>
-                <span
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginBottom: "12px",
-                    fontWeight: 700,
-                  }}
-                >
-                  <span className="instruction-icon">🔍</span>
+                <span className={styles.instructionIconWrapper}>
+                  <span className={styles.instructionIcon}>🔍</span>
                   <span>Then explore the rest of the docs...</span>
                 </span>
-                <span
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    fontWeight: 700,
-                  }}
-                >
-                  <span className="instruction-icon">🪄</span>
+                <span className={styles.instructionIconWrapper}>
+                  <span className={styles.instructionIcon}>🪄</span>
                   <span>Your changes will be here when you return!</span>
                 </span>
               </p>
             </div>
           </div>
 
-          <div className="code-preview">
+          <div className={styles.codePreview}>
             <CodeBlock language="jsx">{code}</CodeBlock>
           </div>
         </div>

@@ -1,6 +1,7 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Mascots from "./Mascots";
 import { useAnimationState } from "../AnimationPauseControl";
+import useIsBrowser from "@docusaurus/useIsBrowser";
 import "./styles.css";
 
 // Existing component imports
@@ -12,7 +13,27 @@ export default function HomepageHero(): React.ReactElement {
   const [mascotsInteracting, setMascotsInteracting] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const { isPaused } = useAnimationState();
-  const isDarkTheme = document.documentElement.dataset.theme === "dark";
+  const isBrowser = useIsBrowser();
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
+
+  // Check theme on client-side only
+  useEffect(() => {
+    if (isBrowser) {
+      setIsDarkTheme(document.documentElement.dataset.theme === "dark");
+
+      // Optional: Add theme change listener
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.attributeName === "data-theme") {
+            setIsDarkTheme(document.documentElement.dataset.theme === "dark");
+          }
+        });
+      });
+
+      observer.observe(document.documentElement, { attributes: true });
+      return () => observer.disconnect();
+    }
+  }, [isBrowser]);
 
   // Handle mascot hover effect
   const handleMascotHover = (_e: React.MouseEvent<HTMLDivElement>) => {
@@ -26,11 +47,13 @@ export default function HomepageHero(): React.ReactElement {
       data-testid="jods-hero-section"
     >
       {/* Background animations (JSON, emojis, fireflies) */}
-      <BackgroundAnimations
-        containerRef={containerRef}
-        isPaused={isPaused}
-        colorMode={isDarkTheme ? "dark" : "light"}
-      />
+      {isBrowser && (
+        <BackgroundAnimations
+          containerRef={containerRef}
+          isPaused={isPaused}
+          colorMode={isDarkTheme ? "dark" : "light"}
+        />
+      )}
 
       {/* Main hero content */}
       <HeroContent />

@@ -1,35 +1,41 @@
 import React, { useState, useEffect } from "react";
 import CodeBlock from "@theme/CodeBlock";
 import styles from "./FrameworkShowcase.module.css";
+import useIsBrowser from "@docusaurus/useIsBrowser";
 
 export default function FrameworkShowcase(): React.ReactElement {
   const [activeFramework, setActiveFramework] = useState("react");
-  const [theme, setTheme] = useState(
-    document.documentElement.getAttribute("data-theme") || "light"
-  );
+  const isBrowser = useIsBrowser();
+  const [theme, setTheme] = useState("light");
 
-  // Listen for theme changes
+  // Listen for theme changes on client-side only
   useEffect(() => {
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (
-          mutation.type === "attributes" &&
-          mutation.attributeName === "data-theme"
-        ) {
-          setTheme(
-            document.documentElement.getAttribute("data-theme") || "light"
-          );
-        }
+    if (isBrowser) {
+      // Initialize theme
+      setTheme(document.documentElement.getAttribute("data-theme") || "light");
+
+      // Observer for theme changes
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (
+            mutation.type === "attributes" &&
+            mutation.attributeName === "data-theme"
+          ) {
+            setTheme(
+              document.documentElement.getAttribute("data-theme") || "light"
+            );
+          }
+        });
       });
-    });
 
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-theme"],
-    });
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["data-theme"],
+      });
 
-    return () => observer.disconnect();
-  }, []);
+      return () => observer.disconnect();
+    }
+  }, [isBrowser]);
 
   const frameworks = {
     react: {
@@ -155,7 +161,7 @@ function Counter() {
                   padding: "1.5rem",
                   borderRadius: "12px",
                   background:
-                    activeFramework === key
+                    isBrowser && activeFramework === key
                       ? key === "react"
                         ? theme === "dark"
                           ? "linear-gradient(145deg, #f97316, #fb923c)"
@@ -173,7 +179,7 @@ function Counter() {
                       ? "white"
                       : "var(--ifm-color-emphasis-900)",
                   boxShadow:
-                    activeFramework === key
+                    isBrowser && activeFramework === key
                       ? key === "react"
                         ? theme === "dark"
                           ? "0 8px 16px rgba(249, 115, 22, 0.25)"
@@ -234,22 +240,24 @@ function Counter() {
             justifyContent: "center",
           }}
         >
-          <div
-            style={{
-              position: "absolute",
-              top: "1rem",
-              right: "1rem",
-              zIndex: 2,
-              fontSize: "0.8rem",
-              padding: "0.25rem 0.75rem",
-              borderRadius: "20px",
-              background: frameworks[activeFramework].color,
-              color: "#fff",
-              fontWeight: "bold",
-            }}
-          >
-            {frameworks[activeFramework].title}
-          </div>
+          {isBrowser && (
+            <div
+              style={{
+                position: "absolute",
+                top: "1rem",
+                right: "1rem",
+                zIndex: 2,
+                fontSize: "0.8rem",
+                padding: "0.25rem 0.75rem",
+                borderRadius: "20px",
+                background: frameworks[activeFramework].color,
+                color: "#fff",
+                fontWeight: "bold",
+              }}
+            >
+              {frameworks[activeFramework].title}
+            </div>
+          )}
           <CodeBlock language="jsx">
             {frameworks[activeFramework].code}
           </CodeBlock>

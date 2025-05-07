@@ -1333,196 +1333,8 @@ div[class^="codeBlockTitle"] {
   border-radius: 2px;
 }
 
-/* Enhanced interactive demo styling */
-.demo-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  margin: 3rem 0;
-  align-items: start;
-}
-
-@media (max-width: 996px) {
-  .demo-container {
-    grid-template-columns: 1fr;
-  }
-}
-
-.controls {
-  display: flex;
-  flex-direction: column;
-  background: var(--ifm-card-background-color);
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-  border: 1px solid var(--ifm-color-emphasis-200);
-}
-
-.control-group {
-  margin-bottom: 1.5rem;
-}
-
-.control-group label {
-  font-size: 1.1rem;
-  margin-bottom: 0.6rem;
-  font-weight: 600;
-  display: block;
-  color: var(--ifm-color-emphasis-900);
-}
-
-.control-group input,
-.control-group select {
-  width: 100%;
-  padding: 0.8rem 1rem;
-  border-radius: 10px;
-  border: 2px solid var(--ifm-color-emphasis-200);
-  background: var(--ifm-background-color);
-  font-size: 1rem;
-  transition: all 0.2s ease;
-}
-
-.control-group input:focus,
-.control-group select:focus {
-  outline: none;
-  border-color: var(--ifm-color-primary);
-  box-shadow: 0 0 0 3px rgba(var(--ifm-color-primary-rgb), 0.2);
-}
-
-.control-group select {
-  appearance: none;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>');
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-  padding-right: 2.5rem;
-}
-
-/* InteractiveDemo code block - remove padding and margin */
-#try-jods-live .code-preview {
-  height: 100%;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
-#try-jods-live .code-preview .prism-code {
-  margin: 0 !important;
-  border-radius: 0 !important;
-  text-align: left;
-  width: 100%;
-}
-
-#try-jods-live .code-preview div[class^="codeBlockContainer"] {
-  margin: 0 !important;
-  width: 100%;
-  margin-bottom: 0px !important;
-}
-
-#try-jods-live .code-preview div[class*="codeBlockContent"] {
-  padding-bottom: 0 !important;
-  margin-bottom: 0 !important;
-  width: 100%;
-}
-
-#try-jods-live pre {
-  text-align: left;
-  width: 100%;
-  margin-bottom: 0 !important;
-}
-
-/* Default code-preview for other sections */
-.code-preview {
-  height: 100%;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-  padding: 1.2rem;
-  margin-bottom: 0;
-}
-
-/* Default code-container for Remix and other sections */
-.code-container {
-  position: relative;
-  overflow: hidden;
-  padding: 1.2rem;
-  margin-bottom: 0;
-  text-align: left;
-}
-
-/* Code container styling refinements - don't duplicate */
-.code-container pre {
-  margin: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-/* Override prism-react-renderer defaults for pre element */
-div[class*="codeBlockContent"] pre {
-  margin: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-/* Code block content should have no extra space */
-.code-container div[class*="codeBlockContent"] {
-  padding-bottom: 0 !important;
-}
-
-.code-container div[class*="codeBlockContent"] > div {
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-}
-
-/* Remove any unexpected elements that might appear in code blocks */
-.code-container div[class*="codeBlockContent"] > div:first-child {
-  margin-top: 0 !important;
-}
-
-.code-container div[class*="codeBlockContent"] > div:last-child {
-  margin-bottom: 0 !important;
-}
-
-.code-container > div:not([class*="codeBlock"]) {
-  display: none;
-}
-
 /* Enhanced instruction box styling */
-.instruction-box {
-  border-radius: 16px !important;
-  margin-bottom: 0 !important;
-  padding: 1.8rem !important;
-  background: linear-gradient(145deg, #2c5282, #0891b2) !important;
-  border: none !important;
-  box-shadow: 0 8px 30px rgba(8, 145, 178, 0.2) !important;
-}
-
-/* Dark mode instruction box styling */
-[data-theme="dark"] .instruction-box {
-  background: linear-gradient(145deg, #a75a6b, #c26a5a) !important;
-  box-shadow: 0 8px 30px rgba(194, 106, 90, 0.2) !important;
-}
-
-/* Instruction box content styling */
-.instruction-text {
-  color: white !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
-}
-
-/* Instruction icons styling */
-.instruction-icon {
-  font-size: 1.3rem !important;
-  margin-right: 10px !important;
-  display: inline-block !important;
-}
-
-/* Enhanced icons in instruction box */
-.instruction-box span span:first-child {
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
-  transition: transform 0.3s ease;
-}
-
-.instruction-box:hover span span:first-child {
-  transform: scale(1.1);
-}
+/* Removed instruction-box styling that were moved to InteractiveDemo.module.css */
 
 /* Framework showcase tab styling */
 .tab {
@@ -1610,18 +1422,6 @@ div[class*="codeBlockContent"] pre {
   box-shadow: 0 4px 12px rgba(194, 106, 90, 0.25);
 }
 
-/* Basic code block styling */
-.prism-code {
-  border-radius: var(--code-block-border-radius) !important;
-  box-shadow: var(--code-block-shadow) !important;
-  margin: 1.5rem 0 !important;
-  padding: 1.2rem !important;
-  padding-bottom: 0 !important;
-  font-size: 0.9rem !important;
-  line-height: 1.6 !important;
-  text-align: left !important;
-}
-
 /* Global code block alignment fixes */
 pre,
 code {
@@ -1634,14 +1434,12 @@ div[class*="codeBlockContainer"] {
   width: 100%;
 }
 
-.code-container,
-.code-preview {
+.code-container {
   text-align: left !important;
 }
 
 /* Prevent any unwanted margins in code blocks */
-.code-container div[class*="codeBlockContent"] pre,
-.code-preview div[class*="codeBlockContent"] pre {
+.code-container div[class*="codeBlockContent"] pre {
   margin-bottom: 0 !important;
 }
 
@@ -1675,4 +1473,16 @@ body div[class*="codeBlockContainer"]::after {
   content: "";
   margin-bottom: 0px !important;
   display: block;
+}
+
+/* Basic code block styling */
+.prism-code {
+  border-radius: var(--code-block-border-radius) !important;
+  box-shadow: var(--code-block-shadow) !important;
+  margin: 1.5rem 0 !important;
+  padding: 1.2rem !important;
+  padding-bottom: 0 !important;
+  font-size: 0.9rem !important;
+  line-height: 1.6 !important;
+  text-align: left !important;
 }
