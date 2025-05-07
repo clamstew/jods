@@ -1,6 +1,6 @@
 ---
 description: Guidelines for using the design iterations workflow for UI components
-globs: ["**/*.{tsx,jsx,js,ts}", "**/*.css", "**/*.md"]
+globs: ["docs/src/components/**/*.{tsx,jsx,js,ts}", "docs/src/components/**/*.css", "docs/temp/**/*.diff"]
 alwaysApply: false
 ---
 # Design Iterations System
@@ -58,6 +58,36 @@ open docs/static/screenshots/unified/03-try-jods-section-light-{timestamp}.png
 
 # Wait for screenshot to complete before making next design change
 ```
+
+## <critical> Component + CSS Coordination Requirements </critical>
+
+When implementing design iterations, both component code and CSS must be coordinated:
+
+1. **Synchronized Updates**:
+   - Always modify both the component (TSX/JSX) and CSS files together
+   - New UI elements in components need corresponding CSS styles
+   - Removing UI elements requires cleaning up associated CSS
+
+2. **Post-Application Linter Check**:
+   - After applying changes, immediately check for linter errors
+   - Common issues after UI changes:
+     - Unused variables (e.g., removed tabs but state variables remain)
+     - Unused imports (e.g., removed features but imports remain)
+
+3. **Variable Cleanup Protocol**:
+   ```jsx
+   // BEFORE: Component with UI feature that will be replaced
+   const [activeTab, setActiveTab] = useState("input");
+   const jsonView = JSON.stringify(snapshot, null, 2);
+   
+   // AFTER: When replacing with different UI
+   // Remove or update the variables that are no longer needed
+   ```
+
+4. **Testing After Changes**:
+   - Verify component renders correctly after changes
+   - Check browser console for React errors
+   - Test component functionality in both light and dark themes
 
 ## <critical> Working with Historical Iterations </critical>
 
@@ -143,6 +173,29 @@ Create a record of timestamps and iteration features in your notes:
 
 Selected and applied: Iteration 3 (20250507T125201)
 ```
+
+## <critical> Post-Application Integration Testing </critical>
+
+After applying a design iteration, perform these critical verification steps:
+
+1. **Linter Error Check**:
+   - Check the component and CSS files for any linter errors
+   - Fix unused variables, imports, and style classes
+
+2. **Component Rendering Test**:
+   - Verify the component renders correctly in the browser
+   - Test in both light and dark modes
+   - Check responsiveness at different viewport sizes
+
+3. **Functional Testing**:
+   - Test all interactive elements (buttons, inputs, tabs)
+   - Verify all state changes and transitions work
+   - Confirm computed values display correctly
+
+4. **Error Inspection**:
+   - Open browser console and check for React errors
+   - Fix any rendering issues or broken UI elements
+   - Ensure no warnings about missing dependencies
 
 ## <critical> Screenshot Verification and Context Persistence </critical>
 
@@ -273,6 +326,37 @@ pnpm screenshot:diff                # Compare screenshots
      <div className={styles.stateIndicator}>Current State: {activeTab}</div>
    )}
    ```
+
+## <critical> Analyzing Design Iterations </critical>
+
+When reviewing design iterations, analyze both visual and code aspects:
+
+1. **Component Structure Changes**:
+   - How has the component's JSX/TSX structure changed?
+   - What UI elements were added, removed, or reorganized?
+   - How does the component hierarchy affect functionality?
+
+2. **CSS/Styling Changes**:
+   - What visual styling approaches were used?
+   - How are colors, spacing, and typography handled?
+   - What responsive design techniques are implemented?
+
+3. **Interaction Model**:
+   - How does the user interact with the component?
+   - What state management approach is used?
+   - How are transitions and animations implemented?
+
+Example analysis commands:
+```bash
+# Examine component structure changes
+grep -A 50 ".tsx" docs/temp/possible-diffs/03-try-jods-section-20250507T120735.diff
+
+# Examine styling changes
+grep -A 50 ".css" docs/temp/possible-diffs/03-try-jods-section-20250507T120735.diff
+
+# Compare with browser view to understand the relationship between code and visual output
+open docs/static/screenshots/unified/03-try-jods-section-light-20250507T120735.png
+```
 
 ## <critical> End of Iteration Review Workflow </critical>
 
@@ -596,6 +680,11 @@ The screenshot system uses Playwright to:
 - Check if there are errors in the terminal output
 - Verify the target component name is correct
 - Check data-testid attribute in component matches target name
+
+**Linter errors after applying a design iteration:**
+- Check for unused variables (e.g., removed UI but state variables remain)
+- Check for missing props or invalid JSX structure
+- Fix errors immediately before continuing with the next iteration
 
 ## <required> Multiple Iterations Workflow </required>
 
