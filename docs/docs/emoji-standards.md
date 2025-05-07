@@ -14,7 +14,7 @@ This document outlines the standardized emoji usage across jods documentation an
 | 📦    | **Store/State**     | Core state containers and storage-related functionality |
 | 🧠    | **Computed Values** | All references to computed values and derived state     |
 | 🔄    | **Reactivity**      | Reactive updates, subscriptions, and state changes      |
-| 🪞    | **Snapshots**       | For `json()` and serialization functionality            |
+| 📷    | **Snapshots**       | For `json()` and serialization functionality            |
 | 🔍    | **Diff Detection**  | Diffing and comparison functionality                    |
 | 🕰️    | **Time-Travel**     | History and time-travel debugging features              |
 | 👂    | **Subscriptions**   | Listeners and subscription mechanisms like `onUpdate`   |
@@ -83,7 +83,7 @@ onUpdate(myStore, (newState) => {
   console.log("State updated!");
 });
 
-// 🪞 Snapshot
+// 📷 Snapshot
 const snapshot = json(myStore);
 
 // 🔍 Diff detection

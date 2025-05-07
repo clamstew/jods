@@ -17,10 +17,14 @@ export default function ComparisonTable(): React.ReactElement {
             textAlign: "center",
             maxWidth: "700px",
             margin: "0 auto 2rem",
+            fontSize: "1.1rem",
+            fontWeight: "500",
+            background: "linear-gradient(90deg, #9d4edd, #00b4d8)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
           }}
         >
-          See how jods stacks up against other popular state management
-          libraries
+          Digital lightweight champion — punching far above its byte size 🥊
         </p>
 
         <div className={styles.container}>
