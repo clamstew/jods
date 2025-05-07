@@ -1,6 +1,6 @@
 ---
 description: Guidelines for using the design iterations workflow for UI components
-globs: ["docs/src/components/**/*.{tsx,jsx,js,ts}", "docs/src/components/**/*.css", "docs/temp/**/*.diff"]
+globs: ["**/*.{tsx,jsx,js,ts}", "**/*.css", "**/*.md"]
 alwaysApply: false
 ---
 # Design Iterations System
@@ -197,29 +197,49 @@ This progressive approach allows rapid visual exploration before investing in co
 
 ## <critical> Capturing Alternative States </critical>
 
-For components with important state variations, use this simplified approach:
+For components with important state variations, you need to capture each distinct visual state separately:
 
 1. **Primary State Screenshot**:
    - Capture the default/main view of the component
    - Use standard naming: `component-name-theme-TIMESTAMP.png`
 
-2. **Alternative State Screenshots** (only for dramatic visual differences):
-   - Create alt state by adding a descriptive suffix to filename
-   - Example: `03-try-jods-section-light-alt-after-click-TIMESTAMP.png`
-   - No need for separate feedback templates or diff files
+2. **Alternative State Screenshots** (for interactive components):
+   - First interact with the component in the browser 
+     - Click buttons or tabs
+     - Change form inputs
+     - Expand collapsed elements
+   - Then capture a new screenshot of this different visual state
+   - Use descriptive naming: `component-name-theme-alt-state-description-TIMESTAMP.png`
 
-3. **Document State Changes**:
-   - Note different states in your feedback template
-   - Describe what triggers the state change
-   - Reference the alt state screenshot
+3. **Document State Interactions**:
+   - Note in your feedback template what interactions trigger each state
+   - Document the visual differences between states
+   - Reference all state screenshots for a complete view of component behavior
 
 ```bash
-# Capture main state first
+# First capture the default state
+cd docs
 pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="Design with default state" --skip-other-sections
 
-# Then manually rename the alt state screenshot after capturing it
-cp docs/static/screenshots/unified/03-try-jods-section-light-20250507T121424.png docs/static/screenshots/unified/03-try-jods-section-light-alt-clicked-20250507T121424.png
+# Note the timestamp from the generated screenshot (e.g., 20250507T121424)
+# Then manually interact with the component in the browser
+# For example: click a tab, submit a form, or expand a section
+
+# Capture the component in its new state with a new timestamp
+pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="Design after clicking tab 2" --skip-other-sections
+
+# The system will generate a new screenshot with a new timestamp
+# You can use descriptive file naming to organize multiple states
+mv docs/static/screenshots/unified/03-try-jods-section-light-20250507T121555.png \
+   docs/static/screenshots/unified/03-try-jods-section-light-alt-tab2-clicked-20250507T121555.png
 ```
+
+For components with complex interactions like the "Try jods" section:
+- Capture separate screenshots for each tab state
+- Capture before/after states for button clicks
+- Capture expanded/collapsed states for interactive elements
+
+These multiple state screenshots provide a complete view of how the component behaves with user interaction.
 
 ## <critical> Screenshot Verification and Context Persistence </critical>
 
@@ -372,7 +392,7 @@ After completing each design iteration, follow these steps to document and revie
    ## Design Timeline
    
    | Iteration | Timestamp      | Key Changes          | Status      |
-   |-----------|----------------|----------------------|-------------|
+   |-----|----|----|----|
    | 1         | 20250507T121424| Initial tabbed design| Reviewed    |
    | 2         | 20250507T123056| Gradient backgrounds | Approved    |
    | 3         | 20250507T125201| Refined animations   | Applied     |
