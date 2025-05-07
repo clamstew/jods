@@ -382,7 +382,10 @@ export default function TodosPage() {
       <div className={styles.footer}>
         <a href="/jods/remix" className={styles.remixButton}>
           <span className={styles.remixButtonIcon}>💿</span>
-          Explore Remix Integration
+          <span className={styles.buttonTextDesktop}>
+            Explore Remix Integration
+          </span>
+          <span className={styles.buttonTextMobile}>Remix Guide</span>
         </a>
         <a
           href="https://rubyonrails.org/doctrine"
@@ -391,7 +394,10 @@ export default function TodosPage() {
           className={styles.railsButton}
         >
           <span className={styles.railsButtonIcon}>💎</span>
-          Learn About Active Record
+          <span className={styles.buttonTextDesktop}>
+            Learn About Active Record
+          </span>
+          <span className={styles.buttonTextMobile}>Active Record</span>
         </a>
       </div>
     </section>

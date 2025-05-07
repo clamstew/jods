@@ -1295,14 +1295,19 @@ html[data-theme="light"] .codeContainer::after {
 
   .footer {
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
+    width: 100%;
+    padding: 0;
   }
 
   .remixButton,
   .railsButton {
     width: 100%;
-    max-width: 220px;
+    max-width: none;
     margin-bottom: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .tabTextDesktop {
@@ -1310,6 +1315,14 @@ html[data-theme="light"] .codeContainer::after {
   }
 
   .tabTextMobile {
+    display: inline;
+  }
+
+  .buttonTextDesktop {
+    display: none;
+  }
+
+  .buttonTextMobile {
     display: inline;
   }
 }
@@ -1360,6 +1373,20 @@ html[data-theme="light"] .codeContainer::after {
 
   .featureContent p {
     font-size: 0.85rem;
+  }
+
+  .remixButton,
+  .railsButton {
+    padding: 0.9rem 1rem;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .remixButtonIcon,
+  .railsButtonIcon {
+    margin-right: 8px;
   }
 }
 
@@ -1683,5 +1710,13 @@ html[data-theme="dark"] .tabsContainer {
 }
 
 .tabTextMobile {
+  display: none;
+}
+
+.buttonTextDesktop {
+  display: inline;
+}
+
+.buttonTextMobile {
   display: none;
 }
