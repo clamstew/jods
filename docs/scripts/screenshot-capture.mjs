@@ -917,6 +917,9 @@ export const captureManager = {
         fs.mkdirSync(debugDir, { recursive: true });
       }
 
+      // Get current timestamp for the filename
+      const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+
       // Get HTML content of the component
       const htmlContent = await page.evaluate(() => {
         const element = document.activeElement;
@@ -942,9 +945,10 @@ export const captureManager = {
       if (htmlContent) {
         const debugFilePath = path.join(
           debugDir,
-          `${component.name}-${theme}-debug.html`
+          `${component.name}-${theme}-debug-${timestamp}.html`
         );
         let debugContent = `<h1>${component.name} Debug (${theme} theme)</h1>`;
+        debugContent += `<h2>Timestamp: ${timestamp}</h2>`;
         debugContent += `<h2>Full HTML</h2><pre>${htmlContent.html
           .replace(/</g, "&lt;")
           .replace(/>/g, "&gt;")}</pre>`;

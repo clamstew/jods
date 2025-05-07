@@ -282,18 +282,90 @@ function createMetadata(
 ) {
   console.log("📝 Creating metadata for iteration");
 
+  // Get detailed timestamp information
+  const now = new Date();
+  const isoTimestamp = now.toISOString();
+  const readableTimestamp = new Date().toLocaleString();
+  const formattedTimestamp = timestamp.toString();
+
+  // Extract design approach keywords from changes
+  const designKeywords = new Set();
+  const changedFiles = new Set();
+  changes.forEach((change) => {
+    change.changes.forEach((c) => {
+      // Extract keywords from change descriptions
+      const description = c.change.toLowerCase();
+      if (description.includes("color") || description.includes("background"))
+        designKeywords.add("color scheme");
+      if (description.includes("flex") || description.includes("grid"))
+        designKeywords.add("layout");
+      if (description.includes("anim") || description.includes("transition"))
+        designKeywords.add("animations");
+      if (description.includes("font") || description.includes("text"))
+        designKeywords.add("typography");
+      if (description.includes("shadow") || description.includes("elevation"))
+        designKeywords.add("shadows");
+      if (description.includes("border") || description.includes("radius"))
+        designKeywords.add("borders");
+      if (description.includes("gradient")) designKeywords.add("gradients");
+      if (description.includes("responsive")) designKeywords.add("responsive");
+      changedFiles.add(c.file);
+    });
+  });
+
+  // Build file paths for screenshots and debug HTML
+  const artifactPaths = {};
+  targets.forEach((target) => {
+    artifactPaths[target] = {
+      lightScreenshot: `docs/static/screenshots/unified/${target}-light-${timestamp}.png`,
+      darkScreenshot: `docs/static/screenshots/unified/${target}-dark-${timestamp}.png`,
+      lightDebugHtml: `docs/static/debug/${target}-light-debug-${isoTimestamp.replace(
+        /[:.]/g,
+        "-"
+      )}.html`,
+      darkDebugHtml: `docs/static/debug/${target}-dark-debug-${isoTimestamp.replace(
+        /[:.]/g,
+        "-"
+      )}.html`,
+      diffPath: diffInfo[target]?.diffPath || null,
+    };
+  });
+
   const metadata = {
     iteration,
-    timestamp: new Date().toISOString(),
+    timestamp: {
+      iso: isoTimestamp,
+      readable: readableTimestamp,
+      formatted: formattedTimestamp,
+    },
     targets,
     screenshotTimestamp: timestamp,
+    designApproach: {
+      keywords: Array.from(designKeywords),
+      description: "Design approach summary - to be filled by AI or designer",
+      primaryFocus:
+        designKeywords.size > 0
+          ? Array.from(designKeywords)[0]
+          : "general improvements",
+    },
     changes: changes.map((change) => ({
       component: change.target,
       description: change.changes.map((c) => c.change).join("; "),
       files: change.changes.map((c) => c.file),
       reasoning: "Placeholder reasoning - would come from AI",
     })),
+    changedFiles: Array.from(changedFiles),
     diffInfo: diffInfo,
+    artifactPaths,
+    previousIterationsContext:
+      iteration > 1
+        ? {
+            comparedToPrevious:
+              "Placeholder for comparison to previous iterations",
+            iterationProgression: `This is iteration ${iteration} in the sequence`,
+            buildingUpon: [],
+          }
+        : null,
     config,
     evaluation: {
       // These would be filled in by the evaluation process
@@ -308,6 +380,55 @@ function createMetadata(
       notes: null,
     },
   };
+
+  // Try to load previous iteration's metadata to build context if this isn't the first iteration
+  if (iteration > 1) {
+    try {
+      const previousIterationDir = path.join(
+        iterationsDir,
+        `iteration-${iteration - 1}`
+      );
+      const previousMetadataPath = path.join(
+        previousIterationDir,
+        "metadata.json"
+      );
+
+      if (fs.existsSync(previousMetadataPath)) {
+        const previousMetadata = JSON.parse(
+          fs.readFileSync(previousMetadataPath, "utf8")
+        );
+
+        // Build upon previous keywords
+        if (
+          previousMetadata.designApproach &&
+          previousMetadata.designApproach.keywords
+        ) {
+          const prevKeywords = new Set(
+            previousMetadata.designApproach.keywords
+          );
+          metadata.previousIterationsContext.buildingUpon =
+            Array.from(prevKeywords);
+
+          // Add keywords that appeared in previous iterations but not this one
+          prevKeywords.forEach((keyword) => {
+            if (!designKeywords.has(keyword)) {
+              metadata.designApproach.keywords.push(`previous:${keyword}`);
+            }
+          });
+        }
+
+        // Add progression context
+        if (previousMetadata.screenshotTimestamp) {
+          metadata.previousIterationsContext.previousTimestamp =
+            previousMetadata.screenshotTimestamp;
+        }
+      }
+    } catch (error) {
+      console.log(
+        `Note: Could not load previous iteration metadata: ${error.message}`
+      );
+    }
+  }
 
   return metadata;
 }
@@ -327,6 +448,110 @@ function saveMetadata(metadata, iterationDir) {
 function createFeedbackTemplate(iteration, targets, timestamp, iterationDir) {
   const templatePath = path.join(iterationDir, "feedback-template.md");
 
+  // Try to get design approach info from previous iterations for context
+  let designContext = "";
+  let previousIterationLinks = "";
+
+  if (iteration > 1) {
+    try {
+      const previousIterationDir = path.join(
+        iterationsDir,
+        `iteration-${iteration - 1}`
+      );
+      const previousMetadataPath = path.join(
+        previousIterationDir,
+        "metadata.json"
+      );
+
+      if (fs.existsSync(previousMetadataPath)) {
+        const previousMetadata = JSON.parse(
+          fs.readFileSync(previousMetadataPath, "utf8")
+        );
+
+        // Add info about previous design approach
+        if (
+          previousMetadata.designApproach &&
+          previousMetadata.designApproach.keywords
+        ) {
+          const prevKeywords =
+            previousMetadata.designApproach.keywords.join(", ");
+          designContext = `\n## Previous Design Context\n\nIteration ${
+            iteration - 1
+          } focused on: **${prevKeywords}**\n\nThis iteration builds upon or contrasts with the previous approach.`;
+        }
+
+        // Add links to previous screenshots
+        previousIterationLinks = `\n### Previous Iteration (${
+          iteration - 1
+        }) Screenshots\n`;
+        targets.forEach((target) => {
+          if (
+            previousMetadata.artifactPaths &&
+            previousMetadata.artifactPaths[target]
+          ) {
+            const paths = previousMetadata.artifactPaths[target];
+            previousIterationLinks += `- ${target}:\n`;
+            previousIterationLinks += `  - [Light Theme](${paths.lightScreenshot})\n`;
+            previousIterationLinks += `  - [Dark Theme](${paths.darkScreenshot})\n`;
+          }
+        });
+      }
+    } catch (error) {
+      console.log(
+        `Note: Could not load previous iteration data for feedback template: ${error.message}`
+      );
+    }
+  }
+
+  // Get current metadata for timestamp and path references
+  let metadataPath = path.join(iterationDir, "metadata.json");
+  let screenshotPaths = "";
+
+  try {
+    if (fs.existsSync(metadataPath)) {
+      const metadata = JSON.parse(fs.readFileSync(metadataPath, "utf8"));
+      if (metadata.artifactPaths) {
+        targets.forEach((target) => {
+          if (metadata.artifactPaths[target]) {
+            const paths = metadata.artifactPaths[target];
+            screenshotPaths += `\n### ${target}\n`;
+            screenshotPaths += `- Light theme: [${paths.lightScreenshot}](${paths.lightScreenshot})\n`;
+            screenshotPaths += `- Dark theme: [${paths.darkScreenshot}](${paths.darkScreenshot})\n`;
+
+            // Add debug HTML references
+            screenshotPaths += `- Debug HTML:\n`;
+            screenshotPaths += `  - [Light debug](${paths.lightDebugHtml})\n`;
+            screenshotPaths += `  - [Dark debug](${paths.darkDebugHtml})\n`;
+
+            // Add diff path if available
+            if (paths.diffPath) {
+              screenshotPaths += `- Changes: [Diff file](${paths.diffPath})\n`;
+            }
+          }
+        });
+      }
+    }
+  } catch (error) {
+    console.log(
+      `Note: Could not load current metadata for feedback template: ${error.message}`
+    );
+    // Fallback to generic paths if metadata loading fails
+    targets.forEach((target) => {
+      screenshotPaths += `\n### ${target}\n`;
+      screenshotPaths += `- Light theme: [Path to light theme screenshot]\n`;
+      screenshotPaths += `- Dark theme: [Path to dark theme screenshot]\n`;
+    });
+  }
+
+  // If we couldn't load paths from metadata, use the generic fallback
+  if (screenshotPaths === "") {
+    targets.forEach((target) => {
+      screenshotPaths += `\n### ${target}\n`;
+      screenshotPaths += `- Light theme: [Path to light theme screenshot]\n`;
+      screenshotPaths += `- Dark theme: [Path to dark theme screenshot]\n`;
+    });
+  }
+
   const template = `# Design Iteration Feedback (Iteration ${iteration})
 
 ## Session Information
@@ -334,14 +559,28 @@ function createFeedbackTemplate(iteration, targets, timestamp, iterationDir) {
 - **Date:** ${new Date().toISOString().split("T")[0]}
 - **Components:** ${targets.join(", ")}
 - **Timestamp:** ${timestamp}
+- **Context:** ${
+    iteration > 1
+      ? `This is iteration ${iteration} in the sequence`
+      : "This is the first iteration"
+  }
+${designContext}
 
-## Screenshots
+## Screenshots${screenshotPaths}
+${previousIterationLinks}
+
+## Detailed Feedback
 
 ${targets
   .map(
     (target) => `### ${target}
-- Light theme: [Path to light theme screenshot]
-- Dark theme: [Path to dark theme screenshot]
+
+#### Visual Assessment
+- **Color scheme:** [Effective, Needs adjustment, etc]
+- **Layout:** [Effective, Needs adjustment, etc]
+- **Typography:** [Effective, Needs adjustment, etc]
+- **Spacing:** [Effective, Needs adjustment, etc]
+- **Visual hierarchy:** [Effective, Needs adjustment, etc]
 
 #### Feedback
 - **What works well:**
@@ -354,8 +593,12 @@ ${targets
   - 
   - 
 
-- **General notes:**
-  
+- **Comparison to previous iterations:** ${
+      iteration > 1
+        ? "(How does this compare to previous versions?)"
+        : "(First iteration)"
+    }
+  - 
 
 #### Rating: [1-10]
 
@@ -363,12 +606,42 @@ ${targets
   )
   .join("\n")}
 
+## Design Progression
+
+### Key Changes in This Iteration
+- 
+- 
+- 
+
+### Comparison to Previous Iterations
+${
+  iteration > 1
+    ? `- How this iteration improves upon iteration ${iteration - 1}:`
+    : "- This is the first iteration"
+}
+  - 
+  - 
+
+### Visual Timeline
+- Iteration 1${
+    iteration > 1
+      ? " → " +
+        Array.from(
+          { length: iteration - 1 },
+          (_, i) => `Iteration ${i + 2}`
+        ).join(" → ")
+      : ""
+  }
+
 ## Summary and Decision
 
-### Overall Preferences
+### Overall Assessment
 - **Favorite component design:**
 - **Best visual elements:**
   - 
+  - 
+  - 
+- **Areas needing improvement:**
   - 
   - 
 
