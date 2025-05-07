@@ -299,7 +299,9 @@ export default function TodosPage() {
                 setActiveFeature(null);
               }}
             >
-              <span className={styles.tabIcon}>💿</span> Traditional Remix
+              <span className={styles.tabIcon}>💿</span>
+              <span className={styles.tabTextDesktop}>Traditional Remix</span>
+              <span className={styles.tabTextMobile}>Traditional</span>
             </button>
             <button
               className={`${styles.tab} ${
@@ -310,7 +312,11 @@ export default function TodosPage() {
                 setActiveFeature(null);
               }}
             >
-              <span className={styles.tabIcon}>🐿️</span> 1. jods: Define Model
+              <span className={styles.tabIcon}>🐿️</span>
+              <span className={styles.tabTextDesktop}>
+                1. jods: Define Model
+              </span>
+              <span className={styles.tabTextMobile}>1. Model</span>
             </button>
             <button
               className={`${styles.tab} ${
@@ -321,7 +327,11 @@ export default function TodosPage() {
                 setActiveFeature(null);
               }}
             >
-              <span className={styles.tabIcon}>🦆</span> 2. jods: Use Component
+              <span className={styles.tabIcon}>🦆</span>
+              <span className={styles.tabTextDesktop}>
+                2. jods: Use Component
+              </span>
+              <span className={styles.tabTextMobile}>2. Component</span>
             </button>
           </div>
 
