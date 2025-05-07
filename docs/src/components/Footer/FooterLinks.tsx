@@ -65,7 +65,7 @@ export function FooterLinks(): React.ReactElement {
       <div className="container">
         <div className="row">
           {footerColumns.map((column, i) => (
-            <div key={i} className="col footer__col">
+            <div key={i} className={`col ${styles.column}`}>
               <div className={styles.title}>{column.title}</div>
               <ul className={styles.items}>
                 {column.items.map((item, j) => (

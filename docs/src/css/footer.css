@@ -51,8 +51,3 @@
 [data-theme="dark"] .footer__heart::before {
   content: "🧡";
 }
-
-/* Support class used in FooterLinks.tsx */
-.footer__col {
-  margin-bottom: 2rem;
-}

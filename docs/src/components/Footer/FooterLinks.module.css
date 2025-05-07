@@ -94,3 +94,8 @@
   color: var(--jods-orange-light);
   text-shadow: 0 0 8px rgba(255, 163, 26, 0.5);
 }
+
+/* Footer column styling */
+.column {
+  margin-bottom: 2rem;
+}
