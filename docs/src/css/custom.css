@@ -686,3 +686,36 @@ article .markdown h1 {
 }
 
 /* Rest of existing CSS... */
+
+/* Global Animation Pause Control
+   This ensures ALL animations site-wide respond to the animation pause mechanism */
+html.animations-paused *,
+html.animations-paused *::before,
+html.animations-paused *::after {
+  animation-play-state: paused !important;
+  transition: none !important;
+}
+
+/* Ensure specific animation classes also honor the pause state for complete coverage */
+html.animations-paused [class*="animation"],
+html.animations-paused [class*="animate"],
+html.animations-paused [class*="pulse"],
+html.animations-paused [class*="float"],
+html.animations-paused [class*="bounce"],
+html.animations-paused [class*="spin"],
+html.animations-paused [class*="shimmer"],
+html.animations-paused [class*="glow"],
+html.animations-paused [class*="fade"],
+html.animations-paused [class*="slide"],
+html.animations-paused [class*="wave"],
+html.animations-paused [class*="rotate"],
+html.animations-paused [class*="flicker"],
+html.animations-paused [class*="blink"],
+html.animations-paused [class*="move"] {
+  animation-play-state: paused !important;
+}
+
+/* Prevent any CSS transitions during paused state */
+html.animations-paused * {
+  transition-property: none !important;
+}
