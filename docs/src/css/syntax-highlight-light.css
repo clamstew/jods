@@ -1,0 +1,221 @@
+/* Custom syntax highlighting for light mode only - FUN EDITION! */
+:root:not([data-theme="dark"]) {
+  --syntax-color-keyword: #0891b2; /* Cyan */
+  --syntax-color-function: #0ea5e9; /* Light blue */
+  --syntax-color-string: #059669; /* Emerald */
+  --syntax-color-number: #0d9488; /* Teal */
+  --syntax-color-boolean: #0284c7; /* Blue */
+  --syntax-color-comment: #64748b; /* Slate */
+  --syntax-color-class: #0284c7; /* Blue */
+  --syntax-color-property: #059669; /* Emerald */
+  --syntax-color-punctuation: #334155; /* Slate */
+  --syntax-color-operator: #0891b2; /* Cyan */
+  --syntax-color-variable: #0ea5e9; /* Light blue */
+  --syntax-color-background: rgba(
+    248,
+    250,
+    252,
+    0.8
+  ); /* Slightly transparent background */
+  --syntax-highlight-line: rgba(
+    14,
+    165,
+    233,
+    0.1
+  ); /* Light blue highlight for emphasized lines */
+}
+
+/* Apply custom syntax highlighting colors for light mode only */
+:root:not([data-theme="dark"]) .token.keyword,
+:root:not([data-theme="dark"]) .token.atrule,
+:root:not([data-theme="dark"]) .token.important {
+  color: var(--syntax-color-keyword);
+  font-weight: 700;
+}
+
+:root:not([data-theme="dark"]) .token.function,
+:root:not([data-theme="dark"]) .token.function-variable {
+  color: var(--syntax-color-function);
+  font-weight: 700;
+}
+
+:root:not([data-theme="dark"]) .token.string,
+:root:not([data-theme="dark"]) .token.char,
+:root:not([data-theme="dark"]) .token.attr-value,
+:root:not([data-theme="dark"]) .token.regex,
+:root:not([data-theme="dark"]) .token.url {
+  color: var(--syntax-color-string);
+}
+
+:root:not([data-theme="dark"]) .token.number,
+:root:not([data-theme="dark"]) .token.constant,
+:root:not([data-theme="dark"]) .token.symbol,
+:root:not([data-theme="dark"]) .token.deleted {
+  color: var(--syntax-color-number);
+}
+
+:root:not([data-theme="dark"]) .token.boolean {
+  color: var(--syntax-color-boolean);
+  font-weight: 700;
+}
+
+:root:not([data-theme="dark"]) .token.comment,
+:root:not([data-theme="dark"]) .token.prolog,
+:root:not([data-theme="dark"]) .token.doctype,
+:root:not([data-theme="dark"]) .token.cdata {
+  color: var(--syntax-color-comment);
+  font-style: italic;
+}
+
+:root:not([data-theme="dark"]) .token.class-name {
+  color: var(--syntax-color-class);
+  font-weight: 700;
+}
+
+:root:not([data-theme="dark"]) .token.tag,
+:root:not([data-theme="dark"]) .token.selector,
+:root:not([data-theme="dark"]) .token.selector .class,
+:root:not([data-theme="dark"]) .token.selector.class,
+:root:not([data-theme="dark"]) .token.builtin {
+  color: var(--syntax-color-property);
+}
+
+:root:not([data-theme="dark"]) .token.property {
+  color: var(--syntax-color-property);
+}
+
+:root:not([data-theme="dark"]) .token.punctuation {
+  color: var(--syntax-color-punctuation);
+}
+
+:root:not([data-theme="dark"]) .token.operator {
+  color: var(--syntax-color-operator);
+}
+
+:root:not([data-theme="dark"]) .token.entity,
+:root:not([data-theme="dark"]) .token.variable,
+:root:not([data-theme="dark"]) .token.attr-name {
+  color: var(--syntax-color-variable);
+}
+
+/* Boost the specificity to override Docusaurus defaults */
+:root:not([data-theme="dark"]) .theme-code-block .token.keyword,
+:root:not([data-theme="dark"]) .theme-code-block .token.function,
+:root:not([data-theme="dark"]) .theme-code-block .token.string,
+:root:not([data-theme="dark"]) .theme-code-block .token.boolean,
+:root:not([data-theme="dark"]) .theme-code-block .token.number,
+:root:not([data-theme="dark"]) .theme-code-block .token.operator,
+:root:not([data-theme="dark"]) .theme-code-block .token.punctuation,
+:root:not([data-theme="dark"]) .theme-code-block .token.property,
+:root:not([data-theme="dark"]) .theme-code-block .token.variable {
+  color: inherit;
+}
+
+/* Fun animated background for code blocks in light mode */
+:root:not([data-theme="dark"]) div[class^="codeBlockContainer"] {
+  background: linear-gradient(
+    120deg,
+    rgba(248, 250, 252, 0.9),
+    rgba(240, 253, 250, 0.9)
+  );
+  border: 1px solid rgba(8, 145, 178, 0.2);
+  box-shadow: 0 4px 16px rgba(8, 145, 178, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Fun subtle gradient animation for code blocks */
+:root:not([data-theme="dark"]) div[class^="codeBlockContainer"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    rgba(8, 145, 178, 0.05) 0%,
+    rgba(6, 182, 212, 0.05) 25%,
+    rgba(20, 184, 166, 0.05) 50%,
+    rgba(16, 185, 129, 0.05) 75%,
+    rgba(5, 150, 105, 0.05) 100%
+  );
+  background-size: 200% 200%;
+  animation: gradientShift 15s ease infinite;
+  z-index: 0;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Custom highlighted line background */
+:root:not([data-theme="dark"]) .docusaurus-highlighted-code-line {
+  background-color: var(--syntax-highlight-line);
+  display: block;
+  margin: 0 -1rem;
+  padding: 0 1rem;
+  border-left: 3px solid var(--syntax-color-function);
+}
+
+/* Fun styling for code block titles */
+:root:not([data-theme="dark"]) div[class^="codeBlockTitle"] {
+  background: linear-gradient(
+    90deg,
+    rgba(8, 145, 178, 0.1),
+    rgba(20, 184, 166, 0.1)
+  );
+  border-bottom: 1px solid rgba(8, 145, 178, 0.15);
+  color: var(--syntax-color-keyword);
+  font-weight: 600;
+}
+
+/* Direct color overrides with stronger specificity to ensure they're applied */
+:root:not([data-theme="dark"]) code span.token.keyword {
+  color: #0891b2 !important; /* Cyan */
+}
+
+:root:not([data-theme="dark"]) code span.token.function {
+  color: #0ea5e9 !important; /* Light blue */
+}
+
+:root:not([data-theme="dark"]) code span.token.string {
+  color: #059669 !important; /* Emerald */
+}
+
+:root:not([data-theme="dark"]) code span.token.number {
+  color: #0d9488 !important; /* Teal */
+}
+
+:root:not([data-theme="dark"]) code span.token.boolean {
+  color: #0284c7 !important; /* Blue */
+}
+
+:root:not([data-theme="dark"]) code span.token.comment {
+  color: #64748b !important; /* Slate */
+}
+
+:root:not([data-theme="dark"]) code span.token.operator {
+  color: #0891b2 !important; /* Cyan */
+}
+
+:root:not([data-theme="dark"]) code span.token.punctuation {
+  color: #334155 !important; /* Slate */
+}
+
+:root:not([data-theme="dark"]) code span.token.class-name {
+  color: #0284c7 !important; /* Blue */
+}
+
+:root:not([data-theme="dark"]) code span.token.variable {
+  color: #0ea5e9 !important; /* Light blue */
+}
