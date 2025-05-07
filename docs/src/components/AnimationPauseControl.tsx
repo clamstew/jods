@@ -80,8 +80,8 @@ export function AnimationProvider({ children }) {
   );
 }
 
-// The global animation control button is no longer needed
-// as we'll have local buttons in the hero and footer sections
+// The global animation control button is not needed
+// as we'll use the control button in the footer
 export default function AnimationPauseControl(): React.ReactElement | null {
   return null;
 }

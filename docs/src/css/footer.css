@@ -465,32 +465,3 @@
     transform: scale(0.9);
   }
 }
-
-/* Footer animation control button */
-.footer-animation-control {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  z-index: 10;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(2px);
-  padding: 6px;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  opacity: 0.6;
-  pointer-events: auto;
-}
-
-.footer-animation-control:hover {
-  opacity: 1;
-  transform: scale(1.1);
-  background: rgba(255, 255, 255, 0.25);
-}
