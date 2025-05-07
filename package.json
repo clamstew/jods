@@ -1,6 +1,6 @@
 {
   "name": "jods",
-  "version": "0.1.2",
+  "version": "1.1.0",
   "description": "A minimal, reactive JSON state layer for Node.js and the browser",
   "type": "module",
   "main": "./dist/index.js",
@@ -21,6 +21,11 @@
       "import": "./dist/preact.js",
       "require": "./dist/preact.cjs",
       "types": "./dist/preact.d.ts"
+    },
+    "./remix": {
+      "import": "./dist/remix.js",
+      "require": "./dist/remix.cjs",
+      "types": "./dist/remix.d.ts"
     }
   },
   "files": [
@@ -33,11 +38,23 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "lint": "eslint \"src/**/*.ts\"",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "prepublishOnly": "npm run build",
     "docs:dev": "cd docs && pnpm start",
     "docs:build": "cd docs && pnpm build",
-    "docs:deploy": "cd docs && GIT_USER=clamstew pnpm deploy"
+    "docs:deploy": "cd docs && GIT_USER=clamstew pnpm deploy",
+    "docs:screenshot": "cd docs && pnpm screenshot",
+    "docs:screenshot:baseline": "cd docs && pnpm screenshot:baseline",
+    "docs:screenshot:diff": "cd docs && pnpm screenshot:diff",
+    "docs:screenshot:cleanup": "cd docs && pnpm screenshot:cleanup",
+    "docs:design-iterations": "cd docs && pnpm design-iterations",
+    "docs:design-iterations:count-3": "cd docs && pnpm design-iterations:count-3",
+    "docs:design-iterations:count-5": "cd docs && pnpm design-iterations:count-5",
+    "docs:design-iterations:apply": "cd docs && pnpm design-iterations:apply",
+    "docs:design-iterations:status": "cd docs && pnpm design-iterations:status",
+    "docs:design-iterations:cleanup": "cd docs && pnpm design-iterations:cleanup",
+    "docs:verify-changes": "cd docs && node scripts/verify-design-changes.mjs",
+    "docs:verify-changes:latest": "cd docs && node scripts/verify-design-changes.mjs --open"
   },
   "keywords": [
     "state",
@@ -50,25 +67,30 @@
   "license": "MIT",
   "packageManager": "pnpm@10.8.0",
   "devDependencies": {
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/preact": "^3.2.4",
-    "@testing-library/react": "^16.3.0",
-    "@types/node": "^22.15.1",
-    "@types/react": "^19.1.2",
+    "@babel/core": "^7.24.10",
+    "@rollup/plugin-babel": "^6.1.0",
+    "@rollup/plugin-commonjs": "^26.0.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@types/node": "^20.12.10",
+    "@types/react": "^19.1.0",
     "@typescript-eslint/eslint-plugin": "^7.1.0",
     "@typescript-eslint/parser": "^7.1.0",
     "@vitest/coverage-v8": "^1.2.2",
     "eslint": "^8.57.0",
     "jsdom": "^26.1.0",
+    "open": "^10.1.2",
     "preact": "^10.26.5",
     "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "terser": "^5.39.0",
     "typescript": "^5.3.3",
     "vite": "^5.1.4",
     "vite-plugin-dts": "^3.7.2",
-    "vitest": "^1.2.2"
+    "vitest": "^1.2.2",
+    "zod": "^3.24.3"
   },
   "peerDependencies": {
+    "@remix-run/react": ">=1.0.0",
     "preact": ">=10.0.0",
     "react": ">=16.8.0"
   },
@@ -77,6 +99,9 @@
       "optional": true
     },
     "preact": {
+      "optional": true
+    },
+    "@remix-run/react": {
       "optional": true
     }
   }

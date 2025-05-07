@@ -2,26 +2,26 @@
 sidebar_position: 6
 ---
 
-# Maintainer's Guide
+# 🛠️ Maintainer's Guide 🐿️ 🦆
 
 This guide outlines all the places that need to be updated when adding a new feature to jods.
 
-## Checklist for Adding New Features
+## ✅ Checklist for Adding New Features
 
 When adding a new feature to jods, make sure to update all of these components:
 
-### 1. Core Implementation
+### 🧩 1. Core Implementation
 
 - [ ] Add the feature implementation in `src/`
 - [ ] Export the feature in `src/index.ts`
 - [ ] Add type definitions for the feature
 
-### 2. Testing
+### 🧪 2. Testing
 
 - [ ] Add unit tests in `src/__tests__/`
 - [ ] Update existing tests if the feature changes current behavior
 
-### 3. Documentation
+### 📚 3. Documentation
 
 - [ ] Update the README.md:
 
@@ -34,27 +34,106 @@ When adding a new feature to jods, make sure to update all of these components:
   - Add a dedicated documentation page for significant features
   - Update the API reference page
   - Add examples showing the feature in action
+  - Follow the [Emoji Standards Guide](./emoji-standards) for consistent emoji usage
+  - Take [screenshots](./playwright-screenshots) of updated pages for visual review
 
-### 4. Examples
+### 💡 4. Examples
 
 - [ ] Add an example file in the `examples/` directory
 - [ ] Ensure the example is well-commented and shows best practices
 
-### 5. Framework Integration
+### 🔌 5. Framework Integration
 
 If the feature interacts with frameworks:
 
-- [ ] Update React integration in `src/react/`
-- [ ] Update Preact integration in `src/preact/`
+- [ ] Update React integration in `src/react/` ⚛️
+- [ ] Update Preact integration in `src/preact/` ⚡️
+- [ ] Update Remix integration in `src/remix/` 💿
 - [ ] Add examples showing framework integration
 
-## Common Gotchas
+## 🎨 Documentation Site Animation System
+
+The documentation site includes interactive animations to showcase jods's reactive features. To ensure accessibility, we provide animation controls for users who prefer reduced motion.
+
+### Animation Control Architecture 🎮
+
+We use a global React Context (`AnimationContext`) to synchronize animation state across components:
+
+1. Animation state is managed in `AnimationProvider` in `docs/src/components/AnimationPauseControl.tsx`
+2. Control buttons are placed in two key locations:
+   - Bottom right corner of the hero section
+   - Bottom right corner of the footer
+
+### Guidelines for Animation Features ✨
+
+When adding new animated components to the documentation site:
+
+1. Use the animation context by importing:
+
+   ```jsx
+   import { useAnimationState } from "../components/AnimationPauseControl";
+
+   function MyComponent() {
+     const { isPaused, toggleAnimation } = useAnimationState();
+     // ...
+   }
+   ```
+
+2. For significant animation sections, add a local control button in the bottom right corner:
+
+   ```jsx
+   <button
+     onClick={toggleAnimation}
+     className="animation-control-button"
+     aria-label={isPaused ? "Play animations" : "Pause animations"}
+     title={isPaused ? "Play animations" : "Pause animations"}
+   >
+     {isPaused ? (
+       <svg>...</svg> // Play icon
+     ) : (
+       <svg>...</svg> // Pause icon
+     )}
+   </button>
+   ```
+
+3. For CSS animations, check the `isPaused` state and apply conditional styles:
+
+   ```jsx
+   <div
+     style={{
+       animationPlayState: isPaused ? "paused" : "running",
+     }}
+   />
+   ```
+
+4. For JavaScript animations, respect the paused state in animation loops:
+
+   ```js
+   const animate = () => {
+     if (isPaused) {
+       requestAnimationFrame(animate);
+       return;
+     }
+
+     // Animation code
+     requestAnimationFrame(animate);
+   };
+   ```
+
+5. Always consider reduced motion preferences and follow established patterns in the codebase.
+
+### User Preferences 🔄
+
+- Animation state is stored in localStorage as `jods-animations-paused`
+- The site also respects the OS-level `prefers-reduced-motion` setting
+
+## ⚠️ Common Gotchas
 
 - When adding a new export, make sure it's included in both ESM and CJS builds
 - Don't forget to update TypeScript types and interfaces
 - Keep the bundle size minimal - consider whether the feature should be in the core or a separate module
 
-## Documentation Site Updates
+## 🌐 Documentation Site Updates
 
 After making local changes to the documentation:
 
@@ -64,9 +143,17 @@ After making local changes to the documentation:
    pnpm run docs:dev
    ```
 
-2. The GitHub Action will automatically deploy the updated docs when changes are pushed to the main branch.
+2. Take screenshots of key pages for visual review:
 
-## Version Bumping
+   ```bash
+   pnpm docs:screenshot:homepage
+   ```
+
+   See the [Documentation Screenshots Guide](./playwright-screenshots) for details.
+
+3. The GitHub Action will automatically deploy the updated docs when changes are pushed to the main branch.
+
+## 🔢 Version Bumping
 
 When ready to release a new version:
 
@@ -75,11 +162,11 @@ When ready to release a new version:
 3. Tag the release in git
 4. Publish to npm
 
-# jods Feature Implementation Rule
+# 📋 jods Feature Implementation Rule
 
-You're helping add a new feature to jods (JSON On Demand Store), a minimal reactive state library. When implementing a new feature:
+You're helping add a new feature to jods (JavaScript Object Dynamics System 🐿️ 🦆), a minimal reactive state library. When implementing a new feature:
 
-## Required Updates
+## 📝 Required Updates
 
 1. Add core implementation in src/ directory
 2. Export the feature from src/index.ts
@@ -95,10 +182,11 @@ You're helping add a new feature to jods (JSON On Demand Store), a minimal react
    - Update API reference
 7. Add examples in examples/ directory
 8. For framework integration:
-   - Update src/react/ (if applicable)
-   - Update src/preact/ (if applicable)
+   - Update src/react/ ⚛️ (if applicable)
+   - Update src/preact/ ⚡️ (if applicable)
+   - Update src/remix/ 💿 (if applicable)
 
-## Style Guidelines
+## 🎨 Style Guidelines
 
 - Keep core functionality small and focused
 - Maintain zero dependencies

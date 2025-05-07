@@ -80,8 +80,8 @@ describe("useJods", () => {
   it("should handle computed properties", async () => {
     // Create store with basic properties first
     const testStore = store<ComputedTestStore>({
-      firstName: "John",
-      lastName: "Doe",
+      firstName: "Burt",
+      lastName: "Macklin",
     });
 
     // Add a computed property
@@ -96,12 +96,13 @@ describe("useJods", () => {
     }
 
     render(<ComputedComponent />);
-    expect(screen.getByTestId("full-name").textContent).toBe("John Doe");
+    expect(screen.getByTestId("full-name").textContent).toBe("Burt Macklin");
 
     // Update within act - should trigger computed property update
     await act(async () => {
-      testStore.firstName = "Jane";
+      testStore.firstName = "Michael";
+      testStore.lastName = "Scarn";
     });
-    expect(screen.getByTestId("full-name").textContent).toBe("Jane Doe");
+    expect(screen.getByTestId("full-name").textContent).toBe("Michael Scarn");
   });
 });

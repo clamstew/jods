@@ -1,0 +1,170 @@
+---
+description: Comprehensive guidelines for the design iterations workflow for UI components
+globs: ["**/*.{tsx,jsx,js,ts}", "**/*.css", "**/*.md"]
+alwaysApply: false
+---
+# Design Iterations Workflow
+
+This is a **procedural guide** focused on the exact steps to follow when implementing design iterations. For conceptual understanding and detailed explanations, see `design-iterations.mdc`.
+
+## <critical> Step 1: Start Dev Server </critical>
+
+```bash
+# Terminal 1: Start the development server first
+cd docs
+pnpm dev
+
+# Verify server is running by visiting http://localhost:3000
+# WAIT until you see "Compiled successfully" in the terminal
+```
+
+## <critical> Step 2: Modify Component </critical>
+
+```bash
+# Terminal 2: Edit the component files
+# Edit both component code AND corresponding CSS:
+#   docs/src/components/YourComponent.tsx
+#   docs/src/components/YourComponent.module.css
+
+# SAVE all changes
+```
+
+## <critical> Step 3: Verify Changes </critical>
+
+```bash
+# After saving changes:
+# 1. Wait for rebuild (may take 1+ minutes)
+# 2. Refresh browser if needed
+# 3. VISUALLY CONFIRM changes appear in browser
+
+# If changes don't appear:
+# - Force refresh with Ctrl+Shift+R
+# - Check console for errors
+# - Restart dev server if needed
+```
+
+## <critical> Step 4: Capture Screenshot </critical>
+
+```bash
+# Only after visually confirming changes in browser:
+cd docs
+pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="Your design description" --skip-other-sections
+```
+
+## <critical> Step 5: Verify Screenshot </critical>
+
+```bash
+# Immediately check that the screenshot was created and shows your changes:
+open docs/static/screenshots/unified/03-try-jods-section-light-{timestamp}.png
+
+# If screenshot doesn't show your changes:
+# - Wait longer for changes to appear in browser
+# - Repeat Steps 3-4
+```
+
+## <critical> Step 6: Document Iteration </critical>
+
+```bash
+# Record the timestamp for reference:
+echo "Latest iteration: $(date +%Y%m%dT%H%M%S)" >> my-design-notes.md
+
+# Document the changes in the feedback template:
+open docs/temp/design-iterations/iteration-N/feedback-template.md
+```
+
+## <critical> Step 7: Repeat for Additional Iterations </critical>
+
+```bash
+# IMPORTANT: Make new design changes before capturing next iteration
+# Repeat Steps 2-6 for EACH iteration
+# NEVER run multiple iterations at once (don't use count-N where N>1)
+```
+
+## <required> Command Reference </required>
+
+### Basic Commands
+
+```bash
+# Create a single design iteration
+pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="Your design description" --skip-other-sections
+
+# Check status of all iterations
+pnpm design-iterations:status
+
+# Apply a specific design iteration
+pnpm design-iterations:apply --iteration=2 --target="03-try-jods-section"
+
+# ONLY when explicitly requested by user:
+pnpm design-iterations:cleanup
+```
+
+### Component Names (Must Use Numbered Format)
+
+- `01-hero-section` (NOT just "hero-section")
+- `02-features-section`
+- `03-try-jods-section`
+- `04-framework-section-react`
+- `04-framework-section-remix`
+- `05-remix-section`
+- `06-compare-section`
+- `07-footer-section`
+
+## <critical> Troubleshooting Quick Reference </critical>
+
+1. **Server Already Running**
+   - Error: `Something is already running on port 3000`
+   - Fix: Say Yes to different port OR kill existing: `pkill -f docusaurus`
+
+2. **Missing Script**
+   - Error: `ERR_PNPM_NO_SCRIPT_OR_SERVER`
+   - Fix: You're in wrong directory, run `cd docs` first
+
+3. **Component Not Found**
+   - Fix: Use numbered format: `03-try-jods-section` (not just "try-jods-section")
+   - Check data-testid attribute matches exactly
+
+4. **Changes Not Showing**
+   - Fix: Wait longer, force refresh (Ctrl+Shift+R), check console, restart server
+
+5. **Linter Errors After Apply**
+   - Fix: Clean up unused variables, imports, CSS classes
+
+## <required> Alternative State Capture Procedure </required>
+
+For components with different states (tabs, expandable sections, etc.):
+
+1. **Capture default state** first:
+   ```bash
+   pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="Default state design" --skip-other-sections
+   ```
+
+2. **Interact with component** in browser:
+   - Click tabs, buttons, form elements
+   - Focus on actions that cause major visual changes
+
+3. **Capture alternative state**:
+   ```bash
+   pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="After clicking tab 2" --skip-other-sections
+   ```
+
+4. **Document the interaction** that produced each state
+
+Follow this process for each iteration's default AND alternative states.
+
+## <critical> Final Iteration Verification </critical>
+
+After selecting your final design iteration:
+
+1. **Mark as approved** in metadata:
+   - Edit `temp/design-iterations/iteration-N/metadata.json`
+   - Change `"status": "pending review"` to `"status": "approved"`
+
+2. **Apply the iteration**:
+   ```bash
+   pnpm design-iterations:apply --iteration=N --target="03-try-jods-section"
+   ```
+
+3. **Verify functionality**:
+   - Test in both light and dark modes
+   - Check for console errors
+   - Fix any linter errors or warnings 

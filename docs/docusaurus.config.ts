@@ -6,7 +6,8 @@ import type * as Preset from "@docusaurus/preset-classic";
 
 const config: Config = {
   title: "jods",
-  tagline: "JSON On Demand Store",
+  tagline:
+    "JavaScript Object Dynamics System - A fun, intuitive reactive state library",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
@@ -67,8 +68,8 @@ const config: Config = {
     navbar: {
       title: "jods",
       logo: {
-        alt: "jods Logo",
-        src: "img/logo.svg",
+        alt: "jods Logo with Squirrel and Duck",
+        src: "img/simple-jods-mascots-logo.png", // Using the squirrel and duck illustration
       },
       items: [
         {
@@ -78,6 +79,7 @@ const config: Config = {
           label: "Docs",
         },
         { to: "/blog", label: "Blog", position: "left" },
+        { to: "/about", label: "About", position: "left" },
         {
           href: "https://github.com/clamstew/jods",
           label: "GitHub",
@@ -89,46 +91,64 @@ const config: Config = {
       style: "dark",
       links: [
         {
-          title: "Docs",
+          title: "DOCUMENTATION",
           items: [
             {
-              label: "Getting Started",
+              label: "📖 Getting Started",
               to: "/intro",
+            },
+            {
+              label: "ℹ️ About jods",
+              to: "/about",
+            },
+            {
+              label: "🧩 API Reference",
+              to: "/api-reference",
             },
           ],
         },
         {
-          title: "Community",
+          title: "COMMUNITY",
           items: [
             {
-              label: "GitHub Discussions",
+              label: "💬 Discussions",
               href: "https://github.com/clamstew/jods/discussions",
             },
             {
-              label: "GitHub Issues",
+              label: "🐛 Issues",
               href: "https://github.com/clamstew/jods/issues",
+            },
+            {
+              label: "👨‍💻 Creator",
+              href: "https://x.com/clay_stewart",
             },
           ],
         },
         {
-          title: "More",
+          title: "RESOURCES",
           items: [
             {
-              label: "Blog",
+              label: "📝 Blog",
               to: "/blog",
             },
             {
-              label: "GitHub",
+              label: "🐙 GitHub",
               href: "https://github.com/clamstew/jods",
             },
             {
-              label: "npm",
+              label: "📦 npm",
               href: "https://www.npmjs.com/package/jods",
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} jods contributors. Built with Docusaurus.`,
+      copyright: `<div class="footer__signature">
+        <div class="footer__mascots"><span>🐿️</span><span>🦆</span></div>
+        <div class="footer__copyright">
+          Built with <span class="footer__heart">♥</span> by <a href="https://github.com/clamstew">clamstew</a><br />
+          Copyright © ${new Date().getFullYear()} jods contributors
+        </div>
+      </div>`,
     },
     prism: {
       theme: prismThemes.github,

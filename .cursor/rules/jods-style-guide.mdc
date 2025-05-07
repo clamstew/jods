@@ -1,0 +1,158 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# JODS Style Guide
+
+## Brand Essence 🧠
+
+JODS is a state management library with an identity that blends **technical excellence** with **playful confidence**. Our aesthetic combines:
+
+- Digital-first innovation culture
+- Cyberpunk neon vibes
+- Developer-friendly approachability
+- Modern AI-native sensibilities
+
+## Voice & Tone 🔊
+
+### Core Voice Attributes
+
+- **Confident but never arrogant**: We know our tech is powerful, but we're here to empower, not intimidate
+- **Vibrant & energetic**: Code can be fun, and we reflect that
+- **Technically precise**: No fluff when explaining functionality
+- **Slightly irreverent**: We don't take ourselves too seriously
+- **Future-oriented**: We speak as if we're already living in tomorrow's tech ecosystem
+
+### Authentic Humor
+
+- Aim for genuinely unexpected or clever wordplay, not forced puns
+- Reference developer culture and insider jokes that resonate
+- Use contrast between technical precision and casual delivery
+- Don't be afraid of being slightly absurd or self-deprecating
+- Avoid corporate-sounding humor or AI-generated "safe" jokes
+- When in doubt, be specific and weird rather than generic and bland
+
+### Sentence Structure
+
+- Prefer short, punchy sentences for headlines and feature highlights
+- Use em-dashes (—) for dramatic pauses or contrasts
+- Mix technical specificity with playful metaphors
+
+### Word Choices
+
+**DO USE:**
+- Byte-sized, lightweight, nimble
+- Brilliant, intelligent, reactive
+- Seamless, intuitive, frictionless
+- Crafted, engineered, architected
+- Next-gen, cutting-edge, forward-thinking
+
+**AVOID:**
+- Heavyweight, complex, difficult
+- Traditional, conventional, standard
+- Clunky, awkward, complicated
+- Generic tech marketing speak ("solution", "robust", etc.)
+- AI-generated sounding platitudes and clichés
+
+## Typography & Formatting ✏️
+
+- Use **bold** for emphasis on key technical features
+- Apply `code formatting` liberally for all API references
+- Employ gradients for section headlines and important callouts
+- Lean into emoji as visual punctuation, not just decoration
+
+## Visual Aesthetics 🎨
+
+### Color Palette
+
+**Light Mode:**
+- **Primary**: Electric purple (#9d4edd) → Neon cyan (#00b4d8)
+- **Secondary**: Sunset orange (#ff7e5f) → Warm amber (#feb47b)
+- **Accents**: Neon pink (#ff00ff), Electric blue (#00ffff)
+- **Background**: Clean white (#ffffff) with subtle gradients
+- **Text**: Deep space (#121212)
+- **Syntax Highlights**: See syntax-highlight-light.css
+
+**Dark Mode:**
+- **Primary**: Vibrant purple (#b74dff) → Bright cyan (#0dcaf0)
+- **Secondary**: Warm orange (#ff9e5e) → Amber glow (#ffca80)
+- **Accents**: Hot pink (#ff50ff), Electric blue (#40ffff)
+- **Background**: Deep space (#121212) with subtle depth
+- **Text**: Moonlight silver (#f0f0f0)
+- **Syntax Highlights**: See syntax-highlight-dark.css
+
+### Design Elements
+
+- Subtle gradients as backgrounds
+- Neon-like glows for interactive elements
+- Card-based layouts with soft shadows
+- Animated micro-interactions where appropriate
+
+## Emoji Usage 🌟
+
+Emojis aren't just decoration—they're part of our information architecture:
+
+- 🔥 For performance claims
+- 🧠 For intelligence/computing concepts
+- 🚀 For speed/optimization claims
+- 💿 For persistence/storage features
+- ⚡ For reactivity/signal features
+- 🪶 For lightweight/small bundle features
+- ✨ For enhanced developer experience
+- 🔄 For synchronization/updating features
+- 📷 For snapshots/serialization features (preferred over 🪞)
+
+**Important**: For comprehensive emoji usage guidelines, refer to our main [Emoji Standards Guide](../docs/docs/emoji-standards.md). When there are differences between this style guide and the standards doc, the standards doc should be considered authoritative.
+
+**Emoji Tips:**
+- Use emojis purposefully and consistently, not randomly
+- Pair related concepts with the same emoji across different pages
+- Don't overload a single paragraph with too many emojis
+- Consider accessibility (some users use screen readers)
+- Emoji combinations (like 🔥🧠) should be used sparingly
+
+## Example Messaging by Section
+
+### Homepage Hero
+
+**Old/Boring**: "A state management library for JavaScript applications"  
+**JODS Style**: "Reactive state at warp speed — byte-sized brilliance for the AI era ⚡"
+
+### Feature Highlights
+
+**Old/Boring**: "Computed values allow you to derive state from existing values"  
+**JODS Style**: "🧠 Neural-like computation — derive values with telepathic reactivity"
+
+### API Methods
+
+**Old/Boring**: "The json() method returns a serialized copy of the store"  
+**JODS Style**: "📷 `json()` — capture your state into pure data packets, ready for transit or time travel"
+
+### Comparisons
+
+**Old/Boring**: "JODS is smaller than other state management libraries"  
+**JODS Style**: "At 1KB, JODS is practically weightless — the digital feather to their concrete blocks 🪶"
+
+## Examples for Comparison Table Subheading
+
+Here are refined options for the comparison table subheading:
+
+1. "Quantum leaps ahead — while others crawl through digital molasses ⚡"
+2. "The state management matrix — where JODS bends the rules in your favor 🧠"
+3. "State wars: the next generation — how JODS rewrites the playbook ✨"
+4. "Digital lightweight champion — punching far above its byte size 🥊"
+5. "The code less traveled — where minimalism meets maximum potential 🪶"
+
+## Application Guidelines
+
+When applying this style to the codebase:
+
+1. Start with user-facing content (homepage, key marketing sections)
+2. Be consistent with emoji usage across similar concepts
+3. Use gradients judiciously — they should highlight, not overwhelm
+4. Remember: technical accuracy NEVER takes a backseat to style
+
+---
+
+This style guide is a living document. As JODS evolves, so too will its voice and aesthetic.

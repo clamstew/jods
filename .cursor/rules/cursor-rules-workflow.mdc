@@ -1,0 +1,120 @@
+---
+description: Guidelines for working with Cursor rules in this project
+globs: ["**/*.{mdc,md}", ".cursor/rules/**/*"]
+alwaysApply: true
+---
+# Cursor Rules Workflow
+
+When working with Cursor rules in this project:
+
+## Rule Structure
+
+- Cursor rules are stored in `.cursor/rules/` directory as `.mdc` files
+- Each rule must have proper MDC metadata at the top:
+  ```
+  ---
+  description: Brief description of what this rule does
+  globs: ["**/*.{tsx,jsx,js,ts}", "**/*.css", "**/*.md"]
+  alwaysApply: true or false
+  ---
+  ```
+
+## Creating MDC Files with Chat Agents
+
+**IMPORTANT**: When creating or editing MDC files via the chat agent:
+
+1. **ALWAYS include the metadata header** - This is REQUIRED for the rule to function properly
+2. The metadata section MUST include these three fields:
+   - `description`: A brief description of the rule's purpose
+   - `globs`: Array or string pattern for which files the rule applies to
+   - `alwaysApply`: Boolean indicating if rule should apply to all sessions
+3. Ensure the metadata is formatted correctly with triple dashes at the beginning and end
+4. Cursor will NOT recognize the file as a valid rule without this metadata
+5. **NEVER leave a blank line** between the metadata section and the first header - this breaks the formatting
+
+Example of CORRECT metadata:
+```
+---
+description: Guidelines for component design patterns
+globs: ["**/*.{tsx,jsx,js,ts}"]
+alwaysApply: false
+---
+# Heading starts immediately after metadata
+```
+
+## Recommended Update Pattern
+
+When updating an existing rule file:
+
+1. **Create a .new version** of the file instead of editing directly:
+   ```bash
+   # Create a new version
+   edit_file .cursor/rules/rulename.mdc.new
+   
+   # After editing, move it to replace the original
+   mv .cursor/rules/rulename.mdc.new .cursor/rules/rulename.mdc
+   ```
+
+2. This pattern helps when Cursor's editor has difficulty with direct edits to MDC files
+3. Make sure to:
+   - Include the complete metadata section in the new file
+   - Copy over all relevant content
+   - Delete the .new file after moving it
+
+## Specific Glob Patterns
+
+Use specific glob patterns to ensure rules only apply to relevant files:
+
+1. **Directory-specific patterns** - Target only specific directories:
+   ```
+   # Only match files in the docs directory
+   globs: ["docs/**/*.{tsx,jsx,js,ts}", "docs/**/*.css", "docs/**/*.md"]
+   
+   # Only match files in src directory
+   globs: ["src/**/*.{tsx,jsx,js,ts}"]
+   ```
+
+2. **Multiple patterns** - Use arrays for different file types or directories:
+   ```
+   # Match different files in different directories
+   globs: ["docs/**/*.tsx", "src/**/*.ts", "**/*.css"]
+   ```
+
+3. **File type groups** - Group related file extensions:
+   ```
+   # React component files
+   globs: ["**/*.{tsx,jsx}"]
+   
+   # All TypeScript/JavaScript
+   globs: ["**/*.{ts,js,tsx,jsx}"]
+   ```
+
+4. **Exclude patterns** - Use negation (not directly supported, use multiple includes instead):
+   ```
+   # Instead of excluding node_modules, be specific about what to include
+   globs: ["src/**/*.ts", "docs/**/*.ts"]  # Rather than ["**/*.ts", "!node_modules/**"]
+   ```
+
+## Best Practices
+
+1. **NEVER create new markdown files** in the docs directory as a substitute for editing rule files
+2. **Always check if a rule exists** in `.cursor/rules/*.mdc` before creating a new one
+3. **Update existing rules** rather than duplicating content
+4. **Use the `@filename` syntax** to reference supporting files
+5. **Keep rules focused** on a specific aspect of the codebase
+6. **Consolidate glob patterns** for related file types using pattern groups, e.g., `["**/*.{tsx,jsx,js,ts}"]`
+7. **Use directory prefixes** when a rule should only apply to specific parts of the codebase
+
+## Common Issues
+
+- If you can't locate a rule, use `find .cursor -name "*.mdc"` to see all rule files
+- Use proper MDC format with the metadata section (the part between `---` lines)
+- If updating a rule with the editor doesn't work, use the create-and-move pattern described above
+- If a rule isn't being applied, check that the metadata header is complete and correctly formatted
+- If a rule is applied too broadly, make your glob patterns more specific with directory prefixes
+
+## References
+
+For more information on Cursor rules, see the [official documentation](https://docs.cursor.com/context/rules).
+
+@docs/docs/design-iterations/index.md 

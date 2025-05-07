@@ -20,7 +20,7 @@ describe("store", () => {
     testStore.subscribe(mockSubscriber);
 
     testStore.count = 1;
-    expect(mockSubscriber).toHaveBeenCalledWith({ count: 1 });
+    expect(mockSubscriber).toHaveBeenCalledWith({ count: 1 }, { count: 0 });
   });
 
   it("should allow unsubscribing from state changes", () => {

@@ -22,8 +22,8 @@ describe("json", () => {
 
   it("should evaluate computed properties", () => {
     const testStore = store({
-      firstName: "John",
-      lastName: "Doe",
+      firstName: "Burt",
+      lastName: "Macklin",
     });
 
     testStore.fullName = computed(
@@ -32,9 +32,9 @@ describe("json", () => {
 
     const result = json(testStore);
     expect(result).toEqual({
-      firstName: "John",
-      lastName: "Doe",
-      fullName: "John Doe",
+      firstName: "Burt",
+      lastName: "Macklin",
+      fullName: "Burt Macklin",
     });
   });
 
@@ -42,7 +42,7 @@ describe("json", () => {
     const testStore = store({
       user: {
         profile: {
-          name: "John",
+          name: "Burt",
           age: 30,
         },
         settings: {
@@ -55,7 +55,7 @@ describe("json", () => {
     expect(result).toEqual({
       user: {
         profile: {
-          name: "John",
+          name: "Burt",
           age: 30,
         },
         settings: {
@@ -68,21 +68,21 @@ describe("json", () => {
   it("should handle arrays", () => {
     const testStore = store({
       items: [1, 2, 3],
-      users: [{ name: "John" }, { name: "Jane" }],
+      users: [{ name: "Burt" }, { name: "Michael" }],
     });
 
     const result = json(testStore);
     expect(result).toEqual({
       items: [1, 2, 3],
-      users: [{ name: "John" }, { name: "Jane" }],
+      users: [{ name: "Burt" }, { name: "Michael" }],
     });
   });
 
   it("should handle computed values in nested objects", () => {
     const testStore = store<{ user: UserWithDynamicProps }>({
       user: {
-        firstName: "John",
-        lastName: "Doe",
+        firstName: "Burt",
+        lastName: "Macklin",
       },
     });
 
@@ -93,9 +93,9 @@ describe("json", () => {
     const result = json(testStore);
     expect(result).toEqual({
       user: {
-        firstName: "John",
-        lastName: "Doe",
-        fullName: "John Doe",
+        firstName: "Burt",
+        lastName: "Macklin",
+        fullName: "Burt Macklin",
       },
     });
   });

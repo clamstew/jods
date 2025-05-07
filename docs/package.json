@@ -12,13 +12,39 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
+    "screenshot": "node scripts/screenshot-unified.mjs",
+    "screenshot:baseline": "node scripts/screenshot-unified.mjs --baseline",
+    "screenshot:production": "BASE_URL=https://jods.dev node scripts/screenshot-unified.mjs",
+    "screenshot:components": "node scripts/screenshot-unified.mjs --mode=components",
+    "screenshot:diff": "node scripts/screenshot-diff.mjs",
+    "screenshot:cleanup": "node scripts/screenshot-cleanup.mjs",
+    "screenshot:testid": "node scripts/screenshot-unified.mjs --use-generated-selectors",
+    "generate-selectors": "node scripts/generate-selectors.mjs",
+    "rebaseline": "node scripts/rebaseline.mjs",
+    "rebaseline:full": "node scripts/rebaseline.mjs --full",
+    "rebaseline:testid": "node scripts/rebaseline.mjs --testid",
+    "design-iterations:init": "node scripts/design-iterations-init.mjs",
+    "design-iterations": "node scripts/design-iterations.mjs",
+    "design-iterations:count-5": "node scripts/design-iterations.mjs --count=5",
+    "design-iterations:count-3": "node scripts/design-iterations.mjs --count=3",
+    "design-iterations:count-1": "node scripts/design-iterations.mjs --count=1",
+    "design-iterations:apply": "node scripts/design-iterations.mjs --apply",
+    "design-iterations:refine": "node scripts/design-iterations.mjs --count=1 --refine",
+    "design-iterations:status": "node scripts/design-iterations.mjs --status",
+    "design-iterations:cleanup": "node scripts/design-iterations.mjs --cleanup",
+    "design-iterations:clear-cache": "rm -rf ./node_modules/.cache/playwright-cache",
+    "dev": "docusaurus start",
+    "postinstall": "echo 'jods docs installed with pnpm!'"
   },
   "dependencies": {
     "@docusaurus/core": "3.7.0",
     "@docusaurus/preset-classic": "3.7.0",
     "@mdx-js/react": "^3.0.0",
     "clsx": "^2.0.0",
+    "jods": "0.1.2",
     "prism-react-renderer": "^2.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
@@ -27,6 +53,9 @@
     "@docusaurus/module-type-aliases": "3.7.0",
     "@docusaurus/tsconfig": "3.7.0",
     "@docusaurus/types": "3.7.0",
+    "@playwright/test": "^1.52.0",
+    "jest": "^29.7.0",
+    "minimist": "^1.2.8",
     "typescript": "~5.6.2"
   },
   "browserslist": {
@@ -42,6 +71,8 @@
     ]
   },
   "engines": {
-    "node": ">=18.0"
-  }
+    "node": ">=18.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@10.8.0"
 }

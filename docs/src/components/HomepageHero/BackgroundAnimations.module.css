@@ -1,0 +1,53 @@
+/* Faded emoji background elements */
+.fadedEmoji {
+  position: absolute;
+  pointer-events: none;
+  transform-origin: center;
+  z-index: 1;
+  user-select: none;
+}
+
+/* Firefly animation elements */
+.firefly {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  z-index: 2;
+  transform-origin: center;
+}
+
+/* JSON text animation elements */
+.jsonAnimation {
+  position: absolute;
+  pointer-events: none;
+  font-family: monospace;
+  white-space: nowrap;
+  z-index: 1;
+  transform-origin: center;
+  user-select: none;
+}
+
+/* Hero particles (enhanced fireflies) */
+.heroParticle {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  z-index: 2;
+  transform-origin: center;
+  animation: particlePulse 3s infinite alternate ease-in-out;
+}
+
+@keyframes particlePulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+}

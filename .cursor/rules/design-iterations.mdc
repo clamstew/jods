@@ -1,0 +1,575 @@
+---
+description: Guidelines for using the design iterations workflow for UI components
+globs: ["**/*.{tsx,jsx,js,ts}", "**/*.css", "**/*.md"]
+alwaysApply: false
+---
+# Design Iterations System
+
+This guide explains the concepts and principles behind the design iterations system. For a step-by-step procedural workflow, see `design-iterations-workflow.mdc`.
+
+## <critical> System Architecture Overview </critical>
+
+The design iterations system consists of three interconnected processes:
+
+1. **Development Server**: Renders components with your design changes
+2. **Component Modification**: Your changes to component and CSS files
+3. **Screenshot Capture**: Automated process that documents your designs
+
+These processes work together to create a structured design workflow that preserves each iteration, builds context between iterations, and facilitates systematic design exploration and selection.
+
+## <critical> Conceptual Understanding of Artifacts </critical>
+
+The system generates and manages several important artifacts:
+
+### 1. Screenshots
+- Visual snapshots of component designs in light and dark themes
+- Timestamp-based naming: `component-name-theme-{timestamp}.png`
+- Organized in predictable directory structure: `static/screenshots/unified/`
+- Primary artifact for visual design review
+
+### 2. Diff Files
+- Textual record of code changes between iterations
+- Contains both component (TSX/JSX) and CSS changes
+- Critical for understanding implementation details
+- Used for applying designs later
+- Located in: `temp/possible-diffs/component-name-{timestamp}.diff`
+
+### 3. Metadata
+- JSON records tracking iteration attributes
+- Includes timestamp, target, status, and references to other artifacts
+- Located in: `temp/design-iterations/iteration-N/metadata.json`
+- Used for system bookkeeping and iteration tracking
+
+### 4. Feedback Templates
+- Documentation for human design notes
+- Records decisions, rationales, and observations
+- Located in: `temp/design-iterations/iteration-N/feedback-template.md`
+- Essential for building design context between iterations
+
+## <critical> Component Architecture Considerations </critical>
+
+Understanding component architecture is crucial for effective design iterations:
+
+### Component State Management
+
+Interactive components may have multiple visual states controlled by:
+
+1. **State Variables**: React's `useState` hooks manage component state
+   ```jsx
+   const [activeTab, setActiveTab] = useState("input");
+   ```
+
+2. **Event Handlers**: Code that changes state on user interaction
+   ```jsx
+   <button onClick={() => setActiveTab("output")}>Output</button>
+   ```
+
+3. **Conditional Rendering**: JSX that changes based on state
+   ```jsx
+   {activeTab === "input" ? <InputPanel /> : <OutputPanel />}
+   ```
+
+When redesigning components, you need to:
+- Identify these interactive elements and their relationships
+- Preserve state management logic even when changing visuals
+- Ensure new designs accommodate all required states
+
+### CSS Architecture Patterns
+
+Component styling typically follows one of these patterns:
+
+1. **CSS Modules** (Most common)
+   ```jsx
+   import styles from './Component.module.css';
+   <div className={styles.container}>
+   ```
+
+2. **Global CSS**
+   ```jsx
+   import './Component.css';
+   <div className="container">
+   ```
+
+3. **CSS-in-JS**
+   ```jsx
+   <div style={{ display: 'flex', justifyContent: 'center' }}>
+   ```
+
+When making design changes:
+- Identify which pattern the component uses
+- Follow the existing pattern for consistency
+- Ensure class names in component code match CSS definitions
+
+## <critical> Design Iteration Principles </critical>
+
+### Progressive Design Approach
+
+The design iterations system enables a progressive approach to component design:
+
+1. **Exploratory Phase (Iterations 1-3)**
+   - Focus on visual design variations
+   - Incomplete functionality is acceptable
+   - Explore different visual approaches rapidly
+   - Document design decisions in feedback templates
+
+2. **Refinement Phase (Iterations 4-6)**
+   - Focus on a chosen design direction
+   - Improve specific aspects of the chosen approach
+   - Begin implementing interactive functionality
+   - Document refinements and improvements
+
+3. **Finalization Phase (Final Iterations)**
+   - Complete implementation of all functionality
+   - Ensure cross-browser and responsive behavior
+   - Fix any visual or interaction issues
+   - Document final state for reference
+
+### Context Building Between Iterations
+
+Each iteration should build on knowledge from previous iterations:
+
+1. **Documenting Design Insights**
+   - Note what worked or didn't work in each design
+   - Record user feedback if available
+   - Explain design decisions and rationales
+   - Reference specific visual elements by timestamp
+
+2. **Creating a Design Narrative**
+   - Link iterations together in a coherent story
+   - Show how each design addresses issues from previous iterations
+   - Track the evolution of specific design elements
+
+3. **Managing Design Exploration**
+   - Use divergent iterations to explore different approaches
+   - Use convergent iterations to refine a selected approach
+   - Document the selection criteria between approaches
+
+## <critical> Understanding Artifact Timestamps </critical>
+
+Timestamps are the critical linking mechanism between all artifacts:
+
+1. **Timestamp Format**: `YYYYMMDDTHHMMSS` (e.g., `20250507T121424`)
+
+2. **Where Timestamps Appear**:
+   - Screenshot filenames: `component-name-theme-{timestamp}.png`
+   - Diff file paths: `component-name-{timestamp}.diff`
+   - Debug HTML files: `component-name-debug-{timestamp}.html`
+   - Metadata JSON: `"timestamp": "{timestamp}"`
+   - Your documentation notes
+
+3. **Timestamp as Unique Identifier**
+   - Each timestamp represents a distinct design snapshot
+   - Use timestamps to reference specific iterations
+   - Include timestamps in all design documentation
+
+## <required> Working with Historical Iterations </required>
+
+Design iterations create a historical record you can reference, review, and selectively apply.
+
+### Finding and Accessing Artifacts
+
+```bash
+# View all iterations with timestamps
+pnpm design-iterations:status
+
+# Find screenshots by component
+find static/screenshots -name "*03-try-jods-section*"
+
+# Find iterations from specific date
+find static/screenshots -name "*20250507*"
+
+# Find diffs for a component
+find temp -name "*diff*" | grep "03-try-jods-section"
+```
+
+### Comparing Design Approaches
+
+To evaluate different design approaches:
+
+1. **Visual Comparison**
+   ```bash
+   # Compare screenshots side-by-side
+   open static/screenshots/unified/03-try-jods-section-light-20250507T121424.png static/screenshots/unified/03-try-jods-section-light-20250507T123056.png
+   ```
+
+2. **Implementation Comparison**
+   ```bash
+   # Compare code differences
+   cat temp/possible-diffs/03-try-jods-section-20250507T121424.diff
+   cat temp/possible-diffs/03-try-jods-section-20250507T123056.diff
+   ```
+
+3. **Design Documentation Review**
+   ```bash
+   # Review design notes
+   cat temp/design-iterations/iteration-1/feedback-template.md
+   cat temp/design-iterations/iteration-2/feedback-template.md
+   ```
+
+### Documenting Design History
+
+Create organized records of your design explorations:
+
+```markdown
+## Design Iteration History
+
+| Iteration | Timestamp      | Approach       | Key Features             | Status    |
+|-----------|----------------|----------------|--------------------------|-----------|
+| 1         | 20250507T121424| Notebook      | Tabbed interface         | Rejected  |
+| 2         | 20250507T123056| Cards         | Grid layout, animations  | Considered|
+| 3         | 20250507T125201| Notebook+     | Improved tabs, gradients | Selected  |
+| 4         | 20250507T131045| Notebook++ Final| Dark mode support      | Applied   |
+```
+
+This documentation creates a clear record of your design journey and makes it easy to reference specific versions later.
+
+## <critical> Capturing Component States </critical>
+
+Interactive components have multiple visual states that need to be captured:
+
+### Types of Component States
+
+1. **Default State**: How the component appears when first loaded
+2. **User Interaction States**: Appearance after user interactions (clicks, form inputs)
+3. **Data-Dependent States**: Appearance with different data inputs
+4. **Responsive States**: Appearance at different viewport sizes
+5. **Theme States**: Appearance in different themes (light/dark)
+
+### State Identification Process
+
+Before redesigning, analyze the component to identify states:
+
+1. **Code Analysis**
+   - Look for `useState` hooks that control visual elements
+   - Identify event handlers (`onClick`, `onChange`, etc.)
+   - Find conditional rendering (`{condition ? <A> : <B>}`)
+
+2. **UI Interaction Testing**
+   - Interact with the component in browser
+   - Note which elements change appearance
+   - Identify high-impact states (major visual changes)
+
+3. **Progressive State Coverage**
+   - Start with most important/impactful states
+   - Build comprehensive state coverage as design solidifies
+
+### Documenting Multiple States
+
+For each significant state:
+
+1. **Capture state variation**: Take screenshots of each distinct state
+2. **Document interaction path**: Record how to reach each state
+3. **Label states clearly**: Use descriptive names in filenames and documentation
+4. **Include state coverage**: Note which states were tested in each iteration
+
+## <critical> Design Analysis Framework </critical>
+
+When analyzing design iterations, examine these key aspects:
+
+### Component Structure Analysis
+
+Analyze how the JSX/TSX structure affects the design:
+
+```bash
+# Extract component structure changes
+grep -A 50 ".tsx\|.jsx" temp/possible-diffs/03-try-jods-section-20250507T121424.diff
+```
+
+Key questions:
+- How has the component hierarchy changed?
+- What elements were added, removed, or reorganized?
+- How does structure support the intended UX?
+
+### Styling Analysis
+
+Examine CSS approaches and implementation:
+
+```bash
+# Extract styling changes
+grep -A 50 ".css" temp/possible-diffs/03-try-jods-section-20250507T121424.diff
+```
+
+Key questions:
+- What color palette and typography choices were made?
+- How are spacing, layout, and visual hierarchy handled?
+- What responsive techniques are implemented?
+- How are transitions and animations used?
+
+### Interaction Model Analysis
+
+Evaluate how users interact with the component:
+
+Key questions:
+- What feedback does the component provide for user actions?
+- How intuitive are the interaction patterns?
+- How accessible is the interface?
+- How does state management support the interaction model?
+
+## <required> Artifact Management Best Practices </required>
+
+Proper artifact management is critical for effective design iteration:
+
+### 1. Preservation of Artifacts
+
+**IMPORTANT**: Do NOT delete or clean up design artifacts until explicitly requested. These artifacts are essential for:
+
+- Comparing different design approaches
+- Understanding implementation details
+- Building context between iterations
+- Making informed design selections
+- Applying chosen designs
+
+Only run cleanup after:
+1. All iterations have been reviewed
+2. Final design has been selected and applied
+3. Explicit cleanup request: `pnpm docs:design-iterations:cleanup`
+
+### 2. Metadata Structure
+
+Each iteration should have comprehensive metadata:
+
+```json
+{
+  "iteration": 3,
+  "timestamp": "20250507T125201",
+  "target": "03-try-jods-section",
+  "prompt": "Refined notebook with gradient accents",
+  "screenshots": [
+    "03-try-jods-section-light-20250507T125201.png",
+    "03-try-jods-section-dark-20250507T125201.png"
+  ],
+  "diff_path": "temp/possible-diffs/03-try-jods-section-20250507T125201.diff",
+  "status": "pending review",
+  "states_captured": ["default", "tab2-active", "form-submitted"]
+}
+```
+
+### 3. Feedback Documentation
+
+Comprehensive feedback documentation should include:
+
+```markdown
+# Iteration 3: Refined Notebook with Gradient Accents
+
+## Design Approach
+- Enhanced the notebook-style design from Iteration 1
+- Added subtle gradient backgrounds to tabs (blue to purple)
+- Refined typography with improved hierarchy
+- Added animation to tab transitions
+
+## Comparison to Previous Iterations
+- More polished than Iteration 1's basic notebook
+- More cohesive than Iteration 2's card-based approach
+- Maintains familiar tab metaphor but with enhanced visual appeal
+
+## States Captured
+- Default state (Input tab active): 20250507T125201
+- Output tab active: 20250507T125745
+- Console tab with errors: 20250507T130112
+
+## Implementation Notes
+- Used CSS transitions for smooth tab switching
+- Responsive design maintains usability down to 320px width
+- Dark mode implementation complete with appropriate contrast
+
+## Timestamp: 20250507T125201
+```
+
+## <critical> Common Conceptual Challenges </critical>
+
+### Race Conditions in Design Iteration
+
+The most common issue in design iterations is **timing discrepancies** between:
+1. When you make code changes
+2. When those changes are visible in the browser
+3. When screenshots are captured
+
+**Understanding the problem**:
+- Component changes require rebuild time (30s-2min)
+- Premature screenshot capture shows previous design
+- Result: Screenshots don't match intended design
+
+**Conceptual solution**:
+- Sequential process with manual verification
+- Visual confirmation in browser before capture
+- Screenshot validation after capture
+
+### State Persistence Challenges
+
+Interactive components maintain state that affects their appearance:
+
+**Understanding the problem**:
+- Component state may reset between iterations
+- Some states only accessible through interaction
+- Alternative states may be lost in design process
+
+**Conceptual solution**:
+- Explicit multi-state capture process
+- Interactive state manipulation before capture
+- Documentation of interaction paths for each state
+
+### Visual Regression Risks
+
+When applying design iterations, visual regression can occur:
+
+**Understanding the problem**:
+- Applied changes may have unintended side effects
+- CSS changes may affect other components
+- Some visual issues only appear in specific contexts
+
+**Conceptual solution**:
+- Comprehensive state testing after application
+- Browser and theme testing
+- Responsive testing at various breakpoints
+
+## <required> Component Naming Conventions </required>
+
+The system requires specific naming conventions for proper functioning:
+
+### Numbered Component Format
+
+Always use the numbered format for component names:
+
+- `01-hero-section` (NOT just "hero-section")
+- `02-features-section`
+- `03-try-jods-section`
+- `04-framework-section-react`
+- `04-framework-section-remix`
+- `05-remix-section`
+- `06-compare-section`
+- `07-footer-section`
+
+### Component Test IDs
+
+Components must have matching `data-testid` attributes:
+
+```jsx
+<section
+  className={styles.sectionContainer}
+  id="try-jods-live"
+  data-testid="03-try-jods-section"
+>
+```
+
+The `data-testid` value must exactly match the target name used in commands.
+
+## <critical> Design Iteration System Infrastructure </critical>
+
+The design iteration system uses these technical components:
+
+### 1. Screenshot Engine
+
+- Uses Playwright headless browser automation
+- Captures both light and dark theme versions
+- Handles viewport sizing and scrolling
+- Creates pixel-perfect PNG screenshots
+
+### 2. Diff Generation
+
+- Creates line-by-line code diffs
+- Shows additions, deletions, and changes
+- Preserves both component and CSS changes
+- Enables precise implementation review
+
+### 3. Metadata Storage
+
+- JSON-based tracking of iterations
+- Links related artifacts by timestamp
+- Captures design prompts and status
+- Provides API for iteration management
+
+### 4. Application System
+
+- Allows selected iterations to be applied to codebase
+- Transforms diff files into actual code changes
+- Validates applied changes for errors
+- Provides rollback capability if needed
+
+## <critical> Advanced Design Context Building </critical>
+
+Effective iteration requires building strong context between designs:
+
+### Iteration Naming Strategy
+
+Use descriptive, consistent naming in prompts and documentation:
+
+```bash
+# Descriptive prompt example
+pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="Notebook with gradient tabs and animation" --skip-other-sections
+```
+
+### Design Approach Tags
+
+Tag iterations with design approach keywords:
+
+- **Style approaches**: Minimal, Bold, Playful, Corporate, Gradient, Flat, Neumorphic
+- **Interaction models**: Tabbed, Accordion, Wizard, Single-page, Multi-column
+- **Visual metaphors**: Notebook, Cards, Dashboard, Terminal, Editor
+
+### Comparative Documentation
+
+Document direct comparisons between iterations:
+
+```markdown
+## Comparison: Iteration 2 vs Iteration 3
+
+| Aspect | Iteration 2 (20250507T123056) | Iteration 3 (20250507T125201) |
+|--------|--------------------------|--------------------------|
+| Style  | Card-based, flat design  | Notebook, gradient accents |
+| Colors | Monochrome blues        | Blue to purple gradients  |
+| Layout | Grid of separate cards  | Tabbed single container   |
+| Motion | No animations           | Tab transition animations |
+| States | 2 states captured       | 4 states captured         |
+```
+
+This comparative approach helps track the evolution of your design and informs selection decisions.
+
+## <required> Important System Constraints </required>
+
+The design iteration system has important constraints to be aware of:
+
+### 1. Browser Visibility Requirement
+
+Changes MUST be visible in browser before capture:
+- The system can't "see" changes until they appear in browser
+- Manual verification is essential before capture
+- Screenshots capture exactly what's visible in browser
+
+### 2. Independent Iteration Requirement
+
+Each iteration must be:
+- Independently captured with unique timestamp
+- Separately verified in browser
+- Individually documented for context
+
+### 3. Component Targeting Specificity
+
+Components must be targeted precisely:
+- Use exact numbered format for component names
+- Ensure `data-testid` attributes match target names
+- Use `--skip-other-sections` to focus on specific components
+
+### 4. Design History Preservation
+
+Design history must be preserved:
+- No cleanup until explicitly requested
+- Maintain all timestamps and screenshots
+- Document relationships between iterations
+
+Understanding these constraints helps create a successful design iteration workflow.
+
+## <critical> A Systems Thinking Approach </critical>
+
+Successful design iteration requires systems thinking:
+
+1. **Process as a System**: The three processes (server, changes, capture) function as an integrated system, not isolated steps
+
+2. **Artifact Ecosystem**: Screenshots, diffs, metadata, and documentation form an interconnected ecosystem of artifacts
+
+3. **Design Evolution**: Each iteration should build on knowledge from previous iterations, creating a coherent evolution
+
+4. **Context Continuity**: Documentation creates continuity between iterations, preserving design context and rationale
+
+5. **Progressive Refinement**: Start with broad exploration, then progressively refine toward a polished design
+
+This systems approach ensures that design iterations build upon each other to create a coherent, well-documented design solution.

@@ -17,11 +17,12 @@ export interface Store<T extends StoreState = StoreState> {
  */
 export function store<T extends StoreState>(initialState: T): T & Store<T> {
   let state = { ...initialState };
+  let previousState = { ...initialState };
   const subscribers = new Set<Subscriber<T>>();
 
-  const notifySubscribers = (newState: T) => {
+  const notifySubscribers = (newState: T, oldState: T) => {
     subscribers.forEach((subscriber) => {
-      subscriber(newState);
+      subscriber(newState, oldState);
     });
   };
 
@@ -30,9 +31,10 @@ export function store<T extends StoreState>(initialState: T): T & Store<T> {
   };
 
   const setState = (partial: Partial<T>): void => {
+    previousState = { ...state };
     const newState = { ...state, ...partial };
     state = newState;
-    notifySubscribers(newState);
+    notifySubscribers(newState, previousState);
   };
 
   const subscribe = (subscriber: Subscriber<T>): Unsubscribe => {
@@ -63,12 +65,13 @@ export function store<T extends StoreState>(initialState: T): T & Store<T> {
       const oldValue = state[prop as keyof T];
       if (oldValue === value) return true;
 
+      previousState = { ...state };
       state = {
         ...state,
         [prop]: value,
       };
 
-      notifySubscribers(state);
+      notifySubscribers(state, previousState);
       return true;
     },
   };

@@ -29,18 +29,19 @@ describe("computed", () => {
 
   it("should work with store properties", () => {
     const testStore = store({
-      firstName: "John",
-      lastName: "Doe",
+      firstName: "Burt",
+      lastName: "Macklin",
     });
 
     testStore.fullName = computed(
       () => `${testStore.firstName} ${testStore.lastName}`
     );
 
-    expect(testStore.fullName()).toBe("John Doe");
+    expect(testStore.fullName()).toBe("Burt Macklin");
 
     // Change underlying values and check that computed updates
-    testStore.firstName = "Jane";
-    expect(testStore.fullName()).toBe("Jane Doe");
+    testStore.firstName = "Michael";
+    testStore.lastName = "Scarn";
+    expect(testStore.fullName()).toBe("Michael Scarn");
   });
 });

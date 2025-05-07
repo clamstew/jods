@@ -1,0 +1,172 @@
+diff --git a/docs/src/components/RemixIntegration.module.css b/docs/src/components/RemixIntegration.module.css
+index 3095243..72f2d5c 100644
+--- a/docs/src/components/RemixIntegration.module.css
++++ b/docs/src/components/RemixIntegration.module.css
+@@ -13,8 +13,16 @@
+ .header {
+   margin-bottom: 3rem;
+   text-align: center;
+-  /* Enhanced Ruby-inspired gradient that transitions to Remix blue */
+-  background: linear-gradient(135deg, #bc1142 0%, #9d0d35 40%, #0066b1 100%);
++  /* Remix-inspired rainbow gradient with Ruby integration */
++  background: linear-gradient(
++    135deg,
++    #ff4d4d 0%,
++    #e11d48 20%,
++    #9333ea 40%,
++    #4f46e5 60%,
++    #3b82f6 80%,
++    #0284c7 100%
++  );
+   padding: 4rem 2.5rem;
+   border-radius: 20px;
+   margin: -5rem -2rem 3rem;
+@@ -26,13 +34,21 @@
+   z-index: 1;
+ }
+ 
+-/* Light mode specific styling with improved contrast */
++/* Light mode with brighter Remix-inspired colors */
+ html[data-theme="light"] .header {
+-  background: linear-gradient(135deg, #dd2542 0%, #b91c1c 40%, #2563eb 100%);
++  background: linear-gradient(
++    135deg,
++    #f43f5e 0%,
++    #ec4899 20%,
++    #a855f7 40%,
++    #6366f1 60%,
++    #3b82f6 80%,
++    #06b6d4 100%
++  );
+   box-shadow: 0 15px 30px rgba(185, 28, 28, 0.2);
+ }
+ 
+-/* Add subtle glass effect to header */
++/* Enhanced glass effect overlay */
+ .header::before {
+   content: "";
+   position: absolute;
+@@ -43,11 +59,11 @@ html[data-theme="light"] .header {
+   background: radial-gradient(
+     circle at top right,
+     rgba(220, 38, 38, 0.15) 0%,
+-    rgba(244, 63, 94, 0.08) 50%,
+-    rgba(15, 23, 42, 0.04) 100%
++    rgba(79, 70, 229, 0.12) 50%,
++    rgba(59, 130, 246, 0.08) 100%
+   );
+   z-index: 1;
+-  opacity: 0.75;
++  opacity: 0.8;
+   mix-blend-mode: overlay;
+ }
+ 
+@@ -216,7 +232,7 @@ html[data-theme="light"] .remix {
+   text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+ }
+ 
+-/* Enhanced Remix icon with disc animation */
++/* Enhanced Remix icon with rainbow animation */
+ .remixIconWrapper {
+   position: relative;
+   display: inline-flex;
+@@ -233,7 +249,8 @@ html[data-theme="light"] .remix {
+   background: radial-gradient(
+     circle,
+     rgba(147, 197, 253, 0.5) 0%,
+-    rgba(147, 197, 253, 0) 70%
++    rgba(79, 70, 229, 0.3) 50%,
++    rgba(147, 197, 253, 0) 100%
+   );
+   border-radius: 50%;
+   z-index: -1;
+@@ -433,6 +450,7 @@ html[data-theme="light"] .activeFeature .featureIcon {
+     0 0 0 1px rgba(255, 255, 255, 0.05);
+   overflow: hidden;
+   position: relative;
++  margin-top: 5px; /* Prevent cutoff at the top */
+ }
+ 
+ .codeContainer::before {
+@@ -521,6 +539,13 @@ html[data-theme="light"] .tab {
+   color: rgba(255, 255, 255, 0.8);
+ }
+ 
++.tabIcon {
++  font-size: 1.1rem;
++  margin-right: 8px;
++  display: inline-flex;
++  align-items: center;
++}
++
+ .tab:hover {
+   background: rgba(255, 255, 255, 0.08);
+   color: rgba(255, 255, 255, 0.9);
+@@ -531,12 +556,25 @@ html[data-theme="light"] .tab:hover {
+   color: rgba(255, 255, 255, 0.95);
+ }
+ 
++/* Remix-inspired tab indicator */
+ .activeTab {
+   background: #0d1424;
+   color: #fb7185;
+   font-weight: 600;
+   border: 1px solid rgba(255, 255, 255, 0.15);
+   border-bottom: none;
++  position: relative;
++}
++
++.activeTab::before {
++  content: "";
++  position: absolute;
++  top: -2px;
++  left: 0;
++  right: 0;
++  height: 3px;
++  background: linear-gradient(to right, #f43f5e 0%, #a855f7 50%, #3b82f6 100%);
++  border-radius: 3px 3px 0 0;
+ }
+ 
+ html[data-theme="light"] .activeTab {
+@@ -546,12 +584,25 @@ html[data-theme="light"] .activeTab {
+   border-bottom: none;
+ }
+ 
++/* Code sections display fix */
+ .codeSections {
+   position: relative;
+   padding: 1.5rem;
+   overflow: hidden;
+ }
+ 
++.codeSection {
++  display: none; /* Hide by default */
++}
++
++.codeSection.active {
++  display: block; /* Only show active tab */
++}
++
++.codeSection.inactive {
++  display: none; /* Ensure inactive tabs are not displayed */
++}
++
+ .footer {
+   display: flex;
+   justify-content: center;
+@@ -561,13 +612,13 @@ html[data-theme="light"] .activeTab {
+   padding: 0 1rem;
+ }
+ 
+-/* Enhanced remix button styling with ruby effect */
++/* Remix-inspired button styling */
+ .remixButton {
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+   gap: 0.5rem;
+-  background: linear-gradient(to right, #2563eb, #3b82f6);
++  background: linear-gradient(to right, #4f46e5, #3b82f6);
+   color: white;
+   padding: 1rem 2rem;
+   border-radius: 12px;

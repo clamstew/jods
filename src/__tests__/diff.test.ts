@@ -35,8 +35,8 @@ describe("diff", () => {
   });
 
   it("should handle nested objects", () => {
-    const obj1 = { user: { name: "John", age: 30 } };
-    const obj2 = { user: { name: "John", age: 31 } };
+    const obj1 = { user: { name: "Burt", age: 30 } };
+    const obj2 = { user: { name: "Burt", age: 31 } };
     expect(diff(obj1, obj2)).toEqual({
       user: {
         age: { __old: 30, __new: 31 },
@@ -85,13 +85,13 @@ describe("diff", () => {
 
   it("should evaluate computed properties before diffing", () => {
     const testStore1 = store({
-      firstName: "John",
-      lastName: "Doe",
+      firstName: "Burt",
+      lastName: "Macklin",
     });
 
     const testStore2 = store({
-      firstName: "Jane",
-      lastName: "Doe",
+      firstName: "Michael",
+      lastName: "Scarn",
     });
 
     testStore1.fullName = computed(
@@ -102,8 +102,9 @@ describe("diff", () => {
     );
 
     expect(diff(testStore1, testStore2)).toEqual({
-      firstName: { __old: "John", __new: "Jane" },
-      fullName: { __old: "John Doe", __new: "Jane Doe" },
+      firstName: { __old: "Burt", __new: "Michael" },
+      lastName: { __old: "Macklin", __new: "Scarn" },
+      fullName: { __old: "Burt Macklin", __new: "Michael Scarn" },
     });
   });
 });

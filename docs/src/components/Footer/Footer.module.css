@@ -1,0 +1,159 @@
+/* Main footer container styling */
+.footer {
+  background: linear-gradient(135deg, #0f172a 0%, #0c4a6e 70%, #0891b2 100%);
+  position: relative;
+  overflow: hidden;
+  color: white;
+  padding-top: 3rem;
+  padding-bottom: 2rem;
+  /* Enhanced animated gradient background */
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+/* Dark mode keeps the purple gradient */
+[data-theme="dark"] .footer {
+  background: linear-gradient(
+    135deg,
+    var(--jods-purple-dark) 0%,
+    var(--jods-purple-mid) 50%,
+    var(--jods-purple-light) 100%
+  );
+}
+
+/* Enhanced gradient animation with more movement */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+    background-size: 100% 100%;
+  }
+  25% {
+    background-position: 50% 100%;
+    background-size: 150% 150%;
+  }
+  50% {
+    background-position: 100% 50%;
+    background-size: 200% 200%;
+  }
+  75% {
+    background-position: 50% 0%;
+    background-size: 150% 150%;
+  }
+  100% {
+    background-position: 0% 50%;
+    background-size: 100% 100%;
+  }
+}
+
+/* Add a diagonal gradient overlay */
+.footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.4) 0%,
+    rgba(12, 74, 110, 0.3) 50%,
+    rgba(8, 145, 178, 0.4) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.9;
+}
+
+/* Dark mode overlay */
+[data-theme="dark"] .footer::before {
+  background: linear-gradient(
+    135deg,
+    rgba(51, 41, 84, 0.8) 0%,
+    rgba(107, 51, 105, 0.6) 50%,
+    rgba(138, 52, 88, 0.7) 100%
+  );
+}
+
+/* Add smooth flowing line at the top */
+.footer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #84cc16 25%,
+    #65a30d 50%,
+    #84cc16 75%,
+    transparent 100%
+  );
+  z-index: 3;
+  animation: lineFlow 8s ease-in-out infinite alternate;
+  box-shadow: 0 0 10px rgba(132, 204, 22, 0.9);
+}
+
+/* Dark mode flowing line */
+[data-theme="dark"] .footer::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #ffc559 25%,
+    #ff9a5c 50%,
+    #ffc559 75%,
+    transparent 100%
+  );
+  box-shadow: 0 0 8px #ffc559;
+}
+
+@keyframes lineFlow {
+  0% {
+    transform: translateX(-25%);
+  }
+  100% {
+    transform: translateX(25%);
+  }
+}
+
+/* Signature area */
+.signature {
+  text-align: center;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Animation control button */
+.animationControl {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(2px);
+  padding: 6px;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+  pointer-events: auto;
+}
+
+.animationControl:hover {
+  opacity: 1;
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.25);
+}

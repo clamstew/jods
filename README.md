@@ -1,4 +1,4 @@
-# 🐿️ 🦆 jods — JSON On Demand Store
+# 🐿️ 🦆 jods — JavaScript Object Dynamics System
 
 ![CI](https://github.com/clamstew/jods/workflows/CI/badge.svg)
 [![npm version](https://img.shields.io/npm/v/jods.svg)](https://www.npmjs.com/package/jods)
@@ -11,20 +11,19 @@
 
 ![jods](https://raw.githubusercontent.com/clamstew/jods/main/assets/headline_repo_readme_image.png)
 
-A minimal, reactive JSON state layer for Node.js and the browser. Create lightweight observable stores that emit JSON snapshots on demand.
-Perfect for syncing app state, powering APIs, or building reactive UIs without heavy frameworks.
+A fun, intuitive reactive state library that makes JavaScript objects come alive. Build lightweight stores that respond to changes, compute derived values, and keep your application state in sync - all with a simple, playful API that feels natural to use.
 
-## Why JODS?
+## ❓ Why JODS?
 
 - ☁️ Zero dependencies
 - 🧠 Computed values are built-in
 - ⚡ Works with React/Preact via useSyncExternalStore
-- 🪞 Built-in deep cloning with json()
+- 📷 Built-in deep cloning with json()
 - 🧬 Minimal API, no boilerplate actions or reducers
-- 🧪 Diff detection baked in
+- 🔍 Diff detection baked in
 - 🧩 Framework agnostic, but integrates well with React/Preact
 
-## Features
+## ✨ Features
 
 - Tiny reactive store (`jods.store`) with subscription
 - Lazy JSON snapshots (`jods.json()`)
@@ -34,13 +33,13 @@ Perfect for syncing app state, powering APIs, or building reactive UIs without h
 - Zero-dependency, ES module + CJS support
 - Fully type-safe with complete TypeScript definitions
 
-## Installation
+## 📦 Installation
 
 ```bash
 npm install jods
 ```
 
-## Usage
+## 🚀 Usage
 
 ```js
 import { store, json, onUpdate, computed } from "jods";
@@ -70,7 +69,7 @@ user.fullName = computed(() => `${user.firstName} ${user.lastName}`);
 console.log(json(user)); // { firstName: "Burt Macklin", lastName: "Macklin", mood: "sneaky", fullName: "Burt Macklin Macklin" }
 ```
 
-### React/Preact Integration
+### ⚛️ React/Preact Integration
 
 JODS now includes built-in React/Preact support via dedicated entry points:
 
@@ -116,7 +115,7 @@ function Profile() {
 
 The React hook works with React 16.8+ and uses `useSyncExternalStore` for React 18+ with a compatibility layer for older versions. The Preact hook uses Preact's native hooks API for optimal performance.
 
-### TypeScript Support
+### 🧪 TypeScript Support
 
 jods is built with TypeScript and provides full type definitions for all its APIs:
 
@@ -146,7 +145,7 @@ user.fullName = computed(() => `${user.firstName} ${user.lastName}`);
 // user.invalid = "value";
 ```
 
-### Change Tracking
+### 🔄 Change Tracking
 
 Track changes between store states - great for logging or syncing:
 
@@ -170,33 +169,33 @@ user.firstName = "Burt Macklin";
 user.mood = "sneaky";
 ```
 
-## API
+## 🧠 API
 
-### `store(initialState: object)`
+### 📦 `store(initialState: object)`
 
 Creates a reactive store object. Direct mutations are tracked.
 
-### `json(store)`
+### 📷 `json(store)`
 
 Returns a deep-cloned plain JSON snapshot of the store.
 
-### `onUpdate(store, callback)`
+### 👂 `onUpdate(store, callback)`
 
 Calls `callback(newState)` whenever any key is updated.
 
-### `computed(fn)`
+### 🧠 `computed(fn)`
 
 Returns a reactive getter. Automatically re-runs when deps change.
 
-### `diff(before, after)`
+### 🔍 `diff(before, after)`
 
 Returns a deep diff object of changes between two snapshots.
 
-### `history(store, options?)`
+### 🕰️ `history(store, options?)`
 
 Creates a history tracker with time-travel capabilities. See the [Time-Travel Debugging](#time-travel-debugging) section for details.
 
-## Example: API Ready Snapshot
+## 📚 Example: API Ready Snapshot
 
 ```js
 app.get("/api/user", (req, res) => {
@@ -204,7 +203,7 @@ app.get("/api/user", (req, res) => {
 });
 ```
 
-## Comparison with other libraries
+## 📊 Comparison with other libraries
 
 It's just an object (kind of) with some helper methods 🤷
 
@@ -237,13 +236,13 @@ It's just an object (kind of) with some helper methods 🤷
 - Just use the object, and subscribe if you care.
 - It's like `useState`, but global and smarter.
 
-## Roadmap
+## 🗺️ Roadmap
 
 - ~~Add time-travel debugging (`jods.history()`)~~ ✅ Implemented!
 - Built-in persistence (`jods.persist(localStorage)`)
 - Remote syncing (`jods.sync(socket)`)
 
-## Time-Travel Debugging
+## 🕰️ Time-Travel Debugging
 
 JODS includes time-travel debugging capability, allowing you to track state changes and jump back to previous states:
 
@@ -305,7 +304,7 @@ function App() {
 }
 ```
 
-## Documentation
+## 📚 Documentation
 
 The project documentation is built with Docusaurus and can be run locally:
 
@@ -319,7 +318,7 @@ pnpm start
 
 The documentation will be available at http://localhost:3000/jods/
 
-## Contributing
+## 🤝 Contributing
 
 We love your input! We want to make contributing to `jods` as easy and transparent as possible, whether it's:
 
@@ -342,6 +341,132 @@ We actively welcome your pull requests:
 
 For more details, check out our [Contributing Guide](./CONTRIBUTING.md).
 
-## License
+## 📝 License
 
 [MIT](./LICENSE)
+
+## 🖼️ Framework Integrations
+
+### ⚛️ React
+
+```jsx
+import { store } from "jods";
+import { useJods } from "jods/react";
+
+const todoStore = store({
+  items: [],
+  filter: "all",
+});
+
+function Todos() {
+  const todos = useJods(todoStore);
+
+  return (
+    <div>
+      {/* Only re-renders when todos.items changes */}
+      <ul>
+        {todos.items.map((item) => (
+          <li key={item.id}>{item.text}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+### ⚡ Preact
+
+```jsx
+import { store } from "jods";
+import { useJods } from "jods/preact";
+
+const todoStore = store({
+  items: [],
+  filter: "all",
+});
+
+function Todos() {
+  const todos = useJods(todoStore);
+
+  return (
+    <div>
+      <ul>
+        {todos.items.map((item) => (
+          <li key={item.id}>{item.text}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+### 💿 Remix
+
+jods provides first-class support for Remix applications, replacing traditional loaders and actions with reactive stores:
+
+```jsx
+// Define a store in app/jods/user.jods.ts
+import { defineStore } from "jods/remix";
+import { z } from "zod";
+
+export const user = defineStore({
+  name: "user",
+  schema: z.object({
+    name: z.string(),
+    email: z.string().email(),
+  }),
+  handlers: {
+    async updateProfile({ current, form }) {
+      return {
+        ...current,
+        name: form.get("name"),
+        email: form.get("email"),
+      };
+    },
+  },
+  loader: async () => {
+    // Load user data from database
+    return { name: "Burt Macklin", email: "burt.macklin@fbi.pawnee.city" };
+  },
+});
+
+// Use in your route component
+import { useJodsStore, useJodsForm } from "jods/remix";
+import { user } from "~/jods/user.jods";
+
+export default function Profile() {
+  const userData = useJodsStore(user);
+  const form = useJodsForm(user.actions.updateProfile);
+
+  return (
+    <div>
+      <h1>Profile</h1>
+      <form {...form.props}>
+        <input name="name" defaultValue={userData.name} />
+        <input name="email" defaultValue={userData.email} />
+        <button type="submit">Update Profile</button>
+      </form>
+    </div>
+  );
+}
+```
+
+Key features:
+
+- 🔄 Server-Client Synchronization: State is automatically hydrated from server to client
+- 📝 Form Handling: Built-in form utilities with validation
+- 🛡️ Type Safety: Full TypeScript and Zod schema support
+- ⚡ Optimistic Updates: Manage pending state with useJodsFetchers
+
+For detailed documentation, see [Remix Integration Guide](./docs/remix-integration.md).
+
+## 📦 Exports
+
+jods is organized into distinct modules:
+
+- **Core**: `import { store } from 'jods'`
+- **React**: `import { useJods } from 'jods/react'`
+- **Preact**: `import { useJods } from 'jods/preact'`
+- **Remix**: `import { defineStore, useJodsStore } from 'jods/remix'`
+
+Each integration is tree-shakable and only includes what you need.

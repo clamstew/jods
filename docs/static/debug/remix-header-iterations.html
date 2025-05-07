@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Remix Header Design Iterations</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, Helvetica, Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: #f5f5f5;
+        color: #333;
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+        color: #3730a3;
+      }
+
+      .container {
+        max-width: 1600px;
+        margin: 0 auto;
+      }
+
+      .iterations {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 50px;
+      }
+
+      .iteration {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        background: white;
+      }
+
+      .iteration-header {
+        background: #3730a3;
+        color: white;
+        padding: 15px 20px;
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+
+      .iteration-content {
+        padding: 0;
+      }
+
+      .iteration-image {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .mode-header {
+        background: #6d28d9;
+        color: white;
+        padding: 10px 15px;
+        font-size: 1rem;
+        font-weight: 500;
+      }
+
+      .tabs {
+        display: flex;
+        background: #f0f0f0;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .tab {
+        padding: 10px 20px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s;
+      }
+
+      .tab.active {
+        background: #fff;
+        border-bottom: 3px solid #3730a3;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .description {
+        padding: 20px;
+        background: #f8f9fa;
+        border-top: 1px solid #eee;
+        font-size: 0.95rem;
+        line-height: 1.5;
+      }
+
+      .changes {
+        font-family: monospace;
+        background: #f5f5f5;
+        padding: 15px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        white-space: pre-wrap;
+        font-size: 0.9rem;
+        overflow: auto;
+        max-height: 300px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Remix Header Design Iterations</h1>
+
+      <div class="iterations">
+        <!-- Iteration 1 -->
+        <div class="iteration">
+          <div class="iteration-header">
+            Iteration 1: Gradient Text & Enhanced Colors
+          </div>
+          <div class="tabs">
+            <div class="tab active" onclick="switchTab(this, 'iter1-light')">
+              Light Mode
+            </div>
+            <div class="tab" onclick="switchTab(this, 'iter1-dark')">
+              Dark Mode
+            </div>
+          </div>
+          <div class="iteration-content">
+            <div id="iter1-light" class="tab-content active">
+              <div class="mode-header">Light Mode</div>
+              <img
+                src="../screenshots/iterations/remix-header-v1-light.png"
+                alt="Iteration 1 Light Mode"
+                class="iteration-image"
+              />
+            </div>
+            <div id="iter1-dark" class="tab-content">
+              <div class="mode-header">Dark Mode</div>
+              <img
+                src="../screenshots/iterations/remix-header-v1-dark.png"
+                alt="Iteration 1 Dark Mode"
+                class="iteration-image"
+              />
+            </div>
+            <div class="description">
+              <p>
+                <strong>Changes:</strong> Introduced gradient text for "Remix"
+                with cyan color scheme instead of green. Added stronger text
+                shadows and glow effects. "State" got a slight vertical offset
+                for visual interest.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Iteration 2 -->
+        <div class="iteration">
+          <div class="iteration-header">Iteration 2: 3D Text Effects</div>
+          <div class="tabs">
+            <div class="tab active" onclick="switchTab(this, 'iter2-light')">
+              Light Mode
+            </div>
+            <div class="tab" onclick="switchTab(this, 'iter2-dark')">
+              Dark Mode
+            </div>
+          </div>
+          <div class="iteration-content">
+            <div id="iter2-light" class="tab-content active">
+              <div class="mode-header">Light Mode</div>
+              <img
+                src="../screenshots/iterations/remix-header-v2-light.png"
+                alt="Iteration 2 Light Mode"
+                class="iteration-image"
+              />
+            </div>
+            <div id="iter2-dark" class="tab-content">
+              <div class="mode-header">Dark Mode</div>
+              <img
+                src="../screenshots/iterations/remix-header-v2-dark.png"
+                alt="Iteration 2 Dark Mode"
+                class="iteration-image"
+              />
+            </div>
+            <div class="description">
+              <p>
+                <strong>Changes:</strong> Applied 3D perspective transforms to
+                all title text elements. Used vertical gradients with stronger
+                shadows. Changed the highlight box to purple gradient with white
+                text.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Iteration 3 -->
+        <div class="iteration">
+          <div class="iteration-header">
+            Iteration 3: Neon Text & Transparent Highlight
+          </div>
+          <div class="tabs">
+            <div class="tab active" onclick="switchTab(this, 'iter3-light')">
+              Light Mode
+            </div>
+            <div class="tab" onclick="switchTab(this, 'iter3-dark')">
+              Dark Mode
+            </div>
+          </div>
+          <div class="iteration-content">
+            <div id="iter3-light" class="tab-content active">
+              <div class="mode-header">Light Mode</div>
+              <img
+                src="../screenshots/iterations/remix-header-v3-light.png"
+                alt="Iteration 3 Light Mode"
+                class="iteration-image"
+              />
+            </div>
+            <div id="iter3-dark" class="tab-content">
+              <div class="mode-header">Dark Mode</div>
+              <img
+                src="../screenshots/iterations/remix-header-v3-dark.png"
+                alt="Iteration 3 Dark Mode"
+                class="iteration-image"
+              />
+            </div>
+            <div class="description">
+              <p>
+                <strong>Changes:</strong> Implemented neon pulsing effect for
+                all title text. Completely reimagined the highlight box with a
+                transparent border and cyan coloring. Enhanced ruby gem with
+                extra glow effects.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Iteration 4 -->
+        <div class="iteration">
+          <div class="iteration-header">
+            Iteration 4: Floating Animation & Updated Tagline
+          </div>
+          <div class="tabs">
+            <div class="tab active" onclick="switchTab(this, 'iter4-light')">
+              Light Mode
+            </div>
+            <div class="tab" onclick="switchTab(this, 'iter4-dark')">
+              Dark Mode
+            </div>
+          </div>
+          <div class="iteration-content">
+            <div id="iter4-light" class="tab-content active">
+              <div class="mode-header">Light Mode</div>
+              <img
+                src="../screenshots/iterations/remix-header-v4-light.png"
+                alt="Iteration 4 Light Mode"
+                class="iteration-image"
+              />
+            </div>
+            <div id="iter4-dark" class="tab-content">
+              <div class="mode-header">Dark Mode</div>
+              <img
+                src="../screenshots/iterations/remix-header-v4-dark.png"
+                alt="Iteration 4 Dark Mode"
+                class="iteration-image"
+              />
+            </div>
+            <div class="description">
+              <p>
+                <strong>Changes:</strong> Added floating animations to each text
+                element with staggered timing. Completely changed the tagline
+                from "Active Record" to "Modern Data Layer" and updated the
+                description. Used a glass effect for the highlight box.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function switchTab(tabElement, contentId) {
+        // Remove active class from all siblings
+        const tabs = tabElement.parentElement.children;
+        for (let tab of tabs) {
+          tab.classList.remove("active");
+        }
+
+        // Add active class to clicked tab
+        tabElement.classList.add("active");
+
+        // Hide all content sections
+        const tabContents = tabElement
+          .closest(".iteration")
+          .querySelectorAll(".tab-content");
+        for (let content of tabContents) {
+          content.classList.remove("active");
+        }
+
+        // Show corresponding content
+        document.getElementById(contentId).classList.add("active");
+      }
+    </script>
+  </body>
+</html>

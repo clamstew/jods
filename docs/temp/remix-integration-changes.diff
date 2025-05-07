@@ -1,0 +1,310 @@
+diff --git a/docs/src/components/RemixIntegration.module.css b/docs/src/components/RemixIntegration.module.css
+index 01fe9e0..3095243 100644
+--- a/docs/src/components/RemixIntegration.module.css
++++ b/docs/src/components/RemixIntegration.module.css
+@@ -13,12 +13,12 @@
+ .header {
+   margin-bottom: 3rem;
+   text-align: center;
+-  /* Ruby-inspired gradient that transitions to Remix blue */
+-  background: linear-gradient(135deg, #a5043c 0%, #810230 50%, #0284c7 100%);
++  /* Enhanced Ruby-inspired gradient that transitions to Remix blue */
++  background: linear-gradient(135deg, #bc1142 0%, #9d0d35 40%, #0066b1 100%);
+   padding: 4rem 2.5rem;
+   border-radius: 20px;
+   margin: -5rem -2rem 3rem;
+-  box-shadow: 0 15px 35px rgba(165, 4, 60, 0.25);
++  box-shadow: 0 15px 35px rgba(165, 4, 60, 0.3);
+   position: relative;
+   overflow: hidden;
+   will-change: transform;
+@@ -26,10 +26,10 @@
+   z-index: 1;
+ }
+ 
+-/* Light mode specific styling */
++/* Light mode specific styling with improved contrast */
+ html[data-theme="light"] .header {
+-  background: linear-gradient(135deg, #ef4444 0%, #b91c1c 50%, #2563eb 100%);
+-  box-shadow: 0 15px 30px rgba(185, 28, 28, 0.15);
++  background: linear-gradient(135deg, #dd2542 0%, #b91c1c 40%, #2563eb 100%);
++  box-shadow: 0 15px 30px rgba(185, 28, 28, 0.2);
+ }
+ 
+ /* Add subtle glass effect to header */
+@@ -148,7 +148,7 @@ html[data-theme="light"] .highlight:hover {
+   box-shadow: 0 8px 20px rgba(225, 29, 72, 0.4);
+ }
+ 
+-/* Enhanced Ruby icon with faceted gem effect */
++/* Enhanced Ruby icon with more realistic gem effect */
+ .rubyIcon {
+   position: relative;
+   display: inline-flex;
+@@ -164,7 +164,7 @@ html[data-theme="light"] .highlight:hover {
+   height: 140%;
+   background: radial-gradient(
+     circle,
+-    rgba(249, 115, 22, 0.3) 0%,
++    rgba(255, 92, 92, 0.4) 0%,
+     rgba(249, 115, 22, 0) 70%
+   );
+   border-radius: 50%;
+@@ -174,33 +174,35 @@ html[data-theme="light"] .highlight:hover {
+ html[data-theme="light"] .rubyIcon::before {
+   background: radial-gradient(
+     circle,
+-    rgba(234, 88, 12, 0.25) 0%,
++    rgba(234, 88, 12, 0.35) 0%,
+     rgba(234, 88, 12, 0) 70%
+   );
+ }
+ 
+-/* Improved Ruby gem styling with facets */
++/* Refined Ruby gem styling with enhanced facets */
+ .rubyGem {
+   display: inline-block;
+   margin-right: 0.5rem;
+   font-size: 1.3em;
+   transform-origin: center;
+-  filter: drop-shadow(0 0 6px rgba(249, 115, 22, 0.6));
++  filter: drop-shadow(0 0 8px rgba(252, 165, 165, 0.8));
+   animation: gemShine 6s infinite;
+ }
+ 
+ @keyframes gemShine {
+   0%,
+   100% {
+-    filter: drop-shadow(0 0 6px rgba(249, 115, 22, 0.6));
++    filter: drop-shadow(0 0 8px rgba(252, 165, 165, 0.7));
++    transform: scale(1);
+   }
+   50% {
+-    filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.8));
++    filter: drop-shadow(0 0 12px rgba(252, 165, 165, 0.9));
++    transform: scale(1.05);
+   }
+ }
+ 
+ html[data-theme="light"] .rubyGem {
+-  filter: drop-shadow(0 0 8px rgba(234, 88, 12, 0.7));
++  filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.8));
+ }
+ 
+ .remix {
+@@ -291,22 +293,22 @@ html[data-theme="light"] .remixIconWrapper::before {
+   top: 100px;
+ }
+ 
+-/* Ruby gem inspired feature cards */
++/* Improved feature cards with Active Record inspired design */
+ .featureItem {
+   display: flex;
+   align-items: center;
+   background: var(--ifm-color-emphasis-0);
+   padding: 1.5rem;
+   border-radius: 16px;
+-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
++  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+-  border: 1px solid rgba(0, 0, 0, 0.03);
++  border: 1px solid rgba(0, 0, 0, 0.05);
+   cursor: pointer;
+   position: relative;
+   overflow: hidden;
+ }
+ 
+-/* Add subtle gem facet effect to cards */
++/* Enhanced facet effect for cards */
+ .featureItem::before {
+   content: "";
+   position: absolute;
+@@ -316,9 +318,9 @@ html[data-theme="light"] .remixIconWrapper::before {
+   bottom: 0;
+   background: linear-gradient(
+     135deg,
+-    rgba(255, 255, 255, 0.05) 0%,
++    rgba(255, 255, 255, 0.08) 0%,
+     rgba(255, 255, 255, 0) 50%,
+-    rgba(255, 255, 255, 0.03) 100%
++    rgba(255, 255, 255, 0.05) 100%
+   );
+   z-index: 1;
+   pointer-events: none;
+@@ -326,26 +328,36 @@ html[data-theme="light"] .remixIconWrapper::before {
+ 
+ .featureItem:hover {
+   transform: translateY(-5px) scale(1.02);
+-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+-  border-color: rgba(244, 63, 94, 0.15);
++  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
++  border-color: rgba(244, 63, 94, 0.2);
+ }
+ 
+ html[data-theme="light"] .featureItem:hover {
+-  border-color: rgba(225, 29, 72, 0.15);
++  border-color: rgba(225, 29, 72, 0.2);
+ }
+ 
+-/* Active feature styling */
++/* Enhanced active feature styling with more distinct highlighting */
+ .activeFeature {
+   transform: translateY(-5px) scale(1.02);
+   border-color: #f43f5e;
+   border-width: 2px;
+-  box-shadow: 0 12px 28px rgba(244, 63, 94, 0.15);
++  box-shadow: 0 12px 28px rgba(244, 63, 94, 0.2);
+   position: relative;
++  background: linear-gradient(
++    to right,
++    rgba(244, 63, 94, 0.05),
++    rgba(244, 63, 94, 0)
++  );
+ }
+ 
+ html[data-theme="light"] .activeFeature {
+   border-color: #e11d48;
+-  box-shadow: 0 12px 28px rgba(225, 29, 72, 0.15);
++  box-shadow: 0 12px 28px rgba(225, 29, 72, 0.2);
++  background: linear-gradient(
++    to right,
++    rgba(225, 29, 72, 0.05),
++    rgba(225, 29, 72, 0)
++  );
+ }
+ 
+ .activeFeature::after {
+@@ -411,13 +423,13 @@ html[data-theme="light"] .activeFeature .featureIcon {
+   opacity: 0.9;
+ }
+ 
+-/* Terminal-like code container */
++/* Code container with improved terminal styling */
+ .codeContainer {
+   flex: 1;
+   min-width: 0;
+-  background: #0f172a;
++  background: #0d1424;
+   border-radius: 16px;
+-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15),
++  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2),
+     0 0 0 1px rgba(255, 255, 255, 0.05);
+   overflow: hidden;
+   position: relative;
+@@ -428,37 +440,37 @@ html[data-theme="light"] .activeFeature .featureIcon {
+   position: absolute;
+   top: 0;
+   right: 0;
+-  width: 80px;
+-  height: 80px;
++  width: 100px;
++  height: 100px;
+   background: radial-gradient(
+     circle,
+-    rgba(244, 63, 94, 0.3) 0%,
++    rgba(244, 63, 94, 0.35) 0%,
+     rgba(244, 63, 94, 0) 70%
+   );
+   z-index: 1;
+-  opacity: 0.4;
++  opacity: 0.5;
+   pointer-events: none;
+ }
+ 
+ html[data-theme="light"] .codeContainer {
+-  background: #18181b;
++  background: #111827;
+   color: #e4e4e7;
+-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05);
++  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.08);
+ }
+ 
+ html[data-theme="light"] .codeContainer::before {
+   background: radial-gradient(
+     circle,
+-    rgba(225, 29, 72, 0.25) 0%,
++    rgba(225, 29, 72, 0.3) 0%,
+     rgba(225, 29, 72, 0) 70%
+   );
+ }
+ 
+-/* Ruby-inspired terminal tab container */
++/* Enhanced tab design */
+ .tabsContainer {
+   display: flex;
+-  background: #374151;
+-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
++  background: #2a3347;
++  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+   padding: 0.5rem 0.5rem 0;
+   position: relative;
+ }
+@@ -477,8 +489,8 @@ html[data-theme="light"] .codeContainer::before {
+ }
+ 
+ html[data-theme="light"] .tabsContainer {
+-  background: #27272a;
+-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
++  background: #1e293b;
++  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+ }
+ 
+ .tab {
+@@ -493,7 +505,7 @@ html[data-theme="light"] .tabsContainer {
+   font-weight: 500;
+   transition: all 0.2s ease;
+   font-size: 0.9rem;
+-  color: rgba(255, 255, 255, 0.6);
++  color: rgba(255, 255, 255, 0.7);
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+@@ -506,38 +518,31 @@ html[data-theme="light"] .tabsContainer {
+ }
+ 
+ html[data-theme="light"] .tab {
+-  color: rgba(255, 255, 255, 0.7);
+-}
+-
+-.tabIcon {
+-  font-size: 1.1rem;
+-  margin-right: 8px;
+-  display: inline-flex;
+-  align-items: center;
++  color: rgba(255, 255, 255, 0.8);
+ }
+ 
+ .tab:hover {
+-  background: rgba(255, 255, 255, 0.05);
+-  color: rgba(255, 255, 255, 0.8);
++  background: rgba(255, 255, 255, 0.08);
++  color: rgba(255, 255, 255, 0.9);
+ }
+ 
+ html[data-theme="light"] .tab:hover {
+-  background: rgba(255, 255, 255, 0.05);
+-  color: rgba(255, 255, 255, 0.9);
++  background: rgba(255, 255, 255, 0.08);
++  color: rgba(255, 255, 255, 0.95);
+ }
+ 
+ .activeTab {
+-  background: #0f172a;
+-  color: #f43f5e;
++  background: #0d1424;
++  color: #fb7185;
+   font-weight: 600;
+-  border: 1px solid rgba(255, 255, 255, 0.1);
++  border: 1px solid rgba(255, 255, 255, 0.15);
+   border-bottom: none;
+ }
+ 
+ html[data-theme="light"] .activeTab {
+-  background: #18181b;
++  background: #111827;
+   color: #fb7185;
+-  border: 1px solid rgba(255, 255, 255, 0.1);
++  border: 1px solid rgba(255, 255, 255, 0.15);
+   border-bottom: none;
+ }
+ 

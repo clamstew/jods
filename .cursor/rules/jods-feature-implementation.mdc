@@ -51,6 +51,7 @@ When adding a new feature to jods, ensure you update the following:
 5. **Framework Integration**
    - Update React hooks in `src/react/` if applicable
    - Update Preact hooks in `src/preact/` if applicable
+   - Update Remix hooks in `src/remix/` if applicable
    - Provide examples of framework usage
 
 ## Style Guidelines
