@@ -18,7 +18,7 @@ The design iterations system requires **three separate processes** running in th
 
 2. **Component Changes (Process 2)** - Must complete and rebuild
    - Make changes to component files (TSX/JSX and CSS)
-   - Wait 45-60 seconds for DocuSaurus to fully rebuild
+   - Wait until changes are visible in browser (may take a minute or more)
    - Manually verify in browser that changes are visible
 
 3. **Screenshot Capture (Process 3)** - Must wait for Process 2 to complete
@@ -77,7 +77,7 @@ pnpm dev
 # Edit docs/src/components/YourComponent.tsx
 # Edit docs/src/components/YourComponent.module.css
 
-# WAIT 45-60 seconds, then verify changes in browser
+# WAIT until changes are visible in browser
 # Only after changes are visible:
 
 # Terminal 2: Run single iteration screenshot capture
@@ -208,9 +208,9 @@ Selected iteration: 3 (20250507T125201)
 
 This approach creates a clear record of your design process and makes it easy to reference specific iterations.
 
-## <critical> Integration Testing After Applying Iterations </critical>
+## <critical> Integration Testing After Choosing Design </critical>
 
-After applying a design iteration, perform these essential verification steps:
+After applying your chosen design iteration, perform these verification steps:
 
 1. **Linter Error Check**:
    - Check for any linter errors introduced by the changes
@@ -218,13 +218,13 @@ After applying a design iteration, perform these essential verification steps:
 
 2. **Browser Testing**:
    - Test the component in both light and dark modes
-   - Verify all interactions work properly (tabs, buttons, inputs)
+   - Verify elements that affect displayed content work properly
    - Check responsiveness at different viewport sizes
 
-3. **Edge Case Verification**:
-   - Test with different input values or states
-   - Check for any UI overflow or layout issues
-   - Ensure computed values display correctly
+3. **Functionality Expectations**:
+   - Early iterations (1-5): Incomplete functionality is acceptable
+   - Later refinement: Build out interactive elements more thoroughly
+   - Final iteration: Ensure critical interactive elements work properly
 
 4. **Console Error Check**:
    - Open browser console and check for React errors or warnings
@@ -261,7 +261,7 @@ After applying a design iteration, perform these essential verification steps:
 5. **Changes Not Showing**
    - Issue: Browser doesn't reflect component changes
    - Solution:
-     - Wait longer (60+ seconds) for DocuSaurus to rebuild
+     - Wait longer for DocuSaurus to rebuild (may take a minute or more)
      - Force refresh browser with Ctrl+Shift+R
      - Check console for build errors
      - Restart dev server if needed
@@ -276,11 +276,11 @@ After applying a design iteration, perform these essential verification steps:
 
 ## <required> Waiting Periods & Verification </required>
 
-**NEVER skip these waiting/verification steps:**
+**NEVER skip these verification steps:**
 
 1. **After starting dev server:** Wait until the terminal shows "Compiled successfully" and you can load http://localhost:3000
 
-2. **After making component changes:** Wait 45-60 seconds minimum for DocuSaurus to rebuild, then manually verify in browser that changes are visible
+2. **After making component changes:** Wait until changes are visible in browser, then verify manually before proceeding
 
 3. **After capturing screenshot:** Verify the screenshot was created and shows your new design:
    ```bash
@@ -289,7 +289,7 @@ After applying a design iteration, perform these essential verification steps:
 
 4. **Between iterations:** Complete the entire sequence for one iteration before starting the next:
    - Make component changes
-   - Wait for rebuild (45-60 seconds)
+   - Wait for changes to appear in browser
    - Verify in browser
    - Capture screenshot
    - Verify screenshot shows new design
