@@ -52,9 +52,29 @@ function Feature({
 
       {bullets.length > 0 && (
         <ul className={styles.featureBullets}>
-          {bullets.map((bullet, index) => (
-            <li key={index}>{bullet}</li>
-          ))}
+          {bullets.map((bullet, index) => {
+            if (typeof bullet === "string") {
+              // Check for <pre> or <code> tags
+              const preMatch = bullet.match(/<pre>(.*?)<\/pre>/);
+              const codeMatch = bullet.match(/<code>(.*?)<\/code>/);
+
+              if (preMatch || codeMatch) {
+                const match = preMatch || codeMatch;
+                const codePart = match[1];
+                const parts = bullet.split(match[0]);
+
+                return (
+                  <li key={index}>
+                    {parts[0]}
+                    <code className="inline-code">{codePart}</code>
+                    {parts[1]}
+                  </li>
+                );
+              }
+            }
+
+            return <li key={index}>{bullet}</li>;
+          })}
         </ul>
       )}
     </Link>
@@ -123,10 +143,10 @@ export default function FeatureHighlights(): React.ReactElement {
             isNew={true}
             isWide={true}
             bullets={[
-              "defineStore() for declarative server-aware stores",
-              "useJodsForm() for implicit action dispatching",
-              "withJods() for automatic SSR hydration",
-              "rehydrateClient() for seamless client-side restoration",
+              "<pre>defineStore()</pre> for declarative server-aware stores",
+              "<pre>useJodsForm()</pre> for implicit action dispatching",
+              "<pre>withJods()</pre> for automatic SSR hydration",
+              "<pre>rehydrateClient()</pre> for seamless client-side restoration",
             ]}
           />
         </div>
