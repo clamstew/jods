@@ -238,7 +238,7 @@ function Counter() {
               <div
                 style={{
                   position: "absolute",
-                  top: "0.75rem",
+                  bottom: "0.75rem",
                   right: "0.75rem",
                   zIndex: 10,
                   fontSize: "0.8rem",
