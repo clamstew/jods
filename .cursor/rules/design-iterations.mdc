@@ -97,6 +97,36 @@ pnpm docs:design-iterations:count-1 --target="03-try-jods-section" --prompt="Pin
 open docs/static/screenshots/unified/03-try-jods-section-light-{timestamp}.png
 ```
 
+## <critical> Server Detection and Persistence </critical>
+
+**IMPORTANT**: If the server detection in the script is taking too long or fails:
+
+1. **Verify server is running manually**:
+   ```bash
+   # Check if server is responding on port 3000
+   curl -I http://localhost:3000
+   
+   # If successful, you should see "HTTP/1.1 200 OK" in the response
+   ```
+
+2. **If script says server isn't running but it is**:
+   - Let the script continue - it will proceed with screenshots after timeout
+   - Screenshots will still be captured correctly if the server is accessible
+
+3. **If you need to restart the server**:
+   ```bash
+   # Terminal 1: Kill and restart server
+   pkill -f docusaurus
+   cd docs && pnpm dev
+   
+   # Terminal 2: Continue with design iterations after server is confirmed running
+   ```
+
+4. **To prevent detection issues**:
+   - Always start server in a separate terminal and leave it running
+   - Ensure the server is fully initialized before running design iterations
+   - Check browser access at http://localhost:3000 to confirm server is responsive
+
 ## Key Commands
 
 ```bash
@@ -116,6 +146,48 @@ pnpm design-iterations:capture      # Capture the current state
 pnpm design-iterations:status       # Check current status
 pnpm screenshot:diff                # Compare screenshots
 ```
+
+## <critical> Multi-State Component Capture </critical>
+
+**IMPORTANT**: When designing components with multiple states or interactive elements (tabs, toggles, dropdowns):
+
+1. **Plan for state capture**:
+   - Identify all important states that need visual documentation
+   - Create a systematic approach to capture each state
+
+2. **Capture each state separately**:
+   ```bash
+   # First capture the default/initial state
+   pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="Design with input tab active" --skip-other-sections
+   
+   # Then adjust the component to show another state (e.g., different tab)
+   # Edit the component's state in the .tsx file:
+   #   const [activeTab, setActiveTab] = useState("code"); // Instead of "input"
+   
+   # After verifying the new state appears in browser:
+   pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="Design with code tab active" --skip-other-sections
+   ```
+
+3. **Document all states in feedback**:
+   - Include screenshots of all captured states
+   - Explain the transitions and user flows between states
+   - Highlight differences in functionality between states
+
+4. **Naming conventions for multi-state captures**:
+   ```
+   # Use consistent naming with state identifiers
+   "Design v1 - Default State"
+   "Design v1 - Expanded State"
+   "Design v1 - Active Tab: Code"
+   ```
+
+5. **Consider adding visual state indicators** in your component when relevant:
+   ```jsx
+   {/* Add visual indicator of current state for screenshots */}
+   {process.env.NODE_ENV !== 'production' && (
+     <div className={styles.stateIndicator}>Current State: {activeTab}</div>
+   )}
+   ```
 
 ## Quick Start
 
@@ -166,6 +238,47 @@ Only run cleanup after the user has:
 3. Explicitly requested cleanup with `pnpm docs:design-iterations:cleanup`
 
 The agent CANNOT know when the user is done reviewing design iterations. Premature cleanup could cause loss of valuable information. Cleanup should ONLY happen when explicitly requested, not automatically.
+
+## <required> Metadata and Feedback Management </required>
+
+**IMPORTANT**: Each design iteration should have its own metadata and feedback artifacts:
+
+1. **Timestamp-based organization**:
+   - All artifacts should be organized by their capture timestamp
+   - Example: `docs/temp/design-iterations/iteration-1/20250507T121055/`
+
+2. **Essential artifacts for each iteration**:
+   ```
+   docs/temp/design-iterations/iteration-N/{timestamp}/
+   ├── screenshots/
+   │   ├── 03-try-jods-section-light-{timestamp}.png
+   │   └── 03-try-jods-section-dark-{timestamp}.png
+   ├── diff.patch
+   ├── feedback-template.md
+   └── metadata.json
+   ```
+
+3. **Metadata structure** must include:
+   ```json
+   {
+     "iteration": N,
+     "timestamp": "{timestamp}",
+     "target": "03-try-jods-section",
+     "prompt": "Design description",
+     "screenshots": [
+       "03-try-jods-section-light-{timestamp}.png",
+       "03-try-jods-section-dark-{timestamp}.png"
+     ],
+     "diff_path": "docs/temp/possible-diffs/03-try-jods-section-{timestamp}.diff",
+     "status": "pending review",
+     "states_captured": ["default", "expanded"]  // For multi-state components
+   }
+   ```
+
+4. **If artifacts are overwritten**:
+   - Keep manual backups with timestamp in filename
+   - Create duplicate feedback templates for each distinct timestamp
+   - Report the issue with details about what's being overwritten
 
 ## Styling Approach: Follow Component Conventions
 

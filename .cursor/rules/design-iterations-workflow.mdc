@@ -66,6 +66,9 @@ open docs/static/screenshots/unified/03-try-jods-section-light-{timestamp}.png
    - Solution: 
      - Say Yes to use a different port, OR
      - Kill existing process: `pkill -f docusaurus`
+   - **Server Detection Issue**: If the script says "Docs server not running" but it is running:
+     - Try manually verifying with `curl http://localhost:3000` to check connectivity
+     - If the script hangs on server detection despite server running, proceed with the workflow. The screenshot will still be captured correctly if the server is accessible.
 
 2. **Missing Script**
    - Error: `ERR_PNPM_NO_SCRIPT_OR_SERVER Missing script start`
@@ -184,4 +187,73 @@ For multiple iterations, repeat this sequence for each one:
 7. **Make new changes** - Create a different design for the next iteration
 8. **Repeat steps 2-7** - Follow the same sequence for each iteration
 
-**NEVER run `count-5` directly** (this will create multiple iterations without proper verification between each) 
+**NEVER run `count-5` directly** (this will create multiple iterations without proper verification between each)
+
+## <required> Multi-State Component Capture </required>
+
+When designing components with multiple states (tabs, dropdowns, toggles, etc.):
+
+1. **Capture each important state** with a separate screenshot iteration:
+   ```bash
+   # First capture the default/initial state
+   pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="Notebook design - Input tab state" --skip-other-sections
+   
+   # Then modify the component to show a different state (e.g., a different tab)
+   # Edit the component to set a different default state:
+   # const [activePanel, setActivePanel] = useState("code");  // Change from "input" to "code"
+   
+   # Wait for rebuild, verify in browser, then capture the next state
+   pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="Notebook design - Code tab state" --skip-other-sections
+   
+   # Repeat for each important state
+   ```
+
+2. **Document each state** in the feedback template:
+   ```markdown
+   # Notebook Design - Multiple States
+   
+   ## States Captured:
+   - Input tab: 03-try-jods-section-light-20250507T121055-input.png
+   - Code tab: 03-try-jods-section-light-20250507T121115-code.png
+   - Output tab: 03-try-jods-section-light-20250507T121135-output.png
+   
+   Each tab shows a focused interface optimized for that specific function.
+   ```
+
+3. **Use descriptive prompts** that clearly identify the state being captured
+
+4. **Consider adding identifiers** in your prompt names to distinguish different states, e.g., "input-tab-view", "code-tab-view"
+
+## <required> Feedback Templates & Metadata </required>
+
+To ensure proper tracking of multiple design iterations:
+
+1. **Each iteration gets its own artifacts**:
+   - Each timestamp should have its own screenshot files, diff files, and feedback template
+   - Never modify a previous iteration's artifacts
+
+2. **Access feedback templates** for specific iterations:
+   ```bash
+   # Edit feedback for a specific iteration (using timestamp)
+   open docs/temp/design-iterations/iteration-1/feedback-template.md
+   ```
+
+3. **Metadata schema**:
+   ```json
+   {
+     "iteration": 1,
+     "timestamp": "20250507T121055",
+     "target": "03-try-jods-section",
+     "prompt": "Notebook design with tabbed interface",
+     "screenshots": [
+       "03-try-jods-section-light-20250507T121055.png",
+       "03-try-jods-section-dark-20250507T121055.png"
+     ],
+     "diff_path": "docs/temp/possible-diffs/03-try-jods-section-20250507T121055.diff",
+     "status": "pending review"
+   }
+   ```
+
+4. **If templates are being overwritten**:
+   - Create manual copies with the timestamp included in the filename
+   - Report the issue in the project's issue tracker with details about what was overwritten
