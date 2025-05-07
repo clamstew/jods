@@ -218,40 +218,54 @@ function Counter() {
           </div>
         </div>
 
-        <div
-          className="code-container"
-          style={{
-            margin: "0 auto",
-            position: "relative",
-            boxShadow: "0 8px 30px rgba(0, 0, 0, 0.1)",
-            borderRadius: "12px",
-            overflow: "hidden",
-            display: "flex",
-            justifyContent: "center",
-            width: "100%",
-          }}
-        >
-          {isBrowser && (
-            <div
-              style={{
-                position: "absolute",
-                top: "1rem",
-                right: "1rem",
-                zIndex: 2,
-                fontSize: "0.8rem",
-                padding: "0.25rem 0.75rem",
-                borderRadius: "20px",
-                background: frameworks[activeFramework].color,
-                color: "#fff",
-                fontWeight: "bold",
-              }}
-            >
-              {frameworks[activeFramework].title}
-            </div>
-          )}
-          <CodeBlock language="jsx" className="w-100">
-            {frameworks[activeFramework].code}
-          </CodeBlock>
+        <div style={{ textAlign: "center" }}>
+          <div
+            className="code-container"
+            style={{
+              margin: "2rem auto 0",
+              position: "relative",
+              boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
+              borderRadius: "12px",
+              overflow: "hidden",
+              display: "inline-block",
+              width: "auto",
+              maxWidth: "100%",
+              textAlign: "left",
+            }}
+          >
+            {isBrowser && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "0.75rem",
+                  right: "0.75rem",
+                  zIndex: 10,
+                  fontSize: "0.8rem",
+                  padding: "0.25rem 0.75rem",
+                  borderRadius: "20px",
+                  background:
+                    activeFramework === "react"
+                      ? "#7dd3fc"
+                      : activeFramework === "preact"
+                      ? "#c4b5fd"
+                      : "#fda4af",
+                  color:
+                    activeFramework === "react"
+                      ? "#0c4a6e"
+                      : activeFramework === "preact"
+                      ? "#4c1d95"
+                      : "#881337",
+                  fontWeight: "bold",
+                  boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+                }}
+              >
+                {frameworks[activeFramework].title}
+              </div>
+            )}
+            <CodeBlock language="jsx" className="w-100">
+              {frameworks[activeFramework].code}
+            </CodeBlock>
+          </div>
         </div>
       </div>
     </section>

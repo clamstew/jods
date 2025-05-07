@@ -288,10 +288,25 @@
     0 0 20px rgba(147, 51, 234, 0.3);
 }
 
+/* Light mode primary button - blue */
+:root:not([data-theme="dark"]) .buttonPrimary {
+  background: linear-gradient(135deg, #0369a1 0%, #0284c7 50%, #0ea5e9 100%);
+  box-shadow: 0 4px 12px rgba(3, 105, 161, 0.5),
+    0 0 20px rgba(14, 165, 233, 0.3);
+}
+
 .buttonPrimary:hover {
   transform: translateY(-3px) scale(1.03);
   box-shadow: 0 8px 20px rgba(126, 34, 206, 0.6),
     0 0 25px rgba(147, 51, 234, 0.4);
+  text-decoration: none;
+  color: white;
+}
+
+/* Light mode primary button hover - blue */
+:root:not([data-theme="dark"]) .buttonPrimary:hover {
+  box-shadow: 0 8px 20px rgba(3, 105, 161, 0.6),
+    0 0 25px rgba(14, 165, 233, 0.4);
 }
 
 /* Dark mode primary button */
@@ -371,12 +386,25 @@
   overflow: hidden;
 }
 
+/* Light mode remix button - green */
+:root:not([data-theme="dark"]) .buttonRemix {
+  background: linear-gradient(135deg, #16a34a 0%, #22c55e 50%, #4ade80 100%);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.5),
+    0 0 0 2px rgba(34, 197, 94, 0.1);
+}
+
 .buttonRemix:hover {
   transform: translateY(-3px) scale(1.03);
   box-shadow: 0 8px 20px rgba(249, 115, 22, 0.6),
     0 0 0 3px rgba(249, 115, 22, 0.2);
   text-decoration: none;
   color: white;
+}
+
+/* Light mode remix button hover - green */
+:root:not([data-theme="dark"]) .buttonRemix:hover {
+  box-shadow: 0 8px 20px rgba(22, 163, 74, 0.6),
+    0 0 0 3px rgba(34, 197, 94, 0.2);
 }
 
 /* Dark mode remix button */
