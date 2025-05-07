@@ -212,7 +212,22 @@ This approach creates a clear record of your design process and makes it easy to
 
 For components with important state variations, like interactive elements or components with tabs/buttons, follow this workflow:
 
-1. **Primary State Screenshot**:
+1. **Identifying Clickable Elements First**:
+   - Examine the component code to find truly interactive elements:
+   ```jsx
+   // Look for useState hooks that manage interactive state
+   const [activeTab, setActiveTab] = useState("input");
+   
+   // Look for event handlers like onClick, onChange, etc.
+   <button onClick={() => setActiveTab("output")}>Output</button>
+   
+   // Look for conditional rendering based on state
+   {activeTab === "input" ? <InputPanel /> : <OutputPanel />}
+   ```
+   - Focus on elements with state-changing capabilities first
+   - Ignore purely decorative buttons without handlers
+
+2. **Primary State Screenshot**:
    - First, capture the default/main view of the component
    - Use the standard design iterations command:
    ```bash
@@ -220,35 +235,51 @@ For components with important state variations, like interactive elements or com
    pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="Default state design" --skip-other-sections
    ```
 
-2. **Interacting with the Component**:
+3. **Interacting with the Component**:
    - After capturing the default state, interact with the component in the browser
+   - Focus on high-value interactions first (those that cause major visual changes)
    - Click tabs, buttons, or form elements
    - Expand collapsed sections
    - This changes the visual state of the component
 
-3. **Capturing Alternative States**:
+4. **Capturing Alternative States**:
    - After interacting with the component, capture a new screenshot with a new design iteration
    ```bash
    pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="After clicking tab 2" --skip-other-sections
    ```
    - This creates a new screenshot with a new timestamp
-   - You can optionally rename for clarity:
+   - You can rename for clarity with descriptive, kebab-case derived from the prompt:
    ```bash
+   # Using descriptive names derived from the prompt
    mv docs/static/screenshots/unified/03-try-jods-section-light-20250507T121555.png \
-      docs/static/screenshots/unified/03-try-jods-section-light-tab2-active-20250507T121555.png
+      docs/static/screenshots/unified/03-try-jods-section-light-after-click-tab2-20250507T121555.png
    ```
 
-4. **Documenting State Transitions**:
+5. **Documenting State Transitions**:
    - In your feedback template, document what interactions trigger each state
    - Note which user actions change the component appearance
    - Link the timestamp to the specific interaction
 
-For complex components like the "Try jods" section with multiple tabs or interactive elements:
-- Capture separate screenshots for each major state (e.g., different tabs)
-- Document the user flows that trigger these state changes
-- Use descriptive naming to indicate the state in file names
+For complex components like the "Try jods" section with multiple tabs or interactive elements, use a **progressive enhancement approach**:
 
-This approach ensures you have a complete record of how the component behaves in all its visual states, which is essential for interactive components.
+- **First iterations (1-2)**: Capture only the default state and the **single most important** alternative state (e.g., main tab switch)
+- **Middle iterations (3-4)**: Add screenshots for secondary interactions as the design stabilizes
+- **Final iterations (5+)**: Capture comprehensive state variations including edge cases
+
+This progressive approach allows you to focus on core design elements first and expand testing coverage as the design matures:
+
+```bash
+# Early iterations: Just capture main states
+# Iteration 1-2: Default + Main Tab
+
+# Later iterations: Add more states as design stabilizes
+# Iteration 3-4: Default + All Tabs + Form Submissions
+
+# Final iterations: Comprehensive state coverage
+# Iteration 5+: Default + All Tabs + Form States + Edge Cases
+```
+
+Prioritizing interactions by visual impact ensures efficient design feedback while progressively enhancing test coverage as the design converges.
 
 ## <critical> Integration Testing After Choosing Design </critical>
 

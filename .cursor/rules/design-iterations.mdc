@@ -199,19 +199,35 @@ This progressive approach allows rapid visual exploration before investing in co
 
 For components with important state variations, you need to capture each distinct visual state separately:
 
-1. **Primary State Screenshot**:
+1. **Identifying Clickable Elements First**:
+   - Examine the component code to find truly interactive elements:
+   ```jsx
+   // Look for useState hooks that manage interactive state
+   const [activeTab, setActiveTab] = useState("input");
+   
+   // Look for event handlers like onClick, onChange, etc.
+   <button onClick={() => setActiveTab("output")}>Output</button>
+   
+   // Look for conditional rendering based on state
+   {activeTab === "input" ? <InputPanel /> : <OutputPanel />}
+   ```
+   - Focus on elements with state-changing capabilities first
+   - Ignore purely decorative buttons without handlers
+
+2. **Primary State Screenshot**:
    - Capture the default/main view of the component
    - Use standard naming: `component-name-theme-TIMESTAMP.png`
 
-2. **Alternative State Screenshots** (for interactive components):
+3. **Alternative State Screenshots** (for interactive components):
    - First interact with the component in the browser 
+     - Focus on high-value interactions first (those that cause major visual changes)
      - Click buttons or tabs
      - Change form inputs
      - Expand collapsed elements
    - Then capture a new screenshot of this different visual state
-   - Use descriptive naming: `component-name-theme-alt-state-description-TIMESTAMP.png`
+   - Use descriptive naming derived from the interaction: `component-name-theme-alt-after-click-tab2-TIMESTAMP.png`
 
-3. **Document State Interactions**:
+4. **Document State Interactions**:
    - Note in your feedback template what interactions trigger each state
    - Document the visual differences between states
    - Reference all state screenshots for a complete view of component behavior
@@ -229,17 +245,29 @@ pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="Design w
 pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="Design after clicking tab 2" --skip-other-sections
 
 # The system will generate a new screenshot with a new timestamp
-# You can use descriptive file naming to organize multiple states
+# You can use descriptive file naming derived from the prompt
 mv docs/static/screenshots/unified/03-try-jods-section-light-20250507T121555.png \
-   docs/static/screenshots/unified/03-try-jods-section-light-alt-tab2-clicked-20250507T121555.png
+   docs/static/screenshots/unified/03-try-jods-section-light-alt-after-click-tab2-20250507T121555.png
 ```
 
-For components with complex interactions like the "Try jods" section:
-- Capture separate screenshots for each tab state
-- Capture before/after states for button clicks
-- Capture expanded/collapsed states for interactive elements
+For components with complex interactions, use a **progressive enhancement approach**:
 
-These multiple state screenshots provide a complete view of how the component behaves with user interaction.
+- **First iterations (1-2)**: Focus on default state and **single most impactful** alternative state
+- **Middle iterations (3-4)**: Add screenshots for secondary interactions as design stabilizes
+- **Final iterations (5+)**: Capture comprehensive state variations including edge cases
+
+```bash
+# Progressive enhancement sequence
+# Early iterations: Just capture main states
+pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="Default state"
+# Interact with main tab
+pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="After clicking main tab"
+
+# Later iterations: Add more states as design solidifies
+# For iterations 3-4, add secondary interactions
+```
+
+This approach focuses design feedback on core elements first while expanding coverage as the design converges.
 
 ## <critical> Screenshot Verification and Context Persistence </critical>
 
