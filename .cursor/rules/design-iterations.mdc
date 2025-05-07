@@ -43,6 +43,26 @@ pnpm docs:design-iterations:count-1 --target="03-try-jods-section" --prompt="Pin
 open docs/static/screenshots/unified/03-try-jods-section-light-{timestamp}.png
 ```
 
+## Key Commands
+
+```bash
+# From root directory
+pnpm docs:design-iterations:init    # Initialize a new design iteration for a component
+pnpm docs:design-iterations:capture # Capture the current state of components
+pnpm docs:design-iterations:count-N # Create N iterations (usually use count-1 for step-by-step)
+pnpm docs:design-iterations:status  # Check the status of the current iteration
+pnpm docs:screenshot:diff           # Compare screenshots using pixel-by-pixel diffing
+pnpm docs:verify-changes            # Verify changes were captured correctly
+pnpm docs:design-iterations:apply   # Apply a chosen design iteration
+pnpm docs:design-iterations:cleanup # Clean up iteration artifacts (ONLY when requested)
+
+# From docs directory
+pnpm design-iterations:init         # Initialize a new design iteration
+pnpm design-iterations:capture      # Capture the current state
+pnpm design-iterations:status       # Check current status
+pnpm screenshot:diff                # Compare screenshots
+```
+
 ## Quick Start
 
 ```bash
@@ -234,6 +254,36 @@ pnpm docs:design-iterations:count-5 --target="04-framework-section-react"
 
 This is essential to avoid the workflow generating unnecessary files for sections you're not changing.
 
+## Component Targeting
+
+Components can be targeted by:
+
+1. **Data Test ID** (preferred)
+   ```jsx
+   <section data-testid="try-jods-section">...</section>
+   ```
+
+2. **CSS Selectors**
+   ```js
+   selector: ".try-jods-container"
+   ```
+
+3. **Alternative Selectors** for complex components
+   ```js
+   alternativeSelectors: ["h2:has-text('Try jods')", ".try-jods-demo"]
+   ```
+
+## Screenshot System
+
+The screenshot system uses Playwright to:
+
+1. Launch a headless browser
+2. Navigate to pages with components
+3. Capture screenshots in different themes
+4. Support various component types (sections, examples, etc.)
+5. Perform pixel-by-pixel comparison to identify visual changes
+6. Generate diff images for visual inspection
+
 ## AI-Driven Workflow
 
 When a user explicitly requests design iterations, you should:
@@ -366,6 +416,9 @@ Each design iteration generates these artifacts:
 15. **Apply chosen designs** - With `docs:design-iterations:apply`
 16. **Preserve artifacts until explicitly requested** - Only clean up when user explicitly asks
 17. **Check for CSS module files** - If a component uses CSS modules, check for and modify those files too
+18. **Use data-testid attributes** - Prefer data-testid for reliable component targeting
+19. **Test all themes** - Ensure changes look good in both light and dark mode
+20. **Verify mobile layouts** - Test responsive behavior with different viewport sizes
 
 ## Common Issues and Troubleshooting
 
@@ -393,6 +446,7 @@ Each design iteration generates these artifacts:
 - **Component not found**: 
   - Check the component name - use numbered prefix format (e.g., `04-framework-section-react`)
   - Simple names without numbers may not work consistently
+  - Verify the component has proper data-testid attribute
   
 - **Missing screenshots**: 
   - Ensure the docs site is running with `pnpm start`
@@ -434,7 +488,7 @@ For troubleshooting screenshot issues, analyze diff files:
    pnpm start
    ```
 
-## DocuSaurus Documentation
+## References
 
 For more information on the design iterations workflow, see the [official documentation](https://docs.jods.io/design-iterations/workflow):
 

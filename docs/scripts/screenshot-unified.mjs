@@ -21,6 +21,7 @@ import {
 } from "./screenshot-utils.mjs";
 import { captureManager } from "./screenshot-capture.mjs";
 import { fileURLToPath } from "url";
+import fs from "fs";
 
 // Initialize environment and utilities with memoization
 const { directories, BASE_URL, PATH_PREFIX, THEMES, getTimestamp, DEBUG } =
@@ -331,7 +332,7 @@ async function navigateToPage(page, url) {
       () =>
         page.goto(url, {
           waitUntil: "networkidle",
-          timeout: config.navigationTimeout || 30000,
+          timeout: 60000,
         }),
       {
         name: "Page navigation",
@@ -353,7 +354,7 @@ async function navigateToPage(page, url) {
 
     if (navigationSuccess) {
       // Wait additional time for page to stabilize and render
-      await page.waitForTimeout(2000);
+      await page.waitForTimeout(3000);
 
       // Check for any critical error indicators on the page
       const hasPageError = await page.evaluate(() => {
@@ -431,11 +432,39 @@ async function processComponentForTheme(
     // Track the time for this component's processing
     const timerId = logger.startTimer(`${component.name}-${theme}`);
 
+    // Scroll to component to ensure it's in view
+    try {
+      await page.evaluate((componentName) => {
+        // Try to find component by various means (data-testid, id, etc.)
+        const selectors = [
+          `[data-testid="${componentName}"]`,
+          `[data-component="${componentName}"]`,
+          `#${componentName}`,
+          `.${componentName}`,
+        ];
+
+        for (const selector of selectors) {
+          const element = document.querySelector(selector);
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "center" });
+            return true;
+          }
+        }
+
+        return false;
+      }, component.name);
+    } catch (err) {
+      logger.debug(`Error scrolling to component: ${err.message}`);
+    }
+
+    // Wait for any animations or transitions to complete
+    await page.waitForTimeout(2000);
+
     // Wait for component selector if specified
     if (component.waitForSelector) {
       try {
         await page.waitForSelector(component.waitForSelector, {
-          timeout: config.elementTimeout || 5000,
+          timeout: 8000,
           state: "attached",
         });
       } catch (e) {
@@ -499,12 +528,12 @@ async function processComponentForTheme(
           }
         }
       });
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(1000);
 
       // Handle scrolling with better error handling
       try {
         await page.evaluate(() => window.scrollBy(0, 300));
-        await page.waitForTimeout(500);
+        await page.waitForTimeout(1000);
       } catch (scrollError) {
         logger.warn(`Error during scrolling: ${scrollError.message}`);
         // Continue anyway
@@ -556,6 +585,31 @@ async function processComponentForTheme(
           saveBaseline,
           outputDir
         );
+
+        // Verify the screenshot was saved properly
+        const screenshotPath = path.join(
+          outputDir,
+          `${component.name}-${theme}${saveBaseline ? "" : "-" + timestamp}.png`
+        );
+
+        try {
+          if (fs.existsSync(screenshotPath)) {
+            const stats = fs.statSync(screenshotPath);
+            logger.info(
+              `Screenshot saved: ${screenshotPath} (${stats.size} bytes)`
+            );
+
+            if (stats.size < 1000) {
+              logger.warn(
+                `Screenshot file is unusually small (${stats.size} bytes), might be corrupted`
+              );
+            }
+          } else {
+            logger.warn(`Expected screenshot not found at ${screenshotPath}`);
+          }
+        } catch (err) {
+          logger.warn(`Error verifying screenshot: ${err.message}`);
+        }
       } else {
         // Take fallback screenshot if element not found
         logger.warn(
@@ -727,6 +781,9 @@ async function takeUnifiedScreenshots(
     // Initialize browser and page
     ({ browser, page } = await initBrowser());
 
+    // Add a custom navigation timeout
+    await page.setDefaultNavigationTimeout(60000); // 60 seconds
+
     // Track overall statistics
     const stats = {
       total: componentsToCapture.length * THEMES.length,
@@ -742,7 +799,7 @@ async function takeUnifiedScreenshots(
       const url = `${BASE_URL}${PATH_PREFIX}${pagePath}`;
       logger.info(`\n📄 Navigating to ${url}`);
 
-      // Navigate to the page
+      // Navigate to the page with enhanced wait for full loading
       const navigationSuccess = await navigateToPage(page, url);
 
       if (!navigationSuccess) {
@@ -755,6 +812,34 @@ async function takeUnifiedScreenshots(
           };
         }
         continue; // Skip to next page
+      }
+
+      // Add additional waiting time for the page to fully stabilize
+      logger.info(
+        "Waiting additional time for page to fully stabilize (5s)..."
+      );
+      await page.waitForTimeout(5000);
+
+      // Check for React hydration readiness
+      try {
+        const isHydrated = await page.evaluate(() => {
+          // Different ways to detect React is ready
+          return (
+            // Check for common React readiness indicators
+            window.__REACT_HYDRATED === true ||
+            document.documentElement.dataset.reactRoot === "loaded" ||
+            // General check: no loading indicators visible
+            (!document.querySelector(".loading-indicator") &&
+              !document.querySelector('[data-loading="true"]') &&
+              // Check if we can find React devtools
+              window.__REACT_DEVTOOLS_GLOBAL_HOOK__ !== undefined)
+          );
+        });
+        logger.info(
+          `Page hydration status: ${isHydrated ? "Ready" : "Not yet ready"}`
+        );
+      } catch (err) {
+        logger.warn(`Could not detect React hydration status: ${err.message}`);
       }
 
       // Capture screenshots for each theme
@@ -779,8 +864,19 @@ async function takeUnifiedScreenshots(
           logger.info("Continuing with current theme...");
         }
 
+        // Wait additional time after theme change for styles to apply
+        logger.info("Waiting for theme styles to fully apply (3s)...");
+        await page.waitForTimeout(3000);
+
         // Take screenshots of each component on this page
         for (const component of pageComponents) {
+          // Verify component is fully loaded and visible before capturing
+          try {
+            await verifyComponentReady(page, component);
+          } catch (err) {
+            logger.warn(`Component verification warning: ${err.message}`);
+          }
+
           await processComponentForTheme(
             page,
             component,
@@ -830,6 +926,70 @@ async function takeUnifiedScreenshots(
         logger.debug(`Error closing browser: ${err.message}`);
       });
     }
+  }
+}
+
+/**
+ * Verify component is fully loaded and visible
+ * @param {Page} page - Playwright page
+ * @param {Object} component - Component to verify
+ */
+async function verifyComponentReady(page, component) {
+  logger.info(`Verifying ${component.name} is ready for capture...`);
+
+  // Wait for a reasonable element within the component to be visible
+  const selector =
+    component.selector || component.waitForSelector || "h1, h2, h3, button";
+
+  try {
+    // First check if the element exists
+    const exists = await page.evaluate((sel) => {
+      return !!document.querySelector(sel);
+    }, selector);
+
+    if (!exists) {
+      logger.warn(
+        `Element with selector "${selector}" does not exist on the page`
+      );
+      // Continue anyway since we'll try other selectors in the actual capture function
+      return;
+    }
+
+    // Wait for visibility with timeout
+    await page.waitForSelector(selector, {
+      state: "visible",
+      timeout: 8000,
+    });
+
+    // Check for content loading indicators
+    const hasLoadingIndicator = await page.evaluate(() => {
+      // Common loading indicator patterns
+      const loadingSelectors = [
+        '[aria-busy="true"]',
+        ".loading",
+        ".spinner",
+        '[data-loading="true"]',
+        '[role="progressbar"]',
+      ];
+
+      return loadingSelectors.some((sel) => !!document.querySelector(sel));
+    });
+
+    if (hasLoadingIndicator) {
+      logger.info(
+        `Component ${component.name} still has loading indicators, waiting...`
+      );
+      // Wait additional time for loading to complete
+      await page.waitForTimeout(3000);
+    }
+
+    logger.info(`Component ${component.name} appears ready for capture`);
+  } catch (error) {
+    logger.warn(
+      `Unable to verify component ${component.name} readiness: ${error.message}`
+    );
+    // Wait a bit anyway to give it time to render
+    await page.waitForTimeout(2000);
   }
 }
 

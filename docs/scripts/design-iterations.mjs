@@ -20,6 +20,8 @@ import minimist from "minimist";
 // Import screenshot function - UNCOMMENTED
 import { takeUnifiedScreenshots } from "./screenshot-unified.mjs";
 import http from "http";
+import { spawn } from "child_process";
+import { chromium } from "@playwright/test";
 
 // Get directory paths
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -667,10 +669,603 @@ _Note: Baseline changes require maintainer signoff_
 }
 
 /**
+ * Helper function to check if server is running
+ */
+async function checkServerRunning() {
+  return new Promise((resolve) => {
+    const req = http.get(
+      "http://localhost:3000",
+      {
+        timeout: 3000, // Short timeout for each individual request
+      },
+      (res) => {
+        res.on("data", () => {});
+        res.on("end", () => resolve(res.statusCode === 200));
+      }
+    );
+
+    req.on("error", () => resolve(false));
+    req.on("timeout", () => {
+      req.destroy();
+      resolve(false);
+    });
+  });
+}
+
+/**
+ * Enhanced server startup with better timeout handling and graceful fallback
+ */
+async function ensureDocsServerRunning() {
+  console.log("🔍 Checking if docs server is running...");
+
+  // Set a global timeout for this entire operation
+  const GLOBAL_TIMEOUT = 60000; // 60 seconds max
+  const startTime = Date.now();
+
+  try {
+    // First just check if server is running without trying to start it
+    const isRunning = await checkServerRunning();
+    if (isRunning) {
+      console.log("✅ Docs server is already running");
+      return true;
+    }
+
+    console.log("📡 Docs server not running, attempting to start...");
+
+    // Use a child process with proper detachment and stdio configuration
+    const serverProcess = spawn("pnpm", ["start"], {
+      cwd: path.join(__dirname, ".."),
+      detached: true,
+      stdio: "ignore",
+    });
+
+    // Unref to allow the parent process to exit independently
+    serverProcess.unref();
+
+    // Give server a moment to start up
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+
+    // Poll for server availability with timeout
+    let attempts = 0;
+    while (Date.now() - startTime < GLOBAL_TIMEOUT) {
+      const running = await checkServerRunning();
+      if (running) {
+        console.log("✅ Server started successfully");
+        return true;
+      }
+
+      attempts++;
+      if (attempts > 20) {
+        console.log("⚠️ Server still not responding after many attempts");
+        console.log("   Proceeding anyway - screenshots may not work");
+        return false;
+      }
+
+      // Exponential backoff
+      await new Promise((resolve) =>
+        setTimeout(resolve, Math.min(1000 * Math.pow(1.2, attempts), 5000))
+      );
+
+      // Log progress to keep the user informed
+      console.log(`   Waiting for server - attempt ${attempts}/20`);
+    }
+
+    console.log("⚠️ Server startup timed out, proceeding without server");
+    return false;
+  } catch (error) {
+    console.error(`❌ Error with server: ${error.message}`);
+    console.log("   Proceeding with screenshot process anyway");
+    return false;
+  }
+}
+
+/**
+ * Verify that screenshot shows a different design from previous iteration
+ */
+async function verifyScreenshotDifference(
+  prevIterationPath,
+  currentIterationPath
+) {
+  console.log("🔍 Verifying screenshots show different designs...");
+
+  try {
+    // Launch browser for pixel comparison
+    const browser = await chromium.launch();
+    const context = await browser.newContext();
+    const page = await context.newPage();
+
+    try {
+      // Read both images and convert to base64
+      const prevBuffer = fs.readFileSync(prevIterationPath);
+      const currentBuffer = fs.readFileSync(currentIterationPath);
+
+      const prevBase64 = `data:image/png;base64,${prevBuffer.toString(
+        "base64"
+      )}`;
+      const currentBase64 = `data:image/png;base64,${currentBuffer.toString(
+        "base64"
+      )}`;
+
+      // Compare images using Playwright
+      const diffResult = await page.evaluate(
+        async ({ prev, current }) => {
+          // Load both images
+          const loadImage = (dataUrl) => {
+            return new Promise((resolve, reject) => {
+              const img = new Image();
+              img.onload = () => resolve(img);
+              img.onerror = () => reject(new Error("Failed to load image"));
+              img.src = dataUrl;
+            });
+          };
+
+          // Convert image to pixel data
+          const imageToData = (img) => {
+            const canvas = document.createElement("canvas");
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0);
+
+            return {
+              width: img.width,
+              height: img.height,
+              data: ctx.getImageData(0, 0, img.width, img.height).data,
+            };
+          };
+
+          try {
+            const prevImg = await loadImage(prev);
+            const currentImg = await loadImage(current);
+
+            // Handle different sized images
+            if (
+              prevImg.width !== currentImg.width ||
+              prevImg.height !== currentImg.height
+            ) {
+              return {
+                diffPercentage: 100, // 100% different
+                message: `Size mismatch: Previous (${prevImg.width}x${prevImg.height}) vs Current (${currentImg.width}x${currentImg.height})`,
+                diffImage: null,
+                success: true,
+              };
+            }
+
+            // Get pixel data
+            const prevData = imageToData(prevImg);
+            const currentData = imageToData(currentImg);
+
+            // Create diff image
+            const canvas = document.createElement("canvas");
+            canvas.width = prevImg.width;
+            canvas.height = prevImg.height;
+            const ctx = canvas.getContext("2d");
+
+            // Draw the current image
+            ctx.drawImage(currentImg, 0, 0);
+
+            // Get image data for manipulation
+            const diffImageData = ctx.getImageData(
+              0,
+              0,
+              canvas.width,
+              canvas.height
+            );
+            const diffData = diffImageData.data;
+
+            // Compare pixels and highlight differences
+            let differentPixels = 0;
+            const totalPixels = prevData.width * prevData.height;
+
+            for (let i = 0; i < prevData.data.length; i += 4) {
+              const rDiff = Math.abs(prevData.data[i] - currentData.data[i]);
+              const gDiff = Math.abs(
+                prevData.data[i + 1] - currentData.data[i + 1]
+              );
+              const bDiff = Math.abs(
+                prevData.data[i + 2] - currentData.data[i + 2]
+              );
+
+              // If any channel has significant difference
+              if (rDiff > 5 || gDiff > 5 || bDiff > 5) {
+                // Mark the different pixel as magenta
+                diffData[i] = 255; // R
+                diffData[i + 1] = 0; // G
+                diffData[i + 2] = 255; // B
+
+                differentPixels++;
+              }
+            }
+
+            // Calculate percentage of different pixels
+            const diffPercentage = (differentPixels / totalPixels) * 100;
+
+            // Put the modified image data back
+            ctx.putImageData(diffImageData, 0, 0);
+
+            // Return the diff image as base64 and the percentage
+            return {
+              diffPercentage,
+              diffImage: canvas.toDataURL(),
+              differentPixels,
+              totalPixels,
+              success: true,
+            };
+          } catch (error) {
+            return {
+              diffPercentage: 0,
+              diffImage: null,
+              error:
+                "Failed to process images: " +
+                (error.message || "Unknown error"),
+              success: false,
+            };
+          }
+        },
+        { prev: prevBase64, current: currentBase64 }
+      );
+
+      await browser.close();
+
+      if (!diffResult.success) {
+        console.log(`❌ Error processing images: ${diffResult.error}`);
+        return {
+          isDifferent: false,
+          diffPercentage: 0,
+          diffPath: null,
+          error: diffResult.error,
+        };
+      }
+
+      // Save diff image for visual inspection in temp directory
+      const tempDiffDir = path.join(tempDir, "screenshot-diffs");
+      if (!fs.existsSync(tempDiffDir)) {
+        fs.mkdirSync(tempDiffDir, { recursive: true });
+      }
+
+      const diffFileName = path
+        .basename(currentIterationPath)
+        .replace(".png", "-diff.png");
+      const diffPath = path.join(tempDiffDir, diffFileName);
+
+      if (diffResult.diffImage) {
+        const base64Data = diffResult.diffImage.replace(
+          /^data:image\/png;base64,/,
+          ""
+        );
+        fs.writeFileSync(diffPath, Buffer.from(base64Data, "base64"));
+        console.log(`   Diff image saved to: ${diffPath}`);
+      }
+
+      console.log(
+        `   Difference between screenshots: ${diffResult.diffPercentage.toFixed(
+          2
+        )}%`
+      );
+
+      return {
+        isDifferent: diffResult.diffPercentage > 5, // Threshold - 5% difference minimum
+        diffPercentage: diffResult.diffPercentage,
+        diffPath: diffPath,
+        numDiffPixels: diffResult.differentPixels,
+        dimensions: { width: diffResult.width, height: diffResult.height },
+      };
+    } catch (error) {
+      await browser.close();
+      throw error;
+    }
+  } catch (error) {
+    console.error(`❌ Error comparing screenshots: ${error.message}`);
+    return {
+      isDifferent: false,
+      diffPercentage: 0,
+      diffPath: null,
+      error: error.message,
+    };
+  }
+}
+
+/**
+ * Create a diagnostic log for troubleshooting design iteration issues
+ * @param {string} iterationDir - Path to the iteration directory
+ * @param {Array} targets - List of component targets
+ * @param {string} timestamp - Screenshot timestamp
+ * @param {Object} additionalInfo - Additional debugging information
+ */
+function createDiagnosticLog(
+  iterationDir,
+  targets,
+  timestamp,
+  additionalInfo = {}
+) {
+  console.log("📋 Creating diagnostic log for troubleshooting...");
+
+  // Create diagnostics directory if it doesn't exist
+  const diagnosticsDir = path.join(tempDir, "diagnostics");
+  if (!fs.existsSync(diagnosticsDir)) {
+    fs.mkdirSync(diagnosticsDir, { recursive: true });
+  }
+
+  const now = new Date();
+  const diagnosticFileName = `iteration-diagnostic-${timestamp}.json`;
+  const diagnosticPath = path.join(diagnosticsDir, diagnosticFileName);
+
+  try {
+    // Gather system information
+    const systemInfo = {
+      timestamp: now.toISOString(),
+      readableTime: now.toLocaleString(),
+      node: process.version,
+      platform: process.platform,
+      arch: process.arch,
+      screenshotTimestamp: timestamp,
+    };
+
+    // Check for git information
+    try {
+      const gitStatus = execSync("git status --porcelain", {
+        encoding: "utf8",
+      });
+      const gitBranch = execSync("git rev-parse --abbrev-ref HEAD", {
+        encoding: "utf8",
+      }).trim();
+      const gitHash = execSync("git rev-parse HEAD", {
+        encoding: "utf8",
+      }).trim();
+
+      systemInfo.git = {
+        branch: gitBranch,
+        hash: gitHash,
+        hasUncommittedChanges: gitStatus.trim().length > 0,
+      };
+    } catch (gitError) {
+      systemInfo.git = { error: gitError.message };
+    }
+
+    // Check server status
+    try {
+      const serverCheck = execSync("lsof -i :3000 -P -n | grep LISTEN", {
+        encoding: "utf8",
+      });
+      systemInfo.serverRunning = serverCheck.trim().length > 0;
+    } catch (serverError) {
+      // No output means no process found on port 3000
+      systemInfo.serverRunning = false;
+    }
+
+    // Check for screenshot files
+    const screenshotInfo = {};
+
+    for (const target of targets) {
+      screenshotInfo[target] = {
+        light: null,
+        dark: null,
+      };
+
+      // Check unified directory
+      const unifiedDir = path.join(rootDir, "static/screenshots/unified");
+      const lightScreenshot = path.join(
+        unifiedDir,
+        `${target}-light-${timestamp}.png`
+      );
+      const darkScreenshot = path.join(
+        unifiedDir,
+        `${target}-dark-${timestamp}.png`
+      );
+
+      // Check for light screenshot
+      if (fs.existsSync(lightScreenshot)) {
+        const stats = fs.statSync(lightScreenshot);
+        screenshotInfo[target].light = {
+          path: lightScreenshot,
+          size: stats.size,
+          mtime: stats.mtime.toISOString(),
+          exists: true,
+        };
+      } else {
+        screenshotInfo[target].light = {
+          path: lightScreenshot,
+          exists: false,
+        };
+      }
+
+      // Check for dark screenshot
+      if (fs.existsSync(darkScreenshot)) {
+        const stats = fs.statSync(darkScreenshot);
+        screenshotInfo[target].dark = {
+          path: darkScreenshot,
+          size: stats.size,
+          mtime: stats.mtime.toISOString(),
+          exists: true,
+        };
+      } else {
+        screenshotInfo[target].dark = {
+          path: darkScreenshot,
+          exists: false,
+        };
+      }
+
+      // Check for debug HTML files
+      const debugDir = path.join(rootDir, "static/debug");
+      if (fs.existsSync(debugDir)) {
+        const debugFiles = fs
+          .readdirSync(debugDir)
+          .filter((f) => f.includes(target) && f.includes("debug"));
+
+        if (debugFiles.length > 0) {
+          screenshotInfo[target].debugFiles = debugFiles.map((f) => ({
+            name: f,
+            path: path.join(debugDir, f),
+            mtime: fs.statSync(path.join(debugDir, f)).mtime.toISOString(),
+          }));
+        }
+      }
+    }
+
+    // Collect all diff files
+    const diffInfo = {};
+    if (fs.existsSync(possibleDiffsDir)) {
+      const diffFiles = fs
+        .readdirSync(possibleDiffsDir)
+        .filter(
+          (f) => f.includes(timestamp) || targets.some((t) => f.includes(t))
+        );
+
+      if (diffFiles.length > 0) {
+        diffInfo.files = diffFiles.map((f) => ({
+          name: f,
+          path: path.join(possibleDiffsDir, f),
+          mtime: fs
+            .statSync(path.join(possibleDiffsDir, f))
+            .mtime.toISOString(),
+          size: fs.statSync(path.join(possibleDiffsDir, f)).size,
+        }));
+      }
+    }
+
+    // Create the diagnostic log
+    const diagnosticLog = {
+      system: systemInfo,
+      targets,
+      iterationDir,
+      screenshots: screenshotInfo,
+      diffs: diffInfo,
+      additional: additionalInfo,
+      processTiming: {
+        started: additionalInfo.processStartTime || now.toISOString(),
+        completed: now.toISOString(),
+        duration: additionalInfo.processStartTime
+          ? (now - new Date(additionalInfo.processStartTime)) / 1000
+          : null,
+      },
+    };
+
+    // Save the diagnostic log
+    fs.writeFileSync(diagnosticPath, JSON.stringify(diagnosticLog, null, 2));
+    console.log(`   ✅ Diagnostic log saved to: ${diagnosticPath}`);
+
+    // Also create a human-readable version
+    const readablePath = path.join(
+      diagnosticsDir,
+      `iteration-diagnostic-${timestamp}.txt`
+    );
+
+    let readableContent = `# Design Iteration Diagnostic Report\n\n`;
+    readableContent += `Generated: ${now.toLocaleString()}\n`;
+    readableContent += `Screenshot Timestamp: ${timestamp}\n\n`;
+
+    readableContent += `## System Information\n`;
+    readableContent += `- Node: ${systemInfo.node}\n`;
+    readableContent += `- Platform: ${systemInfo.platform}\n`;
+    readableContent += `- Docusaurus Server Running: ${
+      systemInfo.serverRunning ? "Yes" : "No"
+    }\n`;
+
+    if (systemInfo.git) {
+      readableContent += `- Git Branch: ${
+        systemInfo.git.branch || "Unknown"
+      }\n`;
+      readableContent += `- Uncommitted Changes: ${
+        systemInfo.git.hasUncommittedChanges ? "Yes" : "No"
+      }\n`;
+    }
+
+    readableContent += `\n## Screenshot Information\n`;
+    for (const target of targets) {
+      readableContent += `\n### ${target}\n`;
+
+      if (screenshotInfo[target].light && screenshotInfo[target].light.exists) {
+        readableContent += `- Light Theme: ${screenshotInfo[target].light.path}\n`;
+        readableContent += `  - Size: ${screenshotInfo[target].light.size} bytes\n`;
+        readableContent += `  - Modified: ${new Date(
+          screenshotInfo[target].light.mtime
+        ).toLocaleString()}\n`;
+      } else {
+        readableContent += `- Light Theme: NOT FOUND\n`;
+      }
+
+      if (screenshotInfo[target].dark && screenshotInfo[target].dark.exists) {
+        readableContent += `- Dark Theme: ${screenshotInfo[target].dark.path}\n`;
+        readableContent += `  - Size: ${screenshotInfo[target].dark.size} bytes\n`;
+        readableContent += `  - Modified: ${new Date(
+          screenshotInfo[target].dark.mtime
+        ).toLocaleString()}\n`;
+      } else {
+        readableContent += `- Dark Theme: NOT FOUND\n`;
+      }
+
+      if (
+        screenshotInfo[target].debugFiles &&
+        screenshotInfo[target].debugFiles.length > 0
+      ) {
+        readableContent += `- Debug HTML Files:\n`;
+        screenshotInfo[target].debugFiles.forEach((df) => {
+          readableContent += `  - ${df.name} (Modified: ${new Date(
+            df.mtime
+          ).toLocaleString()})\n`;
+        });
+      } else {
+        readableContent += `- Debug HTML Files: None found\n`;
+      }
+    }
+
+    if (diffInfo.files && diffInfo.files.length > 0) {
+      readableContent += `\n## Diff Files\n`;
+      diffInfo.files.forEach((df) => {
+        readableContent += `- ${df.name}\n`;
+        readableContent += `  - Size: ${df.size} bytes\n`;
+        readableContent += `  - Modified: ${new Date(
+          df.mtime
+        ).toLocaleString()}\n`;
+      });
+    } else {
+      readableContent += `\n## Diff Files\nNo diff files found for this iteration\n`;
+    }
+
+    readableContent += `\n## Process Timing\n`;
+    readableContent += `- Started: ${
+      diagnosticLog.processTiming.started
+        ? new Date(diagnosticLog.processTiming.started).toLocaleString()
+        : "Unknown"
+    }\n`;
+    readableContent += `- Completed: ${new Date(
+      diagnosticLog.processTiming.completed
+    ).toLocaleString()}\n`;
+
+    if (diagnosticLog.processTiming.duration) {
+      readableContent += `- Duration: ${diagnosticLog.processTiming.duration.toFixed(
+        2
+      )} seconds\n`;
+    }
+
+    readableContent += `\n## Troubleshooting Tips\n`;
+    readableContent += `- If screenshots look identical, check that your design changes are visible in the browser\n`;
+    readableContent += `- Try increasing the wait time between iterations (60+ seconds recommended)\n`;
+    readableContent += `- Check that the server is properly rebuilding with your changes\n`;
+    readableContent += `- If the component is not captured, check the component selectors\n`;
+    readableContent += `- Run 'pnpm docs:design-iterations:status' to see all iterations\n`;
+
+    fs.writeFileSync(readablePath, readableContent);
+    console.log(
+      `   ✅ Human-readable diagnostic report saved to: ${readablePath}`
+    );
+
+    return diagnosticPath;
+  } catch (error) {
+    console.error(`   ❌ Error creating diagnostic log: ${error.message}`);
+    return null;
+  }
+}
+
+/**
  * Process a single design iteration
  */
 async function processIteration(iteration, config) {
   console.log(`\n🔄 Processing iteration ${iteration} of ${config.count}`);
+
+  // Track process start time for diagnostics
+  const processStartTime = new Date().toISOString();
 
   // Create directory for this iteration
   const iterationDir = createIterationDirectory(iteration);
@@ -690,6 +1285,107 @@ async function processIteration(iteration, config) {
     iterationDir,
     config
   );
+
+  // Diagnostic info to track for troubleshooting
+  const diagnosticInfo = {
+    processStartTime,
+    iteration,
+    screenCaptureDuration: null,
+    verificationResults: {},
+  };
+
+  // If this isn't the first iteration, verify the screenshots are different
+  if (iteration > 1) {
+    const prevIterationDir = path.join(
+      iterationsDir,
+      `iteration-${iteration - 1}`
+    );
+    const prevScreenshotsDir = path.join(prevIterationDir, "screenshots");
+
+    // Check at least one screenshot from each target
+    let allScreenshotsSame = true;
+    const verificationResults = {};
+
+    console.log("\n📊 Verifying design changes from previous iteration...");
+
+    if (fs.existsSync(prevScreenshotsDir)) {
+      for (const target of config.targets) {
+        // Find matching screenshots for this target
+        const currentScreenshots = fs
+          .readdirSync(path.join(iterationDir, "screenshots"))
+          .filter((file) => file.includes(target) && file.includes(timestamp));
+
+        if (currentScreenshots.length > 0) {
+          // Check first screenshot for this target
+          const currentPath = path.join(
+            iterationDir,
+            "screenshots",
+            currentScreenshots[0]
+          );
+
+          // Find matching screenshot in previous iteration
+          const prevScreenshots = fs
+            .readdirSync(prevScreenshotsDir)
+            .filter((file) => file.includes(target));
+
+          if (prevScreenshots.length > 0) {
+            const prevPath = path.join(prevScreenshotsDir, prevScreenshots[0]);
+
+            const { isDifferent, diffPercentage, diffPath } =
+              await verifyScreenshotDifference(prevPath, currentPath);
+
+            verificationResults[target] = {
+              isDifferent,
+              diffPercentage,
+              diffPath,
+            };
+            diagnosticInfo.verificationResults[target] = {
+              isDifferent,
+              diffPercentage,
+              diffPath,
+            };
+
+            if (isDifferent) {
+              console.log(
+                `   ✅ ${target}: Design changed (${diffPercentage.toFixed(
+                  2
+                )}% different)`
+              );
+              allScreenshotsSame = false;
+            } else {
+              console.log(
+                `   ⚠️ ${target}: Screenshots look very similar (only ${diffPercentage.toFixed(
+                  2
+                )}% different)`
+              );
+            }
+          }
+        }
+      }
+
+      if (allScreenshotsSame) {
+        console.log(
+          "\n❌ WARNING: All screenshots appear similar to previous iteration!"
+        );
+        console.log(
+          "   Please verify design changes are visible before continuing."
+        );
+        console.log("   Possible causes:");
+        console.log("   - Design changes not visible in the UI");
+        console.log("   - Server didn't reload the changes properly");
+        console.log("   - Not enough wait time for changes to appear");
+
+        diagnosticInfo.allScreenshotsSame = true;
+
+        // We don't prompt or abort, just warn the user
+      } else {
+        diagnosticInfo.allScreenshotsSame = false;
+      }
+    } else {
+      console.log("   ℹ️ No previous screenshots found to compare with");
+      diagnosticInfo.previousScreenshotsMissing = true;
+    }
+  }
 
   // Capture diff for each target
   const diffInfo = {};
@@ -720,10 +1416,21 @@ async function processIteration(iteration, config) {
   metadata.feedbackTemplatePath = feedbackTemplatePath;
   saveMetadata(metadata, iterationDir);
 
+  // Create diagnostic log for troubleshooting
+  diagnosticInfo.processDuration =
+    (new Date() - new Date(processStartTime)) / 1000;
+  const diagnosticPath = createDiagnosticLog(
+    iterationDir,
+    config.targets,
+    timestamp,
+    diagnosticInfo
+  );
+
   console.log(`✅ Iteration ${iteration} complete`);
   console.log(`   - Screenshots captured with timestamp: ${timestamp}`);
   console.log(`   - Diffs saved to: ${possibleDiffsDir}`);
   console.log(`   - Feedback template created: ${feedbackTemplatePath}`);
+  console.log(`   - Diagnostic log created: ${diagnosticPath}`);
 
   return { iterationDir, metadata };
 }
@@ -915,83 +1622,6 @@ function cleanupIterations() {
   }
 
   console.log("🎉 Cleanup complete!");
-}
-
-/**
- * Check if the docs server is running, and start it if not
- */
-async function ensureDocsServerRunning() {
-  console.log("🔍 Checking if docs server is running...");
-
-  // Try to connect to the docs server (default port 3000)
-  try {
-    // Check if server is running by attempting to connect
-    await new Promise((resolve, reject) => {
-      const req = http.get("http://localhost:3000", (res) => {
-        res.on("data", () => {});
-        res.on("end", () => {
-          if (res.statusCode === 200) {
-            resolve();
-          } else {
-            reject(new Error(`Server returned status code ${res.statusCode}`));
-          }
-        });
-      });
-
-      req.on("error", () => {
-        // Server not running, start it
-        console.log("📡 Docs server not running. Starting server...");
-
-        try {
-          // Start the server in the background
-          execSync("cd .. && pnpm start", {
-            stdio: ["ignore", "pipe", "pipe"],
-            detached: true,
-            encoding: "utf8",
-          });
-
-          // Wait for server to start
-          console.log("🚀 Server starting. Waiting for it to be ready...");
-
-          // Check every second if server is running
-          let attempts = 0;
-          const checkInterval = setInterval(() => {
-            const req = http.get("http://localhost:3000", (res) => {
-              if (res.statusCode === 200) {
-                clearInterval(checkInterval);
-                console.log("✅ Docs server is now running!");
-                resolve();
-              }
-              res.on("data", () => {});
-            });
-
-            req.on("error", () => {
-              attempts++;
-              if (attempts > 30) {
-                // 30 second timeout
-                clearInterval(checkInterval);
-                console.error(
-                  "❌ Failed to start docs server after 30 seconds"
-                );
-                reject(new Error("Failed to start docs server"));
-              }
-            });
-          }, 1000);
-        } catch (error) {
-          console.error(`❌ Error starting docs server: ${error.message}`);
-          reject(error);
-        }
-      });
-    });
-
-    console.log("✅ Docs server is running");
-    return true;
-  } catch (error) {
-    console.error(
-      `❌ Error checking or starting docs server: ${error.message}`
-    );
-    return false;
-  }
 }
 
 /**
