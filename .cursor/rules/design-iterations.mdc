@@ -33,7 +33,7 @@ alwaysApply: false
 
 ```bash
 # Generate design iterations for a specific target only
-pnpm docs:design-iterations:count-5 --target="try-jods-section" --prompt="Reimagine with bold visual hierarchy" --skip-other-sections
+pnpm docs:design-iterations:count-5 --target="04-framework-section-react" --prompt="Reimagine with bold visual hierarchy" --skip-other-sections
 ```
 
 ## <critical> Proper Workflow Sequence </critical>
@@ -51,10 +51,10 @@ pnpm docs:design-iterations:count-5 --target="try-jods-section" --prompt="Reimag
 ```bash
 # CORRECT: One iteration at a time with verification between each
 # First modify component code, save, wait 30-45 seconds, verify in browser, then:
-pnpm docs:design-iterations:count-1 --target="try-jods-section" --skip-other-sections
+pnpm docs:design-iterations:count-1 --target="04-framework-section-react" --skip-other-sections
 
 # INCORRECT: Running multiple iterations without verification
-pnpm docs:design-iterations:count-3 --target="try-jods-section" --skip-other-sections
+pnpm docs:design-iterations:count-3 --target="04-framework-section-react" --skip-other-sections
 ```
 
 ## <required> Artifact Preservation </required>
@@ -119,34 +119,36 @@ Example workflow:
 # Edit src/components/InteractiveDemo.tsx
 # Edit src/components/InteractiveDemo.module.css (if the component uses CSS modules)
 # After saving changes, wait 30-45 seconds, then run:
-pnpm docs:design-iterations:count-1 --target="try-jods-section" --skip-other-sections
+pnpm docs:design-iterations:count-1 --target="04-framework-section-react" --skip-other-sections
 
 # Then modify the component code differently
 # After saving changes, wait 30-45 seconds, then run:
-pnpm docs:design-iterations:count-1 --target="try-jods-section" --skip-other-sections
+pnpm docs:design-iterations:count-1 --target="04-framework-section-react" --skip-other-sections
 
 # Repeat for each unique design iteration
 ```
 
-## Important: Component Name Formats
+## <critical> Important: Component Name Formats </critical>
 
-You can use either the simple name or the full name with numeric prefix:
+**CRITICAL**: Always use the numbered format for component target names in screenshot commands:
 
 ```bash
-# These are equivalent:
-pnpm docs:design-iterations:count-5 --target="try-jods-section" --skip-other-sections
-pnpm docs:design-iterations:count-5 --target="03-try-jods-section" --skip-other-sections
+# CORRECT - Use the numbered prefix format:
+pnpm docs:design-iterations:count-5 --target="04-framework-section-react" --skip-other-sections
+
+# INCORRECT - Simple names without the numbered prefix may not work properly:
+pnpm docs:design-iterations:count-5 --target="framework-section-react" --skip-other-sections
 ```
 
-Available component names:
-- `hero-section` or `01-hero-section`
-- `features-section` or `02-features-section`
-- `try-jods-section` or `03-try-jods-section`
-- `framework-section-react` or `04-framework-section-react`
-- `framework-section-remix` or `04-framework-section-remix`
-- `remix-section` or `05-remix-section`
-- `compare-section` or `06-compare-section`
-- `footer-section` or `07-footer-section`
+Available component names with required numbered prefixes:
+- `01-hero-section` (NOT just "hero-section")
+- `02-features-section` (NOT just "features-section")
+- `03-try-jods-section` (NOT just "try-jods-section")
+- `04-framework-section-react` (NOT just "framework-section-react")
+- `04-framework-section-remix` (NOT just "framework-section-remix")
+- `05-remix-section` (NOT just "remix-section")
+- `06-compare-section` (NOT just "compare-section")
+- `07-footer-section` (NOT just "footer-section")
 
 ## <required> Important: Using --skip-other-sections Flag </required>
 
@@ -154,10 +156,10 @@ The `--skip-other-sections` flag is **crucial** when you want to focus on a sing
 
 ```bash
 # CORRECT: Focus ONLY on the specified target
-pnpm docs:design-iterations:count-5 --target="try-jods-section" --skip-other-sections
+pnpm docs:design-iterations:count-5 --target="04-framework-section-react" --skip-other-sections
 
 # INCORRECT: Will generate screenshots for ALL sections
-pnpm docs:design-iterations:count-5 --target="try-jods-section"
+pnpm docs:design-iterations:count-5 --target="04-framework-section-react"
 ```
 
 This is essential to avoid the workflow generating unnecessary files for sections you're not changing.
@@ -167,14 +169,14 @@ This is essential to avoid the workflow generating unnecessary files for section
 When a user explicitly requests design iterations, you should:
 
 1. **Understand their target component** and where the code is located:
-   - `try-jods-section` - Interactive demo section → `docs/src/components/InteractiveDemo.tsx`
-   - `hero-section` - Main hero section on homepage → `docs/src/components/HeroSection.tsx`
-   - `features-section` - Features grid on homepage → `docs/src/components/FeaturesSection.tsx`
-   - `framework-section-react` - React framework comparison → `docs/src/components/FrameworkSection.tsx`
-   - `framework-section-remix` - Remix framework section → `docs/src/components/FrameworkSectionRemix.tsx`
-   - `remix-section` - Remix integration section → `docs/src/components/RemixSection.tsx`
-   - `compare-section` - Library comparison section → `docs/src/components/CompareSection.tsx`
-   - `footer-section` - Footer section → `docs/src/components/FooterSection.tsx`
+   - `03-try-jods-section` - Interactive demo section → `docs/src/components/InteractiveDemo.tsx`
+   - `01-hero-section` - Main hero section on homepage → `docs/src/components/HeroSection.tsx`
+   - `02-features-section` - Features grid on homepage → `docs/src/components/FeaturesSection.tsx`
+   - `04-framework-section-react` - React framework comparison → `docs/src/components/FrameworkSection.tsx`
+   - `04-framework-section-remix` - Remix framework section → `docs/src/components/FrameworkSectionRemix.tsx`
+   - `05-remix-section` - Remix integration section → `docs/src/components/RemixSection.tsx`
+   - `06-compare-section` - Library comparison section → `docs/src/components/CompareSection.tsx`
+   - `07-footer-section` - Footer section → `docs/src/components/FooterSection.tsx`
 
 2. **First analyze the styling approach** of the component:
    - Determine if it uses CSS modules, global CSS, inline styles, etc.
@@ -190,7 +192,7 @@ When a user explicitly requests design iterations, you should:
 4. **Then capture the iteration screenshot** with:
    ```bash
    # Capture just one iteration after code modifications
-   pnpm docs:design-iterations:count-1 --target="try-jods-section" --prompt="detailed design direction" --skip-other-sections
+   pnpm docs:design-iterations:count-1 --target="04-framework-section-react" --prompt="detailed design direction" --skip-other-sections
    ```
 
 5. **Repeat for each unique design** (usually 3-5 iterations):
@@ -205,7 +207,7 @@ When a user explicitly requests design iterations, you should:
    pnpm docs:design-iterations:status
    
    # Apply the chosen design
-   pnpm docs:design-iterations:apply --iteration=N --target="try-jods-section"
+   pnpm docs:design-iterations:apply --iteration=N --target="04-framework-section-react"
    
    # Clean up design artifacts ONLY when explicitly requested
    pnpm docs:design-iterations:cleanup
@@ -219,14 +221,14 @@ When a user explicitly requests design iterations, you should:
 
    ## Review Your Designs
    You can find the screenshots at:
-   - Light mode: /docs/static/screenshots/unified/[component]-light-[timestamp].png
-   - Dark mode: /docs/static/screenshots/unified/[component]-dark-[timestamp].png
+   - Light mode: /docs/static/screenshots/unified/04-framework-section-react-light-[timestamp].png
+   - Dark mode: /docs/static/screenshots/unified/04-framework-section-react-dark-[timestamp].png
    - Iteration folders: /docs/temp/design-iterations/iteration-[N]/screenshots/
 
    ## Apply Your Preferred Design
    Once you've chosen a design, apply it with:
    ```bash
-   pnpm docs:design-iterations:apply --iteration=[N] --target="[component]"
+   pnpm docs:design-iterations:apply --iteration=[N] --target="04-framework-section-react"
    ```
 
    ## Clean Up Artifacts
@@ -241,15 +243,15 @@ When a user explicitly requests design iterations, you should:
 Each design iteration generates these artifacts:
 
 1. **Screenshots in two places**:
-   - Primary: `docs/static/screenshots/unified/03-try-jods-section-{light|dark}-{timestamp}.png`
+   - Primary: `docs/static/screenshots/unified/04-framework-section-react-{light|dark}-{timestamp}.png`
    - Backup: `docs/temp/design-iterations/iteration-N/screenshots/`
 
 2. **Debug HTML** (for inspection):
-   - `docs/static/debug/03-try-jods-section-{light|dark}-debug.html`
+   - `docs/static/debug/04-framework-section-react-{light|dark}-debug.html`
 
 3. **Diff files** (for tracking changes):
    - `docs/temp/design-iterations/iteration-N/diff.patch`
-   - `docs/temp/possible-diffs/03-try-jods-section-{timestamp}.diff`
+   - `docs/temp/possible-diffs/04-framework-section-react-{timestamp}.diff`
 
 4. **Documentation**:
    - `docs/temp/design-iterations/iteration-N/feedback-template.md`
@@ -264,7 +266,7 @@ Each design iteration generates these artifacts:
 5. **Use `count-1` for each iteration** - Generate one iteration at a time
 6. **Avoid disrupting the development server** - Keep it running between iterations
 7. **Always use the `--skip-other-sections` flag** - Focus only on your target
-8. **Use simple component names** - Without number prefixes (e.g., `try-jods-section`)
+8. **Always use numbered component names** - With number prefixes (e.g., `04-framework-section-react`)
 9. **Document your changes** - Fill in the feedback templates
 10. **Apply chosen designs** - With `docs:design-iterations:apply`
 11. **Preserve artifacts until explicitly requested** - Only clean up when user explicitly asks
@@ -285,7 +287,8 @@ Each design iteration generates these artifacts:
   - Make sure to use `--skip-other-sections` flag
   
 - **Component not found**: 
-  - Check the component name - use simple names without numeric prefixes
+  - Check the component name - use numbered prefix format (e.g., `04-framework-section-react`)
+  - Simple names without numbers may not work consistently
   
 - **Missing screenshots**: 
   - Ensure the docs site is running with `pnpm start`

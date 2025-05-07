@@ -1,0 +1,164 @@
+---
+description: Guidelines for updating and iterating on the InteractiveDemo component design
+globs: ["docs/src/components/InteractiveDemo*"]
+alwaysApply: false
+---
+# Interactive Demo Design Guidelines
+
+The InteractiveDemo component is a critical showcase feature of jods that demonstrates the reactive capabilities of the library. This document outlines best practices for updating its design.
+
+## Component Structure
+
+The InteractiveDemo component consists of:
+
+1. A form interface with inputs for firstName, lastName, and mood
+2. A live preview showing a user avatar and computed fullName
+3. A code block showing real-time updated code
+
+## CSS Module Usage
+
+**IMPORTANT**: The InteractiveDemo component uses CSS Modules for styling:
+
+```tsx
+// Always import the CSS module at the top:
+import styles from './InteractiveDemo.module.css';
+
+// Use styles with className:
+<div className={styles.demoContainer}>
+  <div className={styles.controlGroup}>
+    <label className={styles.controlLabel}>First Name</label>
+    <input className={styles.modernInput} />
+  </div>
+</div>
+```
+
+## Key Design Principles
+
+When updating the InteractiveDemo component, adhere to these principles:
+
+1. **Visual Hierarchy**: The interactive inputs and their effects should be clearly connected
+2. **Reactivity Feedback**: Provide clear visual feedback when state changes occur
+3. **Visual Coherence**: Maintain consistency with the overall site design
+4. **Accessibility**: Ensure good contrast and readable text sizes
+5. **Responsive Layout**: Component should adapt to different screen sizes
+
+## Design Iteration Process
+
+For non-trivial design updates, use the design iterations workflow:
+
+```bash
+# First, make changes to InteractiveDemo.tsx and InteractiveDemo.module.css
+# Then capture one design iteration at a time
+pnpm docs:design-iterations:count-1 --target="try-jods-section" --skip-other-sections
+```
+
+## CSS Organization
+
+Maintain clean CSS organization in the module file:
+
+1. **Layout Elements**: Container, grid, and positioning styles
+2. **Interactive Elements**: Input, select, button styles
+3. **Feedback Elements**: Animation, transition styles
+4. **Responsive Styles**: Media queries at the end of the file
+
+## Common Patterns
+
+| UI Element | CSS Class | Description |
+|------------|-----------|-------------|
+| Container | `.demoContainer` | Main container for the entire component |
+| Input fields | `.modernInput` | Text input field styling |
+| Select dropdown | `.modernSelect` | Dropdown styling with custom arrow |
+| Avatar | `.avatarDisplay`, `.avatarEmoji` | User avatar container and emoji |
+| Code preview | `.codePreview` | Container for code display |
+| Reactive feedback | `.pulseAnimation` | Animation for state changes |
+
+## Testing Design Changes
+
+After making design changes:
+
+1. Test in both light and dark modes
+2. Test on different viewport sizes (mobile, tablet, desktop)
+3. Verify that all interactions still work properly
+4. Check that animations are subtle and not distracting
+
+## Implementation Examples
+
+### Adding Subtle Animation
+
+```css
+/* In InteractiveDemo.module.css */
+.avatarEmoji {
+  font-size: 3.5rem;
+  animation: slightBounce 5s ease-in-out infinite;
+}
+
+@keyframes slightBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+```
+
+### Improving Responsive Layout
+
+```css
+/* In InteractiveDemo.module.css */
+@media (min-width: 768px) {
+  .contentWrapper {
+    display: flex;
+  }
+  
+  .editPanel {
+    flex: 0 0 40%;
+    max-width: 40%;
+    border-right: 1px solid var(--ifm-color-emphasis-200);
+  }
+  
+  .codePanel {
+    flex: 0 0 60%;
+    max-width: 60%;
+  }
+}
+```
+
+## Design Edge Cases
+
+1. **Very Long Input Text**: Ensure the layout doesn't break with extra long names
+2. **Dark Mode Considerations**: Ensure good contrast in both light and dark modes
+3. **Handling Overflow**: Ensure code samples remain readable with long values
+
+## Ambiguous Design Requests
+
+These examples should trigger a clarifying question about whether you want a quick update or a full design iteration process:
+
+- "Could you help me update the look of the interactive demo section?"
+- "I'd like to freshen up the UI of our live section, got any ideas?"
+- "The try-jods-section needs a design refresh, can you help with that?"
+- "I'm thinking about changing the visual style of our demo component."
+- "I want to experiment with some different looks for the InteractiveDemo."
+- "The interactive demo feels a bit dated, I'd like to explore some new designs."
+- "Can you help me modernize how the live demo looks and feels?"
+- "I'd like to consider some design alternatives for the try-jods-section."
+- "I think our demo section could use a visual update."
+- "Let's try some different approaches for the interactive demo UI."
+
+For these ambiguous requests, always ask the user to clarify whether they want:
+1. A quick, one-time update (implement changes directly)
+2. A full design iteration process with multiple variations (use the design iterations workflow)
+
+## Design Decision Considerations
+
+When triggering design iterations, consider exploring:
+
+1. **Input Styling**: Modern, clean form controls with appropriate spacing
+2. **Visual Feedback**: Clear indications when values change
+3. **Card Layout**: Well-defined sections with proper visual hierarchy
+4. **Animation Use**: Subtle animations that enhance UX without distraction
+5. **Mobile Experience**: Touch-friendly controls and stacked layout on small screens
+
+## Best Practices
+
+1. **Use CSS Variables**: Leverage DocuSaurus theme variables for colors and spacing
+2. **Mobile-First Approach**: Design for mobile first, then enhance for larger screens
+3. **Keep Animations Subtle**: Use animation to enhance UX, not distract
+4. **Maintain Consistency**: Follow the site's existing design patterns
+5. **Document Changes**: Add comments for complex CSS and document major design decisions 
