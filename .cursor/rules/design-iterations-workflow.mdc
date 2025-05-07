@@ -1,6 +1,6 @@
 ---
 description: Comprehensive guidelines for the design iterations workflow for UI components
-globs: ["docs/src/components/**/*.{tsx,jsx,js,ts}", "docs/src/components/**/*.css"]
+globs: ["**/*.{tsx,jsx,js,ts}", "**/*.css", "**/*.md"]
 alwaysApply: false
 ---
 # Design Iterations Workflow
@@ -153,6 +153,118 @@ pnpm design-iterations:apply --iteration=2 --target="03-try-jods-section"
 pnpm design-iterations:cleanup
 ```
 
+## <critical> Working with Historical Design Iterations </critical>
+
+After you've created multiple design iterations, you'll need to reference them by their timestamps and be able to view, compare, and potentially apply specific iterations. Here's how to work with historical iterations:
+
+### Viewing Available Iterations
+
+First, check all available iterations:
+
+```bash
+# View all iterations and their timestamps
+cd docs
+pnpm design-iterations:status
+```
+
+This will show a list of iterations with their timestamps (format: YYYYMMDDTHHMMSS).
+
+### Accessing Iteration Screenshots by Timestamp
+
+Once you have the timestamp for a specific iteration, you can view its screenshots:
+
+```bash
+# Light theme screenshot
+open docs/static/screenshots/unified/03-try-jods-section-light-20250507T121424.png
+
+# Dark theme screenshot (if available)
+open docs/static/screenshots/unified/03-try-jods-section-dark-20250507T121424.png
+
+# Find all screenshots for a specific iteration by timestamp
+find docs/static/screenshots -name "*20250507T121424*"
+```
+
+### Viewing Iteration Diffs
+
+To understand what code changes were made in a specific iteration:
+
+```bash
+# View the diff of code changes from a specific iteration
+cat docs/temp/possible-diffs/03-try-jods-section-20250507T121424.diff
+
+# To find all available diffs
+find docs/temp -name "*diff*" | grep "03-try-jods-section"
+```
+
+Diffs contain the exact code changes between the base version and the iteration, showing you precisely what was modified in the component files.
+
+### Reviewing Iteration Feedback and Metadata
+
+Each iteration has associated metadata and feedback templates:
+
+```bash
+# View feedback template for a specific iteration
+open docs/temp/design-iterations/iteration-N/feedback-template.md
+
+# View metadata for a specific iteration
+cat docs/temp/design-iterations/iteration-N/metadata.json
+```
+
+### Applying a Specific Historical Iteration
+
+To apply a specific historical iteration by its iteration number:
+
+```bash
+# First, ensure the iteration is approved in its metadata.json
+# Then apply it:
+pnpm design-iterations:apply --iteration=N --target="03-try-jods-section"
+```
+
+### Comparing Multiple Iterations
+
+To compare multiple iterations visually:
+
+```bash
+# Open multiple screenshots side by side
+open docs/static/screenshots/unified/03-try-jods-section-light-20250507T121424.png docs/static/screenshots/unified/03-try-jods-section-light-20250507T123056.png
+
+# Compare diffs from different iterations (manual inspection)
+cat docs/temp/possible-diffs/03-try-jods-section-20250507T121424.diff
+cat docs/temp/possible-diffs/03-try-jods-section-20250507T123056.diff
+```
+
+### Searching for Iterations by Component or Timestamp
+
+Find all iterations for a specific component or timestamp pattern:
+
+```bash
+# Find all screenshots for a specific component
+find docs/static/screenshots -name "*03-try-jods-section*"
+
+# Find all iterations from a specific date
+find docs/static/screenshots -name "*20250507*"
+
+# Find all diffs for a specific component
+find docs/temp -name "*diff*" | grep "03-try-jods-section"
+```
+
+### Documenting Iteration History
+
+When working through multiple iterations, document the timestamp and key features of each in your notes:
+
+```markdown
+## Design Iteration History
+
+- Iteration 1 (20250507T121424): Initial notebook design with tabs
+- Iteration 2 (20250507T123056): Updated with gradient backgrounds
+- Iteration 3 (20250507T125201): Refined tab styling and animations
+- Iteration 4 (20250507T131045): Final version with dark mode improvements
+
+Selected iteration: 3 (20250507T125201)
+```
+
+This approach creates a clear record of your design process and makes it easy to reference specific iterations.
+
 ## <critical> Troubleshooting Guide </critical>
 
 **Screenshot not showing changes:**
@@ -257,3 +369,39 @@ To ensure proper tracking of multiple design iterations:
 4. **If templates are being overwritten**:
    - Create manual copies with the timestamp included in the filename
    - Report the issue in the project's issue tracker with details about what was overwritten
+
+## <required> End of Iteration Run: Review and Next Steps </required>
+
+After completing a design iteration run, follow these steps to properly review and document your work:
+
+1. **Review screenshots immediately**:
+   ```bash
+   # Open the most recent screenshot
+   open docs/static/screenshots/unified/03-try-jods-section-light-<timestamp>.png
+   ```
+
+2. **Document the timestamp in your notes** for future reference:
+   ```
+   Iteration 3 completed at timestamp: 20250507T131045
+   ```
+
+3. **Review the code changes in the diff file**:
+   ```bash
+   # View the diff for the latest iteration
+   cat docs/temp/possible-diffs/03-try-jods-section-<timestamp>.diff
+   ```
+
+4. **Update the feedback template with your observations**:
+   ```bash
+   # Open the feedback template
+   open docs/temp/design-iterations/iteration-N/feedback-template.md
+   ```
+
+5. **Before starting a new iteration, document what you learned** and what changes you plan to make next.
+
+6. **If this is your final iteration:**
+   - Decide which iteration to apply based on your reviews
+   - Mark it as "approved" in the metadata
+   - Apply the chosen iteration using the apply command
+
+Remember that each timestamp uniquely identifies a design snapshot, making it easy to refer back to specific versions of your component design. 

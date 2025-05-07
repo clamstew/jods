@@ -1,6 +1,6 @@
 ---
 description: Guidelines for using the design iterations workflow for UI components
-globs: ["docs/src/components/**/*.{tsx,jsx,js,ts}", "docs/src/components/**/*.css"]
+globs: ["**/*.{tsx,jsx,js,ts}", "**/*.css", "**/*.md"]
 alwaysApply: false
 ---
 # Design Iterations System
@@ -57,6 +57,85 @@ pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="Your des
 open docs/static/screenshots/unified/03-try-jods-section-light-{timestamp}.png
 
 # Wait for screenshot to complete before making next design change
+```
+
+## <critical> Working with Historical Iterations </critical>
+
+The design iterations system creates timestamped artifacts that allow you to reference, review, and apply specific iterations later. Here's how to work with historical iterations effectively:
+
+### Viewing and Finding Iterations
+
+```bash
+# View all available iterations with their timestamps
+cd docs
+pnpm design-iterations:status
+
+# Find all screenshots for a specific component 
+find static/screenshots -name "*03-try-jods-section*"
+
+# Find all iterations from a specific date
+find static/screenshots -name "*20250507*"
+
+# Find diffs for a component
+find temp -name "*diff*" | grep "03-try-jods-section"
+```
+
+### Accessing Iteration Artifacts by Timestamp
+
+Once you have a timestamp (format: YYYYMMDDTHHMMSS):
+
+```bash
+# View light theme screenshot
+open static/screenshots/unified/03-try-jods-section-light-20250507T121424.png
+
+# View dark theme screenshot
+open static/screenshots/unified/03-try-jods-section-dark-20250507T121424.png
+
+# View code changes in diff file
+cat temp/possible-diffs/03-try-jods-section-20250507T121424.diff
+
+# View the feedback template for the iteration
+open temp/design-iterations/iteration-N/feedback-template.md
+```
+
+### Comparing Iterations
+
+```bash
+# Open multiple screenshots side by side
+open static/screenshots/unified/03-try-jods-section-light-20250507T121424.png static/screenshots/unified/03-try-jods-section-light-20250507T123056.png
+
+# Compare diffs from different iterations
+cat temp/possible-diffs/03-try-jods-section-20250507T121424.diff
+cat temp/possible-diffs/03-try-jods-section-20250507T123056.diff
+```
+
+### Applying Specific Iterations
+
+```bash
+# First, check available iterations
+pnpm design-iterations:status
+
+# Then, update the metadata file to approve the desired iteration
+# Edit temp/design-iterations/iteration-N/metadata.json
+# Change "status" from "pending review" to "approved"
+
+# Finally, apply the approved iteration
+pnpm design-iterations:apply --iteration=N --target="03-try-jods-section"
+```
+
+### Documenting Iteration History
+
+Create a record of timestamps and iteration features in your notes:
+
+```markdown
+## Design Iteration History for Try jods Section
+
+- Iteration 1 (20250507T121424): Initial notebook design with tabs
+- Iteration 2 (20250507T123056): Updated with gradient backgrounds
+- Iteration 3 (20250507T125201): Refined tab styling and animations
+- Iteration 4 (20250507T131045): Final version with dark mode improvements
+
+Selected and applied: Iteration 3 (20250507T125201)
 ```
 
 ## <critical> Screenshot Verification and Context Persistence </critical>
@@ -188,6 +267,46 @@ pnpm screenshot:diff                # Compare screenshots
      <div className={styles.stateIndicator}>Current State: {activeTab}</div>
    )}
    ```
+
+## <critical> End of Iteration Review Workflow </critical>
+
+After completing each design iteration, follow these steps to document and review it properly:
+
+1. **Immediately open and verify the screenshot**:
+   ```bash
+   # View the just-captured screenshot
+   open static/screenshots/unified/03-try-jods-section-light-<timestamp>.png
+   ```
+
+2. **Record the timestamp in your notes**:
+   ```
+   Latest iteration captured at: 20250507T121424
+   ```
+
+3. **Examine the code changes in the diff file**:
+   ```bash
+   # View what code changes were made
+   cat temp/possible-diffs/03-try-jods-section-<timestamp>.diff
+   ```
+
+4. **Update the feedback template**:
+   ```bash
+   # Document your observations
+   open temp/design-iterations/iteration-N/feedback-template.md
+   ```
+
+5. **Create a design history log** to track all iterations:
+   ```markdown
+   ## Design Timeline
+   
+   | Iteration | Timestamp      | Key Changes          | Status      |
+   |-----------|----------------|----------------------|-------------|
+   | 1         | 20250507T121424| Initial tabbed design| Reviewed    |
+   | 2         | 20250507T123056| Gradient backgrounds | Approved    |
+   | 3         | 20250507T125201| Refined animations   | Applied     |
+   ```
+
+This documentation approach makes it easier to revisit previous designs when needed and provides a clear history of your design process.
 
 ## Quick Start
 
