@@ -24,7 +24,8 @@ export default function ComparisonTable(): React.ReactElement {
             WebkitTextFillColor: "transparent",
           }}
         >
-          Digital lightweight champion — punching far above its byte size 🥊
+          Byte-sized brilliance — compact code wielding cosmic-scale
+          capabilities 💠
         </p>
 
         <div className={styles.container}>
