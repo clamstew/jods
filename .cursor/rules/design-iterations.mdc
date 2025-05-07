@@ -5,728 +5,571 @@ alwaysApply: false
 ---
 # Design Iterations System
 
-## <critical> Process Flow Sequence - Critical </critical>
+This guide explains the concepts and principles behind the design iterations system. For a step-by-step procedural workflow, see `design-iterations-workflow.mdc`.
 
-The design iterations system requires **three separate processes** running in the correct sequence:
+## <critical> System Architecture Overview </critical>
 
-1. **Dev Server (Process 1)** - Must be running first
-   ```bash
-   cd docs
-   pnpm dev
-   # Verify server is running by visiting http://localhost:3000
-   ```
+The design iterations system consists of three interconnected processes:
 
-2. **Component Changes (Process 2)** - Must complete and rebuild
-   - Make changes to component files (TSX/JSX and CSS)
-   - Wait until changes are visible in browser (may take a minute or more)
-   - Manually verify in browser that changes are visible
+1. **Development Server**: Renders components with your design changes
+2. **Component Modification**: Your changes to component and CSS files
+3. **Screenshot Capture**: Automated process that documents your designs
 
-3. **Screenshot Capture (Process 3)** - Must wait for Process 2 to complete
-   ```bash
-   # Only run after confirming changes are visible in browser
-   cd docs
-   pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="..." --skip-other-sections
-   ```
+These processes work together to create a structured design workflow that preserves each iteration, builds context between iterations, and facilitates systematic design exploration and selection.
 
-**COMMON ERRORS:**
-- Using the wrong directory: Always `cd docs` first
-- Race condition: Running screenshot capture before changes are fully rebuilt
-- Background process issues: Not waiting for process completion
-- Port conflicts: Multiple dev servers attempting to run
+## <critical> Conceptual Understanding of Artifacts </critical>
 
-## <critical> Correct Command Sequence </critical>
+The system generates and manages several important artifacts:
 
-```bash
-# Terminal 1: Start dev server and leave running
-cd docs
-pnpm dev
-# Wait for full initialization, then visit http://localhost:3000
+### 1. Screenshots
+- Visual snapshots of component designs in light and dark themes
+- Timestamp-based naming: `component-name-theme-{timestamp}.png`
+- Organized in predictable directory structure: `static/screenshots/unified/`
+- Primary artifact for visual design review
 
-# Terminal 2 (or Cursor terminal): Make component changes
-# Edit docs/src/components/YourComponent.tsx
-# Edit docs/src/components/YourComponent.module.css
+### 2. Diff Files
+- Textual record of code changes between iterations
+- Contains both component (TSX/JSX) and CSS changes
+- Critical for understanding implementation details
+- Used for applying designs later
+- Located in: `temp/possible-diffs/component-name-{timestamp}.diff`
 
-# WAIT until changes are visible in browser
-# Only after changes are visible:
+### 3. Metadata
+- JSON records tracking iteration attributes
+- Includes timestamp, target, status, and references to other artifacts
+- Located in: `temp/design-iterations/iteration-N/metadata.json`
+- Used for system bookkeeping and iteration tracking
 
-# Terminal 2: Run single iteration screenshot capture
-cd docs
-pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="Your design prompt" --skip-other-sections
+### 4. Feedback Templates
+- Documentation for human design notes
+- Records decisions, rationales, and observations
+- Located in: `temp/design-iterations/iteration-N/feedback-template.md`
+- Essential for building design context between iterations
 
-# Verify screenshot was captured:
-open docs/static/screenshots/unified/03-try-jods-section-light-{timestamp}.png
+## <critical> Component Architecture Considerations </critical>
 
-# Wait for screenshot to complete before making next design change
-```
+Understanding component architecture is crucial for effective design iterations:
 
-## <critical> Component + CSS Coordination Requirements </critical>
+### Component State Management
 
-When implementing design iterations, both component code and CSS must be coordinated:
+Interactive components may have multiple visual states controlled by:
 
-1. **Synchronized Updates**:
-   - Always modify both the component (TSX/JSX) and CSS files together
-   - New UI elements in components need corresponding CSS styles
-   - Removing UI elements requires cleaning up associated CSS
-
-2. **Post-Application Linter Check**:
-   - After applying changes, immediately check for linter errors
-   - Common issues after UI changes:
-     - Unused variables (e.g., removed tabs but state variables remain)
-     - Unused imports (e.g., removed features but imports remain)
-
-3. **Variable Cleanup Protocol**:
+1. **State Variables**: React's `useState` hooks manage component state
    ```jsx
-   // BEFORE: Component with UI feature that will be replaced
    const [activeTab, setActiveTab] = useState("input");
-   const jsonView = JSON.stringify(snapshot, null, 2);
-   
-   // AFTER: When replacing with different UI
-   // Remove or update the variables that are no longer needed
    ```
 
-4. **Testing After Changes**:
-   - Verify component renders correctly after changes
-   - Check browser console for React errors
-   - Test component functionality in both light and dark themes
+2. **Event Handlers**: Code that changes state on user interaction
+   ```jsx
+   <button onClick={() => setActiveTab("output")}>Output</button>
+   ```
 
-## <critical> Working with Historical Iterations </critical>
+3. **Conditional Rendering**: JSX that changes based on state
+   ```jsx
+   {activeTab === "input" ? <InputPanel /> : <OutputPanel />}
+   ```
 
-The design iterations system creates timestamped artifacts that allow you to reference, review, and apply specific iterations later. Here's how to work with historical iterations effectively:
+When redesigning components, you need to:
+- Identify these interactive elements and their relationships
+- Preserve state management logic even when changing visuals
+- Ensure new designs accommodate all required states
 
-### Viewing and Finding Iterations
+### CSS Architecture Patterns
+
+Component styling typically follows one of these patterns:
+
+1. **CSS Modules** (Most common)
+   ```jsx
+   import styles from './Component.module.css';
+   <div className={styles.container}>
+   ```
+
+2. **Global CSS**
+   ```jsx
+   import './Component.css';
+   <div className="container">
+   ```
+
+3. **CSS-in-JS**
+   ```jsx
+   <div style={{ display: 'flex', justifyContent: 'center' }}>
+   ```
+
+When making design changes:
+- Identify which pattern the component uses
+- Follow the existing pattern for consistency
+- Ensure class names in component code match CSS definitions
+
+## <critical> Design Iteration Principles </critical>
+
+### Progressive Design Approach
+
+The design iterations system enables a progressive approach to component design:
+
+1. **Exploratory Phase (Iterations 1-3)**
+   - Focus on visual design variations
+   - Incomplete functionality is acceptable
+   - Explore different visual approaches rapidly
+   - Document design decisions in feedback templates
+
+2. **Refinement Phase (Iterations 4-6)**
+   - Focus on a chosen design direction
+   - Improve specific aspects of the chosen approach
+   - Begin implementing interactive functionality
+   - Document refinements and improvements
+
+3. **Finalization Phase (Final Iterations)**
+   - Complete implementation of all functionality
+   - Ensure cross-browser and responsive behavior
+   - Fix any visual or interaction issues
+   - Document final state for reference
+
+### Context Building Between Iterations
+
+Each iteration should build on knowledge from previous iterations:
+
+1. **Documenting Design Insights**
+   - Note what worked or didn't work in each design
+   - Record user feedback if available
+   - Explain design decisions and rationales
+   - Reference specific visual elements by timestamp
+
+2. **Creating a Design Narrative**
+   - Link iterations together in a coherent story
+   - Show how each design addresses issues from previous iterations
+   - Track the evolution of specific design elements
+
+3. **Managing Design Exploration**
+   - Use divergent iterations to explore different approaches
+   - Use convergent iterations to refine a selected approach
+   - Document the selection criteria between approaches
+
+## <critical> Understanding Artifact Timestamps </critical>
+
+Timestamps are the critical linking mechanism between all artifacts:
+
+1. **Timestamp Format**: `YYYYMMDDTHHMMSS` (e.g., `20250507T121424`)
+
+2. **Where Timestamps Appear**:
+   - Screenshot filenames: `component-name-theme-{timestamp}.png`
+   - Diff file paths: `component-name-{timestamp}.diff`
+   - Debug HTML files: `component-name-debug-{timestamp}.html`
+   - Metadata JSON: `"timestamp": "{timestamp}"`
+   - Your documentation notes
+
+3. **Timestamp as Unique Identifier**
+   - Each timestamp represents a distinct design snapshot
+   - Use timestamps to reference specific iterations
+   - Include timestamps in all design documentation
+
+## <required> Working with Historical Iterations </required>
+
+Design iterations create a historical record you can reference, review, and selectively apply.
+
+### Finding and Accessing Artifacts
 
 ```bash
-# View all available iterations with their timestamps
-cd docs
+# View all iterations with timestamps
 pnpm design-iterations:status
 
-# Find all screenshots for a specific component 
+# Find screenshots by component
 find static/screenshots -name "*03-try-jods-section*"
 
-# Find all iterations from a specific date
+# Find iterations from specific date
 find static/screenshots -name "*20250507*"
 
 # Find diffs for a component
 find temp -name "*diff*" | grep "03-try-jods-section"
 ```
 
-### Accessing Iteration Artifacts by Timestamp
+### Comparing Design Approaches
 
-Once you have a timestamp (format: YYYYMMDDTHHMMSS):
+To evaluate different design approaches:
+
+1. **Visual Comparison**
+   ```bash
+   # Compare screenshots side-by-side
+   open static/screenshots/unified/03-try-jods-section-light-20250507T121424.png static/screenshots/unified/03-try-jods-section-light-20250507T123056.png
+   ```
+
+2. **Implementation Comparison**
+   ```bash
+   # Compare code differences
+   cat temp/possible-diffs/03-try-jods-section-20250507T121424.diff
+   cat temp/possible-diffs/03-try-jods-section-20250507T123056.diff
+   ```
+
+3. **Design Documentation Review**
+   ```bash
+   # Review design notes
+   cat temp/design-iterations/iteration-1/feedback-template.md
+   cat temp/design-iterations/iteration-2/feedback-template.md
+   ```
+
+### Documenting Design History
+
+Create organized records of your design explorations:
+
+```markdown
+## Design Iteration History
+
+| Iteration | Timestamp      | Approach       | Key Features             | Status    |
+|-----------|----------------|----------------|--------------------------|-----------|
+| 1         | 20250507T121424| Notebook      | Tabbed interface         | Rejected  |
+| 2         | 20250507T123056| Cards         | Grid layout, animations  | Considered|
+| 3         | 20250507T125201| Notebook+     | Improved tabs, gradients | Selected  |
+| 4         | 20250507T131045| Notebook++ Final| Dark mode support      | Applied   |
+```
+
+This documentation creates a clear record of your design journey and makes it easy to reference specific versions later.
+
+## <critical> Capturing Component States </critical>
+
+Interactive components have multiple visual states that need to be captured:
+
+### Types of Component States
+
+1. **Default State**: How the component appears when first loaded
+2. **User Interaction States**: Appearance after user interactions (clicks, form inputs)
+3. **Data-Dependent States**: Appearance with different data inputs
+4. **Responsive States**: Appearance at different viewport sizes
+5. **Theme States**: Appearance in different themes (light/dark)
+
+### State Identification Process
+
+Before redesigning, analyze the component to identify states:
+
+1. **Code Analysis**
+   - Look for `useState` hooks that control visual elements
+   - Identify event handlers (`onClick`, `onChange`, etc.)
+   - Find conditional rendering (`{condition ? <A> : <B>}`)
+
+2. **UI Interaction Testing**
+   - Interact with the component in browser
+   - Note which elements change appearance
+   - Identify high-impact states (major visual changes)
+
+3. **Progressive State Coverage**
+   - Start with most important/impactful states
+   - Build comprehensive state coverage as design solidifies
+
+### Documenting Multiple States
+
+For each significant state:
+
+1. **Capture state variation**: Take screenshots of each distinct state
+2. **Document interaction path**: Record how to reach each state
+3. **Label states clearly**: Use descriptive names in filenames and documentation
+4. **Include state coverage**: Note which states were tested in each iteration
+
+## <critical> Design Analysis Framework </critical>
+
+When analyzing design iterations, examine these key aspects:
+
+### Component Structure Analysis
+
+Analyze how the JSX/TSX structure affects the design:
 
 ```bash
-# View light theme screenshot
-open static/screenshots/unified/03-try-jods-section-light-20250507T121424.png
-
-# View dark theme screenshot
-open static/screenshots/unified/03-try-jods-section-dark-20250507T121424.png
-
-# View code changes in diff file - IMPORTANT: Always check both component (.tsx/.jsx) and CSS changes
-cat temp/possible-diffs/03-try-jods-section-20250507T121424.diff
-
-# To specifically examine component code changes only
+# Extract component structure changes
 grep -A 50 ".tsx\|.jsx" temp/possible-diffs/03-try-jods-section-20250507T121424.diff
+```
 
-# To specifically examine CSS changes only
+Key questions:
+- How has the component hierarchy changed?
+- What elements were added, removed, or reorganized?
+- How does structure support the intended UX?
+
+### Styling Analysis
+
+Examine CSS approaches and implementation:
+
+```bash
+# Extract styling changes
 grep -A 50 ".css" temp/possible-diffs/03-try-jods-section-20250507T121424.diff
-
-# View the feedback template for the iteration
-open temp/design-iterations/iteration-N/feedback-template.md
 ```
 
-### Comparing Iterations
+Key questions:
+- What color palette and typography choices were made?
+- How are spacing, layout, and visual hierarchy handled?
+- What responsive techniques are implemented?
+- How are transitions and animations used?
 
-```bash
-# Open multiple screenshots side by side
-open static/screenshots/unified/03-try-jods-section-light-20250507T121424.png static/screenshots/unified/03-try-jods-section-light-20250507T123056.png
+### Interaction Model Analysis
 
-# Compare diffs from different iterations
-cat temp/possible-diffs/03-try-jods-section-20250507T121424.diff
-cat temp/possible-diffs/03-try-jods-section-20250507T123056.diff
-```
+Evaluate how users interact with the component:
 
-### Applying Specific Iterations
+Key questions:
+- What feedback does the component provide for user actions?
+- How intuitive are the interaction patterns?
+- How accessible is the interface?
+- How does state management support the interaction model?
 
-```bash
-# First, check available iterations
-pnpm design-iterations:status
+## <required> Artifact Management Best Practices </required>
 
-# Then, update the metadata file to approve the desired iteration
-# Edit temp/design-iterations/iteration-N/metadata.json
-# Change "status" from "pending review" to "approved"
+Proper artifact management is critical for effective design iteration:
 
-# Finally, apply the approved iteration
-pnpm design-iterations:apply --iteration=N --target="03-try-jods-section"
-```
+### 1. Preservation of Artifacts
 
-### Documenting Iteration History
+**IMPORTANT**: Do NOT delete or clean up design artifacts until explicitly requested. These artifacts are essential for:
 
-Create a record of timestamps and iteration features in your notes:
+- Comparing different design approaches
+- Understanding implementation details
+- Building context between iterations
+- Making informed design selections
+- Applying chosen designs
 
-```markdown
-## Design Iteration History for Try jods Section
+Only run cleanup after:
+1. All iterations have been reviewed
+2. Final design has been selected and applied
+3. Explicit cleanup request: `pnpm docs:design-iterations:cleanup`
 
-- Iteration 1 (20250507T121424): Initial notebook design with tabs
-- Iteration 2 (20250507T123056): Updated with gradient backgrounds
-- Iteration 3 (20250507T125201): Refined tab styling and animations
-- Iteration 4 (20250507T131045): Final version with dark mode improvements
+### 2. Metadata Structure
 
-Selected and applied: Iteration 3 (20250507T125201)
-```
+Each iteration should have comprehensive metadata:
 
-## <critical> Functionality Expectations By Stage </critical>
-
-When working with design iterations, functionality expectations depend on the stage:
-
-1. **Early Iterations (1-5)**:
-   - Focus on visual design and layout
-   - Incomplete functionality is acceptable
-   - Non-working tabs or buttons are OK if they show the visual concept
-
-2. **Refinement Iterations (selected design)**:
-   - Begin building out key interactive elements
-   - Ensure elements that affect displayed content work properly
-   - Focus on the primary user interactions
-
-3. **Final Implementation**:
-   - Implement critical interactive functionality
-   - Ensure state changes work correctly
-   - Fix any console errors or warnings
-
-This progressive approach allows rapid visual exploration before investing in complete functionality.
-
-## <critical> Capturing Alternative States </critical>
-
-For components with important state variations, you need to capture each distinct visual state separately:
-
-1. **Identifying Clickable Elements First**:
-   - Examine the component code to find truly interactive elements:
-   ```jsx
-   // Look for useState hooks that manage interactive state
-   const [activeTab, setActiveTab] = useState("input");
-   
-   // Look for event handlers like onClick, onChange, etc.
-   <button onClick={() => setActiveTab("output")}>Output</button>
-   
-   // Look for conditional rendering based on state
-   {activeTab === "input" ? <InputPanel /> : <OutputPanel />}
-   ```
-   - Focus on elements with state-changing capabilities first
-   - Ignore purely decorative buttons without handlers
-
-2. **Primary State Screenshot**:
-   - Capture the default/main view of the component
-   - Use standard naming: `component-name-theme-TIMESTAMP.png`
-
-3. **Alternative State Screenshots** (for interactive components):
-   - First interact with the component in the browser 
-     - Focus on high-value interactions first (those that cause major visual changes)
-     - Click buttons or tabs
-     - Change form inputs
-     - Expand collapsed elements
-   - Then capture a new screenshot of this different visual state
-   - Use descriptive naming derived from the interaction: `component-name-theme-alt-after-click-tab2-TIMESTAMP.png`
-
-4. **Document State Interactions**:
-   - Note in your feedback template what interactions trigger each state
-   - Document the visual differences between states
-   - Reference all state screenshots for a complete view of component behavior
-
-```bash
-# First capture the default state
-cd docs
-pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="Design with default state" --skip-other-sections
-
-# Note the timestamp from the generated screenshot (e.g., 20250507T121424)
-# Then manually interact with the component in the browser
-# For example: click a tab, submit a form, or expand a section
-
-# Capture the component in its new state with a new timestamp
-pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="Design after clicking tab 2" --skip-other-sections
-
-# The system will generate a new screenshot with a new timestamp
-# You can use descriptive file naming derived from the prompt
-mv docs/static/screenshots/unified/03-try-jods-section-light-20250507T121555.png \
-   docs/static/screenshots/unified/03-try-jods-section-light-alt-after-click-tab2-20250507T121555.png
-```
-
-For components with complex interactions, use a **progressive enhancement approach**:
-
-- **First iterations (1-2)**: Focus on default state and **single most impactful** alternative state
-- **Middle iterations (3-4)**: Add screenshots for secondary interactions as design stabilizes
-- **Final iterations (5+)**: Capture comprehensive state variations including edge cases
-
-```bash
-# Progressive enhancement sequence
-# Early iterations: Just capture main states
-pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="Default state"
-# Interact with main tab
-pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="After clicking main tab"
-
-# Later iterations: Add more states as design solidifies
-# For iterations 3-4, add secondary interactions
-```
-
-This approach focuses design feedback on core elements first while expanding coverage as the design converges.
-
-## <critical> Screenshot Verification and Context Persistence </critical>
-
-**IMPORTANT**: Each iteration MUST have a unique, verified screenshot. To ensure this:
-
-1. **Visual verification before capture**:
-   - After making component changes, wait until changes are visible in browser
-   - Manually verify in browser that changes are visible before running screenshot command
-   - If changes aren't visible, restart the dev server with `pnpm start`
-
-2. **Timestamp all artifacts**:
-   - Debug HTML files should include timestamp in filename: `*-debug-{timestamp}.html`
-   - Screenshot filenames must contain unique timestamps: `*-{timestamp}.png`
-   - Log the timestamp in the iteration metadata for reference
-
-3. **Diff verification**:
-   - After each iteration, verify a diff was generated and is substantial
-   - Check diff files in `docs/temp/design-iterations/iteration-N/diff.patch`
-   - If diff is minimal, your changes may not have been captured properly
-
-4. **Context building**:
-   - Document each iteration's key design changes in feedback template
-   - Reference previous iterations when describing each new design
-   - Create a progression narrative between iterations
-   - Tag screenshots with design approach keywords for future reference
-
-5. **Screenshot validation**:
-   - After capturing a screenshot, open and visually confirm it shows the new design
-   - If screenshot shows previous design, wait longer and retry
-   - Compare against previous screenshots to confirm differences
-
-```bash
-# After making changes, verify in browser, THEN capture:
-pnpm docs:design-iterations:count-1 --target="03-try-jods-section" --prompt="Pink theme with gradient accents" --skip-other-sections
-
-# Immediately verify screenshot shows new design:
-open docs/static/screenshots/unified/03-try-jods-section-light-{timestamp}.png
-```
-
-## <critical> Server Detection and Persistence </critical>
-
-**IMPORTANT**: If the server detection in the script is taking too long or fails:
-
-1. **Verify server is running manually**:
-   ```bash
-   # Check if server is responding on port 3000
-   curl -I http://localhost:3000
-   
-   # If successful, you should see "HTTP/1.1 200 OK" in the response
-   ```
-
-2. **If script says server isn't running but it is**:
-   - Let the script continue - it will proceed with screenshots after timeout
-   - Screenshots will still be captured correctly if the server is accessible
-
-3. **If you need to restart the server**:
-   ```bash
-   # Terminal 1: Kill and restart server
-   pkill -f docusaurus
-   cd docs && pnpm dev
-   
-   # Terminal 2: Continue with design iterations after server is confirmed running
-   ```
-
-4. **To prevent detection issues**:
-   - Always start server in a separate terminal and leave it running
-   - Ensure the server is fully initialized before running design iterations
-   - Check browser access at http://localhost:3000 to confirm server is responsive
-
-## Key Commands
-
-```bash
-# From root directory
-pnpm docs:design-iterations:init    # Initialize a new design iteration for a component
-pnpm docs:design-iterations:capture # Capture the current state of components
-pnpm docs:design-iterations:count-N # Create N iterations (usually use count-1 for step-by-step)
-pnpm docs:design-iterations:status  # Check the status of the current iteration
-pnpm docs:screenshot:diff           # Compare screenshots using pixel-by-pixel diffing
-pnpm docs:verify-changes            # Verify changes were captured correctly
-pnpm docs:design-iterations:apply   # Apply a chosen design iteration
-pnpm docs:design-iterations:cleanup # Clean up iteration artifacts (ONLY when requested)
-
-# From docs directory
-pnpm design-iterations:init         # Initialize a new design iteration
-pnpm design-iterations:capture      # Capture the current state
-pnpm design-iterations:status       # Check current status
-pnpm screenshot:diff                # Compare screenshots
-```
-
-## <critical> Analyzing Design Iterations </critical>
-
-When reviewing design iterations, analyze both visual and code aspects:
-
-1. **Component Structure Changes**:
-   - How has the component's JSX/TSX structure changed?
-   - What UI elements were added, removed, or reorganized?
-   - How does the component hierarchy affect functionality?
-
-2. **CSS/Styling Changes**:
-   - What visual styling approaches were used?
-   - How are colors, spacing, and typography handled?
-   - What responsive design techniques are implemented?
-
-3. **Interaction Model**:
-   - How does the user interact with the component?
-   - What state management approach is used?
-   - How are transitions and animations implemented?
-
-Example analysis commands:
-```bash
-# Examine component structure changes
-grep -A 50 ".tsx" docs/temp/possible-diffs/03-try-jods-section-20250507T120735.diff
-
-# Examine styling changes
-grep -A 50 ".css" docs/temp/possible-diffs/03-try-jods-section-20250507T120735.diff
-
-# Compare with browser view to understand the relationship between code and visual output
-open docs/static/screenshots/unified/03-try-jods-section-light-20250507T120735.png
-```
-
-## <critical> End of Iteration Review Workflow </critical>
-
-After completing each design iteration, follow these steps to document and review it properly:
-
-1. **Immediately open and verify the screenshot**:
-   ```bash
-   # View the just-captured screenshot
-   open static/screenshots/unified/03-try-jods-section-light-<timestamp>.png
-   ```
-
-2. **Record the timestamp in your notes**:
-   ```
-   Latest iteration captured at: 20250507T121424
-   ```
-
-3. **Examine the code changes in the diff file**:
-   ```bash
-   # View what code changes were made
-   cat temp/possible-diffs/03-try-jods-section-<timestamp>.diff
-   ```
-
-4. **Update the feedback template**:
-   ```bash
-   # Document your observations
-   open temp/design-iterations/iteration-N/feedback-template.md
-   ```
-
-5. **Create a design history log** to track all iterations:
-   ```markdown
-   ## Design Timeline
-   
-   | Iteration | Timestamp      | Key Changes          | Status      |
-   |-----|----|----|----|
-   | 1         | 20250507T121424| Initial tabbed design| Reviewed    |
-   | 2         | 20250507T123056| Gradient backgrounds | Approved    |
-   | 3         | 20250507T125201| Refined animations   | Applied     |
-   ```
-
-This documentation approach makes it easier to revisit previous designs when needed and provides a clear history of your design process.
-
-## Quick Start
-
-```bash
-# Generate design iterations for a specific target only
-pnpm docs:design-iterations:count-5 --target="04-framework-section-react" --prompt="Reimagine with bold visual hierarchy" --skip-other-sections
-```
-
-## <critical> Proper Workflow Sequence </critical>
-
-**CRITICAL**: Follow this sequence exactly to ensure each iteration captures distinct designs:
-
-1. **Modify component code** - Make your design changes to both TSX/JSX and CSS files
-2. **Save changes** - Ensure all files are saved
-3. **Wait for rebuild** - Wait until changes are visible in browser
-4. **Verify changes in browser** - Manually confirm your design changes are visible
-5. **Capture ONE iteration** - Run the screenshot command for just this iteration
-6. **Verify screenshot** - Open and confirm the screenshot shows your new design
-7. **Document context** - Add detailed notes to the feedback template
-8. **Make new changes** - Create a different design for the next iteration
-9. **Repeat steps 2-8** - Follow the same sequence for each iteration
-
-```bash
-# CORRECT: One iteration at a time with verification between each
-# First modify component code, save, wait until changes appear, verify in browser, then:
-pnpm docs:design-iterations:count-1 --target="04-framework-section-react" --skip-other-sections
-
-# After capturing, verify screenshot and document context:
-open docs/static/screenshots/unified/04-framework-section-react-light-{timestamp}.png
-edit docs/temp/design-iterations/iteration-N/feedback-template.md
-
-# INCORRECT: Running multiple iterations without verification
-pnpm docs:design-iterations:count-3 --target="04-framework-section-react" --skip-other-sections
-```
-
-## <required> Artifact Preservation </required>
-
-**IMPORTANT**: Do NOT clean up design iteration artifacts until explicitly requested by the user. Artifacts are essential for:
-
-1. **Design review** - Comparing multiple design approaches
-2. **Feedback collection** - Adding notes to feedback templates
-3. **Iteration refinement** - Using previous designs as reference
-4. **Final application** - Selecting the best design to apply
-
-Only run cleanup after the user has:
-1. Reviewed all design iterations
-2. Applied their chosen design
-3. Explicitly requested cleanup with `pnpm docs:design-iterations:cleanup`
-
-The agent CANNOT know when the user is done reviewing design iterations. Premature cleanup could cause loss of valuable information. Cleanup should ONLY happen when explicitly requested, not automatically.
-
-## <required> Metadata and Feedback Management </required>
-
-**IMPORTANT**: Each design iteration should have its own metadata and feedback artifacts:
-
-1. **Timestamp-based organization**:
-   - All artifacts should be organized by their capture timestamp
-   - Example: `docs/temp/design-iterations/iteration-1/20250507T121055/`
-
-2. **Essential artifacts for each iteration**:
-   ```
-   docs/temp/design-iterations/iteration-N/{timestamp}/
-   ├── screenshots/
-   │   ├── 03-try-jods-section-light-{timestamp}.png
-   │   └── 03-try-jods-section-dark-{timestamp}.png
-   ├── diff.patch
-   ├── feedback-template.md
-   └── metadata.json
-   ```
-
-3. **Metadata structure** must include:
-   ```json
-   {
-     "iteration": N,
-     "timestamp": "{timestamp}",
-     "target": "03-try-jods-section",
-     "prompt": "Design description",
-     "screenshots": [
-       "03-try-jods-section-light-{timestamp}.png",
-       "03-try-jods-section-dark-{timestamp}.png"
-     ],
-     "diff_path": "docs/temp/possible-diffs/03-try-jods-section-{timestamp}.diff",
-     "status": "pending review",
-     "states_captured": ["default", "expanded"]  // For multi-state components
-   }
-   ```
-
-4. **If artifacts are overwritten**:
-   - Keep manual backups with timestamp in filename
-   - Create duplicate feedback templates for each distinct timestamp
-   - Report the issue with details about what's being overwritten
-
-## Styling Approach: Follow Component Conventions
-
-**IMPORTANT**: Always match the existing styling conventions of the component:
-
-1. **First analyze the component** to determine its styling approach:
-   - Check imports at the top for CSS/SCSS module imports
-   - Look for className references that use imported styles
-   - Notice any CSS-in-JS patterns or inline styles
-
-2. **Common styling approaches**:
-   - **CSS Modules**: `import styles from './Component.module.css'` → Use `className={styles.element}`
-   - **Global CSS**: `import './Component.css'` → Use `className="element"`
-   - **CSS-in-JS**: Look for styled-components or emotion usage
-   - **Tailwind**: Look for utility class patterns like `className="flex items-center"`
-
-3. **Examples of following conventions**:
-
-```tsx
-// If the component uses CSS modules:
-import styles from './InteractiveDemo.module.css';
-// ...
-<div className={styles.demoContainer}>
-
-// If the component uses global CSS:
-import './InteractiveDemo.css';
-// ...
-<div className="demo-container">
-
-// If the component uses inline styles:
-<div style={{ display: 'flex', gap: '1rem' }}>
-```
-
-## <required> Component Code Updates Required </required>
-
-For each design iteration, you MUST modify the component code BEFORE taking screenshots:
-
-1. **Step 1: Edit the component code directly** - Before generating the screenshot for each iteration, modify the component's TSX/JSX and CSS code according to the design prompt
-2. **Step 2: Wait for changes to apply** - Wait until changes are visible in browser before proceeding
-3. **Step 3: Verify in browser** - ALWAYS confirm changes are visible before proceeding
-4. **Step 4: Then run the screenshot command** - Each iteration should capture a visually distinct design
-5. **Step 5: Verify screenshot** - Open and confirm the screenshot shows your new design
-
-Example workflow:
-```bash
-# First modify the component code (edit both TSX and CSS files if needed)
-# Edit src/components/InteractiveDemo.tsx
-# Edit src/components/InteractiveDemo.module.css (if the component uses CSS modules)
-
-# After saving changes, wait until changes appear in browser, then run:
-pnpm docs:design-iterations:count-1 --target="04-framework-section-react" --skip-other-sections
-
-# Verify the screenshot captured your changes:
-open docs/static/screenshots/unified/04-framework-section-react-light-{timestamp}.png
-
-# Then modify the component code differently
-# After saving changes, wait until changes appear in browser, then run:
-pnpm docs:design-iterations:count-1 --target="04-framework-section-react" --skip-other-sections
-
-# Repeat verification for each screenshot
-open docs/static/screenshots/unified/04-framework-section-react-light-{timestamp}.png
-
-# Repeat for each unique design iteration
-```
-
-## <required> Building Context Between Iterations </required>
-
-For each iteration, maintain context by:
-
-1. **Creating descriptive prompts**:
-```bash
-pnpm docs:design-iterations:count-1 --target="03-try-jods-section" --prompt="Pink theme with curved borders and gradient accents" --skip-other-sections
-```
-
-2. **Documenting changes in feedback templates**:
-```markdown
-# Iteration 2: Pink Theme with Gradients
-
-## Design Approach
-- Implemented a vibrant pink color scheme (#FF5CAD) with purple accents
-- Added subtle gradient backgrounds transitioning from pink to purple
-- Curved all container borders to 12px radius
-- Applied animation to code examples on hover
-
-## Comparison to Previous
-- More vibrant and playful than Iteration 1's minimal design
-- Added visual hierarchy with gradient backgrounds
-- Enhanced interactive elements with hover animations
-
-## Timestamp: 2023-11-16T14:32:15
-```
-
-3. **Enhanced metadata**:
 ```json
 {
-  "iteration": 2,
-  "timestamp": "2023-11-16T14:32:15",
+  "iteration": 3,
+  "timestamp": "20250507T125201",
   "target": "03-try-jods-section",
-  "design_approach": "Pink theme with gradients",
-  "key_changes": ["color scheme", "gradients", "animations"],
-  "screenshot_path": "docs/static/screenshots/unified/03-try-jods-section-light-20231116143215.png",
-  "diff_path": "docs/temp/design-iterations/iteration-2/diff.patch",
-  "debug_html_path": "docs/static/debug/03-try-jods-section-light-debug-20231116143215.html"
+  "prompt": "Refined notebook with gradient accents",
+  "screenshots": [
+    "03-try-jods-section-light-20250507T125201.png",
+    "03-try-jods-section-dark-20250507T125201.png"
+  ],
+  "diff_path": "temp/possible-diffs/03-try-jods-section-20250507T125201.diff",
+  "status": "pending review",
+  "states_captured": ["default", "tab2-active", "form-submitted"]
 }
 ```
 
-## <critical> Important: Component Name Formats </critical>
+### 3. Feedback Documentation
 
-**CRITICAL**: Always use the numbered format for component target names in screenshot commands:
+Comprehensive feedback documentation should include:
 
-```bash
-# CORRECT - Use the numbered prefix format:
-pnpm docs:design-iterations:count-5 --target="04-framework-section-react" --skip-other-sections
+```markdown
+# Iteration 3: Refined Notebook with Gradient Accents
 
-# INCORRECT - Simple names without the numbered prefix may not work properly:
-pnpm docs:design-iterations:count-5 --target="framework-section-react" --skip-other-sections
+## Design Approach
+- Enhanced the notebook-style design from Iteration 1
+- Added subtle gradient backgrounds to tabs (blue to purple)
+- Refined typography with improved hierarchy
+- Added animation to tab transitions
+
+## Comparison to Previous Iterations
+- More polished than Iteration 1's basic notebook
+- More cohesive than Iteration 2's card-based approach
+- Maintains familiar tab metaphor but with enhanced visual appeal
+
+## States Captured
+- Default state (Input tab active): 20250507T125201
+- Output tab active: 20250507T125745
+- Console tab with errors: 20250507T130112
+
+## Implementation Notes
+- Used CSS transitions for smooth tab switching
+- Responsive design maintains usability down to 320px width
+- Dark mode implementation complete with appropriate contrast
+
+## Timestamp: 20250507T125201
 ```
 
-Available component names with required numbered prefixes:
+## <critical> Common Conceptual Challenges </critical>
+
+### Race Conditions in Design Iteration
+
+The most common issue in design iterations is **timing discrepancies** between:
+1. When you make code changes
+2. When those changes are visible in the browser
+3. When screenshots are captured
+
+**Understanding the problem**:
+- Component changes require rebuild time (30s-2min)
+- Premature screenshot capture shows previous design
+- Result: Screenshots don't match intended design
+
+**Conceptual solution**:
+- Sequential process with manual verification
+- Visual confirmation in browser before capture
+- Screenshot validation after capture
+
+### State Persistence Challenges
+
+Interactive components maintain state that affects their appearance:
+
+**Understanding the problem**:
+- Component state may reset between iterations
+- Some states only accessible through interaction
+- Alternative states may be lost in design process
+
+**Conceptual solution**:
+- Explicit multi-state capture process
+- Interactive state manipulation before capture
+- Documentation of interaction paths for each state
+
+### Visual Regression Risks
+
+When applying design iterations, visual regression can occur:
+
+**Understanding the problem**:
+- Applied changes may have unintended side effects
+- CSS changes may affect other components
+- Some visual issues only appear in specific contexts
+
+**Conceptual solution**:
+- Comprehensive state testing after application
+- Browser and theme testing
+- Responsive testing at various breakpoints
+
+## <required> Component Naming Conventions </required>
+
+The system requires specific naming conventions for proper functioning:
+
+### Numbered Component Format
+
+Always use the numbered format for component names:
+
 - `01-hero-section` (NOT just "hero-section")
-- `02-features-section` (NOT just "features-section")
-- `03-try-jods-section` (NOT just "try-jods-section")
-- `04-framework-section-react` (NOT just "framework-section-react")
-- `04-framework-section-remix` (NOT just "framework-section-remix")
-- `05-remix-section` (NOT just "remix-section")
-- `06-compare-section` (NOT just "compare-section")
-- `07-footer-section` (NOT just "footer-section")
+- `02-features-section`
+- `03-try-jods-section`
+- `04-framework-section-react`
+- `04-framework-section-remix`
+- `05-remix-section`
+- `06-compare-section`
+- `07-footer-section`
 
-## <required> Important: Using --skip-other-sections Flag </required>
+### Component Test IDs
 
-The `--skip-other-sections` flag is **crucial** when you want to focus on a single component without affecting or capturing other sections:
+Components must have matching `data-testid` attributes:
 
-```bash
-# CORRECT: Focus ONLY on the specified target
-pnpm docs:design-iterations:count-5 --target="04-framework-section-react" --skip-other-sections
-
-# INCORRECT: Will generate screenshots for ALL sections
-pnpm docs:design-iterations:count-5 --target="04-framework-section-react"
+```jsx
+<section
+  className={styles.sectionContainer}
+  id="try-jods-live"
+  data-testid="03-try-jods-section"
+>
 ```
 
-This is essential to avoid the workflow generating unnecessary files for sections you're not changing.
+The `data-testid` value must exactly match the target name used in commands.
 
-## Component Targeting
+## <critical> Design Iteration System Infrastructure </critical>
 
-Components can be targeted by:
+The design iteration system uses these technical components:
 
-1. **Data Test ID** (preferred)
-   ```jsx
-   <section data-testid="try-jods-section">...</section>
-   ```
+### 1. Screenshot Engine
 
-2. **CSS Selectors**
-   ```js
-   selector: ".try-jods-container"
-   ```
+- Uses Playwright headless browser automation
+- Captures both light and dark theme versions
+- Handles viewport sizing and scrolling
+- Creates pixel-perfect PNG screenshots
 
-3. **Alternative Selectors** for complex components
-   ```js
-   alternativeSelectors: ["h2:has-text('Try jods')", ".try-jods-demo"]
-   ```
+### 2. Diff Generation
 
-## Screenshot System
+- Creates line-by-line code diffs
+- Shows additions, deletions, and changes
+- Preserves both component and CSS changes
+- Enables precise implementation review
 
-The screenshot system uses Playwright to:
+### 3. Metadata Storage
 
-1. Launch a headless browser
-2. Navigate to pages with components
-3. Capture screenshots in different themes
-4. Support various component types (sections, examples, etc.)
-5. Perform pixel-by-pixel comparison to identify visual changes
-6. Generate diff images for visual inspection
+- JSON-based tracking of iterations
+- Links related artifacts by timestamp
+- Captures design prompts and status
+- Provides API for iteration management
 
-## <critical> Troubleshooting Guide </critical>
+### 4. Application System
 
-**Screenshot not showing changes:**
-- The most common issue is a race condition - the screenshot was taken before changes fully rebuilt
-- Solution: Wait longer for changes to appear in browser before running screenshot command
-- Manually verify in browser before running screenshot command
+- Allows selected iterations to be applied to codebase
+- Transforms diff files into actual code changes
+- Validates applied changes for errors
+- Provides rollback capability if needed
 
-**Command hangs indefinitely:**
-- Process is waiting for server to be available
-- Solution: Start the dev server in a separate terminal first with `cd docs && pnpm dev`
-- Kill hanging process with Ctrl+C and try again after server is fully running
+## <critical> Advanced Design Context Building </critical>
 
-**Multiple iterations with same content:**
-- Changes weren't rebuilt between iterations
-- Solution: Only run one iteration at a time, verify changes in browser before each capture
+Effective iteration requires building strong context between designs:
 
-**Process runs but no screenshots are created:**
-- Check if there are errors in the terminal output
-- Verify the target component name is correct
-- Check data-testid attribute in component matches target name
+### Iteration Naming Strategy
 
-**Linter errors after applying a design iteration:**
-- Check for unused variables (e.g., removed UI but state variables remain)
-- Check for missing props or invalid JSX structure
-- Fix errors immediately before continuing with the next iteration
+Use descriptive, consistent naming in prompts and documentation:
 
-## <required> Multiple Iterations Workflow </required>
+```bash
+# Descriptive prompt example
+pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="Notebook with gradient tabs and animation" --skip-other-sections
+```
 
-For multiple iterations, repeat this sequence for each one:
+### Design Approach Tags
 
-1. **Edit component files** - Make your design changes
-2. **Wait for rebuild** - Wait until changes are visible in browser
-3. **Verify in browser** - Confirm your design changes are visible
-4. **Capture ONE iteration** - Run the screenshot command
-5. **Verify screenshot** - Open and confirm the screenshot shows your new design
-6. **Document changes** - Update the feedback template with design notes
-7. **Make new changes** - Create a different design for the next iteration
-8. **Repeat steps 2-7** - Follow the same sequence for each iteration
+Tag iterations with design approach keywords:
 
-**NEVER run `count-5` directly** (this will create multiple iterations without proper verification between each) 
+- **Style approaches**: Minimal, Bold, Playful, Corporate, Gradient, Flat, Neumorphic
+- **Interaction models**: Tabbed, Accordion, Wizard, Single-page, Multi-column
+- **Visual metaphors**: Notebook, Cards, Dashboard, Terminal, Editor
+
+### Comparative Documentation
+
+Document direct comparisons between iterations:
+
+```markdown
+## Comparison: Iteration 2 vs Iteration 3
+
+| Aspect | Iteration 2 (20250507T123056) | Iteration 3 (20250507T125201) |
+|--------|--------------------------|--------------------------|
+| Style  | Card-based, flat design  | Notebook, gradient accents |
+| Colors | Monochrome blues        | Blue to purple gradients  |
+| Layout | Grid of separate cards  | Tabbed single container   |
+| Motion | No animations           | Tab transition animations |
+| States | 2 states captured       | 4 states captured         |
+```
+
+This comparative approach helps track the evolution of your design and informs selection decisions.
+
+## <required> Important System Constraints </required>
+
+The design iteration system has important constraints to be aware of:
+
+### 1. Browser Visibility Requirement
+
+Changes MUST be visible in browser before capture:
+- The system can't "see" changes until they appear in browser
+- Manual verification is essential before capture
+- Screenshots capture exactly what's visible in browser
+
+### 2. Independent Iteration Requirement
+
+Each iteration must be:
+- Independently captured with unique timestamp
+- Separately verified in browser
+- Individually documented for context
+
+### 3. Component Targeting Specificity
+
+Components must be targeted precisely:
+- Use exact numbered format for component names
+- Ensure `data-testid` attributes match target names
+- Use `--skip-other-sections` to focus on specific components
+
+### 4. Design History Preservation
+
+Design history must be preserved:
+- No cleanup until explicitly requested
+- Maintain all timestamps and screenshots
+- Document relationships between iterations
+
+Understanding these constraints helps create a successful design iteration workflow.
+
+## <critical> A Systems Thinking Approach </critical>
+
+Successful design iteration requires systems thinking:
+
+1. **Process as a System**: The three processes (server, changes, capture) function as an integrated system, not isolated steps
+
+2. **Artifact Ecosystem**: Screenshots, diffs, metadata, and documentation form an interconnected ecosystem of artifacts
+
+3. **Design Evolution**: Each iteration should build on knowledge from previous iterations, creating a coherent evolution
+
+4. **Context Continuity**: Documentation creates continuity between iterations, preserving design context and rationale
+
+5. **Progressive Refinement**: Start with broad exploration, then progressively refine toward a polished design
+
+This systems approach ensures that design iterations build upon each other to create a coherent, well-documented design solution.
