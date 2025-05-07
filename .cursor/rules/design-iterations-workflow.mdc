@@ -1,0 +1,187 @@
+---
+description: Comprehensive guidelines for the design iterations workflow for UI components
+globs: ["docs/src/components/**/*.{tsx,jsx,js,ts}", "docs/src/components/**/*.css"]
+alwaysApply: false
+---
+# Design Iterations Workflow
+
+## <critical> Process Flow Sequence - Critical </critical>
+
+The design iterations system requires **three separate processes** running in the correct sequence:
+
+1. **Dev Server (Process 1)** - Must be running first
+   ```bash
+   cd docs
+   pnpm dev
+   # Verify server is running by visiting http://localhost:3000
+   ```
+
+2. **Component Changes (Process 2)** - Must complete and rebuild
+   - Make changes to component files (TSX/JSX and CSS)
+   - Wait 45-60 seconds for DocuSaurus to fully rebuild
+   - Manually verify in browser that changes are visible
+
+3. **Screenshot Capture (Process 3)** - Must wait for Process 2 to complete
+   ```bash
+   # Only run after confirming changes are visible in browser
+   cd docs
+   pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="..." --skip-other-sections
+   ```
+
+**COMMON ERRORS:**
+- Using the wrong directory: Always `cd docs` first
+- Race condition: Running screenshot capture before changes are fully rebuilt
+- Background process issues: Not waiting for process completion
+- Port conflicts: Multiple dev servers attempting to run
+
+## <critical> Correct Command Sequence </critical>
+
+```bash
+# Terminal 1: Start dev server and leave running
+cd docs
+pnpm dev
+# Wait for full initialization, then visit http://localhost:3000
+
+# Terminal 2 (or Cursor terminal): Make component changes
+# Edit docs/src/components/YourComponent.tsx
+# Edit docs/src/components/YourComponent.module.css
+
+# WAIT 45-60 seconds, then verify changes in browser
+# Only after changes are visible:
+
+# Terminal 2: Run single iteration screenshot capture
+cd docs
+pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="Your design prompt" --skip-other-sections
+
+# Verify screenshot was captured:
+open docs/static/screenshots/unified/03-try-jods-section-light-{timestamp}.png
+
+# Wait for screenshot to complete before making next design change
+```
+
+## <critical> Common Issues & Solutions </critical>
+
+1. **Server Already Running**
+   - Error: `Something is already running on port 3000`
+   - Solution: 
+     - Say Yes to use a different port, OR
+     - Kill existing process: `pkill -f docusaurus`
+
+2. **Missing Script**
+   - Error: `ERR_PNPM_NO_SCRIPT_OR_SERVER Missing script start`
+   - Solution: You're in wrong directory, run `cd docs` first
+
+3. **Not Finding Component**
+   - Error: Component not found or blank screenshots
+   - Solution: 
+     - Use correct numbered format for target: `03-try-jods-section` (not just "try-jods-section")
+     - Verify data-testid matches in component: `data-testid="03-try-jods-section"`
+
+4. **Background Process Issues**
+   - Error: Command appears to hang or is interrupted
+   - Solution:
+     - Use separate terminals for dev server and design iteration commands
+     - Don't background processes that need to complete sequentially
+     - Wait for each process to fully complete before starting next
+
+5. **Changes Not Showing**
+   - Issue: Browser doesn't reflect component changes
+   - Solution:
+     - Wait longer (60+ seconds) for DocuSaurus to rebuild
+     - Force refresh browser with Ctrl+Shift+R
+     - Check console for build errors
+     - Restart dev server if needed
+
+## <required> Waiting Periods & Verification </required>
+
+**NEVER skip these waiting/verification steps:**
+
+1. **After starting dev server:** Wait until the terminal shows "Compiled successfully" and you can load http://localhost:3000
+
+2. **After making component changes:** Wait 45-60 seconds minimum for DocuSaurus to rebuild, then manually verify in browser that changes are visible
+
+3. **After capturing screenshot:** Verify the screenshot was created and shows your new design:
+   ```bash
+   open docs/static/screenshots/unified/03-try-jods-section-light-{timestamp}.png
+   ```
+
+4. **Between iterations:** Complete the entire sequence for one iteration before starting the next:
+   - Make component changes
+   - Wait for rebuild (45-60 seconds)
+   - Verify in browser
+   - Capture screenshot
+   - Verify screenshot shows new design
+
+## <required> Component Testing </required>
+
+Each component should have a proper `data-testid` attribute that matches the target name:
+
+```jsx
+<section
+  className={styles.sectionContainer}
+  id="try-jods-live"
+  data-testid="03-try-jods-section"
+>
+```
+
+**Available Component Names:**
+- `01-hero-section` (NOT just "hero-section")
+- `02-features-section` (NOT just "features-section")
+- `03-try-jods-section` (NOT just "try-jods-section")
+- `04-framework-section-react` (NOT just "framework-section-react")
+- `04-framework-section-remix` (NOT just "framework-section-remix")
+- `05-remix-section` (NOT just "remix-section")
+- `06-compare-section` (NOT just "compare-section")
+- `07-footer-section` (NOT just "footer-section")
+
+## Design Iteration Commands
+
+```bash
+# Create a single design iteration
+pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="Your design description" --skip-other-sections
+
+# Check status of design iterations
+pnpm design-iterations:status
+
+# Apply a specific design iteration
+pnpm design-iterations:apply --iteration=2 --target="03-try-jods-section"
+
+# Clean up iteration artifacts (ONLY when explicitly requested)
+pnpm design-iterations:cleanup
+```
+
+## <critical> Troubleshooting Guide </critical>
+
+**Screenshot not showing changes:**
+- The most common issue is a race condition - the screenshot was taken before changes fully rebuilt
+- Solution: Wait longer between making changes and running screenshot command (60+ seconds)
+- Manually verify in browser before running screenshot command
+
+**Command hangs indefinitely:**
+- Process is waiting for server to be available
+- Solution: Start the dev server in a separate terminal first with `cd docs && pnpm dev`
+- Kill hanging process with Ctrl+C and try again after server is fully running
+
+**Multiple iterations with same content:**
+- Changes weren't rebuilt between iterations
+- Solution: Only run one iteration at a time, verify changes in browser before each capture
+
+**Process runs but no screenshots are created:**
+- Check if there are errors in the terminal output
+- Verify the target component name is correct
+- Check data-testid attribute in component matches target name
+
+## <required> Multiple Iterations Workflow </required>
+
+For multiple iterations, repeat this sequence for each one:
+
+1. **Edit component files** - Make your design changes
+2. **Wait for rebuild** - Allow 45-60 seconds minimum
+3. **Verify in browser** - Confirm your design changes are visible
+4. **Capture ONE iteration** - Run the screenshot command
+5. **Verify screenshot** - Open and confirm the screenshot shows your new design
+6. **Document changes** - Update the feedback template with design notes
+7. **Make new changes** - Create a different design for the next iteration
+8. **Repeat steps 2-7** - Follow the same sequence for each iteration
+
+**NEVER run `count-5` directly** (this will create multiple iterations without proper verification between each) 

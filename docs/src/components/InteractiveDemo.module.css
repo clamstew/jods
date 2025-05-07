@@ -1,304 +1,174 @@
-/* Interactive Demo Component Styles - Dark Mode Code-Centric Design */
+/* Interactive Demo Component Styles */
 
-/* Section header styling */
-.sectionHeader {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-/* Code wrapper styling */
-.codeWrapperOuter {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0;
-  position: relative;
-}
-
-/* Code container layout */
-.codeContainer {
+/* Demo container layout */
+.demoContainer {
   display: grid;
-  grid-template-columns: 300px 1fr;
-  background-color: #1e1e2e;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  margin: 3rem 0;
+  align-items: start;
 }
 
 @media (max-width: 996px) {
-  .codeContainer {
+  .demoContainer {
     grid-template-columns: 1fr;
   }
 }
 
-/* Code sidebar styling */
-.codeSidebar {
-  background-color: #2a2b3d;
-  padding: 0;
+/* Controls section styling */
+.controls {
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #363852;
+  background: var(--ifm-card-background-color);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--ifm-color-emphasis-200);
 }
 
-.formSection {
-  padding: 1.5rem;
-  border-bottom: 1px solid #363852;
+.controlGroup {
+  margin-bottom: 1.5rem;
 }
 
-.formHeader {
-  color: #d1d5f0;
-  font-size: 1rem;
-  font-weight: 500;
-  margin: 0 0 1.25rem 0;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.formRow {
-  margin-bottom: 1.25rem;
-}
-
-.formRow:last-child {
-  margin-bottom: 0;
-}
-
-.formRow label {
+.controlGroup label {
+  font-size: 1.1rem;
+  margin-bottom: 0.6rem;
+  font-weight: 600;
   display: block;
-  color: #8889a6;
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
+  color: var(--ifm-color-emphasis-900);
 }
 
-.formRow input,
-.formRow select {
+.controlGroup input,
+.controlGroup select {
   width: 100%;
-  padding: 0.7rem;
-  background-color: #1e1e2e;
-  border: 1px solid #363852;
-  border-radius: 4px;
-  color: #d1d5f0;
-  font-size: 0.95rem;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  border: 2px solid var(--ifm-color-emphasis-200);
+  background: var(--ifm-background-color);
+  font-size: 1rem;
   transition: all 0.2s ease;
 }
 
-.formRow input:focus,
-.formRow select:focus {
+.controlGroup input:focus,
+.controlGroup select:focus {
   outline: none;
-  border-color: #bd93f9;
-  box-shadow: 0 0 0 2px rgba(189, 147, 249, 0.2);
+  border-color: var(--ifm-color-primary);
+  box-shadow: 0 0 0 3px rgba(var(--ifm-color-primary-rgb), 0.2);
 }
 
-.formRow select {
+.controlGroup select {
   appearance: none;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="%238889a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>');
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>');
   background-repeat: no-repeat;
-  background-position: right 0.7rem center;
-  padding-right: 2rem;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
 }
 
-/* Result section styling */
-.resultSection {
-  padding: 1.5rem;
-  flex-grow: 1;
-}
-
-.resultHeader {
-  color: #d1d5f0;
-  font-size: 1rem;
-  font-weight: 500;
-  margin: 0 0 1.25rem 0;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.resultOutput {
-  background-color: #1e1e2e;
-  border: 1px solid #363852;
-  border-radius: 4px;
-  padding: 1rem;
-}
-
-.resultRow {
-  margin-bottom: 0.8rem;
-  padding-bottom: 0.8rem;
-  border-bottom: 1px dashed #363852;
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.resultRow:last-child {
+/* Instruction box styling */
+.instructionBox {
+  border-radius: 16px;
   margin-bottom: 0;
-  padding-bottom: 0;
-  border-bottom: none;
+  padding: 1.8rem;
+  background: linear-gradient(145deg, #2c5282, #0891b2);
+  border: none;
+  box-shadow: 0 8px 30px rgba(8, 145, 178, 0.2);
 }
 
-.resultLabel {
-  color: #8889a6;
-  font-size: 0.85rem;
-  flex-basis: 100%;
-  margin-bottom: 0.25rem;
+/* Dark mode instruction box styling */
+:global([data-theme="dark"]) .instructionBox {
+  background: linear-gradient(145deg, #a75a6b, #c26a5a);
+  box-shadow: 0 8px 30px rgba(194, 106, 90, 0.2);
 }
 
-.resultValue {
-  color: #bd93f9;
-  font-weight: 600;
+.instructionText {
+  margin: 0;
   font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.7;
+  text-align: left;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.instructionIconWrapper {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.instructionIcon {
+  font-size: 1.3rem;
+  margin-right: 10px;
+  display: inline-block;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+  transition: transform 0.3s ease;
+}
+
+.instructionBox:hover .instructionIcon {
+  transform: scale(1.1);
 }
 
 /* Code preview styling */
-.codePreviewMain {
-  display: flex;
-  flex-direction: column;
+.codePreview {
   height: 100%;
-  background-color: #1e1e2e;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  line-height: 1;
 }
 
-.codeHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.8rem 1.5rem;
-  background-color: #2a2b3d;
-  border-bottom: 1px solid #363852;
-}
-
-.fileName {
-  color: #d1d5f0;
-  font-size: 0.9rem;
-  font-family: "Fira Code", monospace;
-  font-weight: 500;
-}
-
-.fileActions {
-  display: flex;
-  gap: 5px;
-}
-
-.dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.dot:nth-child(1) {
-  background-color: #ff5555;
-}
-
-.dot:nth-child(2) {
-  background-color: #f1fa8c;
-}
-
-.dot:nth-child(3) {
-  background-color: #50fa7b;
-}
-
-.codeEditorArea {
-  flex: 1;
-  overflow: auto;
-  height: 100%;
-}
-
-.codeEditorArea :global(.prism-code) {
-  height: 100%;
-  margin: 0;
-  border-radius: 0;
-  font-size: 0.9rem;
-  background-color: #1e1e2e !important;
-}
-
-/* Light theme overrides */
-:global([data-theme="light"]) .codeContainer {
-  background-color: #f6f8fa;
-}
-
-:global([data-theme="light"]) .codeSidebar {
-  background-color: #eef1f5;
-  border-right: 1px solid #dfe2e6;
-}
-
-:global([data-theme="light"]) .formHeader,
-:global([data-theme="light"]) .resultHeader {
-  color: #24292e;
-}
-
-:global([data-theme="light"]) .formRow label,
-:global([data-theme="light"]) .resultLabel {
-  color: #57606a;
-}
-
-:global([data-theme="light"]) .formRow input,
-:global([data-theme="light"]) .formRow select,
-:global([data-theme="light"]) .resultOutput {
-  background-color: #fff;
-  border: 1px solid #dfe2e6;
-  color: #24292e;
-}
-
-:global([data-theme="light"]) .formRow input:focus,
-:global([data-theme="light"]) .formRow select:focus {
-  border-color: #6932db;
-  box-shadow: 0 0 0 2px rgba(105, 50, 219, 0.2);
-}
-
-:global([data-theme="light"]) .formSection,
-:global([data-theme="light"]) .resultSection {
-  border-color: #dfe2e6;
-}
-
-:global([data-theme="light"]) .codeHeader {
-  background-color: #eef1f5;
-  border-bottom: 1px solid #dfe2e6;
-}
-
-:global([data-theme="light"]) .fileName {
-  color: #24292e;
-}
-
-:global([data-theme="light"]) .codePreviewMain {
-  background-color: #f6f8fa;
-}
-
-:global([data-theme="light"]) .resultValue {
-  color: #6932db;
-}
-
-:global([data-theme="light"]) .resultRow {
-  border-bottom: 1px dashed #dfe2e6;
+.codePreview :global(.prism-code) {
+  margin-bottom: 0;
 }
 
 /* Container elements */
 .sectionContainer {
-  padding: 3rem 0;
+  padding: 1rem 0;
 }
 
 .sectionTitle {
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: 2.5rem;
   position: relative;
   font-size: 2.2rem;
-  font-weight: 700;
-  color: var(--ifm-color-emphasis-900);
+  font-weight: 800;
+  color: var(--jods-blue-dark);
+}
+
+/* Dark mode title styling */
+:global([data-theme="dark"]) .sectionTitle {
+  color: white;
 }
 
 /* Add the underline effect that was in the global section-title */
 .sectionTitle:after {
   content: "";
   position: absolute;
-  bottom: -0.8rem;
+  bottom: -1rem;
   left: 50%;
   transform: translateX(-50%);
-  width: 60px;
-  height: 3px;
-  background: var(--ifm-color-primary);
-  border-radius: 1.5px;
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--jods-cyan) 0%,
+    var(--jods-blue) 100%
+  );
+  border-radius: 2px;
+}
+
+/* Dark mode styling for the underline */
+:global([data-theme="dark"]) .sectionTitle:after {
+  background: linear-gradient(
+    90deg,
+    var(--jods-orange-desaturated) 0%,
+    var(--ifm-color-primary) 100%
+  );
 }
 
 .sectionDescription {
   text-align: center;
-  max-width: 600px;
+  max-width: 700px;
   margin: 0 auto 1rem;
-  font-size: 1.1rem;
-  color: var(--ifm-color-emphasis-700);
-  font-weight: 400;
 }

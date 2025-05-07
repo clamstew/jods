@@ -1,9 +1,63 @@
 ---
 description: Guidelines for using the design iterations workflow for UI components
-globs: ["**/*.{tsx,jsx,js,ts}", "**/*.css", "**/*.md"]
+globs: ["docs/src/components/**/*.{tsx,jsx,js,ts}", "docs/src/components/**/*.css"]
 alwaysApply: false
 ---
 # Design Iterations System
+
+## <critical> Process Flow Sequence - Critical </critical>
+
+The design iterations system requires **three separate processes** running in the correct sequence:
+
+1. **Dev Server (Process 1)** - Must be running first
+   ```bash
+   cd docs
+   pnpm dev
+   # Verify server is running by visiting http://localhost:3000
+   ```
+
+2. **Component Changes (Process 2)** - Must complete and rebuild
+   - Make changes to component files (TSX/JSX and CSS)
+   - Wait 45-60 seconds for DocuSaurus to fully rebuild
+   - Manually verify in browser that changes are visible
+
+3. **Screenshot Capture (Process 3)** - Must wait for Process 2 to complete
+   ```bash
+   # Only run after confirming changes are visible in browser
+   cd docs
+   pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="..." --skip-other-sections
+   ```
+
+**COMMON ERRORS:**
+- Using the wrong directory: Always `cd docs` first
+- Race condition: Running screenshot capture before changes are fully rebuilt
+- Background process issues: Not waiting for process completion
+- Port conflicts: Multiple dev servers attempting to run
+
+## <critical> Correct Command Sequence </critical>
+
+```bash
+# Terminal 1: Start dev server and leave running
+cd docs
+pnpm dev
+# Wait for full initialization, then visit http://localhost:3000
+
+# Terminal 2 (or Cursor terminal): Make component changes
+# Edit docs/src/components/YourComponent.tsx
+# Edit docs/src/components/YourComponent.module.css
+
+# WAIT 45-60 seconds, then verify changes in browser
+# Only after changes are visible:
+
+# Terminal 2: Run single iteration screenshot capture
+cd docs
+pnpm design-iterations:count-1 --target="03-try-jods-section" --prompt="Your design prompt" --skip-other-sections
+
+# Verify screenshot was captured:
+open docs/static/screenshots/unified/03-try-jods-section-light-{timestamp}.png
+
+# Wait for screenshot to complete before making next design change
+```
 
 ## <critical> Screenshot Verification and Context Persistence </critical>
 
@@ -284,219 +338,38 @@ The screenshot system uses Playwright to:
 5. Perform pixel-by-pixel comparison to identify visual changes
 6. Generate diff images for visual inspection
 
-## AI-Driven Workflow
+## <critical> Troubleshooting Guide </critical>
 
-When a user explicitly requests design iterations, you should:
+**Screenshot not showing changes:**
+- The most common issue is a race condition - the screenshot was taken before changes fully rebuilt
+- Solution: Wait longer between making changes and running screenshot command (60+ seconds)
+- Manually verify in browser before running screenshot command
 
-1. **Understand their target component** and where the code is located:
-   - `03-try-jods-section` - Interactive demo section → `docs/src/components/InteractiveDemo.tsx`
-   - `01-hero-section` - Main hero section on homepage → `docs/src/components/HeroSection.tsx`
-   - `02-features-section` - Features grid on homepage → `docs/src/components/FeaturesSection.tsx`
-   - `04-framework-section-react` - React framework comparison → `docs/src/components/FrameworkSection.tsx`
-   - `04-framework-section-remix` - Remix framework section → `docs/src/components/FrameworkSectionRemix.tsx`
-   - `05-remix-section` - Remix integration section → `docs/src/components/RemixSection.tsx`
-   - `06-compare-section` - Library comparison section → `docs/src/components/CompareSection.tsx`
-   - `07-footer-section` - Footer section → `docs/src/components/FooterSection.tsx`
+**Command hangs indefinitely:**
+- Process is waiting for server to be available
+- Solution: Start the dev server in a separate terminal first with `cd docs && pnpm dev`
+- Kill hanging process with Ctrl+C and try again after server is fully running
 
-2. **First analyze the styling approach** of the component:
-   - Determine if it uses CSS modules, global CSS, inline styles, etc.
-   - Identify the pattern by looking at imports and className usage
-   - Follow that same convention for all styling changes
+**Multiple iterations with same content:**
+- Changes weren't rebuilt between iterations
+- Solution: Only run one iteration at a time, verify changes in browser before each capture
 
-3. **Then modify the component code** based on design goals:
-   - Edit the component's TSX/JSX file to change the structure/layout
-   - Update CSS styles to change the visual appearance using the same style approach
-   - Implement specific changes to address spacing issues, visual balance, etc.
-   - Save changes and wait for React to re-render (45-60 seconds)
+**Process runs but no screenshots are created:**
+- Check if there are errors in the terminal output
+- Verify the target component name is correct
+- Check data-testid attribute in component matches target name
 
-4. **Verify changes in browser** and **then capture the iteration screenshot** with:
-   ```bash
-   # Capture just one iteration after code modifications and browser verification
-   pnpm docs:design-iterations:count-1 --target="04-framework-section-react" --prompt="detailed design direction" --skip-other-sections
-   ```
+## <required> Multiple Iterations Workflow </required>
 
-5. **Verify screenshot reflects your changes**:
-   ```bash
-   # Always verify the screenshot before proceeding
-   open docs/static/screenshots/unified/04-framework-section-react-light-{timestamp}.png
-   ```
+For multiple iterations, repeat this sequence for each one:
 
-6. **Document context** in feedback template:
-   ```bash
-   # Add detailed notes about design decisions and comparisons to previous iterations
-   edit docs/temp/design-iterations/iteration-N/feedback-template.md
-   ```
+1. **Edit component files** - Make your design changes
+2. **Wait for rebuild** - Allow 45-60 seconds minimum
+3. **Verify in browser** - Confirm your design changes are visible
+4. **Capture ONE iteration** - Run the screenshot command
+5. **Verify screenshot** - Open and confirm the screenshot shows your new design
+6. **Document changes** - Update the feedback template with design notes
+7. **Make new changes** - Create a different design for the next iteration
+8. **Repeat steps 2-7** - Follow the same sequence for each iteration
 
-7. **Repeat for each unique design** (usually 3-5 iterations):
-   - Make different code changes for each iteration
-   - Wait for full rebuild between iterations (45-60 seconds minimum)
-   - Verify changes in browser before capturing screenshots
-   - Confirm screenshots reflect new design
-   - Document context and design decisions
-   - Track iteration numbers and timestamps
-
-8. **Run these commands for managing iterations**:
-   ```bash
-   # Check status of iterations
-   pnpm docs:design-iterations:status
-   
-   # Apply the chosen design
-   pnpm docs:design-iterations:apply --iteration=N --target="04-framework-section-react"
-   
-   # Clean up design artifacts ONLY when explicitly requested
-   pnpm docs:design-iterations:cleanup
-   ```
-
-9. **<critical> Always provide a structured summary </critical>** to the user about their design iterations:
-   ```
-   # Design Iterations Summary
-
-   You now have [X] design iterations for the [component] section:
-
-   ## Review Your Designs
-   You can find the screenshots at:
-   - Light mode: /docs/static/screenshots/unified/04-framework-section-react-light-[timestamp].png
-   - Dark mode: /docs/static/screenshots/unified/04-framework-section-react-dark-[timestamp].png
-   - Iteration folders: /docs/temp/design-iterations/iteration-[N]/screenshots/
-
-   ## Design Context
-   Each iteration has a detailed feedback template with context:
-   - /docs/temp/design-iterations/iteration-[N]/feedback-template.md
-   - Key differences from previous iterations are documented
-   - Timestamps indicate when each design was captured
-
-   ## Apply Your Preferred Design
-   Once you've chosen a design, apply it with:
-   ```bash
-   pnpm docs:design-iterations:apply --iteration=[N] --target="04-framework-section-react"
-   ```
-
-   ## Clean Up Artifacts
-   ONLY after reviewing and applying your chosen design, clean up with:
-   ```bash
-   pnpm docs:design-iterations:cleanup
-   ```
-   ```
-
-## Expected Artifacts
-
-Each design iteration generates these artifacts:
-
-1. **Screenshots in two places**:
-   - Primary: `docs/static/screenshots/unified/04-framework-section-react-{light|dark}-{timestamp}.png`
-   - Backup: `docs/temp/design-iterations/iteration-N/screenshots/`
-
-2. **Debug HTML** (for inspection):
-   - `docs/static/debug/04-framework-section-react-{light|dark}-debug-{timestamp}.html`
-
-3. **Diff files** (for tracking changes):
-   - `docs/temp/design-iterations/iteration-N/diff.patch`
-   - `docs/temp/possible-diffs/04-framework-section-react-{timestamp}.diff`
-
-4. **Documentation**:
-   - `docs/temp/design-iterations/iteration-N/feedback-template.md`
-   - `docs/temp/design-iterations/iteration-N/metadata.json`
-
-## <required> Best Practices </required>
-
-1. **Analyze styling approach first** - Match the component's existing styling convention
-2. **Modify component code BEFORE each screenshot** - Make changes first, then capture
-3. **Wait 45-60 seconds after code changes** - DocuSaurus needs time to rebuild
-4. **Verify changes in browser** - Confirm your design updates are visible before capturing
-5. **Verify screenshot immediately after capture** - Ensure it shows your new design
-6. **Document context and design decisions** - Fill in detailed feedback templates
-7. **Use `count-1` for each iteration** - Generate one iteration at a time
-8. **Include descriptive prompts** - Use `--prompt="detailed design direction"` 
-9. **Track timestamps between iterations** - Note exact time of captures
-10. **Compare screenshots across iterations** - Ensure visual differences
-11. **Avoid disrupting the development server** - Keep it running between iterations
-12. **Always use the `--skip-other-sections` flag** - Focus only on your target
-13. **Always use numbered component names** - With number prefixes (e.g., `04-framework-section-react`)
-14. **Document your changes** - Fill in the feedback templates with detailed context
-15. **Apply chosen designs** - With `docs:design-iterations:apply`
-16. **Preserve artifacts until explicitly requested** - Only clean up when user explicitly asks
-17. **Check for CSS module files** - If a component uses CSS modules, check for and modify those files too
-18. **Use data-testid attributes** - Prefer data-testid for reliable component targeting
-19. **Test all themes** - Ensure changes look good in both light and dark mode
-20. **Verify mobile layouts** - Test responsive behavior with different viewport sizes
-
-## Common Issues and Troubleshooting
-
-- **Identical screenshots across iterations**: 
-  - Not waiting long enough between design changes
-  - DocuSaurus hasn't rebuilt with your changes yet
-  - Try waiting at least 45-60 seconds and verify changes in browser
-  - Restart dev server with `pnpm start` if changes aren't appearing
-  - Check for server errors in terminal
-  
-- **No visual changes**: 
-  - Wait 60+ seconds for DocuSaurus to rebuild
-  - Verify changes in browser before capturing screenshot
-  - Check browser console for errors
-  - Try restarting the dev server with `pnpm start`
-  
-- **Missing timestamps on files**:
-  - Check if the screenshot command completed successfully
-  - Look for error messages in the terminal
-  - Verify the timestamp format in filenames
-  
-- **Too many screenshots**: 
-  - Make sure to use `--skip-other-sections` flag
-  
-- **Component not found**: 
-  - Check the component name - use numbered prefix format (e.g., `04-framework-section-react`)
-  - Simple names without numbers may not work consistently
-  - Verify the component has proper data-testid attribute
-  
-- **Missing screenshots**: 
-  - Ensure the docs site is running with `pnpm start`
-  - Check terminal for screenshot generation errors
-  
-- **Apply errors**: 
-  - Check for uncommitted changes with `git status`
-  
-- **Styling inconsistencies**:
-  - You're using a different styling approach than the component
-  - Analyze the imports and className patterns, then follow them
-
-## Diff Analysis and Patching
-
-For troubleshooting screenshot issues, analyze diff files:
-
-1. **Check diff size and content**:
-   ```bash
-   # View diff content
-   cat docs/temp/design-iterations/iteration-N/diff.patch
-   
-   # Check diff size
-   ls -la docs/temp/design-iterations/iteration-N/diff.patch
-   ```
-
-2. **Manual screenshot if automation fails**:
-   ```bash
-   # If automated screenshots fail to capture changes:
-   # 1. Take a manual screenshot of the browser
-   # 2. Save it with timestamp in filename
-   # 3. Document the timestamp in feedback template
-   ```
-
-3. **Force rebuild if needed**:
-   ```bash
-   # If changes aren't appearing:
-   pnpm clean
-   pnpm build
-   pnpm start
-   ```
-
-## References
-
-For more information on the design iterations workflow, see the [official documentation](https://docs.jods.io/design-iterations/workflow):
-
-- **Component Structure**: Each component has a structured naming system and specific selectors
-- **Workflow Process**: Step-by-step process from ideation to implementation
-- **Best Practices**: Guidelines for effective design iteration
-- **Troubleshooting**: Solutions for common issues
-
-@docs/scripts/design-iterations.mjs
-@docs/scripts/screenshot-unified.mjs
-@docs/docs/design-iterations/index.md 
+**NEVER run `count-5` directly** (this will create multiple iterations without proper verification between each) 
