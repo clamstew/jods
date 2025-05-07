@@ -106,23 +106,23 @@ import { css } from '@emotion/react';
 
 Always follow the existing styling approach:
 
-| If the component uses... | Then you should... |
-|--------------------------|-------------------|
-| **CSS Modules** (.module.css files) | Create or update the module file and use `className={styles.element}` |
-| **Global CSS** (regular .css files) | Update the CSS file and use `className="element-name"` |
-| **Inline styles** | Use the `style={{ property: 'value' }}` approach |
-| **CSS-in-JS** (styled-components, emotion) | Use the same library's API |
+| If the component uses...                   | Then you should...                                                    |
+| ------------------------------------------ | --------------------------------------------------------------------- |
+| **CSS Modules** (.module.css files)        | Create or update the module file and use `className={styles.element}` |
+| **Global CSS** (regular .css files)        | Update the CSS file and use `className="element-name"`                |
+| **Inline styles**                          | Use the `style={{ property: 'value' }}` approach                      |
+| **CSS-in-JS** (styled-components, emotion) | Use the same library's API                                            |
 
 ### Common Mistakes to Avoid
 
-❌ **Do not mix styling approaches** within a single component
-❌ **Do not add inline styles** to a component using CSS modules
-❌ **Do not create a new CSS module** for a component using global CSS
-❌ **Do not ignore existing style patterns** in the codebase
+- ❌ Do not mix styling approaches within a single component
+- ❌ Do not add inline styles to a component using CSS modules
+- ❌ Do not create a new CSS module for a component using global CSS
+- ❌ Do not ignore existing style patterns in the codebase
 
-✅ **Always analyze first** before making style changes
-✅ **Respect the existing architecture** of the component
-✅ **Match variable naming conventions** for consistency
+- ✅ Always analyze first before making style changes
+- ✅ Respect the existing architecture of the component
+- ✅ Match variable naming conventions for consistency
 
 ## Step 2: Review and Provide Feedback
 
@@ -206,6 +206,43 @@ pnpm docs:design-iterations:count-1 --target="try-jods-section" --skip-other-sec
 pnpm docs:design-iterations:count-3 --target="try-jods-section" --skip-other-sections
 ```
 
+### Understanding Background Processes
+
+The design iterations system involves several asynchronous processes running simultaneously:
+
+1. **DocuSaurus Dev Server**: When you save component changes, DocuSaurus automatically rebuilds affected files in the background.
+2. **Browser Rendering**: The browser needs to receive these updates and re-render the page.
+3. **Playwright Screenshot Capture**: The screenshot system opens a browser, navigates to the page, and captures images.
+
+If these processes aren't properly synchronized, you may encounter these issues:
+
+- Screenshots being taken before your changes are fully built
+- Different iterations showing identical or incomplete screenshots
+- Inconsistent results across iterations
+- Race conditions where screenshots capture partially updated state
+
+### Signs That You Need to Wait Longer
+
+If you see any of these symptoms, you likely need to increase waiting time:
+
+- Screenshots look identical across iterations despite code changes
+- Only some of your changes appear in the screenshots
+- Screenshots appear with layout errors or missing styles
+- No visible differences between the baseline and new design
+
+### Recommended Workflow
+
+For the most reliable results, follow this extended workflow:
+
+1. Make your component changes
+2. Save all files
+3. Switch to your browser and manually refresh the page
+4. Wait until you can visually confirm all changes are applied
+5. Only then run the screenshot command
+6. Wait for the command to complete fully before starting the next iteration
+
+This ensures each process completes before the next begins, preventing race conditions and inconsistent results.
+
 ## Step 4: Implement Final Design
 
 When you've found a design you're happy with, apply it to your codebase:
@@ -247,7 +284,7 @@ pnpm docs:design-iterations:cleanup --dry-run
 
 After completing iterations, always provide a structured summary to help the user understand what was created and how to proceed:
 
-```
+````
 # Design Iterations Summary
 
 You now have X design iterations for the [component] section:
@@ -260,16 +297,20 @@ You can find the screenshots at:
 
 ## Apply Your Preferred Design
 Once you've chosen a design, apply it with:
+
 ```bash
 pnpm docs:design-iterations:apply --iteration=[N] --target="[component]"
-```
+````
 
 ## Clean Up Artifacts
+
 After applying, clean up with:
+
 ```bash
 pnpm docs:design-iterations:cleanup
 ```
-```
+
+````
 
 ## 🔍 Checking Design Iteration Status
 
@@ -277,7 +318,7 @@ At any point, you can check the status of your current design iterations:
 
 ```bash
 pnpm docs:design-iterations:status
-```
+````
 
 This shows:
 
@@ -472,4 +513,4 @@ Use this comprehensive checklist to ensure you're following best practices throu
 - [ ] Elements align properly on all screen sizes 📏
 - [ ] Animation/transitions are not distracting ✨
 - [ ] Font sizes are consistent and readable 📊
-- [ ] Color usage follows design system 🎨 
+- [ ] Color usage follows design system 🎨
