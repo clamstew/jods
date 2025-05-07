@@ -92,7 +92,8 @@
   z-index: -1;
 }
 
-:root[data-theme="dark"] .speechBubble::after {
+/* Dark mode speech bubble adjustments */
+[data-theme="dark"] .speechBubble::after {
   border-right: 1px solid var(--speech-bubble-border, rgba(255, 255, 255, 0.1));
   border-bottom: 1px solid var(--speech-bubble-border, rgba(255, 255, 255, 0.1));
 }

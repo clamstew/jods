@@ -18,7 +18,7 @@
 }
 
 /* Dark mode gradient override */
-:root[data-theme="dark"] .heroContainer {
+[data-theme="dark"] .heroContainer {
   background: linear-gradient(135deg, #332954 0%, #6b3369 50%, #8a3458 100%);
 }
 
