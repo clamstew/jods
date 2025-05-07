@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./HomepageHero.module.css";
+import styles from "./Mascots.module.css";
 
 interface MascotsProps {
   mascotsInteracting: boolean;

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import styles from "./HomepageHero.module.css";
+import styles from "./BackgroundAnimations.module.css";
 import {
   getThemeColors,
   jsonSnippets,

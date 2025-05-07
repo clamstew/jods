@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Mascots from "./Mascots";
 import { useAnimationState } from "../AnimationPauseControl";
 import useIsBrowser from "@docusaurus/useIsBrowser";
-import styles from "./HomepageHero.module.css";
+import styles from "./index.module.css";
 
 // Existing component imports
 import HeroContent from "./HeroContent";

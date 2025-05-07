@@ -1,6 +1,6 @@
 import React from "react";
 import { useAnimationState } from "../AnimationPauseControl";
-import styles from "./HomepageHero.module.css";
+import styles from "./AnimationControls.module.css";
 
 export default function AnimationControls(): React.ReactElement {
   const { isPaused, toggleAnimation } = useAnimationState();

@@ -1,0 +1,225 @@
+/* Mascot animations and positioning */
+.heroMascots {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 120px; /* Increased height for mascot playground */
+  z-index: 55;
+}
+
+.heroMascot {
+  position: absolute;
+  font-size: 2.5rem;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+}
+
+.heroMascotSquirrel {
+  animation: mascotRoam1 20s infinite alternate ease-in-out,
+    mascotBounce 8s infinite alternate ease-in-out,
+    mascotGlow 3s infinite alternate ease-in-out;
+}
+
+.heroMascotDuck {
+  /* Add initial positioning to prevent appearing at left edge */
+  right: 15%;
+  bottom: 25px;
+  animation: mascotRoam2 22s infinite alternate-reverse ease-in-out,
+    mascotBounce 9s infinite alternate-reverse ease-in-out,
+    mascotGlow 3s infinite alternate ease-in-out;
+}
+
+/* Speech bubble styling */
+.speechBubble {
+  position: absolute;
+  min-width: 200px; /* Increased width */
+  min-height: 40px;
+  background: var(--speech-bubble-bg, rgba(240, 249, 255, 0.8));
+  border: 1px solid var(--speech-bubble-border, rgba(56, 189, 248, 0.4));
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2),
+    0 0 15px var(--hero-gradient-shadow, rgba(255, 154, 0, 0.3));
+  backdrop-filter: blur(5px);
+  top: -60px; /* Moved higher up from -45px */
+  z-index: 100;
+  color: var(--speech-bubble-color, #0284c7);
+  opacity: 0; /* Start hidden */
+  transition: all 0.4s ease;
+}
+
+/* Show speech bubble on hover */
+.heroMascot:hover .speechBubble {
+  opacity: 1;
+  transform: translateY(-5px);
+}
+
+/* Ensure speech bubbles are visible when mascots are interacting */
+.heroMascots.interacting .heroMascot .speechBubble {
+  opacity: 1;
+  transform: translateY(-5px);
+}
+
+/* Position speech bubbles */
+.heroMascotSquirrel .speechBubble {
+  left: -60px; /* Move it more to the left to center it */
+  transform-origin: bottom left;
+}
+
+.heroMascotDuck .speechBubble {
+  right: -60px; /* Move it more to the right to center it */
+  transform-origin: bottom right;
+}
+
+.speechBubble::before {
+  content: attr(data-message);
+  display: block;
+  text-align: center;
+}
+
+.speechBubble::after {
+  content: "";
+  position: absolute;
+  bottom: -10px; /* Fine-tuned position */
+  width: 20px;
+  height: 20px;
+  background: inherit;
+  border-right: 1px solid var(--speech-bubble-border, rgba(56, 189, 248, 0.4));
+  border-bottom: 1px solid var(--speech-bubble-border, rgba(56, 189, 248, 0.4));
+  transform: rotate(45deg);
+  z-index: -1;
+}
+
+:root[data-theme="dark"] .speechBubble::after {
+  border-right: 1px solid var(--speech-bubble-border, rgba(255, 255, 255, 0.1));
+  border-bottom: 1px solid var(--speech-bubble-border, rgba(255, 255, 255, 0.1));
+}
+
+.heroMascotSquirrel .speechBubble::after {
+  left: 30%;
+}
+
+.heroMascotDuck .speechBubble::after {
+  right: 30%;
+}
+
+/* Sparkle when interacting */
+.heroMascotsSparkle {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2rem;
+  z-index: 60;
+  animation: friendshipSparkle 2s infinite ease-in-out;
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.7));
+}
+
+@keyframes friendshipSparkle {
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1) rotate(0deg);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateX(-50%) scale(1.3) rotate(15deg);
+    opacity: 1;
+  }
+}
+
+/* Mascot interaction styles */
+.heroMascots.interacting .heroMascotSquirrel {
+  transform: translateX(100px);
+  animation: mascotBounce 2s infinite alternate ease-in-out,
+    mascotGlow 1.5s infinite alternate ease-in-out;
+}
+
+.heroMascots.interacting .heroMascotDuck {
+  transform: translateX(-100px);
+  animation: mascotBounce 2s infinite alternate-reverse ease-in-out,
+    mascotGlow 1.5s infinite alternate ease-in-out;
+}
+
+/* Animation keyframes */
+@keyframes mascotRoam1 {
+  0% {
+    left: 15%;
+    bottom: 20px;
+  }
+  20% {
+    left: 18%;
+    bottom: 22px;
+  }
+  40% {
+    left: 14%;
+    bottom: 25px;
+  }
+  60% {
+    left: 20%;
+    bottom: 15px;
+  }
+  80% {
+    left: 16%;
+    bottom: 30px;
+  }
+  100% {
+    left: 12%;
+    bottom: 25px;
+  }
+}
+
+@keyframes mascotRoam2 {
+  0% {
+    right: 15%;
+    bottom: 25px;
+  }
+  20% {
+    right: 18%;
+    bottom: 28px;
+  }
+  40% {
+    right: 14%;
+    bottom: 22px;
+  }
+  60% {
+    right: 20%;
+    bottom: 30px;
+  }
+  80% {
+    right: 16%;
+    bottom: 20px;
+  }
+  100% {
+    right: 12%;
+    bottom: 25px;
+  }
+}
+
+@keyframes mascotBounce {
+  0%,
+  100% {
+    transform: translateY(0) rotateZ(-5deg);
+  }
+  25% {
+    transform: translateY(-10px) rotateZ(0deg);
+  }
+  50% {
+    transform: translateY(0) rotateZ(5deg);
+  }
+  75% {
+    transform: translateY(-5px) rotateZ(0deg);
+  }
+}
+
+@keyframes mascotGlow {
+  0% {
+    filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.1))
+      drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+  }
+  100% {
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.4))
+      drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+  }
+}

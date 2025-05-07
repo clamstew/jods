@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "@docusaurus/Link";
-import styles from "./HomepageHero.module.css";
+import styles from "./HeroContent.module.css";
 
 export default function HeroContent(): React.ReactElement {
   return (
