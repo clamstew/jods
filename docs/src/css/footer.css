@@ -1,281 +1,33 @@
-/* Footer styling with blue-cyan-green gradient for light mode */
-.footer {
-  background: linear-gradient(135deg, #0f172a 0%, #0c4a6e 70%, #0891b2 100%);
-  position: relative;
-  overflow: hidden;
-  color: white;
-  padding-top: 3rem;
-  padding-bottom: 2rem;
-  /* Enhanced animated gradient background */
-  background-size: 400% 400%;
-  animation: footer-gradient-shift 15s ease infinite;
-}
+/* Minimal footer styles required for hardcoded HTML in docusaurus.config.ts */
 
-/* Dark mode keeps the purple gradient */
-[data-theme="dark"] .footer {
-  background: linear-gradient(
-    135deg,
-    var(--jods-purple-dark) 0%,
-    var(--jods-purple-mid) 50%,
-    var(--jods-purple-light) 100%
-  );
-}
-
-/* Enhanced gradient animation with more movement */
-@keyframes footer-gradient-shift {
-  0% {
-    background-position: 0% 50%;
-    background-size: 100% 100%;
-  }
-  25% {
-    background-position: 50% 100%;
-    background-size: 150% 150%;
-  }
-  50% {
-    background-position: 100% 50%;
-    background-size: 200% 200%;
-  }
-  75% {
-    background-position: 50% 0%;
-    background-size: 150% 150%;
-  }
-  100% {
-    background-position: 0% 50%;
-    background-size: 100% 100%;
-  }
-}
-
-/* Add a diagonal gradient overlay to make it more pronounced */
-.footer::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(15, 23, 42, 0.4) 0%,
-    rgba(12, 74, 110, 0.3) 50%,
-    rgba(8, 145, 178, 0.4) 100%
-  );
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.9;
-}
-
-/* Dark mode overlay */
-[data-theme="dark"] .footer::before {
-  background: linear-gradient(
-    135deg,
-    rgba(51, 41, 84, 0.8) 0%,
-    rgba(107, 51, 105, 0.6) 50%,
-    rgba(138, 52, 88, 0.7) 100%
-  );
-}
-
-/* Add smooth flowing line at the top - updated for light mode */
-.footer::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 200%;
-  height: 3px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    #84cc16 25%,
-    #65a30d 50%,
-    #84cc16 75%,
-    transparent 100%
-  );
-  z-index: 3;
-  animation: line-flow 8s ease-in-out infinite alternate;
-  box-shadow: 0 0 10px rgba(132, 204, 22, 0.9);
-}
-
-/* Dark mode flowing line */
-[data-theme="dark"] .footer::after {
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    #ffc559 25%,
-    #ff9a5c 50%,
-    #ffc559 75%,
-    transparent 100%
-  );
-  box-shadow: 0 0 8px #ffc559;
-}
-
-@keyframes line-flow {
-  0% {
-    transform: translateX(-25%);
-  }
-  100% {
-    transform: translateX(25%);
-  }
-}
-
-/* Footer title - updated for light mode */
-.footer__title {
-  color: white;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 1rem;
-  margin-bottom: 1.5rem;
-  position: relative;
-  display: inline-block;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
-}
-
-/* Dark mode title */
-[data-theme="dark"] .footer__title {
-  color: var(--jods-orange-light);
-}
-
-.footer__title:after {
-  content: "";
-  position: absolute;
-  bottom: -8px;
-  left: 0;
-  width: 30px;
-  height: 2px;
-  background: #0891b2;
-  animation: footer-title-underline 3s ease-in-out infinite alternate;
-}
-
-/* Dark mode title underline */
-[data-theme="dark"] .footer__title:after {
-  background: linear-gradient(90deg, #ffc559 0%, #ff9a5c 100%);
-  box-shadow: 0 0 8px #ffc559;
-  animation: footer-title-underline 3s ease-in-out infinite alternate;
-}
-
-/* Emoji links styling with better visibility */
-.footer__item a {
-  color: rgba(255, 255, 255, 0.95);
-  transition: all 0.2s ease;
-  display: inline-block;
-  padding: 0.2rem 0;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-}
-
-/* Add better contrast for emoji icons */
-.footer__item a span[role="img"],
-.footer__item a span.emoji {
-  display: inline-block;
-  margin-right: 0.4rem;
-  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.8));
-}
-
-/* Footer item hover effect for light mode */
-.footer__item a:hover {
-  color: white;
-  text-decoration: none;
-  transform: translateX(3px);
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.7), 0 1px 3px rgba(0, 0, 0, 0.7);
-}
-
-/* Dark mode hover effect */
-[data-theme="dark"] .footer__item a:hover {
-  color: var(--jods-orange-light);
-  text-shadow: 0 0 8px rgba(255, 163, 26, 0.5);
-}
-
-/* Copyright link colors for light mode */
-.footer__copyright a {
-  color: white;
-  text-decoration: none;
-  font-weight: 600;
-  position: relative;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-}
-
-/* Dark mode copyright links */
-[data-theme="dark"] .footer__copyright a {
-  color: var(--jods-orange-light);
-}
-
-.footer__copyright a:after {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 1px;
-  bottom: -1px;
-  left: 0;
-  background: #4b8b15;
-  transition: width 0.3s ease;
-}
-
-/* Dark mode copyright link underline */
-[data-theme="dark"] .footer__copyright a:after {
-  background: var(--jods-orange-light);
-}
-
-/* Footer copyright link hover effect */
-.footer__copyright a:hover:after {
-  width: 100%;
-}
-
-@keyframes footer-title-underline {
-  from {
-    width: 30px;
-  }
-  to {
-    width: 50px;
-  }
-}
-
-/* Footer background and fireflies */
-.footer-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: hidden;
-  z-index: 2;
-  pointer-events: none;
-}
-
-.footer__links {
-  margin-bottom: 3rem;
-  position: relative;
-  z-index: 3;
-}
-
-/* Remove default bullets from footer lists since they have emojis */
-.footer__items {
-  list-style-type: none;
-  padding-left: 0;
-  margin-left: 0;
-}
-
-.footer__item {
-  margin-bottom: 0.75rem;
-  position: relative;
-  z-index: 3;
-}
-
-/* Enhance signature area text */
+/* Hardcoded signature area text */
 .footer__signature {
   text-align: center;
   margin-top: 3rem;
   padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.2); /* Increased opacity from 0.1 */
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
 }
 
-/* Footer mascots styles have been moved to FooterMascots.module.css */
+/* Minimal styles for hardcoded footer mascots */
+.footer__mascots {
+  font-size: 1.5rem;
+  letter-spacing: 0.5rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
 
-/* Built with and copyright sections */
+.footer__mascots span {
+  display: inline-block;
+  padding: 0 10px;
+}
+
+/* Minimal styles for hardcoded copyright section */
 .footer__copyright {
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.9);
@@ -284,4 +36,23 @@
   font-weight: 500;
 }
 
-/* Heart animation and styles have been moved to FooterCopyright.module.css */
+/* Minimal styles for hardcoded heart animation */
+.footer__heart {
+  display: inline-block;
+  position: relative;
+  top: 1px;
+}
+
+.footer__heart::before {
+  content: "💚";
+  position: absolute;
+}
+
+[data-theme="dark"] .footer__heart::before {
+  content: "🧡";
+}
+
+/* Support class used in FooterLinks.tsx */
+.footer__col {
+  margin-bottom: 2rem;
+}
