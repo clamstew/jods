@@ -1,4 +1,5 @@
 import React from "react";
+import styles from "./ComparisonTable.module.css";
 
 export default function ComparisonTable(): React.ReactElement {
   return (
@@ -22,21 +23,12 @@ export default function ComparisonTable(): React.ReactElement {
           libraries
         </p>
 
-        <div
-          className="table-container"
-          style={{
-            overflowX: "auto",
-            maxWidth: "1000px",
-            margin: "0 auto",
-            borderRadius: "8px",
-            boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
-          }}
-        >
-          <table style={{ margin: 0, boxShadow: "none" }}>
-            <thead>
+        <div className={styles.container}>
+          <table className={styles.table}>
+            <thead className={styles.tableHead}>
               <tr>
-                <th style={{ minWidth: "195px" }}>Feature</th>
-                <th>
+                <th className={styles.tableHeaderCell}>Feature</th>
+                <th className={styles.tableHeaderCell}>
                   <a
                     href="https://github.com/clamstew/jods"
                     target="_blank"
@@ -46,7 +38,7 @@ export default function ComparisonTable(): React.ReactElement {
                     jods
                   </a>
                 </th>
-                <th>
+                <th className={styles.tableHeaderCell}>
                   <a
                     href="https://github.com/pmndrs/zustand"
                     target="_blank"
@@ -56,7 +48,7 @@ export default function ComparisonTable(): React.ReactElement {
                     Zustand
                   </a>
                 </th>
-                <th>
+                <th className={styles.tableHeaderCell}>
                   <a
                     href="https://github.com/reduxjs/redux"
                     target="_blank"
@@ -66,17 +58,7 @@ export default function ComparisonTable(): React.ReactElement {
                     Redux
                   </a>
                 </th>
-                <th>
-                  <a
-                    href="https://github.com/mobxjs/mobx"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ color: "inherit", textDecoration: "none" }}
-                  >
-                    MobX
-                  </a>
-                </th>
-                <th>
+                <th className={styles.tableHeaderCell}>
                   <a
                     href="https://github.com/preactjs/signals"
                     target="_blank"
@@ -88,34 +70,30 @@ export default function ComparisonTable(): React.ReactElement {
                 </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className={styles.tableBody}>
               {[
                 {
                   feature: "📦 Bundle Size",
                   jods: "1 KB",
                   zustand: "3.4 KB",
                   redux: "16.4 KB + Redux Toolkit",
-                  mobx: "22.5 KB",
                   signals: "4.2 KB",
                 },
                 {
                   feature: "🔗 Framework Dependency",
-                  jods: <span className="green-check">🌱 None</span>,
+                  jods: <span className={styles.greenCheck}>🌱 None</span>,
                   zustand: (
-                    <span className="feature-missing">⚛️ React-only</span>
+                    <span className={styles.featureMissing}>⚛️ React-only</span>
                   ),
                   redux: (
-                    <span className="feature-missing">
-                      🔌 Framework-agnostic
-                    </span>
-                  ),
-                  mobx: (
-                    <span className="feature-missing">
+                    <span className={styles.featureMissing}>
                       🔌 Framework-agnostic
                     </span>
                   ),
                   signals: (
-                    <span className="feature-missing">⚡ Preact-only</span>
+                    <span className={styles.featureMissing}>
+                      ⚡ Preact-only
+                    </span>
                   ),
                 },
                 {
@@ -123,105 +101,108 @@ export default function ComparisonTable(): React.ReactElement {
                   jods: "Proxied object (store.foo)",
                   zustand: "Hook (useStore)",
                   redux: "Via selectors",
-                  mobx: "Via observable properties",
                   signals: "Signal.value or JSX unwrap",
                 },
                 {
                   feature: "✏️ Direct Mutations",
-                  jods: <span className="green-check">✅</span>,
-                  zustand: <span className="green-check">✅</span>,
+                  jods: <span className={styles.greenCheck}>✅</span>,
+                  zustand: <span className={styles.greenCheck}>✅</span>,
                   redux: (
-                    <span className="feature-missing">
+                    <span className={styles.featureMissing}>
                       👨‍💻 (requires action creators)
                     </span>
                   ),
-                  mobx: <span className="green-check">✅</span>,
                   signals: "signal.value = x",
                 },
                 {
                   feature: "🧮 Computed Values",
-                  jods: <span className="green-check">🧠 via computed()</span>,
+                  jods: (
+                    <span className={styles.greenCheck}>🧠 via computed()</span>
+                  ),
                   zustand: (
-                    <span className="feature-missing">
+                    <span className={styles.featureMissing}>
                       🔧 with selector functions
                     </span>
                   ),
                   redux: (
-                    <span className="feature-missing">
+                    <span className={styles.featureMissing}>
                       🔧 (requires selectors)
                     </span>
                   ),
-                  mobx: (
-                    <span className="green-check">🧮 computed decorators</span>
-                  ),
                   signals: (
-                    <span className="green-check">✨ via computed()</span>
+                    <span className={styles.greenCheck}>✨ via computed()</span>
                   ),
                 },
                 {
                   feature: "📸 JSON Snapshots",
-                  jods: <span className="green-check">✅ (built-in)</span>,
-                  zustand: <span className="feature-missing">📝 (manual)</span>,
-                  redux: <span className="green-check">✅ (manual)</span>,
-                  mobx: <span className="feature-missing">📝 (manual)</span>,
-                  signals: <span className="feature-missing">📝 (manual)</span>,
+                  jods: (
+                    <span className={styles.greenCheck}>✅ (built-in)</span>
+                  ),
+                  zustand: (
+                    <span className={styles.featureMissing}>📝 (manual)</span>
+                  ),
+                  redux: <span className={styles.greenCheck}>✅ (manual)</span>,
+                  signals: (
+                    <span className={styles.featureMissing}>📝 (manual)</span>
+                  ),
                 },
                 {
                   feature: "🔄 Built-in diff",
-                  jods: <span className="green-check">✅</span>,
-                  zustand: <span className="feature-missing">🤷</span>,
-                  redux: <span className="feature-missing">🤷</span>,
-                  mobx: <span className="feature-missing">🤷</span>,
-                  signals: <span className="feature-missing">🤷</span>,
+                  jods: <span className={styles.greenCheck}>✅</span>,
+                  zustand: <span className={styles.featureMissing}>🤷</span>,
+                  redux: <span className={styles.featureMissing}>🤷</span>,
+                  signals: <span className={styles.featureMissing}>🤷</span>,
                 },
                 {
                   feature: "⏮️ Time-travel Debugging",
-                  jods: <span className="green-check">✅</span>,
-                  zustand: <span className="green-check">✅</span>,
-                  redux: <span className="green-check">✅</span>,
-                  mobx: <span className="green-check">✅</span>,
-                  signals: <span className="feature-missing">⏱️</span>,
+                  jods: <span className={styles.greenCheck}>✅</span>,
+                  zustand: <span className={styles.greenCheck}>✅</span>,
+                  redux: <span className={styles.greenCheck}>✅</span>,
+                  signals: <span className={styles.featureMissing}>⏱️</span>,
                 },
                 {
                   feature: "🧠 Conceptual Simplicity",
                   jods: (
-                    <span className="green-check">✅ small mental model</span>
+                    <span className={styles.greenCheck}>
+                      ✅ small mental model
+                    </span>
                   ),
                   zustand: (
-                    <span className="green-check">
+                    <span className={styles.greenCheck}>
                       ✅ (no actions/selectors)
                     </span>
                   ),
                   redux: (
-                    <span className="feature-missing">
+                    <span className={styles.featureMissing}>
                       🧠 (complex patterns)
                     </span>
                   ),
-                  mobx: "Medium",
                   signals: (
-                    <span className="feature-missing">
+                    <span className={styles.featureMissing}>
                       🎓 (steep learning curve)
                     </span>
                   ),
                 },
                 {
                   feature: "🖥️ Server Integration",
-                  jods: <span className="green-check">💿 Remix</span>,
-                  zustand: <span className="feature-missing">🔍 None</span>,
-                  redux: <span className="green-check">✅ (manual)</span>,
-                  mobx: <span className="green-check">✅ (manual)</span>,
-                  signals: <span className="feature-missing">🔍 None</span>,
+                  jods: <span className={styles.greenCheck}>💿 Remix</span>,
+                  zustand: (
+                    <span className={styles.featureMissing}>🔍 None</span>
+                  ),
+                  redux: <span className={styles.greenCheck}>✅ (manual)</span>,
+                  signals: (
+                    <span className={styles.featureMissing}>🔍 None</span>
+                  ),
                 },
               ].map((row, i) => (
-                <tr key={i}>
-                  <td style={{ minWidth: "195px" }}>
+                <tr key={i} className={styles.tableRow}>
+                  <td className={`${styles.tableCell} ${styles.featureCell}`}>
                     <strong>{row.feature}</strong>
                   </td>
-                  <td>{row.jods}</td>
-                  <td>{row.zustand}</td>
-                  <td>{row.redux}</td>
-                  <td>{row.mobx}</td>
-                  <td>{row.signals}</td>
+                  <td className={styles.tableCell}>{row.jods}</td>
+                  <td className={styles.tableCell}>{row.zustand}</td>
+                  <td className={styles.tableCell}>{row.redux}</td>
+                  <td className={styles.tableCell}>{row.signals}</td>
                 </tr>
               ))}
             </tbody>

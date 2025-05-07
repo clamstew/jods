@@ -117,7 +117,7 @@ function Counter() {
 
   return (
     <section
-      className="features-container"
+      className={`features-container ${styles.frameworkSection}`}
       id="framework-showcase"
       style={{ background: "var(--ifm-background-surface-color)" }}
       data-testid="jods-framework-section"
@@ -139,16 +139,7 @@ function Counter() {
         </p>
 
         <div className="framework-tabs-container">
-          <div
-            className="framework-tabs"
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: "1rem",
-              marginBottom: "3rem",
-              flexWrap: "wrap",
-            }}
-          >
+          <div className={styles.frameworkTabs}>
             {Object.entries(frameworks).map(([key, framework]) => (
               <div
                 key={key}
@@ -230,7 +221,6 @@ function Counter() {
         <div
           className="code-container"
           style={{
-            maxWidth: "680px",
             margin: "0 auto",
             position: "relative",
             boxShadow: "0 8px 30px rgba(0, 0, 0, 0.1)",
@@ -238,6 +228,7 @@ function Counter() {
             overflow: "hidden",
             display: "flex",
             justifyContent: "center",
+            width: "100%",
           }}
         >
           {isBrowser && (
@@ -258,7 +249,7 @@ function Counter() {
               {frameworks[activeFramework].title}
             </div>
           )}
-          <CodeBlock language="jsx">
+          <CodeBlock language="jsx" className="w-100">
             {frameworks[activeFramework].code}
           </CodeBlock>
         </div>

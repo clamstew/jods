@@ -11,3 +11,17 @@
     transform: rotate(360deg);
   }
 }
+
+/* Framework section spacing */
+.frameworkSection {
+  padding: 6rem 0;
+  margin: 3rem 0;
+}
+
+.frameworkTabs {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
