@@ -1,4 +1,5 @@
 import React from "react";
+import styles from "./HomepageHero.module.css";
 
 interface MascotsProps {
   mascotsInteracting: boolean;
@@ -12,16 +13,20 @@ export default function Mascots({
   handleMascotHover,
 }: MascotsProps): React.ReactElement {
   return (
-    <div className={`hero__mascots ${mascotsInteracting ? "interacting" : ""}`}>
+    <div
+      className={`${styles.heroMascots} ${
+        mascotsInteracting ? styles.interacting : ""
+      }`}
+    >
       <div
-        className="hero__mascot hero__mascot--squirrel"
+        className={`${styles.heroMascot} ${styles.heroMascotSquirrel}`}
         onClick={() => setMascotsInteracting(!mascotsInteracting)}
         onMouseEnter={handleMascotHover}
         title="Click to make friends with the duck!"
       >
         🐿️
         <div
-          className="speech-bubble"
+          className={styles.speechBubble}
           data-message={
             mascotsInteracting
               ? "We make a great team! 🤝"
@@ -30,14 +35,14 @@ export default function Mascots({
         />
       </div>
       <div
-        className="hero__mascot hero__mascot--duck"
+        className={`${styles.heroMascot} ${styles.heroMascotDuck}`}
         onClick={() => setMascotsInteracting(!mascotsInteracting)}
         onMouseEnter={handleMascotHover}
         title="Click to make friends with the squirrel!"
       >
         🦆
         <div
-          className="speech-bubble"
+          className={styles.speechBubble}
           data-message={
             mascotsInteracting ? "Dynamic duo! 💪" : "Quack! JSON on demand! 📦"
           }
@@ -46,7 +51,7 @@ export default function Mascots({
 
       {/* Add sparkle when interacting */}
       {mascotsInteracting && (
-        <div className="hero__mascots-sparkle" aria-hidden="true">
+        <div className={styles.heroMascotsSparkle} aria-hidden="true">
           ✨
         </div>
       )}

@@ -1,5 +1,6 @@
 import React from "react";
 import { useAnimationState } from "../AnimationPauseControl";
+import styles from "./HomepageHero.module.css";
 
 export default function AnimationControls(): React.ReactElement {
   const { isPaused, toggleAnimation } = useAnimationState();
@@ -7,7 +8,7 @@ export default function AnimationControls(): React.ReactElement {
   return (
     <button
       onClick={toggleAnimation}
-      className="animation-control-button"
+      className={styles.animationControlButton}
       aria-label={isPaused ? "Play animations" : "Pause animations"}
       title={isPaused ? "Play animations" : "Pause animations"}
     >

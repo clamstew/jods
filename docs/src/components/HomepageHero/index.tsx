@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Mascots from "./Mascots";
 import { useAnimationState } from "../AnimationPauseControl";
 import useIsBrowser from "@docusaurus/useIsBrowser";
-import "./styles.css";
+import styles from "./HomepageHero.module.css";
 
 // Existing component imports
 import HeroContent from "./HeroContent";
@@ -42,7 +42,7 @@ export default function HomepageHero(): React.ReactElement {
 
   return (
     <div
-      className="hero-container"
+      className={styles.heroContainer}
       ref={containerRef}
       data-testid="jods-hero-section"
     >

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import styles from "./HomepageHero.module.css";
 import {
   getThemeColors,
   jsonSnippets,
@@ -49,7 +50,7 @@ export default function BackgroundAnimations({
     // Create faded emojis
     for (let i = 0; i < numEmojis; i++) {
       const emoji = document.createElement("div");
-      emoji.className = "faded-emoji";
+      emoji.className = styles.fadedEmoji;
 
       // Random position throughout the container
       emoji.style.top = `${Math.random() * 100}%`;
@@ -86,7 +87,7 @@ export default function BackgroundAnimations({
     // Create fireflies
     for (let i = 0; i < numFireflies; i++) {
       const firefly = document.createElement("div");
-      firefly.className = "firefly";
+      firefly.className = styles.firefly;
 
       // Random position throughout the container
       firefly.style.top = `${Math.random() * 100}%`;
@@ -142,7 +143,7 @@ export default function BackgroundAnimations({
     // Add some of our new hero-fireflies with enhanced glow effect
     for (let i = 0; i < 12; i++) {
       const glowFirefly = document.createElement("div");
-      glowFirefly.className = "hero-firefly";
+      glowFirefly.className = styles.heroParticle;
 
       // Random positioning
       glowFirefly.style.top = `${Math.random() * 100}%`;
@@ -198,7 +199,7 @@ export default function BackgroundAnimations({
     // Create JSON text elements
     for (let i = 0; i < numElements; i++) {
       const element = document.createElement("div");
-      element.className = "json-animation";
+      element.className = styles.jsonAnimation;
 
       // Calculate grid position for initial placement
       const row = Math.floor(i / gridCols);
