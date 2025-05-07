@@ -284,36 +284,4 @@
   font-weight: 500;
 }
 
-.footer__heart {
-  display: inline-block;
-  animation: heartbeat 2s infinite;
-  font-size: 1rem;
-  position: relative;
-  top: 1px;
-}
-
-/* Show green heart for light mode */
-.footer__heart::before {
-  content: "💚";
-  position: absolute;
-  animation: heartbeat 2s infinite;
-}
-
-/* Show orange heart for dark mode */
-[data-theme="dark"] .footer__heart::before {
-  content: "🧡";
-}
-
-@keyframes heartbeat {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  10%,
-  30% {
-    transform: scale(1.2);
-  }
-  20% {
-    transform: scale(0.9);
-  }
-}
+/* Heart animation and styles have been moved to FooterCopyright.module.css */
