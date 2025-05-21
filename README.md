@@ -1,12 +1,15 @@
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/clamstew/jods/main/assets/jods_logo_dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/clamstew/jods/main/assets/jods_logo_light.png">
-    <img alt="jods logo" src="https://raw.githubusercontent.com/clamstew/jods/main/assets/jods_logo_light.png" width="400">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/static/img/favicon/dark/favicon-dark-512.png">
+    <source media="(prefers-color-scheme: light)" srcset="docs/static/img/favicon/light/favicon-light-512.png">
+    <img alt="jods logo" src="https://raw.githubusercontent.com/clamstew/jods/main/assets/jods_logo_light.png" width="100">
   </picture>
 </div>
 
-> [!WARNING] > **This project is experimental and was largely AI-generated.** Please do not use it in production environments.
+> [!WARNING] **⚠️This project is experimental and was largely AI-generated.⚠️**<br />
+> Please do not use it in production environments.
+
+<br /><br /><br />
 
 # 🐿️ 🦆 jods — JavaScript Object Dynamics System
 
@@ -61,7 +64,7 @@ npm install jods
 
 ## 🚀 Usage
 
-````js
+```
 import { store, json, onUpdate, computed } from "jods";
 
 const user = store({
@@ -93,7 +96,7 @@ console.log(json(user)); // { firstName: "Burt Macklin", lastName: "Macklin", mo
 
 When making multiple updates to a store, use batching to improve performance by reducing the number of notification callbacks:
 
-```typescript
+```
 import { store, onUpdate } from "jods";
 
 const userProfile = store({
@@ -834,21 +837,25 @@ For detailed documentation, see [Remix Integration Guide](./docs/remix-integrati
 jods is organized into distinct modules for better tree-shaking and bundle optimization:
 
 - **Core**: `import { store, computed, json, diff } from 'jods'`
+
   - Contains the core reactive state functionality
   - Zero framework dependencies
   - Minimal bundle size
 
 - **Zod Integration**: `import { j, jod } from 'jods/zod'`
+
   - Thin wrapper around Zod's API (requires Zod installation)
   - Limited to common schema building patterns
   - For advanced schema needs, import Zod directly: `import { z } from 'zod'`
 
 - **React**: `import { useJods } from 'jods/react'`
+
   - React-specific hooks for jods integration
   - Optimized for React's rendering model
   - Also re-exports common core utilities: `import { store, computed } from 'jods/react'`
 
 - **Preact**: `import { useJods } from 'jods/preact'`
+
   - Preact-specific hooks for jods integration
   - Lighter-weight than the React version
   - Also re-exports common core utilities: `import { store, computed } from 'jods/preact'`
@@ -974,5 +981,3 @@ Adding this hook improves performance by:
 - Automatically batching store updates with React/Preact's rendering cycle
 - Reducing unnecessary re-renders when multiple store properties change
 - Optimizing when and how subscribers are notified of changes
-```
-````
