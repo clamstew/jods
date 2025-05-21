@@ -1,0 +1,133 @@
+<!-- Flux Capacitor – neon‑glow 80s makeover (Back‑to‑the‑Future vibes) -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 104" width="1em" height="1em" stroke-linecap="round" stroke-linejoin="round">
+  <defs>
+    <!-- Frame & Panel -->
+    <linearGradient id="frameGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#DCDDDE" />
+      <stop offset="100%" stop-color="#9FA3A6" />
+    </linearGradient>
+
+    <!-- Smoked glass slightly brighter -->
+    <radialGradient id="glassGrad" cx="0.5" cy="0.35" r="0.8">
+      <stop offset="0%"  stop-color="#3B3B40"/>
+      <stop offset="60%" stop-color="#35353A"/>
+      <stop offset="100%" stop-color="#4A4A50"/>
+    </radialGradient>
+
+    <!-- Glass highlight sweep -->
+    <linearGradient id="glassHighlight" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.25)" />
+      <stop offset="50%" stop-color="rgba(255,255,255,0)" />
+    </linearGradient>
+
+    <!-- Discs & screws -->
+    <radialGradient id="plateGrad" cx="0.35" cy="0.35" r="0.75">
+      <stop offset="0%"  stop-color="#F4F4F4"/>
+      <stop offset="60%" stop-color="#C7C7C7"/>
+      <stop offset="100%" stop-color="#8A8A8A"/>
+    </radialGradient>
+    <radialGradient id="screwGrad" cx="0.4" cy="0.4" r="0.8">
+      <stop offset="0%" stop-color="#D0D0D0" />
+      <stop offset="100%" stop-color="#6E6E6E" />
+    </radialGradient>
+
+    <!-- Rubber couplings -->
+    <linearGradient id="rubberGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#D34E4E" />
+      <stop offset="100%" stop-color="#651919" />
+    </linearGradient>
+
+    <!-- Neon gradient for wiring arms -->
+    <linearGradient id="neonArm" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FF5AF7" />
+      <stop offset="100%" stop-color="#00F9FF" />
+    </linearGradient>
+
+    <!-- Neon yellow for center path -->
+    <linearGradient id="neonYellow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFF66E" />
+      <stop offset="100%" stop-color="#FFD400" />
+    </linearGradient>
+
+    <!-- Neon glow filter -->
+    <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Hub glow -->
+    <radialGradient id="hubGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#FFFBCC" stop-opacity="1" />
+      <stop offset="60%" stop-color="#FEEA00" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#FEEA00" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Shadow -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="rgba(0,0,0,0.55)" />
+    </filter>
+  </defs>
+
+  <!-- Outer aluminium frame -->
+  <rect x="2" y="2" width="92" height="96" rx="8" fill="url(#frameGrad)" stroke="#5A5A5A" stroke-width="2" />
+
+  <!-- Panel screws -->
+  <g fill="url(#screwGrad)">
+    <circle cx="12" cy="12" r="2.5" />
+    <circle cx="84" cy="12" r="2.5" />
+    <circle cx="12" cy="86" r="2.5" />
+    <circle cx="84" cy="86" r="2.5" />
+  </g>
+
+  <!-- Glass viewport -->
+  <rect x="12" y="12" width="72" height="72" rx="6" fill="url(#glassGrad)" stroke="#2E2E2E" stroke-width="1.5" />
+  <!-- Soft highlight sweep -->
+  <rect x="12" y="12" width="72" height="72" rx="6" fill="url(#glassHighlight)" />
+
+  <!-- Discs & couplings -->
+  <circle cx="48" cy="20" r="9" fill="url(#plateGrad)" filter="url(#shadow)" />
+  <circle cx="48" cy="20" r="4.5" fill="url(#rubberGrad)" />
+  <circle cx="22" cy="64" r="9" fill="url(#plateGrad)" filter="url(#shadow)" />
+  <circle cx="22" cy="64" r="4.5" fill="url(#rubberGrad)" />
+  <circle cx="74" cy="64" r="9" fill="url(#plateGrad)" filter="url(#shadow)" />
+  <circle cx="74" cy="64" r="4.5" fill="url(#rubberGrad)" />
+
+  <!-- Neon wiring arms -->
+  <g stroke="url(#neonArm)" stroke-width="6" filter="url(#neonGlow)">
+    <path d="M48 24 V48" />
+    <path d="M48 48 L26 62" />
+    <path d="M48 48 L70 62" />
+  </g>
+
+  <!-- Central neon yellow highlight -->
+  <path d="M48 24 V48" stroke="url(#neonYellow)" stroke-width="4" filter="url(#neonGlow)" />
+
+  <!-- Hub glow -->
+  <circle cx="48" cy="48" r="10" fill="url(#hubGlow)" />
+  <circle cx="48" cy="48" r="3" fill="#847C6C" stroke="#262626" stroke-width="1" />
+
+  <!-- Bottom control bar -->
+  <rect x="10" y="88" width="24" height="12" rx="2" fill="#111" stroke="#555" stroke-width="1" />
+  <text x="22" y="97" font-family="'Courier New', monospace" font-size="10" text-anchor="middle" fill="#FF5AF7">88</text>
+
+  <rect x="38" y="88" width="12" height="12" rx="2" fill="#272727" stroke="#555" stroke-width="1" />
+  <g fill="#00F9FF" transform="translate(44 94) scale(0.4)">
+    <circle r="3.5" />
+    <path d="M0 -3.5 V-7" stroke="#00F9FF" stroke-width="2"/>
+    <path d="M3.5 0 H7" stroke="#00F9FF" stroke-width="2"/>
+    <path d="M0 3.5 V7" stroke="#00F9FF" stroke-width="2"/>
+    <path d="M-3.5 0 H-7" stroke="#00F9FF" stroke-width="2"/>
+  </g>
+
+  <rect x="56" y="88" width="30" height="12" rx="2" fill="#111" stroke="#555" stroke-width="1" />
+  <path d="M60 95 H82" stroke="#FF5AF7" stroke-width="2" />
+  <circle cx="60" cy="95" r="1.5" fill="#FF5AF7" />
+
+  <!-- Bottom neon cables -->
+  <path d="M22 84 h6 c3 0 3 4 6 4 h34" stroke="#FF5AF7" stroke-width="2" fill="none" filter="url(#neonGlow)" />
+  <path d="M22 82 h6 c3 0 3 4 6 4 h34" stroke="#00F9FF" stroke-width="2" fill="none" filter="url(#neonGlow)" />
+  <path d="M22 80 h6 c3 0 3 4 6 4 h34" stroke="#FFF66E" stroke-width="2" fill="none" filter="url(#neonGlow)" />
+</svg>

@@ -36,12 +36,43 @@ jobs:
           echo "Confirming .cjs exists:"
           ls -la .eslint*
 
+      - name: Run Knip for unused code analysis
+        run: pnpm knip
+        continue-on-error: true # Optional during initial integration
+
+      - name: Type Check
+        run: pnpm type-check
+
       - name: Build
         run: pnpm build
 
-      - name: Test
-        run: pnpm test
+      - name: Run main tests (excluding slow tests)
+        run: >-
+          pnpm exec vitest run --testNamePattern="^((?!Resilience: Subscription Memory Leaks).)*$"
 
-      # Skip linting for now
-      # - name: Lint
-      #   run: pnpm lint
+  slow-tests:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.8.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        run: pnpm build
+
+      - name: Run slow memory leak tests
+        run: >-
+          pnpm exec vitest run --testNamePattern="Resilience: Subscription Memory Leaks"

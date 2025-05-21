@@ -1,0 +1,86 @@
+/* Faded emoji background elements */
+.fadedEmoji {
+  position: absolute;
+  pointer-events: none;
+  transform-origin: center;
+  z-index: 0;
+  user-select: none;
+}
+
+/* Firefly animation elements */
+.firefly {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  z-index: 0;
+  transform-origin: center;
+}
+
+/* JSON text animation elements */
+.jsonAnimation {
+  position: absolute;
+  font-family: monospace;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  z-index: 1;
+  pointer-events: none;
+  transform-style: preserve-3d;
+  backface-visibility: visible;
+}
+
+/* Hero particles (enhanced fireflies) */
+.heroParticle {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  z-index: 2;
+  transform-origin: center;
+  animation-name: hero-particle-pulse;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-timing-function: ease-in-out;
+}
+
+/* Emoji UFO styling - enhanced for better visibility */
+.emojiUFO {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2000;
+  pointer-events: none;
+  overflow: visible;
+  opacity: 1;
+  transition: opacity 0.3s ease-out;
+}
+
+.emojiUFO span {
+  display: inline-block;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+}
+
+.emojiUFO .emoji-ufo-container {
+  position: absolute;
+  z-index: 2000;
+  transform-origin: center;
+}
+
+.emojiUFO .json-brackets {
+  font-family: monospace;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+}
+
+@keyframes hero-particle-pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}

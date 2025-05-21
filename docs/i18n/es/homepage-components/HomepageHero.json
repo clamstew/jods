@@ -1,0 +1,54 @@
+{
+  "homepage.hero.subtitle": {
+    "message": "Sistema de Dinámica JSON",
+    "description": "Subtitle of the homepage hero section"
+  },
+  "homepage.hero.description": {
+    "message": "Da vida a tu JSON",
+    "description": "Description text of the homepage hero"
+  },
+  "homepage.hero.feature.minimal": {
+    "message": "🌱 Minimalista",
+    "description": "Minimal feature badge in hero section"
+  },
+  "homepage.hero.feature.typesafe": {
+    "message": "🔍 Seguro",
+    "description": "Typesafe feature badge in hero section"
+  },
+  "homepage.hero.feature.fast": {
+    "message": "⚡ Rápido",
+    "description": "Fast feature badge in hero section"
+  },
+  "homepage.hero.button.getStarted": {
+    "message": "Comenzar",
+    "description": "Get started button text in hero section"
+  },
+  "homepage.hero.button.remix": {
+    "message": "Remix",
+    "description": "Remix button text in hero section"
+  },
+  "homepage.mascots.squirrel.interacting": {
+    "message": "¡Hacemos un gran equipo! 🤝",
+    "description": "Squirrel mascot message when interacting"
+  },
+  "homepage.mascots.squirrel.default": {
+    "message": "¡Me encanta almacenar estado reactivo! 🌰",
+    "description": "Default squirrel mascot message"
+  },
+  "homepage.mascots.duck.interacting": {
+    "message": "¡Dúo dinámico! 💪",
+    "description": "Duck mascot message when interacting"
+  },
+  "homepage.mascots.duck.default": {
+    "message": "¡Cuac! ¡JSON a demanda! 📦",
+    "description": "Default duck mascot message"
+  },
+  "homepage.mascots.squirrel.title": {
+    "message": "¡Haz clic para hacerte amigo del pato!",
+    "description": "Tooltip title for squirrel mascot"
+  },
+  "homepage.mascots.duck.title": {
+    "message": "¡Haz clic para hacerte amigo de la ardilla!",
+    "description": "Tooltip title for duck mascot"
+  }
+}

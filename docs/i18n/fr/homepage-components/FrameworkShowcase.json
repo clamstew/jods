@@ -1,0 +1,58 @@
+{
+  "homepage.frameworks.title.prefix": {
+    "message": "Fonctionne avec vos ",
+    "description": "First part of framework showcase section title"
+  },
+  "homepage.frameworks.title.gradient": {
+    "message": "frameworks préférés 🧩",
+    "description": "Gradient part of framework showcase section title"
+  },
+  "homepage.frameworks.description": {
+    "message": "Intégrez facilement jods avec React, Preact et Remix en utilisant des adaptateurs dédiés",
+    "description": "Framework showcase section description"
+  },
+  "homepage.frameworks.react.title": {
+    "message": "React",
+    "description": "React framework title"
+  },
+  "homepage.frameworks.react.description": {
+    "message": "Intégration transparente avec le cycle de vie des composants React",
+    "description": "React framework description"
+  },
+  "homepage.frameworks.preact.title": {
+    "message": "Preact",
+    "description": "Preact framework title"
+  },
+  "homepage.frameworks.preact.description": {
+    "message": "Intégration légère pour les applications Preact",
+    "description": "Preact framework description"
+  },
+  "homepage.frameworks.remix.title": {
+    "message": "Remix",
+    "description": "Remix framework title"
+  },
+  "homepage.frameworks.remix.description": {
+    "message": "Intégration spécialisée pour les applications Remix",
+    "description": "Remix framework description"
+  },
+  "homepage.frameworks.react.code.counter": {
+    "message": "compteur",
+    "description": "French translation for counter in React example"
+  },
+  "homepage.frameworks.react.code.count": {
+    "message": "Compteur",
+    "description": "French translation for Count in React example"
+  },
+  "homepage.frameworks.preact.code.counter": {
+    "message": "compteur",
+    "description": "French translation for counter in Preact example"
+  },
+  "homepage.frameworks.preact.code.count": {
+    "message": "Compteur",
+    "description": "French translation for Count in Preact example"
+  },
+  "homepage.frameworks.code.property.count": {
+    "message": "nombre",
+    "description": "French translation for the count property name in the store object"
+  }
+}

@@ -1,0 +1,79 @@
+/* Copyright container */
+.copyright {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  font-weight: 500;
+  position: relative;
+  z-index: 2;
+}
+
+/* Copyright links */
+.copyright a {
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  position: relative;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+/* Dark mode copyright links */
+[data-theme="dark"] .copyright a {
+  color: var(--jods-orange-light);
+}
+
+.copyright a:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: -1px;
+  left: 0;
+  background: #4b8b15;
+  transition: width 0.3s ease;
+}
+
+/* Dark mode copyright link underline */
+[data-theme="dark"] .copyright a:after {
+  background: var(--jods-orange-light);
+}
+
+/* Footer copyright link hover effect */
+.copyright a:hover:after {
+  width: 100%;
+}
+
+/* Heart animation */
+.heart {
+  display: inline-block;
+  animation: heartbeat 2s infinite;
+  font-size: 1rem;
+  position: relative;
+  top: 1px;
+}
+
+/* Show green heart for light mode */
+.heart::before {
+  content: "💜";
+  position: absolute;
+}
+
+/* Show orange heart for dark mode */
+[data-theme="dark"] .heart::before {
+  content: "🩵";
+}
+
+@keyframes heartbeat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  10%,
+  30% {
+    transform: scale(1.2);
+  }
+  20% {
+    transform: scale(0.9);
+  }
+}

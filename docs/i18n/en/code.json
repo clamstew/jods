@@ -1,0 +1,870 @@
+{
+  "homepage.comparison.title": {
+    "message": "How jods <gradientText>compares</gradientText> 📊",
+    "description": "Title of the comparison table section"
+  },
+  "homepage.comparison.title.prefix": {
+    "message": "How jods "
+  },
+  "homepage.comparison.title.gradient": {
+    "message": "compares"
+  },
+  "homepage.comparison.title.suffix": {
+    "message": " 📊"
+  },
+  "homepage.comparison.tagline": {
+    "message": "Byte-sized brilliance — compact code wielding cosmic-scale capabilities 💠",
+    "description": "Tagline for the comparison table section"
+  },
+  "homepage.comparison.header.feature": {
+    "message": "Feature",
+    "description": "Feature header in comparison table"
+  },
+  "homepage.comparison.feature.bundle_size": {
+    "message": "📦 Bundle Size",
+    "description": "Bundle size feature in comparison table"
+  },
+  "homepage.comparison.feature.framework_dependency": {
+    "message": "🔗 Framework Dependency",
+    "description": "Framework dependency feature in comparison table"
+  },
+  "homepage.comparison.feature.state_access": {
+    "message": "🔑 State Access",
+    "description": "State access feature in comparison table"
+  },
+  "homepage.comparison.jods.state_access": {
+    "message": "Proxied object (store.foo)",
+    "description": "State access value for jods"
+  },
+  "homepage.comparison.zustand.state_access": {
+    "message": "Hook (useStore)",
+    "description": "State access value for Zustand"
+  },
+  "homepage.comparison.redux.state_access": {
+    "message": "Via selectors",
+    "description": "State access value for Redux"
+  },
+  "homepage.comparison.signals.state_access": {
+    "message": "Signal.value or JSX unwrap",
+    "description": "State access value for Preact Signals"
+  },
+  "homepage.comparison.feature.direct_mutations": {
+    "message": "✏️ Direct Mutations",
+    "description": "Direct mutations feature in comparison table"
+  },
+  "homepage.comparison.redux.direct_mutations": {
+    "message": "👨‍💻 (requires action creators)",
+    "description": "Direct mutations value for Redux"
+  },
+  "homepage.comparison.signals.direct_mutations": {
+    "message": "signal.value = x",
+    "description": "Direct mutations value for Preact Signals"
+  },
+  "homepage.comparison.feature.computed_values": {
+    "message": "🧮 Computed Values",
+    "description": "Computed values feature in comparison table"
+  },
+  "homepage.comparison.feature.json_snapshots": {
+    "message": "📸 JSON Snapshots",
+    "description": "JSON snapshots feature in comparison table"
+  },
+  "homepage.comparison.feature.built_in_diff": {
+    "message": "🔄 Built-in diff",
+    "description": "Built-in diff feature in comparison table"
+  },
+  "homepage.comparison.feature.time_travel_debugging": {
+    "message": "⏮️ Time-travel Debugging",
+    "description": "Time-travel debugging feature in comparison table"
+  },
+  "homepage.comparison.feature.conceptual_simplicity": {
+    "message": "🧠 Conceptual Simplicity",
+    "description": "Conceptual simplicity feature in comparison table"
+  },
+  "homepage.comparison.feature.server_integration": {
+    "message": "🖥️ Server Integration",
+    "description": "Server integration feature in comparison table"
+  },
+  "homepage.features.category.core": {
+    "message": "Core Features",
+    "description": "Core features category title"
+  },
+  "homepage.features.category.frameworks": {
+    "message": "Framework Integration",
+    "description": "Framework integration category title"
+  },
+  "homepage.features.category.dev_experience": {
+    "message": "Developer Experience",
+    "description": "Developer experience category title"
+  },
+  "homepage.features.badge.new": {
+    "message": "NEW",
+    "description": "New badge on feature cards"
+  },
+  "homepage.features.title": {
+    "message": "⚡️Powerful features, {gradientText}minimal API 🪶{/gradientText}",
+    "description": "Title of the features section"
+  },
+  "homepage.features.title.prefix": {
+    "message": "Powerful features, "
+  },
+  "homepage.features.title.gradient": {
+    "message": "minimal API 🪶"
+  },
+  "homepage.features.zero_dependencies.title": {
+    "message": "Zero Dependencies",
+    "description": "Zero dependencies feature title"
+  },
+  "homepage.features.zero_dependencies.description": {
+    "message": "No bloat, no overhead, just pure performance with a tiny footprint that won't slow down your application.",
+    "description": "Zero dependencies feature description"
+  },
+  "homepage.features.computed_values.title": {
+    "message": "Computed Values",
+    "description": "Computed values feature title"
+  },
+  "homepage.features.computed_values.description": {
+    "message": "Create reactive derived state that updates automatically when dependencies change, with full TypeScript support.",
+    "description": "Computed values feature description"
+  },
+  "homepage.features.reactivity.title": {
+    "message": "Fine-grained Reactivity",
+    "description": "Reactivity feature title"
+  },
+  "homepage.features.reactivity.description": {
+    "message": "Signal-based tracking for optimal performance, updating only what changed, with automatic dependency tracking.",
+    "description": "Reactivity feature description"
+  },
+  "homepage.features.framework_integration.title": {
+    "message": "Frameworks!",
+    "description": "Framework integration feature title"
+  },
+  "homepage.features.framework_integration.description": {
+    "message": "First-class support for React and Preact with dedicated hooks that make state management simple and intuitive.",
+    "description": "Framework integration feature description"
+  },
+  "homepage.features.remix_integration.title": {
+    "message": "Remixing Remix",
+    "description": "Remix integration feature title"
+  },
+  "homepage.features.remix_integration.description": {
+    "message": "Full-stack state management for Remix applications with server-side features, automatic hydration, and form handling.",
+    "description": "Remix integration feature description"
+  },
+  "homepage.features.remix_integration.bullet1": {
+    "message": "<code>defineStore()</code> for declarative server-aware stores",
+    "description": "First bullet point for Remix integration"
+  },
+  "homepage.features.remix_integration.bullet2": {
+    "message": "<code>useJodsForm()</code> for implicit action dispatching",
+    "description": "Second bullet point for Remix integration"
+  },
+  "homepage.features.remix_integration.bullet3": {
+    "message": "<code>withJods()</code> for automatic SSR hydration",
+    "description": "Third bullet point for Remix integration"
+  },
+  "homepage.features.remix_integration.bullet4": {
+    "message": "<code>rehydrateClient()</code> for seamless client-side restoration",
+    "description": "Fourth bullet point for Remix integration"
+  },
+  "homepage.features.mental_model.title": {
+    "message": "Simple Mental Model",
+    "description": "Mental model feature title"
+  },
+  "homepage.features.mental_model.description": {
+    "message": "Just use objects directly - no actions, reducers, or boilerplate to manage your state. Mutate and subscribe with ease.",
+    "description": "Mental model feature description"
+  },
+  "homepage.features.json_snapshots.title": {
+    "message": "JSON Snapshots",
+    "description": "JSON snapshots feature title"
+  },
+  "homepage.features.json_snapshots.description": {
+    "message": "Get serializable state snapshots on demand with json() - perfect for APIs, persistence, and time-travel debugging.",
+    "description": "JSON snapshots feature description"
+  },
+  "homepage.features.debugging.title": {
+    "message": "Transparent Debugging",
+    "description": "Debugging feature title"
+  },
+  "homepage.features.debugging.description": {
+    "message": "Inspect your state at any time, with built-in history tracking and time-travel debugging capabilities.",
+    "description": "Debugging feature description"
+  },
+  "homepage.frameworks.react.title": {
+    "message": "React",
+    "description": "React framework title"
+  },
+  "homepage.frameworks.react.description": {
+    "message": "Seamless integration with React's component lifecycle",
+    "description": "React framework description"
+  },
+  "homepage.frameworks.preact.title": {
+    "message": "Preact",
+    "description": "Preact framework title"
+  },
+  "homepage.frameworks.preact.description": {
+    "message": "Lightweight integration for Preact applications",
+    "description": "Preact framework description"
+  },
+  "homepage.frameworks.remix.title": {
+    "message": "Remix",
+    "description": "Remix framework title"
+  },
+  "homepage.frameworks.remix.description": {
+    "message": "Specialized integration for Remix applications",
+    "description": "Remix framework description"
+  },
+  "homepage.frameworks.title": {
+    "message": "🔌 Works with your {gradientText}favorite frameworks 🧩{/gradientText}",
+    "description": "Framework showcase section title"
+  },
+  "homepage.frameworks.title.prefix": {
+    "message": "Works with your ",
+    "description": "Prefix part of the frameworks section title"
+  },
+  "homepage.frameworks.title.gradient": {
+    "message": "favorite frameworks 🧩",
+    "description": "Gradient part of the frameworks section title"
+  },
+  "homepage.frameworks.description": {
+    "message": "Seamlessly integrate jods with React, Preact, and Remix using dedicated adapters",
+    "description": "Framework showcase section description"
+  },
+  "homepage.demo.title": {
+    "message": "🚀 Try jods {gradientText}live{/gradientText} 🧑‍💻",
+    "description": "Interactive demo section title"
+  },
+  "homepage.demo.title.prefix": {
+    "message": "Try jods "
+  },
+  "homepage.demo.title.gradient": {
+    "message": "live"
+  },
+  "homepage.demo.title.suffix": {
+    "message": " 🧑‍💻"
+  },
+  "homepage.demo.tagline": {
+    "message": "Simple. Reactive. Powerful.",
+    "description": "Interactive demo tagline"
+  },
+  "homepage.demo.screenreader_text": {
+    "message": "Edit the values below and see how jods reactively updates with the built-in reactive state system",
+    "description": "Hidden text for screen readers explaining the demo"
+  },
+  "homepage.remix.title.remix": {
+    "message": "Remix",
+    "description": "Remix part of the Remix integration title"
+  },
+  "homepage.remix.title.state": {
+    "message": "State",
+    "description": "State part of the Remix integration title"
+  },
+  "homepage.remix.title.reimagined": {
+    "message": "Reimagined",
+    "description": "Reimagined part of the Remix integration title"
+  },
+  "homepage.remix.subtitle.modern": {
+    "message": "Modern Data Layer",
+    "description": "Modern data layer subtitle for Remix integration"
+  },
+  "homepage.remix.subtitle.for_remix": {
+    "message": "for Remix",
+    "description": "For Remix subtitle"
+  },
+  "homepage.remix.subtitle.description": {
+    "message": "reactive, type-safe, and persistence-ready",
+    "description": "Description in subtitle for Remix integration"
+  },
+  "homepage.remix.features.sync.title": {
+    "message": "Automatically syncs",
+    "description": "Sync feature title in Remix integration"
+  },
+  "homepage.remix.features.sync.description": {
+    "message": "Server and client state without manual hydration",
+    "description": "Sync feature description in Remix integration"
+  },
+  "homepage.remix.features.reactivity.title": {
+    "message": "Provides true reactivity",
+    "description": "Reactivity feature title in Remix integration"
+  },
+  "homepage.remix.features.reactivity.description": {
+    "message": "For optimistic UI updates",
+    "description": "Reactivity feature description in Remix integration"
+  },
+  "homepage.remix.features.zod.title": {
+    "message": "Uses Zod schemas",
+    "description": "Zod feature title in Remix integration"
+  },
+  "homepage.remix.features.zod.description": {
+    "message": "For runtime type validation and great DX",
+    "description": "Zod feature description in Remix integration"
+  },
+  "homepage.remix.features.backend.title": {
+    "message": "Works with any backend",
+    "description": "Backend feature title in Remix integration"
+  },
+  "homepage.remix.features.backend.description": {
+    "message": "(Prisma, MongoDB, SQLite, etc.)",
+    "description": "Backend feature description in Remix integration"
+  },
+  "homepage.remix.features.model.title": {
+    "message": "Offers a consistent model",
+    "description": "Model feature title in Remix integration"
+  },
+  "homepage.remix.features.model.description": {
+    "message": "Based pattern across your entire application",
+    "description": "Model feature description in Remix integration"
+  },
+  "homepage.remix.tabs.traditional": {
+    "message": "Traditional Remix",
+    "description": "Traditional Remix tab label"
+  },
+  "homepage.remix.tabs.traditional_short": {
+    "message": "Traditional",
+    "description": "Short label for Traditional Remix tab on mobile"
+  },
+  "homepage.remix.tabs.model": {
+    "message": "1. jods: Define Model",
+    "description": "Model tab label in Remix integration"
+  },
+  "homepage.remix.tabs.model_short": {
+    "message": "1. Model",
+    "description": "Short label for Model tab on mobile"
+  },
+  "homepage.remix.tabs.component": {
+    "message": "2. jods: Use Component",
+    "description": "Component tab label in Remix integration"
+  },
+  "homepage.remix.tabs.component_short": {
+    "message": "2. Component",
+    "description": "Short label for Component tab on mobile"
+  },
+  "homepage.remix.footer.button.explore": {
+    "message": "Explore Remix Integration",
+    "description": "Text for the Explore Remix Integration button"
+  },
+  "homepage.remix.footer.button.explore_short": {
+    "message": "Remix Guide",
+    "description": "Short text for the Explore Remix Integration button on mobile"
+  },
+  "homepage.remix.footer.button.active_record": {
+    "message": "Learn About Active Record",
+    "description": "Text for the Learn About Active Record button"
+  },
+  "homepage.remix.footer.button.active_record_short": {
+    "message": "Active Record",
+    "description": "Short text for the Learn About Active Record button on mobile"
+  },
+  "footer.animation.play": {
+    "message": "Play animations",
+    "description": "Accessible label for the play button"
+  },
+  "footer.animation.pause": {
+    "message": "Pause animations",
+    "description": "Accessible label for the pause button"
+  },
+  "footer.copyright.builtWith": {
+    "message": "Built with {heart} by {creator}",
+    "description": "Footer text indicating the site was built with love"
+  },
+  "footer.copyright.notice": {
+    "message": "Copyright © {year} jods contributors",
+    "description": "Copyright notice"
+  },
+  "footer.title.documentation": {
+    "message": "DOCUMENTATION"
+  },
+  "footer.item.label.getting-started": {
+    "message": "📚 Getting Started",
+    "description": "Footer link to getting started page"
+  },
+  "footer.item.label.about-jods": {
+    "message": "ℹ️ About jods",
+    "description": "Footer link to about page"
+  },
+  "footer.item.label.api-reference": {
+    "message": "🧩 API Reference",
+    "description": "Footer link to API reference page"
+  },
+  "footer.title.community": {
+    "message": "COMMUNITY"
+  },
+  "footer.item.label.discussions": {
+    "message": "💬 Discussions",
+    "description": "Footer link to GitHub discussions"
+  },
+  "footer.item.label.issues": {
+    "message": "🐛 Issues",
+    "description": "Footer link to GitHub issues"
+  },
+  "footer.item.label.creator": {
+    "message": "👨‍💻 Creator",
+    "description": "Footer link to creator's GitHub profile"
+  },
+  "footer.title.resources": {
+    "message": "RESOURCES"
+  },
+  "footer.item.label.blog": {
+    "message": "📝 Blog",
+    "description": "Footer link to blog"
+  },
+  "footer.item.label.github": {
+    "message": "🐙 GitHub",
+    "description": "Footer link to GitHub repository"
+  },
+  "footer.item.label.npm": {
+    "message": "📦 npm",
+    "description": "Footer link to npm package"
+  },
+  "footer.mascots.duck.title": {
+    "message": "Click to make friends with the duck!",
+    "description": "Title for duck mascot"
+  },
+  "footer.mascots.squirrel.title": {
+    "message": "Click to make friends with the squirrel!",
+    "description": "Title for squirrel mascot"
+  },
+  "homepage.hero.subtitle": {
+    "message": "JSON Dynamics System",
+    "description": "Subtitle of the homepage hero section"
+  },
+  "homepage.hero.description": {
+    "message": "Brings JSON to life",
+    "description": "Description text of the homepage hero"
+  },
+  "homepage.hero.feature.minimal": {
+    "message": "🌱 Minimal",
+    "description": "Minimal feature badge in hero section"
+  },
+  "homepage.hero.feature.typesafe": {
+    "message": "🔍 Typesafe",
+    "description": "Typesafe feature badge in hero section"
+  },
+  "homepage.hero.feature.fast": {
+    "message": "⚡ Fast",
+    "description": "Fast feature badge in hero section"
+  },
+  "homepage.hero.button.getStarted": {
+    "message": "Get Started",
+    "description": "Get started button text in hero section"
+  },
+  "homepage.hero.button.remix": {
+    "message": "Remix",
+    "description": "Remix button text in hero section"
+  },
+  "homepage.mascots.squirrel.interacting": {
+    "message": "We make a great team! 🤝",
+    "description": "Squirrel mascot message when interacting"
+  },
+  "homepage.mascots.squirrel.default": {
+    "message": "I love storing reactive state! 🌰",
+    "description": "Default squirrel mascot message"
+  },
+  "homepage.mascots.duck.interacting": {
+    "message": "Dynamic duo! 💪",
+    "description": "Duck mascot message when interacting"
+  },
+  "homepage.mascots.duck.default": {
+    "message": "Quack! JSON on demand! 📦",
+    "description": "Default duck mascot message"
+  },
+  "homepage.mascots.squirrel.title": {
+    "message": "Click to make friends with the duck!",
+    "description": "Tooltip title for squirrel mascot"
+  },
+  "homepage.mascots.duck.title": {
+    "message": "Click to make friends with the squirrel!",
+    "description": "Tooltip title for duck mascot"
+  },
+  "theme.ErrorPageContent.title": {
+    "message": "This page crashed.",
+    "description": "The title of the fallback page when the page crashed"
+  },
+  "theme.blog.archive.title": {
+    "message": "Archive",
+    "description": "The page & hero title of the blog archive page"
+  },
+  "theme.blog.archive.description": {
+    "message": "Archive",
+    "description": "The page & hero description of the blog archive page"
+  },
+  "theme.BackToTopButton.buttonAriaLabel": {
+    "message": "Scroll back to top",
+    "description": "The ARIA label for the back to top button"
+  },
+  "theme.blog.paginator.navAriaLabel": {
+    "message": "Blog list page navigation",
+    "description": "The ARIA label for the blog pagination"
+  },
+  "theme.blog.paginator.newerEntries": {
+    "message": "Newer entries",
+    "description": "The label used to navigate to the newer blog posts page (previous page)"
+  },
+  "theme.blog.paginator.olderEntries": {
+    "message": "Older entries",
+    "description": "The label used to navigate to the older blog posts page (next page)"
+  },
+  "theme.blog.post.paginator.navAriaLabel": {
+    "message": "Blog post page navigation",
+    "description": "The ARIA label for the blog posts pagination"
+  },
+  "theme.blog.post.paginator.newerPost": {
+    "message": "Newer post",
+    "description": "The blog post button label to navigate to the newer/previous post"
+  },
+  "theme.blog.post.paginator.olderPost": {
+    "message": "Older post",
+    "description": "The blog post button label to navigate to the older/next post"
+  },
+  "theme.tags.tagsPageLink": {
+    "message": "View all tags",
+    "description": "The label of the link targeting the tag list page"
+  },
+  "theme.colorToggle.ariaLabel": {
+    "message": "Switch between dark and light mode (currently {mode})",
+    "description": "The ARIA label for the navbar color mode toggle"
+  },
+  "theme.colorToggle.ariaLabel.mode.dark": {
+    "message": "dark mode",
+    "description": "The name for the dark color mode"
+  },
+  "theme.colorToggle.ariaLabel.mode.light": {
+    "message": "light mode",
+    "description": "The name for the light color mode"
+  },
+  "theme.docs.DocCard.categoryDescription.plurals": {
+    "message": "1 item|{count} items",
+    "description": "The default description for a category card in the generated index about how many items this category includes"
+  },
+  "theme.docs.breadcrumbs.navAriaLabel": {
+    "message": "Breadcrumbs",
+    "description": "The ARIA label for the breadcrumbs"
+  },
+  "theme.docs.paginator.navAriaLabel": {
+    "message": "Docs pages",
+    "description": "The ARIA label for the docs pagination"
+  },
+  "theme.docs.paginator.previous": {
+    "message": "Previous",
+    "description": "The label used to navigate to the previous doc"
+  },
+  "theme.docs.paginator.next": {
+    "message": "Next",
+    "description": "The label used to navigate to the next doc"
+  },
+  "theme.docs.tagDocListPageTitle.nDocsTagged": {
+    "message": "One doc tagged|{count} docs tagged",
+    "description": "Pluralized label for \"{count} docs tagged\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.docs.tagDocListPageTitle": {
+    "message": "{nDocsTagged} with \"{tagName}\"",
+    "description": "The title of the page for a docs tag"
+  },
+  "theme.docs.versionBadge.label": {
+    "message": "Version: {versionLabel}"
+  },
+  "theme.common.editThisPage": {
+    "message": "Edit this page",
+    "description": "The link label to edit the current page"
+  },
+  "theme.docs.versions.unreleasedVersionLabel": {
+    "message": "This is unreleased documentation for {siteTitle} {versionLabel} version.",
+    "description": "The label used to tell the user that he's browsing an unreleased doc version"
+  },
+  "theme.docs.versions.unmaintainedVersionLabel": {
+    "message": "This is documentation for {siteTitle} {versionLabel}, which is no longer actively maintained.",
+    "description": "The label used to tell the user that he's browsing an unmaintained doc version"
+  },
+  "theme.docs.versions.latestVersionSuggestionLabel": {
+    "message": "For up-to-date documentation, see the {latestVersionLink} ({versionLabel}).",
+    "description": "The label used to tell the user to check the latest version"
+  },
+  "theme.docs.versions.latestVersionLinkLabel": {
+    "message": "latest version",
+    "description": "The label used for the latest version suggestion link label"
+  },
+  "theme.common.headingLinkTitle": {
+    "message": "Direct link to {heading}",
+    "description": "Title for link to heading"
+  },
+  "theme.lastUpdated.atDate": {
+    "message": " on {date}",
+    "description": "The words used to describe on which date a page has been last updated"
+  },
+  "theme.lastUpdated.byUser": {
+    "message": " by {user}",
+    "description": "The words used to describe by who the page has been last updated"
+  },
+  "theme.lastUpdated.lastUpdatedAtBy": {
+    "message": "Last updated{atDate}{byUser}",
+    "description": "The sentence used to display when a page has been last updated, and by who"
+  },
+  "theme.NotFound.title": {
+    "message": "Page Not Found",
+    "description": "The title of the 404 page"
+  },
+  "theme.navbar.mobileVersionsDropdown.label": {
+    "message": "Versions",
+    "description": "The label for the navbar versions dropdown on mobile view"
+  },
+  "theme.tags.tagsListLabel": {
+    "message": "Tags:",
+    "description": "The label alongside a tag list"
+  },
+  "theme.admonition.caution": {
+    "message": "caution",
+    "description": "The default label used for the Caution admonition (:::caution)"
+  },
+  "theme.admonition.danger": {
+    "message": "danger",
+    "description": "The default label used for the Danger admonition (:::danger)"
+  },
+  "theme.admonition.info": {
+    "message": "info",
+    "description": "The default label used for the Info admonition (:::info)"
+  },
+  "theme.admonition.note": {
+    "message": "note",
+    "description": "The default label used for the Note admonition (:::note)"
+  },
+  "theme.admonition.tip": {
+    "message": "tip",
+    "description": "The default label used for the Tip admonition (:::tip)"
+  },
+  "theme.admonition.warning": {
+    "message": "warning",
+    "description": "The default label used for the Warning admonition (:::warning)"
+  },
+  "theme.AnnouncementBar.closeButtonAriaLabel": {
+    "message": "Close",
+    "description": "The ARIA label for close button of announcement bar"
+  },
+  "theme.blog.sidebar.navAriaLabel": {
+    "message": "Blog recent posts navigation",
+    "description": "The ARIA label for recent posts in the blog sidebar"
+  },
+  "theme.CodeBlock.wordWrapToggle": {
+    "message": "Toggle word wrap",
+    "description": "The title attribute for toggle word wrapping button of code block lines"
+  },
+  "theme.CodeBlock.copied": {
+    "message": "Copied",
+    "description": "The copied button label on code blocks"
+  },
+  "theme.CodeBlock.copyButtonAriaLabel": {
+    "message": "Copy code to clipboard",
+    "description": "The ARIA label for copy code blocks button"
+  },
+  "theme.CodeBlock.copy": {
+    "message": "Copy",
+    "description": "The copy button label on code blocks"
+  },
+  "theme.DocSidebarItem.expandCategoryAriaLabel": {
+    "message": "Expand sidebar category '{label}'",
+    "description": "The ARIA label to expand the sidebar category"
+  },
+  "theme.DocSidebarItem.collapseCategoryAriaLabel": {
+    "message": "Collapse sidebar category '{label}'",
+    "description": "The ARIA label to collapse the sidebar category"
+  },
+  "theme.NavBar.navAriaLabel": {
+    "message": "Main",
+    "description": "The ARIA label for the main navigation"
+  },
+  "theme.NotFound.p1": {
+    "message": "We could not find what you were looking for.",
+    "description": "The first paragraph of the 404 page"
+  },
+  "theme.NotFound.p2": {
+    "message": "Please contact the owner of the site that linked you to the original URL and let them know their link is broken.",
+    "description": "The 2nd paragraph of the 404 page"
+  },
+  "theme.TOCCollapsible.toggleButtonLabel": {
+    "message": "On this page",
+    "description": "The label used by the button on the collapsible TOC component"
+  },
+  "theme.navbar.mobileLanguageDropdown.label": {
+    "message": "Languages",
+    "description": "The label for the mobile language switcher dropdown"
+  },
+  "theme.blog.post.readMore": {
+    "message": "Read more",
+    "description": "The label used in blog post item excerpts to link to full blog posts"
+  },
+  "theme.blog.post.readMoreLabel": {
+    "message": "Read more about {title}",
+    "description": "The ARIA label for the link to full blog posts from excerpts"
+  },
+  "theme.docs.breadcrumbs.home": {
+    "message": "Home page",
+    "description": "The ARIA label for the home page in the breadcrumbs"
+  },
+  "theme.blog.post.readingTime.plurals": {
+    "message": "One min read|{readingTime} min read",
+    "description": "Pluralized label for \"{readingTime} min read\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.docs.sidebar.collapseButtonTitle": {
+    "message": "Collapse sidebar",
+    "description": "The title attribute for collapse button of doc sidebar"
+  },
+  "theme.docs.sidebar.collapseButtonAriaLabel": {
+    "message": "Collapse sidebar",
+    "description": "The title attribute for collapse button of doc sidebar"
+  },
+  "theme.docs.sidebar.navAriaLabel": {
+    "message": "Docs sidebar",
+    "description": "The ARIA label for the sidebar navigation"
+  },
+  "theme.docs.sidebar.closeSidebarButtonAriaLabel": {
+    "message": "Close navigation bar",
+    "description": "The ARIA label for close button of mobile sidebar"
+  },
+  "theme.navbar.mobileSidebarSecondaryMenu.backButtonLabel": {
+    "message": "← Back to main menu",
+    "description": "The label of the back button to return to main menu, inside the mobile navbar sidebar secondary menu (notably used to display the docs sidebar)"
+  },
+  "theme.docs.sidebar.toggleSidebarButtonAriaLabel": {
+    "message": "Toggle navigation bar",
+    "description": "The ARIA label for hamburger menu button of mobile navigation"
+  },
+  "theme.docs.sidebar.expandButtonTitle": {
+    "message": "Expand sidebar",
+    "description": "The ARIA label and title attribute for expand button of doc sidebar"
+  },
+  "theme.docs.sidebar.expandButtonAriaLabel": {
+    "message": "Expand sidebar",
+    "description": "The ARIA label and title attribute for expand button of doc sidebar"
+  },
+  "theme.blog.post.plurals": {
+    "message": "One post|{count} posts",
+    "description": "Pluralized label for \"{count} posts\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.blog.tagTitle": {
+    "message": "{nPosts} tagged with \"{tagName}\"",
+    "description": "The title of the page for a blog tag"
+  },
+  "theme.blog.author.pageTitle": {
+    "message": "{authorName} - {nPosts}",
+    "description": "The title of the page for a blog author"
+  },
+  "theme.blog.authorsList.pageTitle": {
+    "message": "Authors",
+    "description": "The title of the authors page"
+  },
+  "theme.blog.authorsList.viewAll": {
+    "message": "View all authors",
+    "description": "The label of the link targeting the blog authors page"
+  },
+  "theme.blog.author.noPosts": {
+    "message": "This author has not written any posts yet.",
+    "description": "The text for authors with 0 blog post"
+  },
+  "theme.contentVisibility.unlistedBanner.title": {
+    "message": "Unlisted page",
+    "description": "The unlisted content banner title"
+  },
+  "theme.contentVisibility.unlistedBanner.message": {
+    "message": "This page is unlisted. Search engines will not index it, and only users having a direct link can access it.",
+    "description": "The unlisted content banner message"
+  },
+  "theme.contentVisibility.draftBanner.title": {
+    "message": "Draft page",
+    "description": "The draft content banner title"
+  },
+  "theme.contentVisibility.draftBanner.message": {
+    "message": "This page is a draft. It will only be visible in dev and be excluded from the production build.",
+    "description": "The draft content banner message"
+  },
+  "theme.ErrorPageContent.tryAgain": {
+    "message": "Try again",
+    "description": "The label of the button to try again rendering when the React error boundary captures an error"
+  },
+  "theme.common.skipToMainContent": {
+    "message": "Skip to main content",
+    "description": "The skip to content label used for accessibility, allowing to rapidly navigate to main content with keyboard tab/enter navigation"
+  },
+  "theme.tags.tagsPageTitle": {
+    "message": "Tags",
+    "description": "The title of the tag list page"
+  },
+  "homepage.demo.counter.example.counter": {
+    "message": "counter",
+    "description": "Translation for 'counter' in Counter example"
+  },
+  "homepage.demo.counter.example.count": {
+    "message": "Count",
+    "description": "Translation for 'Count' in Counter example"
+  },
+  "homepage.demo.counter.example.property.count": {
+    "message": "count",
+    "description": "Translation for the count property name in Counter example"
+  },
+  "homepage.features.remix_integration.bullet1.prefix": {
+    "message": "",
+    "description": "Text before code in first bullet point for Remix integration"
+  },
+  "homepage.features.remix_integration.bullet1.code": {
+    "message": "useJods()",
+    "description": "Code part in first bullet point for Remix integration"
+  },
+  "homepage.features.remix_integration.bullet1.suffix": {
+    "message": " for unified store access and form handling",
+    "description": "Text after code in first bullet point for Remix integration"
+  },
+  "homepage.features.remix_integration.bullet2.prefix": {
+    "message": "",
+    "description": "Text before code in second bullet point for Remix integration"
+  },
+  "homepage.features.remix_integration.bullet2.code": {
+    "message": "defineStore()",
+    "description": "Code part in second bullet point for Remix integration"
+  },
+  "homepage.features.remix_integration.bullet2.suffix": {
+    "message": " for declarative server-aware stores",
+    "description": "Text after code in second bullet point for Remix integration"
+  },
+  "homepage.features.remix_integration.bullet3.prefix": {
+    "message": "",
+    "description": "Text before code in third bullet point for Remix integration"
+  },
+  "homepage.features.remix_integration.bullet3.code": {
+    "message": "useJodsStore()",
+    "description": "Code part in third bullet point for Remix integration"
+  },
+  "homepage.features.remix_integration.bullet3.suffix": {
+    "message": " for reactive state subscription",
+    "description": "Text after code in third bullet point for Remix integration"
+  },
+  "homepage.features.remix_integration.bullet4.prefix": {
+    "message": "",
+    "description": "Text before code in fourth bullet point for Remix integration"
+  },
+  "homepage.features.remix_integration.bullet4.code": {
+    "message": "useJodsForm()",
+    "description": "Code part in fourth bullet point for Remix integration"
+  },
+  "homepage.features.remix_integration.bullet4.suffix": {
+    "message": " for implicit action dispatching",
+    "description": "Text after code in fourth bullet point for Remix integration"
+  },
+  "homepage.frameworks.react.code.counter": {
+    "message": "counter",
+    "description": "French translation for counter in React example"
+  },
+  "homepage.frameworks.react.code.count": {
+    "message": "Count",
+    "description": "French translation for Count in React example"
+  },
+  "homepage.frameworks.preact.code.counter": {
+    "message": "counter",
+    "description": "French translation for counter in Preact example"
+  },
+  "homepage.frameworks.preact.code.count": {
+    "message": "Count",
+    "description": "French translation for Count in Preact example"
+  },
+  "homepage.frameworks.code.property.count": {
+    "message": "count",
+    "description": "Translation for the count property name in the store object"
+  }
+}

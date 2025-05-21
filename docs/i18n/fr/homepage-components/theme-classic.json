@@ -1,0 +1,6 @@
+{
+  "theme.contentVisibility.draftBanner.message": {
+    "message": "Cette page est un brouillon. Elle ne sera visible qu'en développement et exclue de la version de production.",
+    "description": "The draft content banner message"
+  }
+}

@@ -1,0 +1,110 @@
+/* Hero container */
+.heroContainer {
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 100px; /* Add more space at the bottom for mascots */
+  min-height: 580px; /* Increased minimum height for content plus mascot space */
+  background: linear-gradient(
+    135deg,
+    #0f172a 0%,
+    #0c4a6e 30%,
+    #0891b2 60%,
+    #22d3ee 80%,
+    #67e8f9 100%
+  ); /* Deep blues to cyan gradient */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Dark mode gradient override */
+[data-theme="dark"] .heroContainer {
+  background: linear-gradient(
+    135deg,
+    #0f172a 0%,
+    #0c4a6e 20%,
+    #0891b2 50%,
+    #c026d3 80%,
+    #f97316 100%
+  ); /* Deep blues to magenta to orange for cyberpunk feel */
+}
+
+/* Background shine effect */
+.heroContainer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.12) 50%,
+    rgba(255, 255, 255, 0.05) 75%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(45deg);
+  transform-origin: center;
+  animation: backgroundShine 10s infinite ease-in-out;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes backgroundShine {
+  0% {
+    opacity: 0.5;
+    background-position: -100% -100%;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0.5;
+    background-position: 100% 100%;
+  }
+}
+
+/* Dark mode background shine with more cyan/teal highlights */
+[data-theme="dark"] .heroContainer::after {
+  background: linear-gradient(
+    135deg,
+    rgba(8, 145, 178, 0) 0%,
+    rgba(34, 211, 238, 0.05) 25%,
+    rgba(103, 232, 249, 0.08) 50%,
+    rgba(249, 115, 22, 0.05) 75%,
+    rgba(15, 23, 42, 0) 100%
+  );
+}
+
+/* Add teal dot pattern background similar to features section */
+.heroContainer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(
+    circle at 25px 25px,
+    rgba(8, 145, 178, 0.15) 2px,
+    transparent 0
+  );
+  background-size: 50px 50px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Dark mode dot pattern with brighter dots */
+[data-theme="dark"] .heroContainer::before {
+  background-image: radial-gradient(
+    circle at 25px 25px,
+    rgba(34, 211, 238, 0.2) 2px,
+    transparent 0
+  );
+}
+
+/* Remove the old JodsHub layout styles since we're using a different approach */

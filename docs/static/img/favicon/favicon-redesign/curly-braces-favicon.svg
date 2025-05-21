@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Define gradients -->
+  <defs>
+    <linearGradient id="purpleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4c1d95" />
+      <stop offset="100%" stop-color="#8b5cf6" />
+    </linearGradient>
+    <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ea580c" />
+      <stop offset="100%" stop-color="#fb923c" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="10" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  
+  <!-- Dark background -->
+  <rect width="512" height="512" rx="100" fill="#121527" />
+  
+  <!-- Stylized left curly brace - squirrel color -->
+  <path d="M180 120C150 120 130 140 130 170V210C130 225 120 240 100 240C120 240 130 255 130 270V342C130 372 150 392 180 392" 
+        stroke="url(#orangeGradient)" 
+        stroke-width="40" 
+        stroke-linecap="round"
+        filter="url(#glow)" />
+  
+  <!-- Stylized right curly brace - duck color -->
+  <path d="M332 120C362 120 382 140 382 170V210C382 225 392 240 412 240C392 240 382 255 382 270V342C382 372 362 392 332 392" 
+        stroke="url(#purpleGradient)" 
+        stroke-width="40" 
+        stroke-linecap="round"
+        filter="url(#glow)" />
+</svg> 

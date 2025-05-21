@@ -1,0 +1,465 @@
+/* Custom syntax highlighting for light mode only - SUPER FUN EDITION! */
+:root:not([data-theme="dark"]) {
+  --syntax-color-keyword: #0891b2; /* Cyan */
+  --syntax-color-function: #0ea5e9; /* Light blue */
+  --syntax-color-string: #059669; /* Emerald */
+  --syntax-color-number: #0d9488; /* Teal */
+  --syntax-color-boolean: #0284c7; /* Blue */
+  --syntax-color-comment: #64748b; /* Slate */
+  --syntax-color-class: #0284c7; /* Blue */
+  --syntax-color-property: #059669; /* Emerald */
+  --syntax-color-punctuation: #334155; /* Slate */
+  --syntax-color-operator: #0891b2; /* Cyan */
+  --syntax-color-variable: #0ea5e9; /* Light blue */
+  --syntax-color-background: rgba(
+    248,
+    250,
+    252,
+    0.8
+  ); /* Slightly transparent background */
+  --syntax-highlight-line: rgba(
+    14,
+    165,
+    233,
+    0.1
+  ); /* Light blue highlight for emphasized lines */
+
+  /* New fun variables */
+  --syntax-fun-glow: 0 0 8px rgba(14, 165, 233, 0.3);
+  --syntax-fun-bounce: bounce 0.5s ease;
+  --syntax-fun-wiggle: wiggle 0.3s ease;
+  --syntax-fun-pop: pop 0.2s ease;
+  --syntax-fun-sparkle: sparkle 1.5s infinite;
+}
+
+/* Apply custom syntax highlighting colors for light mode only */
+:root:not([data-theme="dark"]) .token.keyword,
+:root:not([data-theme="dark"]) .token.atrule,
+:root:not([data-theme="dark"]) .token.important {
+  color: var(--syntax-color-keyword);
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+:root:not([data-theme="dark"]) .token.keyword:hover {
+  text-shadow: var(--syntax-fun-glow);
+  transform: scale(1.05);
+}
+
+:root:not([data-theme="dark"]) .token.function,
+:root:not([data-theme="dark"]) .token.function-variable {
+  color: var(--syntax-color-function);
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+:root:not([data-theme="dark"]) .token.function:hover {
+  text-shadow: var(--syntax-fun-glow);
+  transform: translateY(-1px);
+}
+
+:root:not([data-theme="dark"]) .token.string,
+:root:not([data-theme="dark"]) .token.char,
+:root:not([data-theme="dark"]) .token.attr-value,
+:root:not([data-theme="dark"]) .token.regex,
+:root:not([data-theme="dark"]) .token.url {
+  color: var(--syntax-color-string);
+  transition: all 0.2s ease;
+}
+
+:root:not([data-theme="dark"]) .token.string:hover {
+  text-shadow: 0 0 8px rgba(5, 150, 105, 0.3);
+}
+
+:root:not([data-theme="dark"]) .token.number,
+:root:not([data-theme="dark"]) .token.constant,
+:root:not([data-theme="dark"]) .token.symbol,
+:root:not([data-theme="dark"]) .token.deleted {
+  color: var(--syntax-color-number);
+  transition: all 0.2s ease;
+}
+
+:root:not([data-theme="dark"]) .token.number:hover {
+  animation: var(--syntax-fun-pop);
+  text-shadow: 0 0 8px rgba(13, 148, 136, 0.3);
+}
+
+:root:not([data-theme="dark"]) .token.boolean {
+  color: var(--syntax-color-boolean);
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+:root:not([data-theme="dark"]) .token.boolean:hover {
+  animation: var(--syntax-fun-wiggle);
+}
+
+:root:not([data-theme="dark"]) .token.comment,
+:root:not([data-theme="dark"]) .token.prolog,
+:root:not([data-theme="dark"]) .token.doctype,
+:root:not([data-theme="dark"]) .token.cdata {
+  color: var(--syntax-color-comment);
+  font-style: italic;
+}
+
+:root:not([data-theme="dark"]) .token.class-name {
+  color: var(--syntax-color-class);
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+:root:not([data-theme="dark"]) .token.class-name:hover {
+  text-shadow: 0 0 8px rgba(2, 132, 199, 0.3);
+}
+
+:root:not([data-theme="dark"]) .token.tag,
+:root:not([data-theme="dark"]) .token.selector,
+:root:not([data-theme="dark"]) .token.selector .class,
+:root:not([data-theme="dark"]) .token.selector.class,
+:root:not([data-theme="dark"]) .token.builtin {
+  color: var(--syntax-color-property);
+}
+
+:root:not([data-theme="dark"]) .token.property {
+  color: var(--syntax-color-property);
+}
+
+:root:not([data-theme="dark"]) .token.punctuation {
+  color: var(--syntax-color-punctuation);
+}
+
+:root:not([data-theme="dark"]) .token.operator {
+  color: var(--syntax-color-operator);
+}
+
+:root:not([data-theme="dark"]) .token.entity,
+:root:not([data-theme="dark"]) .token.variable,
+:root:not([data-theme="dark"]) .token.attr-name {
+  color: var(--syntax-color-variable);
+}
+
+/* Boost the specificity to override Docusaurus defaults */
+:root:not([data-theme="dark"]) .theme-code-block .token.keyword,
+:root:not([data-theme="dark"]) .theme-code-block .token.function,
+:root:not([data-theme="dark"]) .theme-code-block .token.string,
+:root:not([data-theme="dark"]) .theme-code-block .token.boolean,
+:root:not([data-theme="dark"]) .theme-code-block .token.number,
+:root:not([data-theme="dark"]) .theme-code-block .token.operator,
+:root:not([data-theme="dark"]) .theme-code-block .token.punctuation,
+:root:not([data-theme="dark"]) .theme-code-block .token.property,
+:root:not([data-theme="dark"]) .theme-code-block .token.variable {
+  color: inherit;
+}
+
+/* Fun animated background for code blocks in light mode */
+:root:not([data-theme="dark"]) div[class^="codeBlockContainer"] {
+  background: linear-gradient(
+    120deg,
+    rgba(248, 250, 252, 0.9),
+    rgba(240, 253, 250, 0.9)
+  );
+  border: 1px solid rgba(8, 145, 178, 0.2);
+  box-shadow: 0 4px 16px rgba(8, 145, 178, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+:root:not([data-theme="dark"]) div[class^="codeBlockContainer"]:hover {
+  box-shadow: 0 6px 24px rgba(8, 145, 178, 0.15),
+    0 0 12px rgba(14, 165, 233, 0.1);
+  transform: translateY(-2px);
+}
+
+/* More exciting gradient animation for code blocks */
+:root:not([data-theme="dark"]) div[class^="codeBlockContainer"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0; /* Ensure it goes to the bottom */
+  height: 100%; /* Force full height */
+  background: linear-gradient(
+    45deg,
+    rgba(8, 145, 178, 0.05) 0%,
+    rgba(6, 182, 212, 0.05) 20%,
+    rgba(20, 184, 166, 0.05) 40%,
+    rgba(16, 185, 129, 0.05) 60%,
+    rgba(5, 150, 105, 0.05) 80%,
+    rgba(8, 145, 178, 0.05) 100%
+  );
+  background-size: 300% 300%;
+  animation: gradientShift 12s ease infinite;
+  z-index: 0;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Fun sparkle overlay for code blocks on hover */
+:root:not([data-theme="dark"]) div[class^="codeBlockContainer"]::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(
+      circle at 20% 30%,
+      rgba(14, 165, 233, 0.2) 0%,
+      transparent 12px
+    ),
+    radial-gradient(
+      circle at 50% 80%,
+      rgba(5, 150, 105, 0.15) 0%,
+      transparent 10px
+    ),
+    radial-gradient(
+      circle at 80% 15%,
+      rgba(20, 184, 166, 0.15) 0%,
+      transparent 15px
+    ),
+    radial-gradient(
+      circle at 10% 90%,
+      rgba(6, 182, 212, 0.1) 0%,
+      transparent 8px
+    ),
+    radial-gradient(
+      circle at 90% 60%,
+      rgba(8, 145, 178, 0.1) 0%,
+      transparent 10px
+    );
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+:root:not([data-theme="dark"]) div[class^="codeBlockContainer"]:hover::after {
+  opacity: 1;
+  animation: var(--syntax-fun-sparkle);
+}
+
+/* Custom highlighted line background with animated left border */
+:root:not([data-theme="dark"]) .docusaurus-highlighted-code-line {
+  background-color: var(--syntax-highlight-line);
+  display: block;
+  margin: 0 -1rem;
+  padding: 0 1rem;
+  border-left: 3px solid var(--syntax-color-function);
+  position: relative;
+  overflow: hidden;
+}
+
+:root:not([data-theme="dark"]) .docusaurus-highlighted-code-line::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 3px;
+  background: linear-gradient(to bottom, #0ea5e9, #0891b2, #0d9488);
+  animation: borderPulse 3s ease-in-out infinite;
+}
+
+@keyframes borderPulse {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(1.5);
+  }
+}
+
+/* Fun styling for code block titles with animated gradient */
+:root:not([data-theme="dark"]) div[class^="codeBlockTitle"] {
+  background: linear-gradient(
+    90deg,
+    rgba(8, 145, 178, 0.1),
+    rgba(20, 184, 166, 0.1)
+  );
+  background-size: 200% 100%;
+  animation: gradientShift 8s ease infinite;
+  border-bottom: 1px solid rgba(8, 145, 178, 0.15);
+  color: var(--syntax-color-keyword);
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+}
+
+:root:not([data-theme="dark"]) div[class^="codeBlockTitle"]::after {
+  content: "✨";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+:root:not([data-theme="dark"]) div[class^="codeBlockTitle"]:hover::after {
+  opacity: 1;
+}
+
+/* New fun animations */
+@keyframes sparkle {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(3deg);
+  }
+  75% {
+    transform: rotate(-3deg);
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Fun interaction for code blocks with line numbers */
+:root:not([data-theme="dark"]) .token-line:hover {
+  background-color: rgba(14, 165, 233, 0.03);
+}
+
+:root:not([data-theme="dark"]) .token-line:hover .token {
+  position: relative;
+  z-index: 2;
+}
+
+/* Add subtle animation to copy button */
+:root:not([data-theme="dark"]) button[class*="copyButton"] {
+  transition: all 0.2s ease;
+}
+
+:root:not([data-theme="dark"]) button[class*="copyButton"]:hover {
+  transform: scale(1.1);
+  background-color: rgba(14, 165, 233, 0.1) !important;
+}
+
+/* Keep direct color overrides with stronger specificity */
+:root:not([data-theme="dark"]) code span.token.keyword {
+  color: #0891b2 !important; /* Cyan */
+}
+
+:root:not([data-theme="dark"]) code span.token.function {
+  color: #0ea5e9 !important; /* Light blue */
+}
+
+:root:not([data-theme="dark"]) code span.token.string {
+  color: #059669 !important; /* Emerald */
+}
+
+:root:not([data-theme="dark"]) code span.token.number {
+  color: #0d9488 !important; /* Teal */
+}
+
+:root:not([data-theme="dark"]) code span.token.boolean {
+  color: #0284c7 !important; /* Blue */
+}
+
+:root:not([data-theme="dark"]) code span.token.comment {
+  color: #64748b !important; /* Slate */
+}
+
+:root:not([data-theme="dark"]) code span.token.operator {
+  color: #0891b2 !important; /* Cyan */
+}
+
+:root:not([data-theme="dark"]) code span.token.punctuation {
+  color: #334155 !important; /* Slate */
+}
+
+:root:not([data-theme="dark"]) code span.token.class-name {
+  color: #0284c7 !important; /* Blue */
+}
+
+:root:not([data-theme="dark"]) code span.token.variable {
+  color: #0ea5e9 !important; /* Light blue */
+}
+
+/* Homepage-specific code block styling - ensures full background coverage */
+:root:not([data-theme="dark"]) div.language-jsx,
+:root:not([data-theme="dark"]) div.language-js,
+:root:not([data-theme="dark"]) div.w-100.language-jsx,
+:root:not([data-theme="dark"]) div.codeBlockContainer_meTV,
+:root:not([data-theme="dark"]) div.theme-code-block {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  padding-bottom: 0; /* Remove bottom padding */
+  margin-bottom: 0;
+}
+
+/* Position the React badge at exactly 10px from bottom and right */
+:root:not([data-theme="dark"])
+  div.language-jsx
+  div[style*="position: absolute"],
+:root:not([data-theme="dark"]) div.language-js div[style*="position: absolute"],
+:root:not([data-theme="dark"])
+  div.w-100.language-jsx
+  div[style*="position: absolute"],
+:root:not([data-theme="dark"])
+  div.codeBlockContainer_meTV
+  div[style*="position: absolute"],
+:root:not([data-theme="dark"])
+  div.theme-code-block
+  div[style*="position: absolute"] {
+  bottom: 10px !important;
+  right: 10px !important;
+}
+
+/* Make code content touch the bottom of the container */
+:root:not([data-theme="dark"]) div.language-jsx pre,
+:root:not([data-theme="dark"]) div.language-js pre,
+:root:not([data-theme="dark"]) div.w-100.language-jsx pre,
+:root:not([data-theme="dark"]) div.codeBlockContainer_meTV pre,
+:root:not([data-theme="dark"]) div.theme-code-block pre {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}

@@ -1,0 +1,58 @@
+{
+  "homepage.frameworks.title.prefix": {
+    "message": "Funciona con tus ",
+    "description": "First part of framework showcase section title"
+  },
+  "homepage.frameworks.title.gradient": {
+    "message": "frameworks favoritos 🧩",
+    "description": "Gradient part of framework showcase section title"
+  },
+  "homepage.frameworks.description": {
+    "message": "Integra jods sin problemas con React, Preact y Remix usando adaptadores dedicados",
+    "description": "Framework showcase section description"
+  },
+  "homepage.frameworks.react.title": {
+    "message": "React",
+    "description": "React framework title"
+  },
+  "homepage.frameworks.react.description": {
+    "message": "Integración perfecta con el ciclo de vida de componentes de React",
+    "description": "React framework description"
+  },
+  "homepage.frameworks.preact.title": {
+    "message": "Preact",
+    "description": "Preact framework title"
+  },
+  "homepage.frameworks.preact.description": {
+    "message": "Integración ligera para aplicaciones Preact",
+    "description": "Preact framework description"
+  },
+  "homepage.frameworks.remix.title": {
+    "message": "Remix",
+    "description": "Remix framework title"
+  },
+  "homepage.frameworks.remix.description": {
+    "message": "Integración especializada para aplicaciones Remix",
+    "description": "Remix framework description"
+  },
+  "homepage.frameworks.react.code.counter": {
+    "message": "contador",
+    "description": "Spanish translation for counter in React example"
+  },
+  "homepage.frameworks.react.code.count": {
+    "message": "Contador",
+    "description": "Spanish translation for Count in React example"
+  },
+  "homepage.frameworks.preact.code.counter": {
+    "message": "contador",
+    "description": "Spanish translation for counter in Preact example"
+  },
+  "homepage.frameworks.preact.code.count": {
+    "message": "Contador",
+    "description": "Spanish translation for Count in Preact example"
+  },
+  "homepage.frameworks.code.property.count": {
+    "message": "cuenta",
+    "description": "Spanish translation for the count property name in the store object"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "homepage.frameworks.title.prefix": {
+    "message": "Works with your ",
+    "description": "First part of framework showcase section title"
+  },
+  "homepage.frameworks.title.gradient": {
+    "message": "favorite frameworks 🧩",
+    "description": "Gradient part of framework showcase section title"
+  },
+  "homepage.frameworks.description": {
+    "message": "Seamlessly integrate jods with React, Preact, and Remix using dedicated adapters",
+    "description": "Framework showcase section description"
+  },
+  "homepage.frameworks.react.title": {
+    "message": "React",
+    "description": "React framework title"
+  },
+  "homepage.frameworks.react.description": {
+    "message": "Seamless integration with React's component lifecycle",
+    "description": "React framework description"
+  },
+  "homepage.frameworks.preact.title": {
+    "message": "Preact",
+    "description": "Preact framework title"
+  },
+  "homepage.frameworks.preact.description": {
+    "message": "Lightweight integration for Preact applications",
+    "description": "Preact framework description"
+  },
+  "homepage.frameworks.remix.title": {
+    "message": "Remix",
+    "description": "Remix framework title"
+  },
+  "homepage.frameworks.remix.description": {
+    "message": "Specialized integration for Remix applications",
+    "description": "Remix framework description"
+  },
+  "homepage.frameworks.react.code.counter": {
+    "message": "counter",
+    "description": "English translation for counter in React example"
+  },
+  "homepage.frameworks.react.code.count": {
+    "message": "Count",
+    "description": "English translation for Count in React example"
+  },
+  "homepage.frameworks.preact.code.counter": {
+    "message": "counter",
+    "description": "English translation for counter in Preact example"
+  },
+  "homepage.frameworks.preact.code.count": {
+    "message": "Count",
+    "description": "English translation for Count in Preact example"
+  },
+  "homepage.frameworks.code.property.count": {
+    "message": "count",
+    "description": "English translation for the count property name in the store object"
+  }
+}

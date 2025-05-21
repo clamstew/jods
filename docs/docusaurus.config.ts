@@ -5,9 +5,10 @@ import type * as Preset from "@docusaurus/preset-classic";
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: "jods",
-  tagline: "JSON On Demand Store",
-  favicon: "img/favicon.ico",
+  title: "{ jods }",
+  tagline:
+    "JavaScript Object Dynamics System - A fun, intuitive reactive state library",
+  favicon: "img/favicon/light/favicon-light-32.png", // Default favicon, will be replaced by JS
 
   // Set the production url of your site here
   url: "https://clamstew.github.io",
@@ -30,8 +31,109 @@ const config: Config = {
   // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: "en",
-    locales: ["en"],
+    locales: ["en", "fr", "es"],
   },
+
+  // Basic favicon setup - our JavaScript will handle theme switching
+  headTags: [
+    // SVG favicon - default without media query
+    {
+      tagName: "link",
+      attributes: {
+        rel: "icon",
+        type: "image/svg+xml",
+        href: "/jods/img/favicon/light/favicon-light.svg",
+      },
+    },
+    // Dark mode SVG with media query
+    {
+      tagName: "link",
+      attributes: {
+        rel: "icon",
+        type: "image/svg+xml",
+        href: "/jods/img/favicon/dark/favicon-dark.svg",
+        media: "(prefers-color-scheme: dark)",
+      },
+    },
+    // Light mode SVG with media query
+    {
+      tagName: "link",
+      attributes: {
+        rel: "icon",
+        type: "image/svg+xml",
+        href: "/jods/img/favicon/light/favicon-light.svg",
+        media: "(prefers-color-scheme: light)",
+      },
+    },
+    // Apple touch icon
+    {
+      tagName: "link",
+      attributes: {
+        rel: "apple-touch-icon",
+        href: "/jods/img/favicon/light/favicon-light-180.png",
+        media: "(prefers-color-scheme: light)",
+      },
+    },
+    {
+      tagName: "link",
+      attributes: {
+        rel: "apple-touch-icon",
+        href: "/jods/img/favicon/dark/favicon-dark-180.png",
+        media: "(prefers-color-scheme: dark)",
+      },
+    },
+    // Standard sizes with media queries
+    // 16x16
+    {
+      tagName: "link",
+      attributes: {
+        rel: "icon",
+        type: "image/png",
+        sizes: "16x16",
+        href: "/jods/img/favicon/light/favicon-light-16.png",
+        media: "(prefers-color-scheme: light)",
+      },
+    },
+    {
+      tagName: "link",
+      attributes: {
+        rel: "icon",
+        type: "image/png",
+        sizes: "16x16",
+        href: "/jods/img/favicon/dark/favicon-dark-16.png",
+        media: "(prefers-color-scheme: dark)",
+      },
+    },
+    // 32x32
+    {
+      tagName: "link",
+      attributes: {
+        rel: "icon",
+        type: "image/png",
+        sizes: "32x32",
+        href: "/jods/img/favicon/light/favicon-light-32.png",
+        media: "(prefers-color-scheme: light)",
+      },
+    },
+    {
+      tagName: "link",
+      attributes: {
+        rel: "icon",
+        type: "image/png",
+        sizes: "32x32",
+        href: "/jods/img/favicon/dark/favicon-dark-32.png",
+        media: "(prefers-color-scheme: dark)",
+      },
+    },
+  ],
+
+  // Add script for dynamic favicon switching
+  scripts: [
+    {
+      src: "/jods/js/favicon-switch.js",
+      async: true,
+    },
+  ],
 
   presets: [
     [
@@ -52,7 +154,7 @@ const config: Config = {
           editUrl: "https://github.com/clamstew/jods/tree/main/docs/",
           onInlineTags: "warn",
           onInlineAuthors: "warn",
-          onUntruncatedBlogPosts: "warn",
+          onUntruncatedBlogPosts: "ignore",
         },
         theme: {
           customCss: "./src/css/custom.css",
@@ -67,8 +169,8 @@ const config: Config = {
     navbar: {
       title: "jods",
       logo: {
-        alt: "jods Logo",
-        src: "img/logo.svg",
+        alt: "jods Logo with Squirrel and Duck",
+        src: "img/simple-jods-mascots-logo.png", // Using the squirrel and duck illustration
       },
       items: [
         {
@@ -78,57 +180,17 @@ const config: Config = {
           label: "Docs",
         },
         { to: "/blog", label: "Blog", position: "left" },
+        { to: "/about", label: "About", position: "left" },
+        {
+          type: "localeDropdown",
+          position: "right",
+        },
         {
           href: "https://github.com/clamstew/jods",
           label: "GitHub",
           position: "right",
         },
       ],
-    },
-    footer: {
-      style: "dark",
-      links: [
-        {
-          title: "Docs",
-          items: [
-            {
-              label: "Getting Started",
-              to: "/intro",
-            },
-          ],
-        },
-        {
-          title: "Community",
-          items: [
-            {
-              label: "GitHub Discussions",
-              href: "https://github.com/clamstew/jods/discussions",
-            },
-            {
-              label: "GitHub Issues",
-              href: "https://github.com/clamstew/jods/issues",
-            },
-          ],
-        },
-        {
-          title: "More",
-          items: [
-            {
-              label: "Blog",
-              to: "/blog",
-            },
-            {
-              label: "GitHub",
-              href: "https://github.com/clamstew/jods",
-            },
-            {
-              label: "npm",
-              href: "https://www.npmjs.com/package/jods",
-            },
-          ],
-        },
-      ],
-      copyright: `Copyright © ${new Date().getFullYear()} jods contributors. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,
