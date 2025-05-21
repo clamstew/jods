@@ -64,7 +64,7 @@ npm install jods
 
 ## 🚀 Usage
 
-```
+```ts
 import { store, json, onUpdate, computed } from "jods";
 
 const user = store({
@@ -363,6 +363,63 @@ It's just an object (kind of) with some helper methods 🤷
 - Server-side rendering optimizations
 - Data streaming and real-time subscriptions
 
+## 📚 Documentation
+
+The project documentation is built with Docusaurus and can be run locally:
+
+```bash
+# Navigate to docs directory
+cd docs
+
+# Start the development server
+pnpm start
+```
+
+The documentation will be available at http://localhost:3000/jods/
+
+### Available Documentation
+
+- **Core Guides**
+
+  - [Getting Started](https://clamstew.github.io/jods/docs/intro)
+  - [API Reference](https://clamstew.github.io/jods/docs/api-reference)
+  - [Framework Integrations](https://clamstew.github.io/jods/docs/guides/framework-integrations)
+  - [Testing Guide](https://clamstew.github.io/jods/docs/guides/testing-guide)
+  - [Time-Travel Debugging](https://clamstew.github.io/jods/docs/time-travel-debugging)
+
+Please visit the [full documentation site](https://clamstew.github.io/jods/) for complete details on all features and APIs.
+
+## 🤝 Contributing
+
+We love your input! We want to make contributing to `jods` as easy and transparent as possible, whether it's:
+
+- [Reporting a bug](https://github.com/clamstew/jods/issues/new?assignees=&labels=bug&projects=&template=bug_report.md&title=%5BBUG%5D+)
+- [Discussing the current state of the code](https://github.com/clamstew/jods/issues/new?assignees=&labels=discussion&projects=&template=code_discussion.md&title=%5BDISCUSSION%5D+)
+- [Submitting a fix](https://github.com/clamstew/jods/issues/new?assignees=&labels=fix&projects=&template=submit_fix.md&title=%5BFIX%5D+)
+- [Proposing new features](https://github.com/clamstew/jods/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=%5BFEATURE%5D+)
+- Becoming a maintainer
+
+We use GitHub to host code, to track issues and feature requests, as well as accept pull requests.
+
+We actively welcome your pull requests:
+
+1. Fork the repo and create your branch from `main`.
+2. If you've added code that should be tested, add tests.
+3. If you've changed APIs, update the documentation.
+4. Ensure the test suite passes.
+5. Make sure your code lints.
+6. Issue that pull request!
+
+For more details, check out our [Contributing Guide](./CONTRIBUTING.md).
+
+## 📝 License
+
+[MIT](./LICENSE)
+
+---
+
+# Advanced Topics
+
 ## 🕰️ Time-Travel Debugging
 
 JODS includes time-travel debugging capability, allowing you to track state changes and jump back to previous states:
@@ -644,59 +701,6 @@ The sync API provides advanced features for security, performance, and customiza
 - **Multiplexing**: Use multiple stores over one connection with the `prefix` option
 
 See the full [Sync API Documentation](https://clamstew.github.io/jods/docs/sync/api-reference) for more details.
-
-## 📚 Documentation
-
-The project documentation is built with Docusaurus and can be run locally:
-
-```bash
-# Navigate to docs directory
-cd docs
-
-# Start the development server
-pnpm start
-```
-
-The documentation will be available at http://localhost:3000/jods/
-
-### Available Documentation
-
-- **Core Guides**
-
-  - [Getting Started](https://clamstew.github.io/jods/docs/intro)
-  - [API Reference](https://clamstew.github.io/jods/docs/api-reference)
-  - [Framework Integrations](https://clamstew.github.io/jods/docs/guides/framework-integrations)
-  - [Testing Guide](https://clamstew.github.io/jods/docs/guides/testing-guide)
-  - [Time-Travel Debugging](https://clamstew.github.io/jods/docs/time-travel-debugging)
-
-Please visit the [full documentation site](https://clamstew.github.io/jods/) for complete details on all features and APIs.
-
-## 🤝 Contributing
-
-We love your input! We want to make contributing to `jods` as easy and transparent as possible, whether it's:
-
-- [Reporting a bug](https://github.com/clamstew/jods/issues/new?assignees=&labels=bug&projects=&template=bug_report.md&title=%5BBUG%5D+)
-- [Discussing the current state of the code](https://github.com/clamstew/jods/issues/new?assignees=&labels=discussion&projects=&template=code_discussion.md&title=%5BDISCUSSION%5D+)
-- [Submitting a fix](https://github.com/clamstew/jods/issues/new?assignees=&labels=fix&projects=&template=submit_fix.md&title=%5BFIX%5D+)
-- [Proposing new features](https://github.com/clamstew/jods/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=%5BFEATURE%5D+)
-- Becoming a maintainer
-
-We use GitHub to host code, to track issues and feature requests, as well as accept pull requests.
-
-We actively welcome your pull requests:
-
-1. Fork the repo and create your branch from `main`.
-2. If you've added code that should be tested, add tests.
-3. If you've changed APIs, update the documentation.
-4. Ensure the test suite passes.
-5. Make sure your code lints.
-6. Issue that pull request!
-
-For more details, check out our [Contributing Guide](./CONTRIBUTING.md).
-
-## 📝 License
-
-[MIT](./LICENSE)
 
 ## 🖼️ Framework Integrations
 
