@@ -92,71 +92,6 @@ user.fullName = computed(() => `${user.firstName} ${user.lastName}`);
 console.log(json(user)); // { firstName: "Burt Macklin", lastName: "Macklin", mood: "sneaky", fullName: "Burt Macklin Macklin" }
 ```
 
-### ⚡ Batched Updates for Performance
-
-When making multiple updates to a store, use batching to improve performance by reducing the number of notification callbacks:
-
-```
-import { store, onUpdate } from "jods";
-
-const userProfile = store({
-  name: "John",
-  age: 30,
-  location: "New York",
-  preferences: {
-    theme: "light",
-    notifications: true
-  }
-});
-
-// Without batching, this triggers 3 separate updates
-onUpdate(userProfile, () => console.log("Profile updated!")); // Will log 3 times
-
-userProfile.name = "Alice";       // First update
-userProfile.age = 32;             // Second update
-userProfile.location = "Chicago"; // Third update
-
-// With batching, all changes are applied in a single update
-userProfile.batch(() => {
-  userProfile.name = "Bob";
-  userProfile.age = 35;
-  userProfile.location = "San Francisco";
-  userProfile.preferences.theme = "dark";
-}, "update-profile"); // Optional name for debugging
-
-// Logs just once after all changes are applied
-```
-
-For cases where you need more control or want to apply updates over time:
-
-```
-// Start batching updates but don't apply them immediately
-userProfile.beginBatch("profile-update");
-
-// Make some changes (no notifications yet)
-userProfile.name = "Charlie";
-userProfile.age = 40;
-
-// Later, maybe in a callback or after an async operation
-setTimeout(() => {
-  // Make more changes
-  userProfile.location = "Austin";
-  userProfile.preferences.notifications = false;
-
-  // Now commit all changes at once and notify subscribers
-  userProfile.commitBatch();
-}, 1000);
-```
-
-Batching provides these key benefits:
-
-- **Performance**: Reduces render cycles in UI frameworks
-- **Consistency**: Ensures subscribers only see the final state
-- **Atomicity**: All related changes are applied together
-- **Computed Values**: Computed properties are only evaluated once
-
-Use the optional batch name parameter for easier debugging.
-
 ### ⚛️ React/Preact Integration
 
 JODS now includes built-in React/Preact support via dedicated entry points:
@@ -489,6 +424,71 @@ function App() {
   );
 }
 ```
+
+### ⚡ Batched Updates for Performance
+
+When making multiple updates to a store, use batching to improve performance by reducing the number of notification callbacks:
+
+```ts
+import { store, onUpdate } from "jods";
+
+const userProfile = store({
+  name: "John",
+  age: 30,
+  location: "New York",
+  preferences: {
+    theme: "light",
+    notifications: true,
+  },
+});
+
+// Without batching, this triggers 3 separate updates
+onUpdate(userProfile, () => console.log("Profile updated!")); // Will log 3 times
+
+userProfile.name = "Alice"; // First update
+userProfile.age = 32; // Second update
+userProfile.location = "Chicago"; // Third update
+
+// With batching, all changes are applied in a single update
+userProfile.batch(() => {
+  userProfile.name = "Bob";
+  userProfile.age = 35;
+  userProfile.location = "San Francisco";
+  userProfile.preferences.theme = "dark";
+}, "update-profile"); // Optional name for debugging
+
+// Logs just once after all changes are applied
+```
+
+For cases where you need more control or want to apply updates over time:
+
+```ts
+// Start batching updates but don't apply them immediately
+userProfile.beginBatch("profile-update");
+
+// Make some changes (no notifications yet)
+userProfile.name = "Charlie";
+userProfile.age = 40;
+
+// Later, maybe in a callback or after an async operation
+setTimeout(() => {
+  // Make more changes
+  userProfile.location = "Austin";
+  userProfile.preferences.notifications = false;
+
+  // Now commit all changes at once and notify subscribers
+  userProfile.commitBatch();
+}, 1000);
+```
+
+Batching provides these key benefits:
+
+- **Performance**: Reduces render cycles in UI frameworks
+- **Consistency**: Ensures subscribers only see the final state
+- **Atomicity**: All related changes are applied together
+- **Computed Values**: Computed properties are only evaluated once
+
+Use the optional batch name parameter for easier debugging.
 
 ## 🔄 Real-Time Synchronization
 
