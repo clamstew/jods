@@ -87,12 +87,13 @@ user.mood = "sneaky";
 user.fullName = computed(() => `${user.firstName} ${user.lastName}`);
 
 console.log(json(user)); // { firstName: "Burt Macklin", lastName: "Macklin", mood: "sneaky", fullName: "Burt Macklin Macklin" }
+```
 
 ### ⚡ Batched Updates for Performance
 
 When making multiple updates to a store, use batching to improve performance by reducing the number of notification callbacks:
 
-```js
+```typescript
 import { store, onUpdate } from "jods";
 
 const userProfile = store({
@@ -125,7 +126,7 @@ userProfile.batch(() => {
 
 For cases where you need more control or want to apply updates over time:
 
-```js
+```
 // Start batching updates but don't apply them immediately
 userProfile.beginBatch("profile-update");
 
