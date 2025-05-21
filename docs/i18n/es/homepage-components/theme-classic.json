@@ -1,0 +1,18 @@
+{
+  "theme.tags.tagsPageTitle": {
+    "message": "Etiquetas",
+    "description": "The title of the tag list page"
+  },
+  "theme.contentVisibility.draftBanner.message": {
+    "message": "Esta página es un borrador. Solo será visible en desarrollo y se excluirá de la compilación de producción.",
+    "description": "The draft content banner message"
+  },
+  "theme.navbar.mobileLanguageDropdown.label": {
+    "message": "Idiomas",
+    "description": "The label for the mobile language switcher dropdown"
+  },
+  "theme.common.skipToMainContent": {
+    "message": "Saltar al contenido principal",
+    "description": "The skip to content label used for accessibility, allowing to rapidly navigate to main content with keyboard tab/enter navigation"
+  }
+}

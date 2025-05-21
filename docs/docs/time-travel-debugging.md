@@ -1,22 +1,38 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 ---
 
-# Time-Travel Debugging
+# 🕰️ Time-Travel Debugging with jods
 
-jods includes powerful time-travel debugging capabilities that allow you to track state changes over time and jump back to previous states. This feature is invaluable for debugging complex state changes and understanding how your application's state evolves.
+jods provides a powerful time-travel debugging capability through the `history()` function, allowing you to track changes to your store and move back and forth through its state history.
 
-## Basic Usage
+## 🔍 Understanding Time-Travel Debugging
 
-The `history()` function creates a history tracker for a store, which records all state changes and provides methods to travel between them:
+Time-travel debugging lets you:
+
+1. Record all state changes over time
+2. View a complete state history
+3. Jump backward or forward to any recorded state
+4. Understand what changed between states
+
+This is particularly valuable for:
+
+- Debugging complex state transitions
+- Implementing undo/redo functionality
+- Tracking user interactions
+- Understanding the sequence of events in your application
+
+## 🛠️ Basic Usage
+
+### 📝 Creating a History Tracker
 
 ```js
-import { store, history, json } from "jods";
+import { store, history } from "jods";
 
 // Create a store
 const counter = store({ count: 0 });
 
-// Create a history tracker
+// Add history tracking
 const counterHistory = history(counter);
 
 // Make some changes
@@ -24,178 +40,231 @@ counter.count = 1;
 counter.count = 2;
 counter.count = 3;
 
-// Time travel to first state
+// View current history state
+console.log(counterHistory.currentIndex); // 3 (after three changes)
+console.log(counterHistory.states.length); // 4 (initial + 3 changes)
+```
+
+### ⏳ Traveling Through Time
+
+```js
+// Jump back to initial state
 counterHistory.travelTo(0);
-console.log(json(counter)); // { count: 0 }
+console.log(counter.count); // 0
 
-// Move forward
+// Move forward one step
 counterHistory.forward();
-console.log(json(counter)); // { count: 1 }
+console.log(counter.count); // 1
 
-// Jump to latest state
-counterHistory.travelTo(counterHistory.getEntries().length - 1);
-console.log(json(counter)); // { count: 3 }
+// Jump to the latest state
+counterHistory.latest();
+console.log(counter.count); // 3
+
+// Go back one step
+counterHistory.back();
+console.log(counter.count); // 2
 ```
 
-## History API
+## 🌐 API Reference
 
-### `history(store, options?)`
+For the complete jods API documentation, see the [📚 API Reference](/api/overview).
 
-Creates a history tracker for a store.
+### 🔄 `history(store, options?)`
 
-- **Parameters**:
+Creates a history tracker for the given store.
 
-  - `store`: The store to track
-  - `options` (optional): Configuration options
-    - `maxEntries`: Maximum number of history entries to keep (default: 50)
-    - `active`: Whether history tracking is active (default: true in development, false in production)
+#### ⚙️ Options
 
-- **Returns**: A History instance with the following methods:
-  - `travelTo(index)`: Travel to a specific point in history
-  - `back()`: Go back one step in history
-  - `forward()`: Go forward one step in history
-  - `getEntries()`: Get all history entries
-  - `getCurrentIndex()`: Get the current index in history
-  - `clear()`: Clear all history entries except the current one
-  - `destroy()`: Remove subscription to store updates
+```typescript
+interface HistoryOptions {
+  maxSize?: number; // Maximum number of states to keep (default: Infinity)
+  autoRecord?: boolean; // Whether to automatically record state changes (default: true)
+}
+```
 
-## History Entries
+#### 📊 Return Value
 
-Each history entry contains:
+```typescript
+interface HistoryTracker<T> {
+  states: T[]; // Array of recorded states
+  currentIndex: number; // Current position in history
 
-- `state`: A snapshot of the entire store state
-- `timestamp`: When the change occurred
-- `diff`: What changed from the previous state
+  record(): void; // Record current state
+  latest(): void; // Go to most recent state
+  travelTo(index: number): void; // Jump to specific index
+  back(): boolean; // Go back one step (returns false if at beginning)
+  forward(): boolean; // Go forward one step (returns false if at end)
+  clear(): void; // Clear history
+}
+```
+
+## 💡 Advanced Examples
+
+### 📏 Limiting History Size
+
+For performance reasons, you might want to limit the number of states stored:
 
 ```js
-// Example of accessing history entries
-const entries = counterHistory.getEntries();
-entries.forEach((entry, index) => {
-  console.log(`Entry ${index}:`);
-  console.log(`State:`, entry.state);
-  console.log(`Time:`, new Date(entry.timestamp).toLocaleTimeString());
-  if (entry.diff) {
-    console.log(`Changes:`, entry.diff);
-  }
+import { store, history } from "jods";
+
+const bigStore = store({
+  /* lots of data */
 });
+const limitedHistory = history(bigStore, { maxSize: 50 });
+
+// Only the last 50 states will be kept
 ```
 
-## Branching History
+### 🖊️ Manual Recording
 
-When you travel back in time and then make changes, jods automatically creates a new branch of history, discarding future states that are no longer relevant:
+By default, all changes are recorded automatically. For more control, you can disable auto-recording:
 
 ```js
-// Start with a simple counter
-const counter = store({ count: 0 });
-const counterHistory = history(counter);
+import { store, history } from "jods";
 
-// Make some changes
-counter.count = 10;
-counter.count = 20;
-counter.count = 30;
+const userStore = store({ name: "", email: "" });
+const userHistory = history(userStore, { autoRecord: false });
 
-// Go back to the first change
-counterHistory.travelTo(1); // count is now 10
+// Make some temporary changes
+userStore.name = "typing...";
+userStore.email = "still...";
 
-// Make a new change - this creates a branch and discards future states
-counter.count = 15;
-
-// History now contains: [0, 10, 15] instead of [0, 10, 20, 30]
-console.log(counterHistory.getEntries().map((entry) => entry.state.count));
+// Only record when you want
+userStore.name = "Final Name";
+userStore.email = "final@email.com";
+userHistory.record(); // Now this state is recorded
 ```
 
-## React Integration
+### ↩️ Creating an Undo/Redo Feature
 
-For React applications, jods provides a debugger component that renders a UI for time-travel debugging:
+```js
+import { store, history } from "jods";
+import { useState } from "react";
 
-```jsx
-import { store } from "jods";
-import { useJods, createDebugger } from "jods/react";
+// Set up store and history
+const documentStore = store({ text: "" });
+const docHistory = history(documentStore);
 
-// Create a store
-const appStore = store({ count: 0 });
+function TextEditor() {
+  const [canUndo, setCanUndo] = useState(false);
+  const [canRedo, setCanRedo] = useState(false);
 
-// Create a debugger component
-const AppDebugger = createDebugger(appStore, {
-  position: "bottom", // or 'right'
-  showDiff: true,
-  maxEntries: 50,
-});
+  // Update UI controls when history changes
+  useEffect(() => {
+    const updateButtons = () => {
+      setCanUndo(docHistory.currentIndex > 0);
+      setCanRedo(docHistory.currentIndex < docHistory.states.length - 1);
+    };
 
-function App() {
-  const state = useJods(appStore);
+    // Subscribe to store changes
+    const unsubscribe = onUpdate(documentStore, updateButtons);
+    updateButtons();
+
+    return unsubscribe;
+  }, []);
 
   return (
     <div>
-      <h1>Count: {state.count}</h1>
-      <button onClick={() => state.count++}>Increment</button>
-
-      {/* Add the debugger component (only included in development) */}
-      <AppDebugger />
+      <textarea
+        value={documentStore.text}
+        onChange={(e) => {
+          documentStore.text = e.target.value;
+        }}
+      />
+      <div>
+        <button disabled={!canUndo} onClick={() => docHistory.back()}>
+          Undo
+        </button>
+        <button disabled={!canRedo} onClick={() => docHistory.forward()}>
+          Redo
+        </button>
+      </div>
     </div>
   );
 }
 ```
 
-The debugger component is development-only and doesn't add any overhead in production builds.
+## 🔄 How It Works
 
-## Complete Example
+The `history()` function creates a wrapper around your store that:
 
-Here's a more complete example of using history for debugging:
+1. Captures the initial state of the store
+2. Subscribes to store changes through `onUpdate()`
+3. Creates a deep clone of each state when a change occurs
+4. Maintains an array of these state snapshots
+5. Updates the store with the appropriate state when time-traveling
+
+This approach ensures that you always have accurate snapshots without modifying how you interact with your store normally.
+
+## 🧠 Best Practices
+
+### 💾 Memory Considerations
+
+Because history keeps a complete copy of the store for each state, it can consume significant memory for large stores or many changes. Consider:
+
+- Using the `maxSize` option to limit history length
+- Applying history selectively to smaller, focused stores
+- Using manual recording for precise control
+- Clearing history when no longer needed with `historyTracker.clear()`
+
+### 🧩 Complex State
+
+For stores with computed values or nested structures, time-travel works seamlessly:
 
 ```js
-import { store, json, onUpdate, computed, history } from "jods";
+import { store, computed, history, json } from "jods";
 
-// Create a todo list store
-const todos = store({
-  items: [],
-  filter: "all",
+const userData = store({
+  firstName: "Ada",
+  lastName: "Lovelace",
+  visits: 0,
 });
 
 // Add a computed property
-todos.activeCount = computed(
-  () => todos.items.filter((item) => !item.completed).length
+userData.fullName = computed(
+  () => `${userData.firstName} ${userData.lastName}`
 );
 
-// Create a history tracker
-const todosHistory = history(todos);
+const userHistory = history(userData);
 
-// Log changes as they happen
-onUpdate(todos, (state) => {
-  console.log("State updated:", json(state));
-});
+// Make changes
+userData.visits = 1;
+userData.lastName = "Byron";
 
-// Add some todos
-function addTodo(text) {
-  todos.items.push({
-    id: Date.now(),
-    text,
-    completed: false,
-  });
-}
-
-addTodo("Learn jods");
-addTodo("Build an app");
-addTodo("Master time travel");
-
-// Complete a todo
-todos.items[1].completed = true;
-
-// Inspect history
-console.log(`History has ${todosHistory.getEntries().length} entries`);
-
-// Go back to before the second todo was added
-todosHistory.travelTo(1);
-console.log("Traveled back:", json(todos));
-
-// Now add a different todo - this creates a new timeline
-addTodo("Alternative task");
-console.log("New branch:", json(todos));
+// Travel back to original state
+userHistory.travelTo(0);
+console.log(json(userData));
+// { firstName: "Ada", lastName: "Lovelace", visits: 0, fullName: "Ada Lovelace" }
 ```
 
-## Best Practices
+### 🧰 Framework Integration
 
-- Only use history tracking in development or debugging scenarios
-- Set a reasonable `maxEntries` value to prevent memory issues
-- Call `destroy()` when you're done with a history tracker to prevent memory leaks
-- Use the `diff` property to understand what changed between states
+Time-travel debugging works with any framework integration:
+
+```jsx
+import { store, history } from "jods";
+import { useJods } from "jods/react";
+
+const counterStore = store({ count: 0 });
+export const counterHistory = history(counterStore);
+
+function Counter() {
+  const counter = useJods(counterStore);
+
+  return (
+    <div>
+      <p>Count: {counter.count}</p>
+      <button
+        onClick={() => {
+          counter.count++;
+        }}
+      >
+        Increment
+      </button>
+      <button onClick={() => counterHistory.back()}>Undo</button>
+    </div>
+  );
+}
+```
+
+Embrace the power of time-travel debugging with jods, and experience a new level of control and understanding over your application state! 🕰️ 🐿️ 🦆

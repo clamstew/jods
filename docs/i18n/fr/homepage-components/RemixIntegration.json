@@ -1,0 +1,106 @@
+{
+  "homepage.remix.title.remix": {
+    "message": "Remix",
+    "description": "Remix part of the Remix integration title"
+  },
+  "homepage.remix.title.state": {
+    "message": "State",
+    "description": "State part of the Remix integration title"
+  },
+  "homepage.remix.title.reimagined": {
+    "message": "Réinventé",
+    "description": "Reimagined part of the Remix integration title"
+  },
+  "homepage.remix.subtitle.modern": {
+    "message": "Couche de Données Moderne",
+    "description": "Modern data layer subtitle for Remix integration"
+  },
+  "homepage.remix.subtitle.for_remix": {
+    "message": "pour Remix",
+    "description": "For Remix subtitle"
+  },
+  "homepage.remix.subtitle.description": {
+    "message": "réactive, typée et prête pour la persistance",
+    "description": "Description in subtitle for Remix integration"
+  },
+  "homepage.remix.features.sync.title": {
+    "message": "Synchronisation automatique",
+    "description": "Sync feature title in Remix integration"
+  },
+  "homepage.remix.features.sync.description": {
+    "message": "État serveur et client sans hydratation manuelle",
+    "description": "Sync feature description in Remix integration"
+  },
+  "homepage.remix.features.reactivity.title": {
+    "message": "Offre une vraie réactivité",
+    "description": "Reactivity feature title in Remix integration"
+  },
+  "homepage.remix.features.reactivity.description": {
+    "message": "Pour des mises à jour optimistes de l'UI",
+    "description": "Reactivity feature description in Remix integration"
+  },
+  "homepage.remix.features.zod.title": {
+    "message": "Utilise les schémas Zod",
+    "description": "Zod feature title in Remix integration"
+  },
+  "homepage.remix.features.zod.description": {
+    "message": "Pour la validation des types à l'exécution et une excellente DX",
+    "description": "Zod feature description in Remix integration"
+  },
+  "homepage.remix.features.backend.title": {
+    "message": "Compatible avec tout backend",
+    "description": "Backend feature title in Remix integration"
+  },
+  "homepage.remix.features.backend.description": {
+    "message": "(Prisma, MongoDB, SQLite, etc.)",
+    "description": "Backend feature description in Remix integration"
+  },
+  "homepage.remix.features.model.title": {
+    "message": "Propose un modèle cohérent",
+    "description": "Model feature title in Remix integration"
+  },
+  "homepage.remix.features.model.description": {
+    "message": "Pattern uniforme dans toute votre application",
+    "description": "Model feature description in Remix integration"
+  },
+  "homepage.remix.tabs.traditional": {
+    "message": "Remix Traditionnel",
+    "description": "Traditional Remix tab label"
+  },
+  "homepage.remix.tabs.traditional_short": {
+    "message": "Traditionnel",
+    "description": "Short label for Traditional Remix tab on mobile"
+  },
+  "homepage.remix.tabs.model": {
+    "message": "1. jods: Définir le Modèle",
+    "description": "Model tab label in Remix integration"
+  },
+  "homepage.remix.tabs.model_short": {
+    "message": "1. Modèle",
+    "description": "Short label for Model tab on mobile"
+  },
+  "homepage.remix.tabs.component": {
+    "message": "2. jods: Utiliser le Composant",
+    "description": "Component tab label in Remix integration"
+  },
+  "homepage.remix.tabs.component_short": {
+    "message": "2. Composant",
+    "description": "Short label for Component tab on mobile"
+  },
+  "homepage.remix.footer.button.explore": {
+    "message": "Explorer l'Intégration Remix",
+    "description": "Text for the Explore Remix Integration button"
+  },
+  "homepage.remix.footer.button.explore_short": {
+    "message": "Guide Remix",
+    "description": "Short text for the Explore Remix Integration button on mobile"
+  },
+  "homepage.remix.footer.button.active_record": {
+    "message": "En savoir plus sur Active Record",
+    "description": "Text for the Learn About Active Record button"
+  },
+  "homepage.remix.footer.button.active_record_short": {
+    "message": "Active Record",
+    "description": "Short text for the Learn About Active Record button on mobile"
+  }
+}

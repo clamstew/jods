@@ -1,0 +1,74 @@
+{
+  "footer.title.documentation": {
+    "message": "DOCUMENTACIÓN",
+    "description": "The title of the footer links column with title=DOCUMENTATION in the footer"
+  },
+  "footer.title.community": {
+    "message": "COMUNIDAD",
+    "description": "The title of the footer links column with title=COMMUNITY in the footer"
+  },
+  "footer.title.resources": {
+    "message": "RECURSOS",
+    "description": "The title of the footer links column with title=RESOURCES in the footer"
+  },
+  "footer.item.label.getting-started": {
+    "message": "📚 Primeros pasos",
+    "description": "Footer link to getting started page"
+  },
+  "footer.item.label.about-jods": {
+    "message": "ℹ️ Acerca de jods",
+    "description": "Footer link to about page"
+  },
+  "footer.item.label.api-reference": {
+    "message": "🧩 Referencia de la API",
+    "description": "Footer link to API reference page"
+  },
+  "footer.item.label.discussions": {
+    "message": "💬 Discusiones",
+    "description": "Footer link to GitHub discussions"
+  },
+  "footer.item.label.issues": {
+    "message": "🐛 Problemas",
+    "description": "Footer link to GitHub issues"
+  },
+  "footer.item.label.creator": {
+    "message": "👨‍💻 Creador",
+    "description": "Footer link to creator's GitHub profile"
+  },
+  "footer.item.label.blog": {
+    "message": "📝 Blog",
+    "description": "Footer link to blog"
+  },
+  "footer.item.label.github": {
+    "message": "🐙 GitHub",
+    "description": "Footer link to GitHub repository"
+  },
+  "footer.item.label.npm": {
+    "message": "📦 npm",
+    "description": "Footer link to npm package"
+  },
+  "footer.mascots.duck.title": {
+    "message": "¡Haz clic para hacerte amigo del pato!",
+    "description": "Title for duck mascot"
+  },
+  "footer.mascots.squirrel.title": {
+    "message": "¡Haz clic para hacerte amigo de la ardilla!",
+    "description": "Title for squirrel mascot"
+  },
+  "footer.copyright.builtWith": {
+    "message": "Construido con {heart} por {creator}",
+    "description": "Footer text indicating the site was built with love"
+  },
+  "footer.copyright.notice": {
+    "message": "Copyright © {year} colaboradores de jods",
+    "description": "Copyright notice"
+  },
+  "footer.animation.pause": {
+    "message": "Pausar animaciones",
+    "description": "Accessible label for the pause button"
+  },
+  "footer.animation.play": {
+    "message": "Reproducir animaciones",
+    "description": "Accessible label for the play button"
+  }
+}

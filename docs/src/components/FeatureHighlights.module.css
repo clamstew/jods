@@ -1,0 +1,1041 @@
+.featuresContainer {
+  padding: 4rem 0;
+  background: var(--ifm-color-emphasis-100);
+  background-image: radial-gradient(
+    circle at 25px 25px,
+    var(--ifm-color-emphasis-200) 2px,
+    transparent 0
+  );
+  background-size: 50px 50px;
+  transition: background-image 0.5s ease;
+}
+
+.sectionTitle {
+  text-align: center;
+  margin-bottom: 3rem;
+  margin-top: 2rem;
+  font-size: 2.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Category styling */
+.categoryHeader {
+  margin: 3rem 0 1.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.categoryTitle {
+  font-size: 1.5rem;
+  margin: 0;
+  font-weight: 700;
+  color: var(--ifm-color-primary);
+  margin-right: 1rem;
+  padding: 0.5rem 1.5rem;
+  background: linear-gradient(
+    90deg,
+    var(--ifm-color-emphasis-200) 0%,
+    transparent 100%
+  );
+  border-radius: 8px;
+  border-left: 4px solid var(--ifm-color-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Enhanced Framework Integration category header */
+.featuresContainer .categoryHeader:nth-of-type(2) .categoryTitle {
+  font-size: 1.6rem;
+  font-weight: 700;
+  background: linear-gradient(
+    135deg,
+    var(--ifm-color-primary) 0%,
+    #9d71ff 70%,
+    #ff7b1a 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.25rem;
+  border-left: none;
+  box-shadow: none;
+}
+
+.categoryDivider {
+  flex: 1;
+  height: 1px;
+  background: var(--ifm-color-emphasis-300);
+}
+
+/* Feature grid */
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.featureCard {
+  background: var(--ifm-color-emphasis-0);
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  height: 100%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Framework integration and Remix cards special padding */
+.frameworkCard,
+.featureCardWide {
+  padding: 1.8rem;
+}
+
+.frameworkCard .featureHeader {
+  margin-bottom: 5px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.frameworkCard .titleWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.frameworkCard .featureIcon {
+  align-self: flex-start;
+}
+
+/* Wide card for Remix */
+.featureCardWide {
+  grid-column: span 2;
+  background: linear-gradient(
+    45deg,
+    var(--ifm-color-emphasis-0) 0%,
+    var(--ifm-color-emphasis-100) 100%
+  );
+  border-color: var(--ifm-color-primary-lightest);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(97, 218, 251, 0.2);
+}
+
+/* Framework integration card special styling */
+.frameworkCard {
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  background: linear-gradient(
+    135deg,
+    rgba(25, 25, 45, 0.8) 0%,
+    rgba(40, 40, 70, 0.75) 100%
+  );
+  border: 1px solid rgba(70, 70, 90, 0.3);
+  display: flex;
+  flex-direction: column;
+}
+
+:global(html[data-theme="light"]) .frameworkCard {
+  background: linear-gradient(
+    135deg,
+    rgba(250, 252, 255, 0.8) 0%,
+    rgba(240, 245, 255, 0.75) 100%
+  );
+  border: 1px solid rgba(200, 210, 220, 0.5);
+}
+
+.frameworkCard:hover {
+  transform: translateY(-5px);
+  border-color: #61dafb !important;
+  box-shadow: 0 15px 30px rgba(97, 218, 251, 0.2);
+}
+
+:global(html[data-theme="light"]) .frameworkCard:hover {
+  box-shadow: 0 15px 30px rgba(97, 218, 251, 0.15);
+}
+
+.frameworkCard h3 {
+  font-size: clamp(28px, 5vw, 42px);
+  background-image: linear-gradient(90deg, #61dafb, #9d71ff, #ff7b1a);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  margin-bottom: 20px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  text-shadow: 0 2px 10px rgba(97, 218, 251, 0.3);
+}
+
+.frameworkCard:hover h3 {
+  color: #61dafb;
+  -webkit-text-fill-color: #61dafb;
+}
+
+:global(html[data-theme="light"]) .frameworkCard h3 {
+  background-image: linear-gradient(90deg, #0088cc, #7854b8, #f5850c);
+  text-shadow: 0 2px 10px rgba(0, 136, 204, 0.3);
+}
+
+:global(html[data-theme="light"]) .frameworkCard:hover h3 {
+  color: #0088cc;
+  -webkit-text-fill-color: #0088cc;
+}
+
+.frameworkCard .featureDescription {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 15px;
+  letter-spacing: 0.01em;
+}
+
+:global(html[data-theme="light"]) .frameworkCard .featureDescription {
+  color: #2d3748;
+}
+
+:global(html[data-theme="dark"]) .frameworkCard .featureDescription {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.frameworkIconContainer {
+  position: relative;
+  width: 65px;
+  height: 65px;
+  background: linear-gradient(
+    135deg,
+    rgba(30, 30, 60, 0.4) 0%,
+    rgba(50, 50, 80, 0.4) 100%
+  );
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(97, 218, 251, 0.3);
+  box-shadow: 0 0 15px rgba(97, 218, 251, 0.2);
+}
+
+:global(html[data-theme="light"]) .frameworkIconContainer {
+  background: linear-gradient(
+    135deg,
+    rgba(245, 248, 255, 0.8) 0%,
+    rgba(235, 240, 255, 0.8) 100%
+  );
+  border: 1px solid rgba(0, 136, 204, 0.3);
+  box-shadow: 0 0 15px rgba(0, 136, 204, 0.15);
+}
+
+.frameworkCard:hover .frameworkIconContainer {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(97, 218, 251, 0.3);
+  border-color: #61dafb;
+}
+
+.mainFrameworkIcon {
+  position: absolute;
+  font-size: 26px;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+}
+
+:global(html[data-theme="dark"]) .mainFrameworkIcon {
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+}
+
+:global(html[data-theme="light"]) .mainFrameworkIcon {
+  filter: drop-shadow(0 2px 5px rgba(100, 120, 160, 0.2));
+}
+
+.reactIcon {
+  top: 5px;
+  left: 5px;
+  z-index: 3;
+  animation: float 4s ease-in-out infinite;
+}
+
+.preactIcon {
+  bottom: 5px;
+  right: 5px;
+  z-index: 2;
+  animation: float 4s ease-in-out infinite 1.3s;
+}
+
+.otherIcon {
+  bottom: 5px;
+  left: 5px;
+  z-index: 1;
+  animation: float 4s ease-in-out infinite 2.7s;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.frameworkGlow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  background: radial-gradient(
+    circle,
+    rgba(97, 218, 251, 0.2) 0%,
+    transparent 70%
+  );
+  animation: blink 3s infinite alternate;
+}
+
+:global(html[data-theme="light"]) .frameworkGlow {
+  background: radial-gradient(
+    circle,
+    rgba(0, 136, 204, 0.15) 0%,
+    transparent 70%
+  );
+}
+
+.frameworkCard::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -10%;
+  width: 120%;
+  height: 200%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(97, 218, 251, 0.15) 0%,
+    rgba(157, 113, 255, 0.08) 40%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+  animation: pulseGlow 8s infinite alternate ease-in-out;
+}
+
+:global(html[data-theme="light"]) .frameworkCard::before {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 136, 204, 0.15) 0%,
+    rgba(120, 84, 184, 0.1) 40%,
+    transparent 70%
+  );
+}
+
+/* Add grid spacing for the two framework cards to have equal heights */
+.frameworkGrid {
+  display: grid;
+  grid-template-columns: minmax(300px, 1fr) minmax(300px, 2fr);
+  gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .frameworkGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .frameworkIconContainer {
+    width: 55px;
+    height: 55px;
+  }
+
+  .mainFrameworkIcon {
+    font-size: 22px;
+  }
+
+  .frameworkCard .featureDescription {
+    font-size: 16px;
+  }
+}
+
+.featureCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border-color: var(--ifm-color-primary-lightest);
+  text-decoration: none;
+}
+
+.featureHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.featureIcon {
+  font-size: 2.1rem;
+  margin-right: 1.2rem;
+  width: 60px;
+  height: 60px;
+  min-width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ifm-color-emphasis-200);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  margin-top: 0.25rem;
+}
+
+/* Animated icon for new features */
+.featureIconAnimated {
+  background: linear-gradient(
+    135deg,
+    var(--ifm-color-primary-lightest) 0%,
+    var(--ifm-color-primary) 100%
+  );
+  animation: pulse 2s infinite;
+  color: white;
+  font-size: 2rem;
+}
+
+/* Framework icon specific styling */
+.frameworkIcon {
+  position: relative;
+  z-index: 1;
+}
+
+/* Flux icon styling */
+.fluxIcon {
+  width: 40px;
+  height: 40px;
+  color: var(--ifm-color-primary);
+  /* Flux SVG light mode variables */
+  --flux-frame: #dcddde;
+  --flux-stroke: #5a5a5a;
+  --flux-glass: #2f2f32;
+  --flux-glass-stroke: #2e2e2e;
+  --flux-plate: #e4e4e4;
+  --flux-coupling: #d34e4e;
+  --flux-arm-start: #fdfdf9;
+  --flux-arm-end: #9a9a8b;
+  --flux-highlight: #ffe86c;
+  --flux-glow-center: #fffa96;
+  --flux-glow-edge: #ffdf00;
+  --flux-center: #847c6c;
+  --flux-center-stroke: #262626;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--ifm-color-primary-rgb), 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(var(--ifm-color-primary-rgb), 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--ifm-color-primary-rgb), 0);
+  }
+}
+
+.titleWrapper {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.featureHeader h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+/* New badge */
+.newBadge {
+  background-color: var(--ifm-color-primary);
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  margin-left: 0.5rem;
+  animation: badgePulse 2s infinite;
+}
+
+@keyframes badgePulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--ifm-color-primary-rgb), 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(var(--ifm-color-primary-rgb), 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--ifm-color-primary-rgb), 0);
+  }
+}
+
+.featureDescription {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--ifm-color-emphasis-700);
+}
+
+/* Feature bullets list styling */
+.featureBullets {
+  margin-top: 0.75rem;
+  padding-left: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.featureBullets li {
+  margin-bottom: 0.5rem;
+}
+
+.featureBullets li:last-child {
+  margin-bottom: 0;
+}
+
+/* Dark mode adjustments */
+:global(html[data-theme="dark"]) .featureCard {
+  background: rgba(30, 30, 60, 0.4);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global(html[data-theme="dark"]) .featureCardWide {
+  background: linear-gradient(
+    45deg,
+    rgba(30, 30, 60, 0.6) 0%,
+    rgba(40, 40, 80, 0.5) 100%
+  );
+  border-color: var(--ifm-color-primary-dark);
+}
+
+:global(html[data-theme="dark"]) .frameworkCard {
+  background: linear-gradient(
+    135deg,
+    rgba(97, 218, 251, 0.12) 0%,
+    rgba(103, 58, 184, 0.12) 50%,
+    rgba(33, 33, 33, 0.12) 100%
+  );
+  border-color: rgba(97, 218, 251, 0.3);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+:global(html[data-theme="dark"]) .frameworkCard:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(97, 218, 251, 0.25) 0%,
+    rgba(103, 58, 184, 0.25) 50%,
+    rgba(33, 33, 33, 0.2) 100%
+  );
+  border-color: var(--ifm-color-primary);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4), 0 0 15px rgba(97, 218, 251, 0.3);
+}
+
+:global(html[data-theme="dark"]) .frameworkCard::before {
+  background: linear-gradient(
+    135deg,
+    rgba(97, 218, 251, 0.15) 0%,
+    rgba(103, 58, 184, 0.15) 50%,
+    rgba(255, 107, 1, 0.15) 100%
+  );
+  box-shadow: 0 0 30px rgba(97, 218, 251, 0.1);
+}
+
+:global(html[data-theme="dark"]) .mainFrameworkIcon {
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+}
+
+:global(html[data-theme="dark"]) .reactIcon {
+  color: #61dafb;
+  text-shadow: 0 0 8px rgba(97, 218, 251, 0.7);
+}
+
+:global(html[data-theme="dark"]) .preactIcon {
+  color: #9d71ff;
+  text-shadow: 0 0 8px rgba(103, 58, 184, 0.7);
+}
+
+:global(html[data-theme="dark"]) .otherIcon {
+  color: #ff7b1a;
+  text-shadow: 0 0 8px rgba(255, 107, 1, 0.7);
+}
+
+:global(html[data-theme="dark"]) .featureIcon {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+:global(html[data-theme="dark"]) .categoryDivider {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+:global(html[data-theme="dark"]) .featureCard:hover {
+  border-color: var(--ifm-color-primary-dark);
+  background: rgba(40, 40, 80, 0.5);
+}
+
+:global(html[data-theme="dark"]) .fluxIcon {
+  /* Flux SVG dark mode variables */
+  --flux-frame: #555;
+  --flux-stroke: #777;
+  --flux-glass: #1e1e21;
+  --flux-glass-stroke: #444;
+  --flux-plate: #aaa;
+  --flux-coupling: #ff7878;
+  --flux-arm-start: #ddd;
+  --flux-arm-end: #888;
+  --flux-highlight: #ffe86c;
+  --flux-glow-center: #fffbb0;
+  --flux-glow-edge: #ffe834;
+  --flux-center: #a59f8c;
+  --flux-center-stroke: #444;
+}
+
+:global(html[data-theme="dark"]) .frameworkGlow {
+  background: radial-gradient(
+    circle,
+    rgba(97, 218, 251, 0.6) 0%,
+    rgba(103, 58, 184, 0.6) 50%,
+    rgba(255, 107, 1, 0.6) 100%
+  );
+  filter: blur(20px);
+}
+
+:global(html[data-theme="dark"]) .frameworkCard:hover .frameworkGlow {
+  opacity: 0.9;
+  transform: scale(1.7);
+}
+
+:global(html[data-theme="dark"]) .frameworkCard:hover .featureIcon {
+  background: linear-gradient(
+    135deg,
+    rgba(97, 218, 251, 0.3) 0%,
+    rgba(103, 58, 184, 0.3) 100%
+  );
+  box-shadow: 0 0 20px rgba(97, 218, 251, 0.3);
+}
+
+/* Enhanced dark mode text for better readability */
+:global(html[data-theme="dark"]) .frameworkCard .featureDescription,
+:global(html[data-theme="dark"]) .featureCardWide .featureDescription {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Ensure proper vertical alignment with the larger titles */
+.frameworkCard .featureIcon,
+.featureCardWide .featureIcon {
+  margin-top: 0.25rem;
+}
+
+.featureCard:hover .featureIcon {
+  transform: scale(1.1) rotate(3deg);
+  background: var(--ifm-color-emphasis-300);
+}
+
+.featureCard:focus {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(var(--ifm-color-primary-rgb), 0.3);
+  transform: translateY(-3px);
+}
+
+/* Dark mode adjustments */
+:global(html[data-theme="dark"]) .categoryTitle {
+  background: linear-gradient(
+    90deg,
+    rgba(97, 218, 251, 0.2) 0%,
+    transparent 100%
+  );
+  border-left: 4px solid var(--ifm-color-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  color: var(--ifm-color-primary-lightest);
+}
+
+/* Light mode enhancements for dots */
+:global(html[data-theme="light"]) .featuresContainer {
+  background-image: radial-gradient(
+      circle at 25px 25px,
+      var(--ifm-color-emphasis-400) 3px,
+      transparent 0
+    ),
+    radial-gradient(
+      circle at 75px 75px,
+      var(--ifm-color-emphasis-300) 2px,
+      transparent 0
+    );
+  background-size: 50px 50px, 25px 25px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Dark mode enhancements */
+:global(html[data-theme="dark"]) .featuresContainer {
+  background-image: radial-gradient(
+      circle at 25px 25px,
+      rgba(97, 218, 251, 0.25) 2px,
+      transparent 0
+    ),
+    radial-gradient(
+      circle at 75px 75px,
+      rgba(157, 113, 255, 0.2) 1px,
+      transparent 0
+    );
+  background-size: 50px 50px, 25px 25px;
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+/* Remix Integration special styling */
+.remixIcon {
+  font-size: 2.4rem;
+  transition: all 0.5s ease-in-out;
+  display: inline-block;
+  position: relative;
+}
+
+/* CD playing effect */
+.remixIcon::after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(97, 218, 251, 0.6) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  z-index: -1;
+}
+
+.featureCardWide:hover .remixIcon::after {
+  animation: cdPlaying 1s ease-in-out infinite alternate;
+}
+
+@keyframes cdPlaying {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 0.7;
+    transform: scale(1.2);
+  }
+}
+
+.discoBall {
+  transition: all 0.5s ease-in-out;
+  display: inline-block;
+  margin-left: 8px;
+  transform-origin: center;
+  position: relative;
+}
+
+.featureCardWide:hover .remixIcon {
+  animation: spinDisc 4s linear infinite;
+}
+
+.featureCardWide:hover .discoBall {
+  animation: spinBall 2.5s linear infinite;
+}
+
+/* Disco ball light reflection effect */
+.discoBall::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: radial-gradient(
+      circle at 30% 30%,
+      rgba(255, 255, 255, 0.8) 2%,
+      transparent 4%
+    ),
+    radial-gradient(
+      circle at 70% 20%,
+      rgba(255, 255, 255, 0.8) 2%,
+      transparent 4%
+    ),
+    radial-gradient(
+      circle at 40% 80%,
+      rgba(255, 255, 255, 0.8) 2%,
+      transparent 4%
+    ),
+    radial-gradient(
+      circle at 80% 60%,
+      rgba(255, 255, 255, 0.8) 2%,
+      transparent 4%
+    );
+  animation: discoBallSparkle 1.5s ease-in-out infinite alternate;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+@keyframes discoBallSparkle {
+  0% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.8);
+  }
+}
+
+@keyframes spinDisc {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(90deg) scale(1.1);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  75% {
+    transform: rotate(270deg) scale(1.1);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spinBall {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.2);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Add a glow effect on hover */
+.featureCardWide:hover .remixIcon,
+.featureCardWide:hover .discoBall {
+  filter: drop-shadow(0 0 5px rgba(97, 218, 251, 0.8));
+}
+
+/* Dark mode adjustments */
+:global(html[data-theme="dark"]) .featureCardWide:hover .remixIcon::after {
+  background: radial-gradient(
+    circle,
+    rgba(97, 218, 251, 0.8) 0%,
+    transparent 70%
+  );
+}
+
+:global(html[data-theme="dark"]) .featureCardWide:hover .discoBall::after {
+  background: radial-gradient(
+      circle at 30% 30%,
+      rgba(255, 255, 255, 0.9) 2%,
+      transparent 4%
+    ),
+    radial-gradient(
+      circle at 70% 20%,
+      rgba(255, 255, 255, 0.9) 2%,
+      transparent 4%
+    ),
+    radial-gradient(
+      circle at 40% 80%,
+      rgba(255, 255, 255, 0.9) 2%,
+      transparent 4%
+    ),
+    radial-gradient(
+      circle at 80% 60%,
+      rgba(255, 255, 255, 0.9) 2%,
+      transparent 4%
+    );
+}
+
+:global(html[data-theme="dark"]) .featureCardWide:hover .remixIcon,
+:global(html[data-theme="dark"]) .featureCardWide:hover .discoBall {
+  filter: drop-shadow(0 0 8px rgba(97, 218, 251, 1));
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+/* Add more space between the sparkles and text in both light and dark modes */
+.discoBall {
+  margin-left: 10px;
+  font-size: 1.1em;
+}
+
+/* Additional dark mode enhancements */
+
+.remixFeatureCard {
+  padding: 0 !important;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(70, 70, 90, 0.3) !important;
+  transition: all 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+:global(html[data-theme="light"]) .remixFeatureCard {
+  box-shadow: 0 8px 20px rgba(100, 120, 160, 0.1);
+  border: 1px solid rgba(200, 210, 220, 0.5) !important;
+}
+
+.remixFeatureCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(255, 123, 26, 0.3);
+  border-color: #ff7b1a !important;
+}
+
+:global(html[data-theme="light"]) .remixFeatureCard:hover {
+  box-shadow: 0 15px 30px rgba(245, 133, 12, 0.2);
+  border-color: #f5850c !important;
+}
+
+/* New code example block */
+.frameworkCodeExample {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.frameworkCodeExample code {
+  font-family: "Fira Code", monospace;
+  background: rgba(97, 218, 251, 0.1);
+  color: #61dafb;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 24px;
+  border: 1px solid rgba(97, 218, 251, 0.2);
+  box-shadow: 0 5px 15px rgba(97, 218, 251, 0.1);
+  display: inline-block;
+}
+
+:global(html[data-theme="light"]) .frameworkCodeExample code {
+  background: rgba(0, 136, 204, 0.08);
+  color: #0088cc;
+  border: 1px solid rgba(0, 136, 204, 0.2);
+}
+
+/* Framework tagline */
+.frameworkTagline {
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.5;
+  margin-top: 15px;
+  font-style: italic;
+}
+
+:global(html[data-theme="light"]) .frameworkTagline {
+  color: rgba(45, 55, 72, 0.8);
+}
+
+/* Framework integration icons */
+.frameworkIntegrations {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 25px;
+  margin-bottom: 10px;
+}
+
+.integrationIcon {
+  font-size: 22px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(97, 218, 251, 0.1);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(97, 218, 251, 0.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+:global(html[data-theme="light"]) .integrationIcon {
+  background: rgba(0, 136, 204, 0.08);
+  border: 1px solid rgba(0, 136, 204, 0.2);
+}
+
+.frameworkCard:hover .integrationIcon {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(97, 218, 251, 0.2);
+}
+
+.frameworkIntegrations .integrationIcon:nth-child(1) {
+  animation: float 4s ease-in-out infinite;
+}
+
+.frameworkIntegrations .integrationIcon:nth-child(2) {
+  animation: float 4s ease-in-out infinite 1.3s;
+}
+
+.frameworkIntegrations .integrationIcon:nth-child(3) {
+  animation: float 4s ease-in-out infinite 2.7s;
+}
+
+/* Revert back to normal title styling for Core Features sections */
+.featureCard:not(.frameworkCard) .featureHeader h3 {
+  font-size: 1.2rem !important;
+  background-image: none;
+  background-clip: initial;
+  -webkit-background-clip: initial;
+  color: #1a5b8b; /* Dark blue for light mode */
+  margin-bottom: 0;
+  font-weight: 600;
+  white-space: normal;
+  text-shadow: none;
+}
+
+/* Keep gradient only for Framework Integration section */
+.frameworkCard .titleWrapper h3 {
+  font-size: clamp(28px, 5vw, 42px) !important;
+  background-image: linear-gradient(90deg, #61dafb, #9d71ff, #ff7b1a);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  margin-bottom: 20px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  text-shadow: 0 2px 10px rgba(97, 218, 251, 0.3);
+}
+
+/* Dark mode adjustment for Core Features titles */
+:global(html[data-theme="dark"])
+  .featureCard:not(.frameworkCard)
+  .featureHeader
+  h3 {
+  color: #61dafb; /* Neon blue for dark mode, similar to React blue */
+  text-shadow: 0 0 5px rgba(97, 218, 251, 0.4);
+}
+
+html[data-theme="dark"] .vibeGlowPlug {
+  display: inline-block; /* Ensures shadow is applied correctly */
+  text-shadow: 0 0 5px var(--jods-cool-accent), 0 0 10px var(--jods-cool-accent),
+    0 0 15px var(--jods-cool-accent), 0 0 20px var(--jods-cool-accent);
+  animation: pulseGlow 2s infinite alternate;
+}
+
+@keyframes pulseGlow {
+  from {
+    text-shadow: 0 0 5px var(--jods-cool-accent),
+      0 0 10px var(--jods-cool-accent), 0 0 15px var(--jods-cool-accent),
+      0 0 20px var(--jods-cool-accent);
+  }
+  to {
+    text-shadow: 0 0 10px var(--jods-cool-accent),
+      0 0 20px var(--jods-cool-accent), 0 0 30px var(--jods-cool-accent),
+      0 0 40px var(--jods-cool-accent);
+  }
+}

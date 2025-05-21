@@ -1,0 +1,90 @@
+{
+  "homepage.hero.background.json1": {
+    "message": "{ \"nombre\": \"jods\" }",
+    "description": "JSON snippet in hero background (name)"
+  },
+  "homepage.hero.background.json2": {
+    "message": "{ \"reactivo\": true }",
+    "description": "JSON snippet in hero background (reactive)"
+  },
+  "homepage.hero.background.json3": {
+    "message": "{ \"dinámico\": true }",
+    "description": "JSON snippet in hero background (dynamic)"
+  },
+  "homepage.hero.background.json4": {
+    "message": "{ \"tamaño\": \"pequeño\" }",
+    "description": "JSON snippet in hero background (size)"
+  },
+  "homepage.hero.background.json5": {
+    "message": "{ \"calculado\": () => {} }",
+    "description": "JSON snippet in hero background (computed)"
+  },
+  "homepage.hero.background.json6": {
+    "message": "{ \"frameworks\": [\"remix\", \"react\", \"preact\"] }",
+    "description": "JSON snippet in hero background (frameworks)"
+  },
+  "homepage.hero.background.json7": {
+    "message": "{ \"🐿️\": \"🦆\" }",
+    "description": "JSON snippet in hero background (mascots)"
+  },
+  "homepage.hero.background.json8": {
+    "message": "{ \"agente\": \"Burt Macklin, FBI\" }",
+    "description": "JSON snippet in hero background (agent)"
+  },
+  "homepage.hero.background.json9": {
+    "message": "{ \"nivel_amenaza\": \"Medianoche\" }",
+    "description": "JSON snippet in hero background (threat level)"
+  },
+  "homepage.hero.background.json10": {
+    "message": "{ \"agente\": \"Michael Scarn\" }",
+    "description": "JSON snippet in hero background (agent 2)"
+  },
+  "homepage.hero.background.json11": {
+    "message": "{ \"viaje_tiempo\": true }",
+    "description": "JSON snippet in hero background (time travel)"
+  },
+  "homepage.hero.background.json12": {
+    "message": "{ \"historia\": [\"pasado\", \"presente\", \"futuro\"] }",
+    "description": "JSON snippet in hero background (history)"
+  },
+  "homepage.hero.background.json13": {
+    "message": "{ \"estado\": \"reactivo\", \"humor\": \"feliz\" }",
+    "description": "JSON snippet in hero background (state and mood)"
+  },
+  "homepage.hero.background.json14": {
+    "message": "{ \"depuración\": { \"nivel\": \"más de 9000\" } }",
+    "description": "JSON snippet in hero background (debug)"
+  },
+  "homepage.hero.background.json15": {
+    "message": "{ \"zod\": \"esquema\", \"validación\": \"✅\" }",
+    "description": "JSON snippet in hero background (zod)"
+  },
+  "homepage.hero.background.json16": {
+    "message": "{ \"conexiónSocket\": true, \"sincronización\": \"bidireccional\" }",
+    "description": "JSON snippet in hero background (socket connect)"
+  },
+  "homepage.hero.background.json17": {
+    "message": "{ \"persistir\": { \"almacenamiento\": \"localStorage\", \"clave\": \"carrito\", \"versión\": \"1.0.2\" } }",
+    "description": "JSON snippet in hero background (persist)"
+  },
+  "homepage.hero.background.json18": {
+    "message": "{ \"sincronizar\": { \"modo\": \"par\", \"permitirClaves\": [\"elementos\", \"nota\"] } }",
+    "description": "JSON snippet in hero background (sync)"
+  },
+  "homepage.hero.background.json19": {
+    "message": "{ \"flujo\": { \"validar\": true, \"lote\": true } }",
+    "description": "JSON snippet in hero background (stream)"
+  },
+  "homepage.hero.background.json20": {
+    "message": "{ \"hidratar\": true, \"persistir\": true, \"flujo\": true }",
+    "description": "JSON snippet in hero background (hydrate)"
+  },
+  "homepage.hero.background.json21": {
+    "message": "{ \"marca_tiempo\": \"2025-05-05T12:34:56Z\", \"parches\": [{\"op\": \"reemplazar\", \"ruta\": \"/nombre\", \"valor\": \"jods\"}] }",
+    "description": "JSON snippet in hero background (timestamp)"
+  },
+  "homepage.hero.background.json22": {
+    "message": "{ \"esquema\": { \"elementos\": \"z.array(z.object({}))\", \"filtro\": \"todos\" } }",
+    "description": "JSON snippet in hero background (schema)"
+  }
+}

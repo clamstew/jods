@@ -1,0 +1,66 @@
+{
+  "link.title.documentation": {
+    "message": "DOCUMENTATION",
+    "description": "The title of the footer links column with title=DOCUMENTATION in the footer"
+  },
+  "link.title.community": {
+    "message": "COMMUNAUTÉ",
+    "description": "The title of the footer links column with title=COMMUNITY in the footer"
+  },
+  "link.title.resources": {
+    "message": "RESSOURCES",
+    "description": "The title of the footer links column with title=RESOURCES in the footer"
+  },
+  "link.item.label.getting-started": {
+    "message": "📚 Démarrer",
+    "description": "Footer link to getting started page"
+  },
+  "link.item.label.about-jods": {
+    "message": "ℹ️ À propos de jods",
+    "description": "Footer link to about page"
+  },
+  "link.item.label.api-reference": {
+    "message": "🧩 Référence de l'API",
+    "description": "Footer link to API reference page"
+  },
+  "link.item.label.discussions": {
+    "message": "💬 Discussions",
+    "description": "Footer link to GitHub discussions"
+  },
+  "link.item.label.issues": {
+    "message": "🐛 Problèmes",
+    "description": "Footer link to GitHub issues"
+  },
+  "link.item.label.creator": {
+    "message": "👨‍💻 Créateur",
+    "description": "Footer link to creator's GitHub profile"
+  },
+  "link.item.label.blog": {
+    "message": "📝 Blog",
+    "description": "Footer link to blog"
+  },
+  "link.item.label.github": {
+    "message": "🐙 GitHub",
+    "description": "Footer link to GitHub repository"
+  },
+  "link.item.label.npm": {
+    "message": "📦 npm",
+    "description": "Footer link to npm package"
+  },
+  "footer.mascots.duck.title": {
+    "message": "Cliquez pour vous faire ami avec le canard!",
+    "description": "Title for duck mascot"
+  },
+  "footer.mascots.squirrel.title": {
+    "message": "Cliquez pour vous faire ami avec l'écureuil!",
+    "description": "Title for squirrel mascot"
+  },
+  "footer.copyright.builtWith": {
+    "message": "Construit avec {heart} par {creator}",
+    "description": "Footer text indicating the site was built with love"
+  },
+  "footer.copyright.notice": {
+    "message": "Copyright © {year} contributeurs de jods",
+    "description": "Copyright notice"
+  }
+}

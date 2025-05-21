@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import dts from "vite-plugin-dts";
 import { resolve } from "path";
 import { fileURLToPath } from "url";
@@ -12,8 +12,10 @@ export default defineConfig({
     lib: {
       entry: {
         index: resolve(__dirname, "src/index.ts"),
-        react: resolve(__dirname, "src/react.ts"),
-        preact: resolve(__dirname, "src/preact.ts"),
+        react: resolve(__dirname, "src/frameworks/react/index.ts"),
+        preact: resolve(__dirname, "src/frameworks/preact/index.ts"),
+        remix: resolve(__dirname, "src/frameworks/remix/index.ts"),
+        zod: resolve(__dirname, "src/zod.ts"),
       },
       formats: ["es", "cjs"],
     },
@@ -26,6 +28,10 @@ export default defineConfig({
     sourcemap: true,
     minify: "terser",
   },
+  esbuild: {
+    jsx: "automatic",
+    jsxImportSource: "react",
+  },
   plugins: [
     dts({
       tsconfigPath: "./tsconfig.json",
@@ -36,10 +42,14 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
-    setupFiles: ["./src/__tests__/setup.ts"],
+    setupFiles: ["./src/test/setup.ts"],
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
     },
+    include: ["src/**/*.{test,spec}.{js,ts,jsx,tsx}"],
+    exclude: ["**/node_modules/**", "**/dist/**"],
+    testTimeout: 10000,
+    includeSource: ["src/**/*.{js,ts}"],
   },
 });

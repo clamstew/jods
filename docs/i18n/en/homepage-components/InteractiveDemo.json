@@ -1,0 +1,34 @@
+{
+  "homepage.demo.title.prefix": {
+    "message": "Try jods ",
+    "description": "First part of interactive demo section title"
+  },
+  "homepage.demo.title.gradient": {
+    "message": "live",
+    "description": "Gradient part of interactive demo section title"
+  },
+  "homepage.demo.title.suffix": {
+    "message": " 🧑‍💻",
+    "description": "Last part of interactive demo section title"
+  },
+  "homepage.demo.tagline": {
+    "message": "Simple. Reactive. Powerful.",
+    "description": "Interactive demo tagline"
+  },
+  "homepage.demo.screenreader_text": {
+    "message": "Edit the values below and see how jods reactively updates with the built-in reactive state system",
+    "description": "Hidden text for screen readers explaining the demo"
+  },
+  "homepage.demo.counter.example.counter": {
+    "message": "counter",
+    "description": "English translation for 'counter' in Counter example"
+  },
+  "homepage.demo.counter.example.count": {
+    "message": "Count",
+    "description": "English translation for 'Count' in Counter example"
+  },
+  "homepage.demo.counter.example.property.count": {
+    "message": "count",
+    "description": "English translation for the count property name in Counter example"
+  }
+}
