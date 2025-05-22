@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdocs=self.webpackChunkdocs||[]).push([[7472],{5513:e=>{e.exports=JSON.parse('{"title":"Articles r\xe9cents","items":[{"title":"The jods Journey: From Name-Squatting to Full Framework Integration","permalink":"/jods/fr/blog/jods-journey","unlisted":false,"date":"2025-05-03T00:00:00.000Z"}]}')}}]);
