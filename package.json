@@ -1,6 +1,6 @@
 {
   "name": "jods",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "A minimal, reactive JSON state layer for Node.js and the browser",
   "type": "module",
   "main": "./dist/index.js",
@@ -15,17 +15,17 @@
     "./react": {
       "import": "./dist/react.js",
       "require": "./dist/react.cjs",
-      "types": "./dist/react.d.ts"
+      "types": "./dist/react-integration.d.ts"
     },
     "./preact": {
       "import": "./dist/preact.js",
       "require": "./dist/preact.cjs",
-      "types": "./dist/preact.d.ts"
+      "types": "./dist/preact-integration.d.ts"
     },
     "./remix": {
       "import": "./dist/remix.js",
       "require": "./dist/remix.cjs",
-      "types": "./dist/remix.d.ts"
+      "types": "./dist/remix-integration.d.ts"
     },
     "./zod": {
       "import": "./dist/zod.js",
@@ -41,10 +41,31 @@
   "files": [
     "dist"
   ],
+  "typesVersions": {
+    "*": {
+      "react": [
+        "./dist/react-integration.d.ts"
+      ],
+      "preact": [
+        "./dist/preact-integration.d.ts"
+      ],
+      "remix": [
+        "./dist/remix-integration.d.ts"
+      ],
+      "zod": [
+        "./dist/zod.d.ts"
+      ],
+      "persist/adapters": [
+        "./dist/persist-adapters.d.ts"
+      ]
+    }
+  },
   "sideEffects": false,
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && tsc -p tsconfig.build.json",
+    "build:js": "vite build",
+    "build:types": "tsc -p tsconfig.build.json",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
