@@ -3,6 +3,12 @@ import { diff } from "../diff";
 import { DiffResult } from "../../types";
 import { debug } from "../../utils/debug";
 import { HistoryEntry, HistoryOptions, IHistory } from "./types";
+import {
+  getComputedKeys,
+  getComputedDefinition,
+  setStoreHistoryIndex,
+  setNestedValue,
+} from "../computed-registry";
 
 /**
  * History implementation providing time-travel capabilities for stores
@@ -150,6 +156,10 @@ export class History<T extends StoreState> implements IHistory<T> {
     this.entries.push(entry);
     this.currentIndex = this.entries.length - 1;
 
+    // Update the store's history index in the computed registry
+    // This allows computed definitions to be versioned with history
+    setStoreHistoryIndex(this.store, this.currentIndex);
+
     if (this.debugEnabled) {
       debug.log("history", `Added entry ${this.currentIndex}:`, entry);
       debug.log("history", `Total entries: ${this.entries.length}`);
@@ -203,6 +213,10 @@ export class History<T extends StoreState> implements IHistory<T> {
 
       // Update the current index
       this.currentIndex = index;
+
+      // Re-apply computed property definitions that were active at this history index
+      // This ensures computed properties work correctly after time-travel
+      this.restoreComputedProperties(index);
     } catch (error) {
       debug.error("history", "Travel error:", error);
     } finally {
@@ -213,6 +227,47 @@ export class History<T extends StoreState> implements IHistory<T> {
           debug.log("history", "Time travel complete");
         }
       }, 10);
+    }
+  }
+
+  /**
+   * Restore computed properties after time-travel.
+   * Re-applies computed definitions that were active at the given history index.
+   * Supports both direct properties and nested paths (e.g., "stats.total").
+   */
+  private restoreComputedProperties(historyIndex: number): void {
+    // Update the store's history index in the registry
+    setStoreHistoryIndex(this.store, historyIndex);
+
+    // Get all computed property paths for this store
+    const computedPaths = getComputedKeys(this.store);
+
+    if (this.debugEnabled && computedPaths.length > 0) {
+      debug.log(
+        "history",
+        `Restoring ${computedPaths.length} computed properties:`,
+        computedPaths
+      );
+    }
+
+    // Re-apply each computed definition
+    for (const path of computedPaths) {
+      const computedValue = getComputedDefinition(this.store, path, historyIndex);
+
+      if (computedValue) {
+        // Check if this is a nested path
+        if (path.includes(".")) {
+          // Use setNestedValue for nested paths like "stats.total"
+          setNestedValue(this.store, path, computedValue);
+        } else {
+          // Direct property assignment
+          (this.store as any)[path] = computedValue;
+        }
+
+        if (this.debugEnabled) {
+          debug.log("history", `Restored computed property: ${path}`);
+        }
+      }
     }
   }
 

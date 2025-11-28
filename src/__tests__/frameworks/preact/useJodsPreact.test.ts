@@ -402,8 +402,8 @@ describe("useJodsPreact hook", () => {
       },
       computedC: {
         value: computed(function (this: any) {
-          // Need to call the nested computed with the store context
-          return this.computedB.value.call(this) + this.dataA;
+          // Nested computed is now auto-invoked
+          return this.computedB.value + this.dataA;
         }),
       },
     });
@@ -412,9 +412,10 @@ describe("useJodsPreact hook", () => {
     const ComplexComponent = () => {
       const state = useJods(testStore);
 
-      // Important: Get computed values directly from store for nested paths
-      const bValue = testStore.computedB.value.call(testStore);
-      const cValue = testStore.computedC.value.call(testStore);
+      // Nested computed properties are now auto-invoked when accessed
+      // No need to call .call(testStore) anymore!
+      const bValue = testStore.computedB.value;
+      const cValue = testStore.computedC.value;
 
       return h(
         "div",

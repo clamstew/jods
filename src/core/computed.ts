@@ -19,10 +19,10 @@ declare const ComputedBrand: unique symbol;
 
 /**
  * Interface for computed value object.
- * 
+ *
  * IMPORTANT: This type extends T so that ComputedValue<number> is assignable to number,
  * enabling excellent DX where computed properties can be used like regular values:
- * 
+ *
  * @example
  * ```ts
  * interface State { doubled?: ComputedValue<number>; }
@@ -89,10 +89,13 @@ export function computed<T, S = any>(
   // Create getter function
   const getter = function (this: any, storeInstance?: S) {
     // Use 'this' as context if available, otherwise use provided storeInstance or stored reference
-    const context =
-      this !== undefined && this !== window && this !== globalThis
-        ? this
-        : storeInstance || storeRef;
+    // Check for global objects safely (works in both browser and Node.js)
+    const isGlobalContext =
+      this === undefined ||
+      this === globalThis ||
+      (typeof window !== "undefined" && this === window);
+
+    const context = isGlobalContext ? storeInstance || storeRef : this;
 
     // Store the context for future calls if it's an object
     if (context && typeof context === "object") {

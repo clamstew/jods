@@ -5,6 +5,7 @@ import { getState_impl } from "../state";
 import { isComputed } from "../../computed";
 import { isBatchActive, recordBatchChange } from "../../batch";
 import { ExtendedProxyContext, getRawValue } from "./helpers";
+import { registerComputedDefinition } from "../../computed-registry";
 
 // The set trap implementation
 export function setTrap<T extends StoreState>(
@@ -82,30 +83,41 @@ export function setTrap<T extends StoreState>(
 
     // Normal (non-batch) property setting logic
     if (definedComputedKeys.has(key)) {
-      const computedDefinition = Reflect.get(target, prop, _receiver);
-      if (
-        isComputed(computedDefinition) &&
-        typeof (computedDefinition as any).set === "function"
-      ) {
-        const stateBeforeComputedSet = getState_impl(
-          // Get raw state
-          signals,
-          definedComputedKeys,
-          storeInstance
-        );
-        // Pass rawNewValue to the setter
-        (computedDefinition as any).set.call(storeInstance, rawNewValue); // Settable computed handles its own reactivity propagation.
-        // It might change multiple underlying signals.
-
-        // No stateAfterComputedSet variable needed here, valueActuallyChanged handles notification trigger
+      // If the new value is also a computed function, allow replacement
+      // This supports history restoration and user re-defining computed properties
+      if (isComputed(value)) {
+        // Replace the computed definition
+        Reflect.set(target, prop, value);
+        // Re-register the computed definition for history
+        registerComputedDefinition(storeInstance, key, value);
         valueActuallyChanged = true;
-        previousStateContainer.value = stateBeforeComputedSet;
       } else {
-        // Trying to set a non-settable computed or something misconfigured.
-        console.warn(
-          `Attempted to set non-settable computed property "${key}" or invalid property.`
-        );
-        return false; // Indicate failure
+        // Try to use as settable computed
+        const computedDefinition = Reflect.get(target, prop, _receiver);
+        if (
+          isComputed(computedDefinition) &&
+          typeof (computedDefinition as any).set === "function"
+        ) {
+          const stateBeforeComputedSet = getState_impl(
+            // Get raw state
+            signals,
+            definedComputedKeys,
+            storeInstance
+          );
+          // Pass rawNewValue to the setter
+          (computedDefinition as any).set.call(storeInstance, rawNewValue); // Settable computed handles its own reactivity propagation.
+          // It might change multiple underlying signals.
+
+          // No stateAfterComputedSet variable needed here, valueActuallyChanged handles notification trigger
+          valueActuallyChanged = true;
+          previousStateContainer.value = stateBeforeComputedSet;
+        } else {
+          // Trying to set a non-settable computed with a non-computed value
+          console.warn(
+            `Attempted to set non-settable computed property "${key}" with a non-computed value.`
+          );
+          return false; // Indicate failure
+        }
       }
     } else {
       // Not a computed property (or not a settable one)
@@ -143,6 +155,10 @@ export function setTrap<T extends StoreState>(
         // original value, not rawNewValue
         definedComputedKeys.add(key);
         Reflect.set(target, prop, value); // Store the computed function itself on the target
+        
+        // Register the computed value for history restoration
+        // Store the entire ComputedValue so it can be re-applied after time-travel
+        registerComputedDefinition(storeInstance, key, value);
       }
     }
 
