@@ -16,7 +16,8 @@ function createComputedProxy<T extends object>(
       // If the property is a computed value, automatically invoke it with store as 'this' context
       if (isComputed(value)) {
         // Call the computed property with the store as the this context
-        return value.call(store);
+        // Cast needed because ComputedValue<T> extends T for DX, but is still callable
+        return (value as unknown as (this: typeof store) => unknown).call(store);
       }
       return value;
     },

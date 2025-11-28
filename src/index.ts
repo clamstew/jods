@@ -12,4 +12,6 @@ export type {
   Unsubscribe,
   ComputeFunction,
   DiffResult,
+  UnwrapComputedValue,
+  UnwrapComputedStore,
 } from "./types";

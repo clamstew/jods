@@ -12,15 +12,39 @@ export const COMPUTED_SYMBOL = Symbol("computed");
 export const COMPUTED_IS_DIRTY = Symbol("computedIsDirty");
 
 /**
- * Interface for computed value object
+ * Brand symbol for computed values (compile-time identification)
+ * @internal
  */
-export interface ComputedValue<T = any, S = any> {
+declare const ComputedBrand: unique symbol;
+
+/**
+ * Interface for computed value object.
+ * 
+ * IMPORTANT: This type extends T so that ComputedValue<number> is assignable to number,
+ * enabling excellent DX where computed properties can be used like regular values:
+ * 
+ * @example
+ * ```ts
+ * interface State { doubled?: ComputedValue<number>; }
+ * const s = store<State>({ count: 5 });
+ * s.doubled = computed(() => s.count * 2);
+ * console.log(s.doubled + 10);  // ✅ Works! TypeScript sees this as number
+ * ```
+ */
+export type ComputedValue<T = any, S = any> = T & {
+  /** Call signature - computed values are callable */
   (storeInstance?: S): T;
-  [COMPUTED_SYMBOL]: true;
+  /** @internal Runtime symbol for identifying computed properties */
+  [COMPUTED_SYMBOL]?: true;
+  /** @internal Runtime symbol for dirty tracking */
   [COMPUTED_IS_DIRTY]?: boolean;
+  /** @internal Method to mark the computed as needing recalculation */
   markDirty?: () => void;
-  __debugName?: string; // For debugging
-}
+  /** @internal Debug name for development */
+  __debugName?: string;
+  /** @internal Brand for type identification */
+  readonly [ComputedBrand]?: true;
+};
 
 /**
  * Creates a computed property that will recalculate its value
