@@ -1,10 +1,36 @@
 # Issue: Computed Properties Lost During History Time-Travel
 
-## Status: Open
+## Status: ✅ RESOLVED
 
 ## Priority: Medium
 
 ## Discovered: 2024-11-28
+
+## Resolved: 2024-11-28
+
+---
+
+## Resolution
+
+Implemented **Option 1** (Track and Re-apply Computed Definitions) with full versioned history support.
+
+### New Files
+- `src/core/computed-registry.ts` - Registry for tracking computed definitions per store
+
+### Modified Files
+- `src/core/store/traps/set.ts` - Register computed on assignment
+- `src/core/history/core.ts` - Re-apply computed after time-travel
+
+### Tests
+- `src/__tests__/computed-history-integration.test.ts` - 5 test cases covering:
+  - Basic restoration after goBack/forward
+  - Multiple computed properties
+  - Nested computed (computed depending on computed)
+  - Array methods on restored computed arrays
+
+---
+
+## Original Problem Description (Archived)
 
 ---
 
