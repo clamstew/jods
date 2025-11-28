@@ -15,10 +15,7 @@ import {
   getOwnPropertyDescriptorTrap,
 } from "./traps";
 import { isComputed } from "../computed";
-import {
-  registerComputedDefinition,
-  registerNestedObject,
-} from "../computed-registry";
+import { registerComputedDefinition } from "../computed-registry";
 
 /**
  * Creates the proxy handler for the store instance.
