@@ -17,10 +17,54 @@ export type Unsubscribe = () => void;
 export type ComputeFunction<T = any> = () => T;
 
 /**
- * Computed value type
+ * Brand symbol for computed values (compile-time only)
+ * @internal
+ */
+declare const ComputedBrand: unique symbol;
+
+/**
+ * Computed value type - designed for excellent DX!
+ *
+ * This type is structured so that `ComputedValue<T>` is assignable to `T`,
+ * meaning you can use computed properties just like regular values:
+ *
+ * @example
+ * ```ts
+ * interface State {
+ *   count: number;
+ *   doubled?: ComputedValue<number>;
+ * }
+ * const s = store<State>({ count: 5 });
+ * s.doubled = computed(() => s.count * 2);
+ *
+ * // These all work with proper types!
+ * console.log(s.doubled + 10);        // ✅ number operations work
+ * console.log(s.doubled.toFixed(2));  // ✅ number methods work
+ * ```
+ *
  * @public
  */
-export type ComputedValue<T = any> = ComputeFunction<T>;
+export type ComputedValue<T = any> = T & {
+  /** @internal Brand to identify computed values */
+  readonly [ComputedBrand]?: true;
+  /** @internal The compute function (also callable at runtime) */
+  (): T;
+};
+
+/**
+ * Utility type to unwrap ComputedValue<T> to T
+ * Used internally by Store types to provide correct access types
+ * @public
+ */
+export type UnwrapComputedValue<T> = T extends ComputedValue<infer U> ? U : T;
+
+/**
+ * Utility type to unwrap all ComputedValue properties in an object type
+ * @public
+ */
+export type UnwrapComputedStore<T> = {
+  [K in keyof T]: UnwrapComputedValue<T[K]>;
+};
 
 /**
  * Signal read function type

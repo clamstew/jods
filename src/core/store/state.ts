@@ -226,7 +226,8 @@ export function initializeStateAndSignals<T extends StoreState>(
           });
         }
       } else {
-        signals.set(key, createSignal(initialValue));
+        // Cast to any to handle complex type inference with ComputedValue<T> extending T
+        signals.set(key, createSignal(initialValue as any));
       }
     }
   }
