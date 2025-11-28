@@ -12,9 +12,9 @@ export default defineConfig({
     lib: {
       entry: {
         index: resolve(__dirname, "src/index.ts"),
-        react: resolve(__dirname, "src/react.ts"),
-        preact: resolve(__dirname, "src/preact.ts"),
-        remix: resolve(__dirname, "src/remix.ts"),
+        react: resolve(__dirname, "src/react-integration.ts"),
+        preact: resolve(__dirname, "src/preact-integration.ts"),
+        remix: resolve(__dirname, "src/remix-integration.ts"),
         zod: resolve(__dirname, "src/zod.ts"),
       },
       formats: ["es", "cjs"],
