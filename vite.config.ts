@@ -12,9 +12,9 @@ export default defineConfig({
     lib: {
       entry: {
         index: resolve(__dirname, "src/index.ts"),
-        react: resolve(__dirname, "src/frameworks/react/index.ts"),
-        preact: resolve(__dirname, "src/frameworks/preact/index.ts"),
-        remix: resolve(__dirname, "src/frameworks/remix/index.ts"),
+        react: resolve(__dirname, "src/react.ts"),
+        preact: resolve(__dirname, "src/preact.ts"),
+        remix: resolve(__dirname, "src/remix.ts"),
         zod: resolve(__dirname, "src/zod.ts"),
       },
       formats: ["es", "cjs"],
@@ -37,6 +37,10 @@ export default defineConfig({
       tsconfigPath: "./tsconfig.json",
       staticImport: true,
       insertTypesEntry: true,
+      pathsToAliases: true,
+      compilerOptions: {
+        declarationMap: false,
+      },
     }),
   ],
   test: {
