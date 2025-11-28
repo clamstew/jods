@@ -33,15 +33,8 @@ export default defineConfig({
     jsxImportSource: "react",
   },
   plugins: [
-    dts({
-      tsconfigPath: "./tsconfig.json",
-      staticImport: true,
-      insertTypesEntry: true,
-      pathsToAliases: true,
-      compilerOptions: {
-        declarationMap: false,
-      },
-    }),
+    // Removed vite-plugin-dts - using tsc directly for type declarations
+    // Run: pnpm build:types after vite build
   ],
   test: {
     globals: true,
