@@ -3,6 +3,11 @@ import { diff } from "../diff";
 import { DiffResult } from "../../types";
 import { debug } from "../../utils/debug";
 import { HistoryEntry, HistoryOptions, IHistory } from "./types";
+import {
+  getComputedKeys,
+  getComputedDefinition,
+  setStoreHistoryIndex,
+} from "../computed-registry";
 
 /**
  * History implementation providing time-travel capabilities for stores
@@ -150,6 +155,10 @@ export class History<T extends StoreState> implements IHistory<T> {
     this.entries.push(entry);
     this.currentIndex = this.entries.length - 1;
 
+    // Update the store's history index in the computed registry
+    // This allows computed definitions to be versioned with history
+    setStoreHistoryIndex(this.store, this.currentIndex);
+
     if (this.debugEnabled) {
       debug.log("history", `Added entry ${this.currentIndex}:`, entry);
       debug.log("history", `Total entries: ${this.entries.length}`);
@@ -203,6 +212,10 @@ export class History<T extends StoreState> implements IHistory<T> {
 
       // Update the current index
       this.currentIndex = index;
+
+      // Re-apply computed property definitions that were active at this history index
+      // This ensures computed properties work correctly after time-travel
+      this.restoreComputedProperties(index);
     } catch (error) {
       debug.error("history", "Travel error:", error);
     } finally {
@@ -213,6 +226,42 @@ export class History<T extends StoreState> implements IHistory<T> {
           debug.log("history", "Time travel complete");
         }
       }, 10);
+    }
+  }
+
+  /**
+   * Restore computed properties after time-travel.
+   * Re-applies computed definitions that were active at the given history index.
+   */
+  private restoreComputedProperties(historyIndex: number): void {
+    // Update the store's history index in the registry
+    setStoreHistoryIndex(this.store, historyIndex);
+
+    // Get all computed property keys for this store
+    const computedKeys = getComputedKeys(this.store);
+
+    if (this.debugEnabled && computedKeys.length > 0) {
+      debug.log(
+        "history",
+        `Restoring ${computedKeys.length} computed properties:`,
+        computedKeys
+      );
+    }
+
+    // Re-apply each computed definition
+    for (const key of computedKeys) {
+      const computedValue = getComputedDefinition(this.store, key, historyIndex);
+
+      if (computedValue) {
+        // Re-assign the computed value to the store
+        // This will trigger the proxy's set trap but since we're in time-travel mode,
+        // it won't create new history entries
+        (this.store as any)[key] = computedValue;
+
+        if (this.debugEnabled) {
+          debug.log("history", `Restored computed property: ${key}`);
+        }
+      }
     }
   }
 
