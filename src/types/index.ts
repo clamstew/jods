@@ -24,10 +24,10 @@ declare const ComputedBrand: unique symbol;
 
 /**
  * Computed value type - designed for excellent DX!
- * 
+ *
  * This type is structured so that `ComputedValue<T>` is assignable to `T`,
  * meaning you can use computed properties just like regular values:
- * 
+ *
  * @example
  * ```ts
  * interface State {
@@ -36,12 +36,12 @@ declare const ComputedBrand: unique symbol;
  * }
  * const s = store<State>({ count: 5 });
  * s.doubled = computed(() => s.count * 2);
- * 
+ *
  * // These all work with proper types!
  * console.log(s.doubled + 10);        // ✅ number operations work
  * console.log(s.doubled.toFixed(2));  // ✅ number methods work
  * ```
- * 
+ *
  * @public
  */
 export type ComputedValue<T = any> = T & {
@@ -60,7 +60,7 @@ export type UnwrapComputedValue<T> = T extends ComputedValue<infer U> ? U : T;
 
 /**
  * Utility type to unwrap all ComputedValue properties in an object type
- * @public  
+ * @public
  */
 export type UnwrapComputedStore<T> = {
   [K in keyof T]: UnwrapComputedValue<T[K]>;
