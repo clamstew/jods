@@ -304,6 +304,7 @@ export function getTrap<T extends StoreState>(
 
   // When a top-level property (which might be an object/array) is read,
   // return it wrapped in makeReactive.
+  // Pass the property key as the path so nested computed properties can be tracked correctly
   return context.makeReactive(valueFromSignal, () => {
     const topLevelSignal = signals.get(key);
     if (topLevelSignal) {
@@ -317,5 +318,5 @@ export function getTrap<T extends StoreState>(
           : rawCurrentVal
       );
     }
-  });
+  }, key); // Pass the property key as the starting path for nested computed tracking
 }

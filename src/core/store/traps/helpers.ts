@@ -7,7 +7,11 @@ export interface ExtendedProxyContext<T extends StoreState>
   extends ProxyContext<T> {
   subscriptionContext: SubscriptionContext<T>;
   proxiedCache: WeakMap<object, any>;
-  makeReactive: (value: any, notifyParent?: () => void) => any;
+  makeReactive: (
+    value: any,
+    notifyParent?: () => void,
+    currentPath?: string
+  ) => any;
 }
 
 // Helper function to get raw value from a potentially proxied value

@@ -1,6 +1,6 @@
 {
   "name": "jods",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "A minimal, reactive JSON state layer for Node.js and the browser",
   "type": "module",
   "main": "./dist/index.js",

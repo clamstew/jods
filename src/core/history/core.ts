@@ -7,6 +7,7 @@ import {
   getComputedKeys,
   getComputedDefinition,
   setStoreHistoryIndex,
+  setNestedValue,
 } from "../computed-registry";
 
 /**
@@ -232,34 +233,39 @@ export class History<T extends StoreState> implements IHistory<T> {
   /**
    * Restore computed properties after time-travel.
    * Re-applies computed definitions that were active at the given history index.
+   * Supports both direct properties and nested paths (e.g., "stats.total").
    */
   private restoreComputedProperties(historyIndex: number): void {
     // Update the store's history index in the registry
     setStoreHistoryIndex(this.store, historyIndex);
 
-    // Get all computed property keys for this store
-    const computedKeys = getComputedKeys(this.store);
+    // Get all computed property paths for this store
+    const computedPaths = getComputedKeys(this.store);
 
-    if (this.debugEnabled && computedKeys.length > 0) {
+    if (this.debugEnabled && computedPaths.length > 0) {
       debug.log(
         "history",
-        `Restoring ${computedKeys.length} computed properties:`,
-        computedKeys
+        `Restoring ${computedPaths.length} computed properties:`,
+        computedPaths
       );
     }
 
     // Re-apply each computed definition
-    for (const key of computedKeys) {
-      const computedValue = getComputedDefinition(this.store, key, historyIndex);
+    for (const path of computedPaths) {
+      const computedValue = getComputedDefinition(this.store, path, historyIndex);
 
       if (computedValue) {
-        // Re-assign the computed value to the store
-        // This will trigger the proxy's set trap but since we're in time-travel mode,
-        // it won't create new history entries
-        (this.store as any)[key] = computedValue;
+        // Check if this is a nested path
+        if (path.includes(".")) {
+          // Use setNestedValue for nested paths like "stats.total"
+          setNestedValue(this.store, path, computedValue);
+        } else {
+          // Direct property assignment
+          (this.store as any)[path] = computedValue;
+        }
 
         if (this.debugEnabled) {
-          debug.log("history", `Restored computed property: ${key}`);
+          debug.log("history", `Restored computed property: ${path}`);
         }
       }
     }

@@ -210,5 +210,112 @@ describe("Computed Properties + History Integration", () => {
       tagHistory.destroy();
     });
   });
+
+  describe("nested object computed properties (like store.stats.total)", () => {
+    interface TodoStats {
+      total?: ComputedValue<number>;
+      completed?: ComputedValue<number>;
+      pending?: ComputedValue<number>;
+    }
+
+    interface AppState {
+      todos: Array<{ text: string; completed: boolean }>;
+      stats: TodoStats;
+    }
+
+    it("should restore computed properties on nested objects after time-travel", () => {
+      const appState = store<AppState>({
+        todos: [],
+        stats: {},
+      });
+
+      // Set up nested computed properties (like in the todo-app)
+      appState.stats.total = computed(() => appState.todos.length);
+      appState.stats.completed = computed(
+        () => appState.todos.filter((t) => t.completed).length
+      );
+      appState.stats.pending = computed(
+        () => appState.todos.filter((t) => !t.completed).length
+      );
+
+      const appHistory = history(appState);
+
+      // Initial state
+      expect(appState.stats.total).toBe(0);
+      expect(appState.stats.completed).toBe(0);
+      expect(appState.stats.pending).toBe(0);
+
+      // Add todos
+      appState.todos = [
+        { text: "Task 1", completed: false },
+        { text: "Task 2", completed: true },
+      ];
+      expect(appState.stats.total).toBe(2);
+      expect(appState.stats.completed).toBe(1);
+      expect(appState.stats.pending).toBe(1);
+
+      // Add more
+      appState.todos = [
+        { text: "Task 1", completed: false },
+        { text: "Task 2", completed: true },
+        { text: "Task 3", completed: true },
+      ];
+      expect(appState.stats.total).toBe(3);
+      expect(appState.stats.completed).toBe(2);
+      expect(appState.stats.pending).toBe(1);
+
+      // Time-travel back - THIS was the bug!
+      appHistory.back();
+      expect(appState.stats.total).toBe(2);
+      expect(appState.stats.completed).toBe(1);
+      expect(appState.stats.pending).toBe(1);
+
+      // Time-travel to beginning
+      appHistory.travelTo(0);
+      expect(appState.stats.total).toBe(0);
+      expect(appState.stats.completed).toBe(0);
+      expect(appState.stats.pending).toBe(0);
+
+      // Time-travel forward to latest
+      const latestIndex = appHistory.getEntries().length - 1;
+      appHistory.travelTo(latestIndex);
+      expect(appState.stats.total).toBe(3);
+      expect(appState.stats.completed).toBe(2);
+      expect(appState.stats.pending).toBe(1);
+
+      appHistory.destroy();
+    });
+
+    it("should handle deeply nested computed properties", () => {
+      interface DeepState {
+        level1: {
+          level2: {
+            computed?: ComputedValue<number>;
+          };
+        };
+        count: number;
+      }
+
+      const deepState = store<DeepState>({
+        level1: { level2: {} },
+        count: 5,
+      });
+
+      deepState.level1.level2.computed = computed(() => deepState.count * 10);
+
+      const deepHistory = history(deepState);
+
+      expect(deepState.level1.level2.computed).toBe(50);
+
+      deepState.count = 10;
+      expect(deepState.level1.level2.computed).toBe(100);
+
+      // Time-travel back
+      deepHistory.back();
+      expect(deepState.level1.level2.computed).toBe(50);
+
+      deepHistory.destroy();
+    });
+  });
 });
 

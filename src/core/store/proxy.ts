@@ -14,6 +14,11 @@ import {
   ownKeysTrap,
   getOwnPropertyDescriptorTrap,
 } from "./traps";
+import { isComputed } from "../computed";
+import {
+  registerComputedDefinition,
+  registerNestedObject,
+} from "../computed-registry";
 
 /**
  * Creates the proxy handler for the store instance.
@@ -25,8 +30,17 @@ export function createProxyHandler<T extends StoreState>(
   // Create a proxiedCache WeakMap to store references to already proxied objects
   const proxiedCache = new WeakMap<object, any>();
 
+  // Track paths for nested objects (for computed registry)
+  // Key: raw object, Value: path string
+  const objectToPath = new WeakMap<object, string>();
+
   // Create the makeReactive function for nested objects
-  function makeReactiveImpl(value: any, notifyParent?: () => void): any {
+  // Now accepts optional path for computed property tracking
+  function makeReactiveImpl(
+    value: any,
+    notifyParent?: () => void,
+    currentPath?: string
+  ): any {
     const rawValue = getRawValue(value);
 
     if (
@@ -37,6 +51,12 @@ export function createProxyHandler<T extends StoreState>(
       return rawValue;
     }
 
+    // Always update the path for this object (important for computed registration)
+    if (currentPath && rawValue) {
+      objectToPath.set(rawValue, currentPath);
+    }
+
+    // Check if we have a cached proxy for this raw value
     if (proxiedCache.has(rawValue)) {
       return proxiedCache.get(rawValue);
     }
@@ -88,23 +108,59 @@ export function createProxyHandler<T extends StoreState>(
         const localSignal = getSignalForProp(target, prop);
         const valueFromLocalSignal = localSignal[0](); // This is a raw value
 
+        // Build the nested path for this property (use dynamically looked up parent path)
+        const parentPath = objectToPath.get(target);
+        const nestedPath = parentPath
+          ? `${parentPath}.${String(prop)}`
+          : String(prop);
+
+        // Check if the value is a computed property - auto-invoke it
+        if (isComputed(valueFromLocalSignal)) {
+          // Get the store instance for 'this' context
+          const storeInstance = context.storeInstance;
+          return (valueFromLocalSignal as any).call(storeInstance);
+        }
+
         // Recursively make the raw value reactive for return.
         // The notifyParent for this level is a function that triggers the current signal
         // indicating that the object ITSELF (valueFromLocalSignal) has changed internally.
-        return makeReactiveImpl(valueFromLocalSignal, () => {
-          const currentVal = localSignal[0](); // Get current raw value
-          // Create a new shallow clone to trigger reactivity for dependents of this signal
-          localSignal[1](
-            Array.isArray(currentVal)
-              ? [...currentVal]
-              : typeof currentVal === "object" && currentVal !== null
-              ? { ...currentVal }
-              : currentVal
-          );
-        });
+        return makeReactiveImpl(
+          valueFromLocalSignal,
+          () => {
+            const currentVal = localSignal[0](); // Get current raw value
+            // Create a new shallow clone to trigger reactivity for dependents of this signal
+            localSignal[1](
+              Array.isArray(currentVal)
+                ? [...currentVal]
+                : typeof currentVal === "object" && currentVal !== null
+                ? { ...currentVal }
+                : currentVal
+            );
+          },
+          nestedPath
+        );
       },
       set(target, prop, newValue, _receiver) {
         // target is rawValue
+        const key = String(prop);
+
+        // Check if this is a computed value being assigned
+        if (isComputed(newValue)) {
+          // Get the path for this object from the WeakMap (dynamically looked up)
+          const parentPath = objectToPath.get(target);
+          const nestedPath = parentPath ? `${parentPath}.${key}` : key;
+
+          // Get the root store from context
+          const rootStore = context.storeInstance;
+          if (rootStore) {
+            registerComputedDefinition(rootStore, nestedPath, newValue);
+          }
+
+          // Store the computed function on the target (not the raw value)
+          Reflect.set(target, prop, newValue);
+          return true;
+        }
+
         const rawNewValue = getRawValue(newValue);
         const localSignal = getSignalForProp(target, prop);
         const currentValue = localSignal[0]();
